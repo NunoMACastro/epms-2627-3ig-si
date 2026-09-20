@@ -1,9 +1,3 @@
----
-module: M06
-competencies: [data.relational_model, data.integrity, data.sql, data.joins, data.aggregation, information_systems.client_server, web.forms, programming.javascript]
-prerequisites: []
-status: REVIEWED
----
 # Diagnóstico inicial — dados, SQL e web
 
 Duração: **60 minutos**, incluídos em M06-B01. Individual, em papel ou editor de texto; não é necessário instalar uma base de dados. Serve para identificar apoios, sem classificação sumativa. Podes consultar a sintaxe SQL básica fornecida pelo professor, mas assinala onde precisaste de ajuda. Explica o raciocínio; uma resposta parcial é útil para diagnosticar.

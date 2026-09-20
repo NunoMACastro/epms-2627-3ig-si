@@ -1,0 +1,31 @@
+# Ficheiros que não pertencem a este repositório.
+# Se precisares de um .gitignore mais completo para um projeto teu,
+# parte deste e acrescenta só o que o teu projeto gerar.
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editores
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*~
+
+# Dependências e ambientes, recriáveis a partir do código
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Segredos e configuração local: nunca versionar.
+# O .env.example fica, porque documenta as variáveis sem revelar valores.
+.env
+.env.*
+!.env.example
+
+# Registos de execução
+*.log
+npm-debug.log*
