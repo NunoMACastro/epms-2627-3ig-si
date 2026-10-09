@@ -6,7 +6,7 @@ Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para f
 
 ## Objetivo e contexto
 
-O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista e a registar empréstimos. Pelo caminho, tens de tomar decisões que o catálogo do guia não tomou: o que fazer com um parâmetro de pesquisa que só pode ter dois valores, e o que fazer quando um empréstimo muda o estado de um livro.
+O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista e a registar empréstimos. Pelo caminho, tens de tomar decisões que o catálogo do guia não tomou: como dizer qual das regras do identificador falhou, o que fazer com um parâmetro de pesquisa que só pode ter dois valores, e o que fazer quando um empréstimo muda o estado de um livro.
 
 ## Como trabalhar
 
@@ -32,22 +32,33 @@ Para cada pedido, diz onde vêm os dados (caminho, pesquisa ou corpo) e escreve 
 
 Guia: secção "Os códigos de estado que o teu código escolhe".
 
-A rota de detalhe dos livros vai ser escrita como a dos equipamentos no passo 1 do guia: primeiro verifica se o identificador é um inteiro positivo, depois procura o livro. Com os três livros da ficha anterior, que código tem cada pedido?
+A rota de detalhe dos livros vai ser escrita como a dos equipamentos no passo 1 do guia: primeiro verifica se o identificador é um inteiro positivo, depois procura o livro. O servidor tem também a rota `GET /livros` da ficha anterior, que responde com a lista toda. Com os três livros da ficha anterior, que código tem cada pedido?
 
 1. `GET /livros/1`
 2. `GET /livros/x`
 3. `GET /livros/-3`
 4. `GET /livros/7`
+5. `GET /livros?id=2`
 
-Para o pedido 4, explica numa frase porque é que não é 400.
+Para o pedido 4, explica numa frase porque é que não é 400. Para o pedido 5, diz também que rota lhe responde e o que vem na resposta.
 
 ## Exercício 3: um livro de cada vez
 
 Guia: exemplo guiado, passo 1.
 
-No `server.js` da biblioteca, acrescenta a rota `GET /livros/:id`, que responde com o livro pedido, ou com 400 ou 404 e uma mensagem em JSON, como no guia.
+No `server.js` da biblioteca, acrescenta a rota `GET /livros/:id`, que responde com o livro pedido, ou com 400 ou 404 e uma mensagem em JSON.
 
-**Resultado esperado:** os códigos do exercício 2. A mensagem do 404 diz que livro não existe, por exemplo `{"erro":"Não existe o livro 7"}`.
+A funcionária escreve muitas vezes o número do livro à mão e, quando se engana, quer saber o que corrigir. Por isso, a mensagem do 400 diz qual das duas regras do identificador falhou: ou não é um número inteiro, ou é um inteiro mas não é maior do que zero.
+
+**Resultado esperado:** os pedidos 1 a 4 do exercício 2, e mais o do livro 0, dão estas respostas:
+
+| Pedido | Código | Resposta |
+| --- | --- | --- |
+| `GET /livros/1` | 200 | o livro "Os Maias", em JSON |
+| `GET /livros/x` | 400 | `{"erro":"O identificador tem de ser um número inteiro"}` |
+| `GET /livros/-3` | 400 | `{"erro":"O identificador tem de ser maior do que zero"}` |
+| `GET /livros/0` | 400 | `{"erro":"O identificador tem de ser maior do que zero"}` |
+| `GET /livros/7` | 404 | `{"erro":"Não existe o livro 7"}` |
 
 ## Exercício 4: um filtro com dois valores possíveis
 

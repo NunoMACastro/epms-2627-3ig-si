@@ -6,7 +6,7 @@ Segundo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fa
 
 ## Objetivo e contexto
 
-No laboratório construíste o servidor do catálogo de equipamentos seguindo passos. Aqui constróis outro servidor, o da biblioteca da escola, que já conheces da ficha do primeiro tema, e tomas decisões que o exemplo do guia não tomou: que livros entram numa resposta, e que forma tem uma resposta que não é uma lista.
+No laboratório construíste o servidor do catálogo de equipamentos seguindo passos. Aqui constróis outro servidor, o da biblioteca da escola, que já conheces da ficha do primeiro tema, e tomas decisões que o exemplo do guia não tomou: como contar os pedidos que o servidor recebe, que livros entram numa resposta, e que forma tem uma resposta que não é uma lista.
 
 Os exercícios 1 e 2 treinam a leitura: prever o que um servidor responde e perceber o que uma mensagem de erro diz. Os exercícios 3 a 6 treinam a escrita de rotas. O desafio é opcional.
 
@@ -90,7 +90,7 @@ SyntaxError: Cannot use import statement outside a module
 d) O servidor arrancou e a página inicial funciona, mas o pedido a `/livros` recebe uma página com o código 500, e o terminal mostra:
 
 ```text
-TypeError: res.josn is not a function
+ReferenceError: livro is not defined
 ```
 
 ## Exercício 3: a lista de livros
@@ -131,9 +131,12 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-3. Escreve a rota `GET /livros`, que responde com a lista completa dos livros, em JSON.
+3. Escreve a rota `GET /livros`, que responde com a lista completa dos livros, em JSON. Este passo é igual ao exemplo do guia e serve de aquecimento.
+4. A coordenadora da biblioteca quer saber se a lista está a ser consultada. Acrescenta à rota uma linha no terminal que conte os pedidos à lista desde que o servidor foi ligado: `Pedido 1 à lista de livros` no primeiro pedido, `Pedido 2 à lista de livros` no segundo, e assim por diante.
 
-**Resultado esperado:** `http://localhost:3000/livros` mostra os três livros, com o código 200 e o tipo `application/json`. `http://localhost:3000/` continua a responder como antes.
+**A decisão nova:** até aqui, cada pedido era tratado sem precisar de nada dos pedidos anteriores. Este número tem de passar de um pedido para o seguinte.
+
+**Resultado esperado:** `http://localhost:3000/livros` mostra os três livros, com o código 200 e o tipo `application/json`, e `http://localhost:3000/` continua a responder como antes. Abre a lista e recarrega-a duas vezes com o botão de recarregar do browser: o terminal mostra, por esta ordem, `Pedido 1 à lista de livros`, `Pedido 2 à lista de livros` e `Pedido 3 à lista de livros`. Um pedido a `/` não muda a contagem. Se parares o servidor e o voltares a ligar, a contagem recomeça em 1.
 
 Se o catálogo de equipamentos do laboratório estiver ligado, para-o primeiro, ou vais encontrar um erro que já conheces.
 
