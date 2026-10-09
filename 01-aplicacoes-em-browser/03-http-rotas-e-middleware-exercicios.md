@@ -6,7 +6,7 @@ Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para f
 
 ## Objetivo e contexto
 
-O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista e a registar empréstimos. Pelo caminho, tens de tomar decisões que o catálogo do guia não tomou: como dizer qual das regras do identificador falhou, o que fazer com um parâmetro de pesquisa que só pode ter dois valores, e o que fazer quando um empréstimo muda o estado de um livro.
+O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista, a escrever no terminal os pedidos que recebe e a responder aos endereços que não existem. Pelo caminho, tens de tomar decisões que o catálogo do guia não tomou: como dizer qual das regras do identificador falhou, o que fazer com um parâmetro de pesquisa que só pode ter dois valores, e que forma dar à resposta de um endereço que não existe, num servidor que responde sempre em JSON.
 
 ## Como trabalhar
 
@@ -14,13 +14,13 @@ Nos exercícios em papel, responde antes de experimentar. Nos de computador, esc
 
 Se o teu servidor da biblioteca não tiver as rotas da ficha anterior, não faz mal: os exercícios 3, 4 e 6 só precisam do array `livros` e da rota `/`.
 
-Tempo previsto: 90 minutos para os exercícios 1 a 7.
+Tempo previsto: 70 minutos para os exercícios 1 a 7.
 
 ## Exercício 1: onde vêm os dados
 
 Guia: secção "Três sítios por onde um pedido traz dados".
 
-Para cada pedido, diz onde vêm os dados (caminho, pesquisa ou corpo) e escreve como se leem no servidor, por exemplo `req.query.autor`.
+Para cada pedido, diz onde vêm os dados (caminho, pesquisa ou corpo). Quando vêm no caminho ou na pesquisa, escreve também como se leem no servidor, por exemplo `req.query.autor`. Para os dados que vêm no corpo, basta dizeres que vêm no corpo: lê-los no servidor é do tema dos formulários.
 
 1. `GET /livros/3`
 2. `GET /livros?disponivel=true`
@@ -81,50 +81,39 @@ A funcionária quer ver só os livros disponíveis, ou só os emprestados. Muda 
 
 Guia: secção "O middleware".
 
-Um colega escreveu o servidor da biblioteca com os middlewares por esta ordem (as rotas estão resumidas):
+Um colega escreveu o servidor da biblioteca com os middlewares e as rotas por esta ordem (o conteúdo das rotas está resumido):
 
 ```js fragment
 app.use((req, res) => {
   res.status(404).send("Página não encontrada.");
 });
 
-app.get("/livros", (req, res) => { /* ... */ });
-app.post("/emprestimos", (req, res) => { /* usa req.body.livro_id */ });
-
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
 });
 
-app.use(express.urlencoded({ extended: false }));
+app.get("/livros/:id", (req, res) => { /* responde com um livro, ou com 400 ou 404 */ });
+app.get("/livros/disponiveis", (req, res) => { /* responde com os livros disponíveis */ });
+app.get("/livros", (req, res) => { /* responde com a lista */ });
 ```
 
 a) Que resposta tem um pedido `GET /livros`? E o que aparece no terminal?
 
-b) Este código tem três erros de middleware. Para cada um, diz qual é e que sintoma teria, se os outros dois estivessem corrigidos.
+b) Este código tem três erros, todos ligados à fila do Express. Para cada um, diz qual é e que sintoma teria, se os outros dois estivessem corrigidos.
 
-c) Escreve a ordem certa destas quatro partes, só com os nomes: rotas, middleware final, `express.urlencoded`, middleware de registo.
+c) Escreve a ordem certa destas cinco partes, só com os nomes: a rota `/livros`, a rota `/livros/:id`, a rota `/livros/disponiveis`, o middleware final e o middleware de registo.
 
-## Exercício 6: emprestar um livro
+## Exercício 6: o registo e o fim da fila
 
-Guia: exemplo guiado, passo 5.
+Guia: secção "O middleware" e exemplo guiado, passos 3 e 5.
 
-Acrescenta ao servidor da biblioteca:
+Acrescenta ao servidor da biblioteca o middleware de registo e o middleware final, cada um no sítio certo. Se tiveres a rota `/livros/disponiveis` da ficha anterior, confirma também que ela está acima da rota `/livros/:id` do exercício 3.
 
-- o middleware de registo e o `express.urlencoded`, no sítio certo;
-- uma rota `GET /emprestimos/novo`, com um formulário que envia por `POST` para `/emprestimos` os campos `livro_id` e `leitor` (o número de leitor);
-- a rota `POST /emprestimos`, que cria o empréstimo;
-- uma rota `GET /emprestimos`, com a lista dos empréstimos;
-- o middleware final.
+O middleware de registo é igual ao do guia. O final não: todas as respostas da biblioteca são JSON, incluindo as de erro, com a mensagem numa chave `erro`, para quem usa o servidor saber sempre onde a procurar. A resposta a um endereço que não existe também tem de ser assim, e tem de dizer que pedido não foi encontrado, com o método e o endereço.
 
-As regras do empréstimo:
+**A decisão nova:** o middleware final do guia responde sempre o mesmo texto. Este tem de construir a mensagem a partir do pedido. Que propriedades do `req` usas? E porque é que pôr o endereço do pedido nesta resposta não tem o perigo de que fala a secção de segurança do guia, quando diz que o texto do utilizador não se cola em HTML?
 
-- o livro tem de existir e o número de leitor tem de ser um inteiro positivo; se não, 400;
-- o livro tem de estar disponível; se não estiver, também 400, com uma mensagem que o diga;
-- se estiver tudo bem, o empréstimo fica guardado num array, com um `id` dado pelo servidor, o `livroId` e o `leitor`, e a resposta é 201 com o empréstimo, em JSON.
-
-**A decisão nova:** a reserva do guia só criava uma coisa nova. Este empréstimo muda também o livro: depois de emprestado, deixa de estar disponível. Onde, na função, fazes essa mudança, e porque é que tem de ser depois das verificações?
-
-**Resultado esperado:** emprestar o livro 2 dá 201. Tentar emprestá-lo outra vez dá 400, a dizer que não está disponível. `GET /livros?disponivel=true` passa a dar só "Os Maias". O livro 9 dá 400, e o livro 3, que já estava emprestado, também.
+**Resultado esperado:** `GET /livro`, sem o `s`, dá 404 com `{"erro":"Pedido não encontrado: GET /livro"}`. `GET /livros/1` continua a dar "Os Maias". O terminal mostra uma linha por pedido, incluindo a do endereço errado.
 
 ## Exercício 7: o contrato da biblioteca
 
@@ -132,22 +121,9 @@ Guia: secção "A tabela de contratos HTTP".
 
 Escreve a tabela de contratos HTTP do servidor da biblioteca, com uma linha por pedido que ele aceita, incluindo as rotas da ficha anterior que tiveres. Verifica cada linha no browser e marca as que verificaste.
 
-## Desafio (opcional): a devolução
-
-Na ficha do primeiro tema desenhaste o diagrama de uma devolução. Agora programa-a: a rota `POST /emprestimos/:id/devolucao` marca o empréstimo como devolvido e volta a pôr o livro disponível.
-
-Decide tu os códigos para estes casos, e escreve a tua decisão numa linha nova da tabela do exercício 7:
-
-- o identificador do empréstimo não é um inteiro positivo;
-- o empréstimo não existe;
-- o empréstimo já foi devolvido;
-- a devolução correu bem.
-
-Como um `POST` não se faz pela barra de endereço, acrescenta à rota `GET /emprestimos/novo` um segundo formulário, com um campo para o número do empréstimo, ou testa a rota com um formulário numa página nova. Pensa: o número do empréstimo vai no caminho, e um formulário `POST` envia os campos no corpo. Como resolves isto sem mudar a rota?
-
 ## Entrega e autoavaliação
 
-Entrega as respostas dos exercícios 1, 2 e 5, o `server.js` da biblioteca com os exercícios 3, 4 e 6 (e o desafio, se o fizeste) e a tabela do exercício 7. Não entregues a pasta `node_modules`.
+Entrega as respostas dos exercícios 1, 2 e 5, o `server.js` da biblioteca com os exercícios 3, 4 e 6 e a tabela do exercício 7. Não entregues a pasta `node_modules`.
 
 No fim, responde por escrito:
 

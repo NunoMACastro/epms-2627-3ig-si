@@ -1,8 +1,8 @@
 ![Cabeçalho](../imagens/cabecalho.png)
 
-# Laboratório: o catálogo com reservas
+# Laboratório: o catálogo com middleware
 
-Laboratório do terceiro tema do módulo Aplicações baseadas em browsers. Cerca de 120 minutos, em duas ou três aulas. Partes do teu catálogo de equipamentos do tema anterior e acrescentas-lhe, por esta ordem, a rota de detalhe com as duas verificações, o filtro por sala, o middleware de registo, uma página com uma pesquisa, o formulário de reserva com o `POST`, e o middleware final. Pelo caminho, provocas de propósito os três erros de ordem do middleware, e no fim escreves e verificas a tabela de contratos do teu servidor.
+Laboratório do terceiro tema do módulo Aplicações baseadas em browsers. Cerca de 100 minutos, repartidos pelas três primeiras aulas do tema. Partes do teu catálogo de equipamentos do tema anterior e acrescentas-lhe, por esta ordem, a rota de detalhe com as duas verificações, o filtro por sala, o middleware de registo, uma página com uma pesquisa e o middleware final. Pelo caminho, provocas de propósito os três erros de ordem do middleware, e no fim escreves e verificas a tabela de contratos do teu servidor.
 
 As ideias e o código estão no [guia do tema](03-http-rotas-e-middleware.md), e cada parte diz em que secção. Antes de cada experiência, escreve a previsão no caderno: é a previsão errada que mostra o que ainda não estava percebido.
 
@@ -24,11 +24,10 @@ Copia esta tabela para o caderno e preenche as duas últimas colunas com a tua p
 | --- | --- | --- |
 | `GET /equipamentos/2` | | |
 | `GET /equipamentos/abc` | | |
+| `GET /equipamentos/0` | | |
 | `GET /equipamentos/9` | | |
 | `GET /equipamentos?sala=B12` | | |
 | `GET /equipamentos?sala=Z99` | | |
-| `POST /reservas` com o equipamento 2, um dia e o tempo 3 | | |
-| `POST /reservas` com o equipamento 9 | | |
 | `GET /nao-existe` | | |
 
 ## Parte 2: a rota de detalhe
@@ -68,7 +67,7 @@ Guia: secção "Observar os pedidos no browser".
 Guia: secção "O middleware" e exemplo guiado, passo 3.
 
 1. Acrescenta o middleware de registo do passo 3, logo a seguir aos dados e antes de todas as rotas.
-2. Reinicia e faz três pedidos quaisquer. No terminal, aparece uma linha por pedido, com o método e o endereço.
+2. Reinicia e faz três pedidos quaisquer. No terminal, aparece uma linha por pedido, com o método e o endereço. Aparecem também linhas `GET /favicon.ico`, que não pediste: é o browser a pedir sozinho o ícone do separador, como explica o passo 3 do exemplo guiado.
 3. Agora o primeiro erro de propósito. Apaga a linha `next();` do middleware. Reinicia e abre `/equipamentos`. Prevê antes.
 
 O que deves ver: o browser fica à espera, com o indicador de carregamento a rodar, e não mostra nada. No terminal, aparece a linha `GET /equipamentos` e mais nada. Não há nenhuma mensagem de erro. O middleware recebeu o pedido, não respondeu e não o passou à frente: o pedido ficou parado.
@@ -85,41 +84,24 @@ Guia: secção "GET e POST, com mais pormenor" e exemplo guiado, passo 4.
 
 O que deves ver: o browser foi para `/equipamentos?sala=B12`. O formulário `GET` transformou o campo `sala` num parâmetro de pesquisa, e a rota que respondeu é a mesma da parte 3.
 
-## Parte 7: a reserva por POST
+## Parte 7: o middleware final e a ordem da fila
 
-Guia: secção "O middleware que lê os formulários" e exemplo guiado, passo 5.
+Guia: secção "O middleware", com as três regras, e exemplo guiado, passo 5.
 
-Nesta parte, o middleware que lê o corpo entra no fim, de propósito.
-
-1. Acrescenta, no início do ficheiro, o array `reservas` e o contador `proximoIdReserva`. Acrescenta as rotas `GET /reservas/nova`, `POST /reservas` e `GET /reservas` do passo 5, mas ainda sem o `app.use(express.urlencoded(...))`.
-2. Reinicia, abre `/reservas/nova`, preenche o equipamento 2, um dia e o tempo 3, e envia.
-3. Prevê antes de enviar. Depois regista o código no separador Rede e a mensagem no terminal.
-
-O que deves ver: o browser recebe um erro 500, e o terminal mostra `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. Sem o middleware, `req.body` não existe.
-
-4. Acrescenta a linha `app.use(express.urlencoded({ extended: false }));` no fim do ficheiro, logo antes do `app.listen`. Reinicia e envia outra vez.
-5. Regista o que aconteceu. Continua igual: quando a rota corre, o middleware, que está abaixo dela, ainda não correu.
-6. Muda a linha para o sítio certo: a seguir ao middleware de registo e antes das rotas. Reinicia e envia outra vez.
-
-O que deves ver: o browser mostra a reserva criada, em JSON, com o `id` 1. No separador Rede, o `POST /reservas` tem o código 201. No Payload aparece "Form Data", com os três campos.
-
-7. Abre `/reservas`: a reserva está na lista.
-8. Volta ao formulário e envia com o equipamento 9. Regista o código e a mensagem.
-9. Volta à página com a reserva criada (a resposta do `POST`) e recarrega-a. O browser pergunta se queres reenviar o formulário. Diz que sim e abre `/reservas`. Quantas reservas há agora? Escreve no caderno porque é que isto é um problema numa aplicação de reservas. O tema dos formulários resolve-o.
-
-## Parte 8: o middleware final
-
-Guia: secção "O middleware final" e exemplo guiado, passo 6.
-
-1. Acrescenta o middleware final do passo 6 depois de todas as rotas, logo antes do `app.listen`. Reinicia.
+1. Acrescenta o middleware final do passo 5 depois de todas as rotas, logo antes do `app.listen`. Reinicia.
 2. Abre `/nao-existe`. Deves ver "Página não encontrada.", com o código 404.
-3. O terceiro erro de propósito. Muda o middleware final para logo a seguir ao middleware de registo, antes de todas as rotas. Reinicia e abre `/equipamentos`. Prevê primeiro.
+3. O segundo erro de propósito. Muda o middleware de registo para baixo das rotas, logo antes do middleware final. Reinicia, abre `/equipamentos` e depois `/nao-existe`. Prevê primeiro: que linhas vão aparecer no terminal?
 
-O que deves ver: "Página não encontrada." para todos os endereços, incluindo os que existem. O middleware final responde a tudo e não chama `next()`, por isso nenhum pedido chega às rotas.
+O que deves ver: as duas páginas respondem como antes, mas no terminal só aparece `GET /nao-existe`, e talvez também `GET /favicon.ico`. O pedido a `/equipamentos` foi respondido pela rota, acabou ali e nunca chegou ao middleware de registo. Só passam por ele os pedidos a que nenhuma rota respondeu, a caminho do middleware final, e o pedido do ícone, que o browser faz sozinho, é um deles. É a segunda regra do middleware: o que tem de ver os pedidos antes das rotas tem de estar acima delas.
 
-4. Repõe o middleware final no fim do ficheiro e confirma que as rotas voltam a responder.
+4. Repõe o middleware de registo no sítio certo, logo a seguir aos dados, reinicia e confirma que `/equipamentos` volta a aparecer no terminal.
+5. O terceiro erro de propósito. Muda o middleware final para logo a seguir ao middleware de registo, antes de todas as rotas. Reinicia e abre `/equipamentos`. Prevê primeiro.
 
-## Parte 9: a tabela de contratos e a evidência
+O que deves ver: "Página não encontrada." para todos os endereços, incluindo os que existem. O middleware final responde a tudo e não chama `next()`, por isso nenhum pedido chega às rotas. No terminal, cada pedido continua a aparecer, porque o middleware de registo está antes do final.
+
+6. Repõe o middleware final no fim do ficheiro e confirma que as rotas voltam a responder.
+
+## Parte 8: a tabela de contratos e a evidência
 
 Guia: secção "A tabela de contratos HTTP".
 
@@ -134,13 +116,9 @@ Guia: secção "A tabela de contratos HTTP".
 
 O servidor não foi reiniciado. Ctrl+C e `node server.js`, ou usa `node --watch server.js`.
 
-### O formulário envia, mas os campos chegam vazios
+### Aparecem no terminal pedidos GET /favicon.ico que não fiz
 
-Os nomes não batem certo. O atributo `name` de cada campo do formulário tem de ser igual ao nome que a rota lê em `req.body`: `name="equipamento_id"` e `req.body.equipamento_id`. Confirma no Payload que nomes o browser enviou.
-
-### O browser não deixa enviar o formulário
-
-Um campo com `required` está vazio, ou o tempo é menor do que o `min`. É o browser a ajudar. Para testar o 400 da parte 7, usa um equipamento que não existe, como o 9, que o formulário deixa passar.
+É o browser a pedir sozinho o ícone que mostra no separador. O catálogo não tem ícone, por isso esse pedido acaba com 404, no middleware final ou na resposta do Express, se o middleware final ainda não existir. Não é um erro do teu código. Guia: exemplo guiado, passo 3.
 
 ### Cannot set headers after they are sent to the client
 
@@ -156,11 +134,10 @@ Há uma crase dentro do HTML, que o JavaScript leu como o fim do texto. Dentro d
 
 ## O que fica no teu caderno
 
-1. A tabela de previsões da parte 1, com as correções da parte 9.
+1. A tabela de previsões da parte 1, com as correções da parte 8.
 2. Os resultados das partes 2 e 3, incluindo as experiências do `Number` e do `Sala` maiúsculo, com a explicação.
-3. Os três erros do middleware (partes 5, 7 e 8): a previsão, o que aconteceu e porquê.
-4. A resposta da parte 7, passo 9, sobre recarregar a página da reserva.
-5. A tabela de contratos HTTP do teu servidor, verificada, e os três pedidos da evidência.
+3. Os três erros do middleware (partes 5 e 7): a previsão, o que aconteceu e porquê.
+4. A tabela de contratos HTTP do teu servidor, verificada, e os três pedidos da evidência.
 
 O professor vai pedir-te que expliques, para um dos três pedidos da evidência, porque é que o código é aquele, e que digas o que acontecia se o middleware de registo ficasse sem o `next()`.
 

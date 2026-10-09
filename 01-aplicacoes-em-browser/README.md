@@ -14,10 +14,10 @@ Os temas estão numerados pela ordem em que são dados. Um número que falta é 
 | [02-primeiro-servidor.md](02-primeiro-servidor.md) | O Node.js, o npm e o package.json, os módulos ES e um servidor Express com duas rotas, linha a linha; como ler os erros de arranque |
 | [02-primeiro-servidor-laboratorio.md](02-primeiro-servidor-laboratorio.md) | Laboratório do mesmo tema: construir o catálogo de equipamentos do zero e provocar e corrigir os erros mais comuns |
 | [02-primeiro-servidor-exercicios.md](02-primeiro-servidor-exercicios.md) | Ficha de exercícios do mesmo tema, com o servidor da biblioteca da escola |
-| [03-http-rotas-e-middleware.md](03-http-rotas-e-middleware.md) | Dados no caminho, na pesquisa e no corpo; GET e POST; os códigos 200, 201, 400 e 404; o middleware e a sua ordem; a tabela de contratos HTTP |
-| [03-http-rotas-e-middleware-laboratorio.md](03-http-rotas-e-middleware-laboratorio.md) | Laboratório do mesmo tema: o catálogo com a rota de detalhe, o filtro, as reservas por POST e os erros de ordem do middleware |
-| [03-http-rotas-e-middleware-exercicios.md](03-http-rotas-e-middleware-exercicios.md) | Ficha de exercícios do mesmo tema, com os empréstimos da biblioteca |
+| [03-http-rotas-e-middleware.md](03-http-rotas-e-middleware.md) | Dados no caminho e na pesquisa, e o corpo do pedido como ideia; GET e POST; os códigos 200, 400 e 404; o middleware e a sua ordem, e a ordem das rotas; a tabela de contratos HTTP |
+| [03-http-rotas-e-middleware-laboratorio.md](03-http-rotas-e-middleware-laboratorio.md) | Laboratório do mesmo tema: o catálogo com a rota de detalhe, o filtro, a pesquisa, o middleware e os erros de ordem do middleware |
+| [03-http-rotas-e-middleware-exercicios.md](03-http-rotas-e-middleware-exercicios.md) | Ficha de exercícios do mesmo tema, com o servidor da biblioteca |
 
-O código completo dos exemplos dos guias está na pasta de exemplos, com instruções para o correres: o [catálogo de equipamentos](../exemplos/aplicacoes-em-browser/catalogo-de-equipamentos/README.md) do tema 2 e o [catálogo com reservas](../exemplos/aplicacoes-em-browser/catalogo-com-reservas/README.md) do tema 3.
+O código completo dos exemplos dos guias está na pasta de exemplos, com instruções para o correres: o [catálogo de equipamentos](../exemplos/aplicacoes-em-browser/catalogo-de-equipamentos/README.md) do tema 2 e o [catálogo com middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md) do tema 3. O [catálogo com reservas](../exemplos/aplicacoes-em-browser/catalogo-com-reservas/README.md), que também lá está, acrescenta um formulário de reserva enviado por POST: é do tema dos formulários, que ainda não tem material publicado.
 
 ![Rodapé](../imagens/rodape.png)
