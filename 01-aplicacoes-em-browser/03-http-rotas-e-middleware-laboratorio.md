@@ -91,13 +91,13 @@ Guia: secção "O middleware que lê os formulários" e exemplo guiado, passo 5.
 
 Nesta parte, o middleware que lê o corpo entra no fim, de propósito.
 
-1. Acrescenta, no início do ficheiro, o array `reservas` e o contador `proximoIdReserva`. Acrescenta as rotas `GET /reservas/nova`, `POST /reservas` e `GET /reservas` do passo 5, mas **ainda sem** o `app.use(express.urlencoded(...))`.
+1. Acrescenta, no início do ficheiro, o array `reservas` e o contador `proximoIdReserva`. Acrescenta as rotas `GET /reservas/nova`, `POST /reservas` e `GET /reservas` do passo 5, mas ainda sem o `app.use(express.urlencoded(...))`.
 2. Reinicia, abre `/reservas/nova`, preenche o equipamento 2, um dia e o tempo 3, e envia.
 3. Prevê antes de enviar. Depois regista o código no separador Rede e a mensagem no terminal.
 
 O que deves ver: o browser recebe um erro 500, e o terminal mostra `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. Sem o middleware, `req.body` não existe.
 
-4. Acrescenta a linha `app.use(express.urlencoded({ extended: false }));` **no fim do ficheiro**, logo antes do `app.listen`. Reinicia e envia outra vez.
+4. Acrescenta a linha `app.use(express.urlencoded({ extended: false }));` no fim do ficheiro, logo antes do `app.listen`. Reinicia e envia outra vez.
 5. Regista o que aconteceu. Continua igual: quando a rota corre, o middleware, que está abaixo dela, ainda não correu.
 6. Muda a linha para o sítio certo: a seguir ao middleware de registo e antes das rotas. Reinicia e envia outra vez.
 

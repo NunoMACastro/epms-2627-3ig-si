@@ -129,7 +129,7 @@ Repara que há duas conversas diferentes, e não uma. O browser conversa com o s
 
 Os três programas podem estar em três computadores diferentes, e numa escola ou numa empresa é o mais comum. Nas aulas, enquanto desenvolves, vão estar muitas vezes os três no teu computador. Isso não muda os papéis: continuam a ser três programas, cada um à espera do seu tipo de conversa.
 
-### Porque é que o browser não fala com a base de dados
+### O browser não fala com a base de dados
 
 Parece mais simples o browser perguntar diretamente ao PostgreSQL. Não se faz por duas razões, e as duas são de segurança.
 
@@ -260,11 +260,11 @@ Alguns caracteres não podem ir tal como estão num endereço, como os espaços 
 
 Por agora interessam dois métodos, e a diferença entre eles é simples de dizer.
 
-`GET` pede para **ver** alguma coisa. Abrir uma página, seguir uma ligação, escrever um endereço na barra: tudo isto são pedidos `GET`. Um pedido `GET` não deve mudar nada no servidor. Podes repeti-lo cem vezes e o resultado no servidor é o mesmo: continuas só a ver.
+`GET` pede para ver alguma coisa. Abrir uma página, seguir uma ligação, escrever um endereço na barra: tudo isto são pedidos `GET`. Um pedido `GET` não deve mudar nada no servidor. Podes repeti-lo cem vezes e o resultado no servidor é o mesmo: continuas só a ver.
 
-`POST` **envia dados** para o servidor fazer alguma coisa com eles, e normalmente essa coisa muda o estado do sistema: criar uma reserva, cancelar uma reserva, registar uma devolução. Os dados vão no corpo do pedido, e não no endereço.
+`POST` envia dados para o servidor fazer alguma coisa com eles, e normalmente essa coisa muda o estado do sistema: criar uma reserva, cancelar uma reserva, registar uma devolução. Os dados vão no corpo do pedido, e não no endereço.
 
-Esta divisão não é um pormenor de estilo. O browser, os motores de pesquisa e outros programas partem do princípio de que um `GET` é seguro de repetir. Um browser pode voltar a pedir uma página quando carregas em "recuar"; um programa que indexa a web segue todas as ligações que encontra. Se confirmar uma reserva fosse um `GET` a um endereço como `/reservas/confirmar?equipamento=2&data=2026-10-20&tempo=3`, bastava alguém seguir essa ligação, ou o browser voltar a carregá-la, para criar uma reserva que ninguém quis fazer. Por isso, tudo o que muda dados vai por `POST`.
+Esta divisão tem consequências práticas, porque o browser, os motores de pesquisa e outros programas partem do princípio de que um `GET` é seguro de repetir. Um browser pode voltar a pedir uma página quando carregas em "recuar"; um programa que indexa a web segue todas as ligações que encontra. Se confirmar uma reserva fosse um `GET` a um endereço como `/reservas/confirmar?equipamento=2&data=2026-10-20&tempo=3`, bastava alguém seguir essa ligação, ou o browser voltar a carregá-la, para criar uma reserva que ninguém quis fazer. Por isso, tudo o que muda dados vai por `POST`.
 
 O tema 3 deste módulo volta aos métodos com mais pormenor, e o dos formulários mostra como um formulário HTML escolhe entre `GET` e `POST`.
 
@@ -312,7 +312,7 @@ Para já, isto explica porque é que cada pedido tem de trazer tudo o que o serv
 
 ## Exemplo guiado: uma reserva do princípio ao fim
 
-Este exemplo junta tudo o que viste. Segue uma operação real, uma professora a reservar o projetor para uma aula, e regista cada pedido, o que o servidor faz e o que responde. É o que a aplicação de reservas vai fazer quando a tiveres construído, ao longo deste módulo e do seguinte. Para já não precisas de saber escrever nenhuma destas partes: precisas de perceber a ordem e quem faz cada coisa.
+Este exemplo junta tudo o que viste. Segue uma operação real, uma professora a reservar o projetor para uma aula, e regista cada pedido, o que o servidor faz e o que responde. A aplicação de reservas é o exemplo que acompanha os guias deste módulo e do seguinte, e é isto que vai fazer quando estiver construída. A aplicação que fizeres no projeto tem o tema que tu escolheres, mas as suas operações fazem o mesmo caminho, do clique no browser até à base de dados e de volta. Para já não precisas de saber escrever nenhuma destas partes: precisas de perceber a ordem e quem faz cada coisa.
 
 ### Passo 1: o que a professora quer
 

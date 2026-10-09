@@ -91,7 +91,7 @@ a) Que resposta tem um pedido `GET /livros`? E o que aparece no terminal?
 
 b) Este código tem três erros de middleware. Para cada um, diz qual é e que sintoma teria, se os outros dois estivessem corrigidos.
 
-c) Escreve a ordem certa, só com os nomes: middleware de registo, `express.urlencoded`, rotas, middleware final.
+c) Escreve a ordem certa destas quatro partes, só com os nomes: rotas, middleware final, `express.urlencoded`, middleware de registo.
 
 ## Exercício 6: emprestar um livro
 

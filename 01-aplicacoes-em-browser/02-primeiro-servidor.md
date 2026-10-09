@@ -17,14 +17,14 @@ Módulo Aplicações baseadas em browsers. Segundo tema do módulo, com três au
 9. Exemplo guiado: o catálogo de equipamentos
 10. O que corre onde, agora com código
 11. Erros de arranque e como os ler
-12. Porque é que este servidor não usa await
+12. Este servidor não usa await
 13. Erros frequentes
 14. Verificar o que aprendeste
 15. O que vem a seguir
 
 ## O que vais aprender
 
-No primeiro tema desenhaste a conversa entre o browser e o servidor do lado de quem a vê, no browser. Neste tema passas para o outro lado: escreves o programa que fica à espera dos pedidos e lhes responde. É um servidor pequeno, com os equipamentos da escola guardados num array, ainda sem base de dados, mas é um servidor a sério: o browser fala com ele exatamente como fala com a Wikipédia.
+No primeiro tema desenhaste a conversa entre o browser e o servidor do lado de quem a vê, no browser. Neste tema passas para o outro lado: escreves o programa que fica à espera dos pedidos e lhes responde. É um servidor pequeno, com os equipamentos da escola guardados num array, ainda sem base de dados, e o browser fala com ele exatamente como fala com a Wikipédia: pelo mesmo HTTP, com pedidos e respostas como os que o primeiro tema descreveu.
 
 No fim deste guia deves conseguir:
 
@@ -400,7 +400,7 @@ As mensagens de erro do Node estão em inglês, e não há forma de as mudar. As
 SyntaxError: Cannot use import statement outside a module
 ```
 
-Aparece no arranque, apontado à linha do `import`, normalmente depois de um aviso a dizer `Make sure to set "type": "module"`. O `package.json` tem `"type": "commonjs"`, ou o ficheiro está numa pasta sem `package.json` nenhum. Corrige-se pondo `"type": "module"` no `package.json` da pasta do servidor.
+Aparece no arranque, apontado à linha do `import`, normalmente depois de um aviso a dizer `Make sure to set "type": "module"`. O `package.json` tem `"type": "commonjs"`, que é o que o `npm init -y` escreve, e por isso o Node lê o ficheiro como CommonJS. Corrige-se pondo `"type": "module"` no `package.json` da pasta do servidor. Se o campo `"type"` faltar de todo, este erro não aparece: como explica a secção 7, o Node 24 corre o ficheiro como módulo ES e escreve só um aviso.
 
 ### O pacote que não se encontra
 
@@ -452,7 +452,7 @@ O terminal volta a ficar livre e não aparece "Servidor a correr". Falta o `app.
 
 Já a conheces do primeiro tema. O servidor não está a correr, ou a porta do endereço não é a do servidor, ou escreveste `https` em vez de `http`. Vê primeiro o terminal: está lá a mensagem "Servidor a correr", e o terminal está ocupado?
 
-## Porque é que este servidor não usa await
+## Este servidor não usa await
 
 Talvez já tenhas visto servidores com `async` e `await` nas funções das rotas. Servem para esperar por uma operação demorada, como uma consulta à base de dados, sem bloquear o servidor enquanto ela não acaba. Neste servidor, nenhuma rota espera por nada: os dados estão num array na memória e a resposta é imediata. Por isso não há `await`. Ele vai aparecer quando as rotas passarem a perguntar ao PostgreSQL, no segundo módulo, e é aí que se explica.
 

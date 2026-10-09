@@ -45,7 +45,7 @@ Nas aulas, o catálogo já ganhou uma rota que mostra um só equipamento e um fi
 
 ## Três sítios por onde um pedido traz dados
 
-Um pedido HTTP pode trazer dados em três sítios. Escolher o sítio certo não é uma questão de gosto: cada um serve uma coisa diferente.
+Um pedido HTTP pode trazer dados em três sítios, e cada um serve uma coisa diferente. O sítio certo escolhe-se pelo papel que os dados têm no pedido: identificar o que se pede, afinar o pedido, ou levar os dados de uma operação que muda alguma coisa.
 
 ### No caminho: parâmetros de rota
 
@@ -136,7 +136,7 @@ O `res.status` não envia nada: só marca o código. Quem envia é o `json` a se
 
 **200 OK.** O pedido correu bem e a resposta tem o que se pediu. É o que o Express põe se não disseres nada.
 
-**201 Created.** O pedido criou alguma coisa nova. É a resposta certa a um `POST` que criou uma reserva. A resposta costuma trazer o que foi criado, com o identificador que o servidor lhe deu.
+**201 Created.** O pedido criou alguma coisa nova, como uma reserva. É o código que o catálogo deste tema dá a um `POST` que criou uma reserva, e a resposta traz o que foi criado, com o identificador que o servidor lhe deu. Não é a única resposta possível a um pedido que criou alguma coisa: a subsecção "Depois de criar: 201, 303 ou 200", mais abaixo, explica quando se usa cada uma.
 
 **400 Bad Request.** O pedido está mal feito, e o servidor recusa-se a tratá-lo: um identificador que não é um número, um campo obrigatório em falta, um tempo letivo negativo. A culpa é de quem fez o pedido, e repetir o mesmo pedido dá sempre o mesmo erro.
 
@@ -147,6 +147,14 @@ A diferença entre 400 e 404 é a que mais se confunde. Pensa assim: `abc` nunca
 E há um caso que não é erro nenhum: `/equipamentos?sala=Z99`, uma sala sem equipamentos. A lista existe, só que está vazia. A resposta é 200 com `[]`. Um filtro que não encontra nada não é um recurso inexistente.
 
 Falta o 500, que já conheces do tema anterior: o servidor falhou ao tratar um pedido que até podia estar certo. Não é um código que escolhas: é o que o Express responde quando o teu código rebenta. O tema dos erros e da segurança trata de como responder a isso de forma controlada.
+
+### Depois de criar: 201, 303 ou 200
+
+Um `POST` que criou uma reserva tem mais do que uma resposta certa, e a escolha depende de quem vai ler a resposta.
+
+Se a resposta é para outro programa, que vai usar os dados, o código é 201, e o corpo traz o que foi criado, em JSON. A um servidor que responde assim, com dados para programas e não com páginas para pessoas, chama-se uma **API** (Application Programming Interface, interface de programação de aplicações). O catálogo deste tema ainda responde em JSON, como uma API, e por isso o exemplo guiado responde 201 com a reserva: é a forma mais direta de veres, no browser e no separador Rede, o que o servidor criou.
+
+Se a resposta é para uma pessoa, que enviou um formulário numa página, o que ela precisa de ver é uma página de confirmação. Aqui, o mais habitual é o servidor responder com um redirecionamento, o código **303 See Other** ("vê outro"), com um cabeçalho `location` que aponta para a página da reserva, por exemplo `/reservas/28`. O browser faz sozinho um `GET` a esse endereço e mostra a confirmação. O 303 é da mesma família do 302 que viste na pesquisa da Wikipédia, no laboratório do primeiro tema; a diferença é que o 303 diz expressamente ao browser que o pedido seguinte é um `GET`, que é o que se quer depois de um `POST`. Responder logo 200 com a página de confirmação, como no exemplo guiado do primeiro tema, também funciona. Porque é que, numa página, o redirecionamento costuma ser a melhor escolha, explica-o o tema dos formulários, que é onde o vais usar.
 
 ### Responder uma vez, e sair
 
@@ -162,7 +170,7 @@ Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the cli
 
 1. `/equipamentos/0`: 400 ou 404? E `/equipamentos/5`?
 2. Uma pesquisa de equipamentos por nome que não encontra nenhum: que código?
-3. Um `POST /reservas` que guardou uma reserva nova: que código, e o que deve vir no corpo da resposta?
+3. No catálogo deste tema, que responde em JSON, um `POST /reservas` que guardou uma reserva nova: que código, e o que deve vir no corpo da resposta?
 
 ## O middleware
 
@@ -209,6 +217,10 @@ Daqui saem as três regras do middleware, e cada uma corresponde a um erro que v
 1. **Um middleware que não responde tem de chamar `next()`.** Se não chamar, o pedido fica parado: o browser fica à espera, com o indicador de carregamento a rodar, até desistir. Não aparece nenhuma mensagem de erro, o que torna este engano difícil de encontrar.
 2. **Um middleware que prepara alguma coisa para as rotas tem de vir antes delas.** O que lê o corpo do pedido tem de estar acima das rotas que usam `req.body`. Se estiver abaixo, quando a rota corre o corpo ainda não foi lido.
 3. **Um middleware que responde a tudo tem de vir depois de tudo.** O que responde "não encontrado" tem de ser o último. Se estiver em primeiro, responde 404 a todos os pedidos, e as rotas nunca chegam a correr.
+
+A mesma fila decide entre duas rotas que servem o mesmo pedido. O Express fica com a primeira rota que encaixa no pedido, mesmo que haja mais abaixo outra que encaixe melhor. Imagina que acrescentas ao catálogo a rota `GET /reservas/:id`, para mostrar uma reserva, e que a escreves acima da rota `GET /reservas/nova`, a do formulário. Um pedido a `/reservas/nova` chega primeiro à rota com o parâmetro, e encaixa nela: o `:id` aceita qualquer valor naquele lugar do caminho, por isso o Express põe o texto `"nova"` em `req.params.id` e chama essa função. Se ela verificar o identificador como a rota de detalhe dos equipamentos, responde 400, porque `nova` não é um número, e a rota do formulário nunca chega a correr. No terminal não aparece nenhuma mensagem de erro, porque para o Express correu tudo bem: encontrou uma rota e ela respondeu.
+
+Daqui sai a regra das rotas: quando duas rotas começam pelo mesmo caminho, a que tem o caminho fixo vem antes da que tem um parâmetro. `/reservas/nova` fica acima de `/reservas/:id`. Na ficha deste tema, o servidor da biblioteca pode ter o mesmo caso: se tiver a rota `/livros/disponiveis`, da ficha anterior, ela tem de ficar acima da rota `/livros/:id` que vais acrescentar. Nem todas as rotas parecidas entram em conflito. `GET /reservas`, sem mais nada, não encaixa em `/reservas/:id`, porque o Express compara o caminho parte a parte e `/reservas` tem uma parte a menos. E `POST /reservas` também não, porque o método é outro.
 
 ### O middleware que lê os formulários
 

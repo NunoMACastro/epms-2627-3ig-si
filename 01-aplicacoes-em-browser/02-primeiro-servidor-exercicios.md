@@ -81,7 +81,7 @@ b) Ao correr `node server.js`:
 Não foi possível ligar o servidor: listen EADDRINUSE: address already in use :::3000
 ```
 
-c) Ao correr `node server.js`, depois do aviso `Make sure to set "type": "module"`:
+c) Ao correr `node server.js`, numa pasta onde correste `npm init -y` e `npm install express` e criaste o `server.js`, o terminal mostra, entre outras linhas:
 
 ```text
 SyntaxError: Cannot use import statement outside a module

@@ -74,7 +74,7 @@ Guia: secção "Os códigos de estado".
 
 O que deves ver: o estado é `404`, apesar de a página estar bem desenhada. O servidor respondeu, e respondeu com um corpo em HTML, mas o código diz que o que se pediu não existe. Se só olhasses para a página, podias pensar que tinha corrido tudo bem.
 
-Pergunta para o caderno: na tua aplicação, se alguém pedir uma reserva que não existe, a resposta deve ter que código? E deve ter corpo?
+Pergunta para o caderno: na aplicação de reservas que serve de exemplo ao guia, se alguém pedir uma reserva que não existe, a resposta deve ter que código? E deve ter corpo?
 
 ## Parte 5: uma pesquisa
 
