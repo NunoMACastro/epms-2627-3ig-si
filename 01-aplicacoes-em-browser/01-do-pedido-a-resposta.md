@@ -113,12 +113,12 @@ O **browser** (Chrome, Edge, Firefox, Safari) corre no computador do professor. 
 
 O **servidor de aplicação** é um programa que corre noutro computador, ou no mesmo, à espera de pedidos. É aqui que vive a lógica do sistema: recebe o pedido do browser, verifica as regras ("este equipamento existe?", "já está reservado nesse tempo?"), pergunta à base de dados o que precisa e constrói a resposta, que é a página HTML que o browser vai mostrar. Neste módulo, o servidor de aplicação é um programa em JavaScript que corre em Node.js, e é ele que vais escrever.
 
-O **servidor de dados** é o sistema de gestão de base de dados, no teu caso o PostgreSQL. Guarda as tabelas e responde a consultas SQL. Não sabe o que é uma página web nem fala com o browser: só recebe SQL do servidor de aplicação e devolve linhas.
+O **servidor de dados** é o sistema de gestão de base de dados, no teu caso o MariaDB, o mesmo com que aprendeste SQL nos anos anteriores. Guarda as tabelas e responde a consultas SQL. Não sabe o que é uma página web nem fala com o browser: só recebe SQL do servidor de aplicação e devolve linhas.
 
 ```text
  computador do professor          servidor de aplicação           servidor de dados
 ┌──────────────────────┐        ┌──────────────────────┐        ┌──────────────────┐
-│       browser        │ pedido │  Node.js e Express   │  SQL   │    PostgreSQL    │
+│       browser        │ pedido │  Node.js e Express   │  SQL   │     MariaDB      │
 │                      │ ─────→ │                      │ ─────→ │                  │
 │ mostra e envia       │        │ regras e páginas     │        │ tabelas          │
 │                      │ ←───── │                      │ ←───── │                  │
@@ -131,9 +131,9 @@ Os três programas podem estar em três computadores diferentes, e numa escola o
 
 ### O browser não fala com a base de dados
 
-Parece mais simples o browser perguntar diretamente ao PostgreSQL. Não se faz por duas razões, e as duas são de segurança.
+Parece mais simples o browser perguntar diretamente ao MariaDB. Não se faz por duas razões, e as duas são de segurança.
 
-A primeira é a palavra-passe. Para falar com o PostgreSQL é preciso um utilizador e uma palavra-passe da base de dados. Tudo o que o browser recebe, o utilizador pode ler: basta abrir as ferramentas de programador, como vais fazer no laboratório. Uma palavra-passe que chegue ao browser deixou de ser secreta. Por isso a palavra-passe da base de dados fica só no servidor de aplicação, e nunca vai em nenhuma página, em nenhum ficheiro que o browser descarregue nem em nenhum repositório público.
+A primeira é a palavra-passe. Para falar com o MariaDB é preciso um utilizador e uma palavra-passe da base de dados. Tudo o que o browser recebe, o utilizador pode ler: basta abrir as ferramentas de programador, como vais fazer no laboratório. Uma palavra-passe que chegue ao browser deixou de ser secreta. Por isso a palavra-passe da base de dados fica só no servidor de aplicação, e nunca vai em nenhuma página, em nenhum ficheiro que o browser descarregue nem em nenhum repositório público.
 
 A segunda são as regras. Se o browser pudesse escrever na tabela de reservas, quem quisesse escreveria lá o que lhe apetecesse: uma reserva para um equipamento que não existe, ou para um projetor já ocupado. As regras têm de ser verificadas num sítio que o utilizador não controla, e esse sítio é o servidor. O browser pode ajudar, por exemplo avisando que falta preencher um campo, mas essa ajuda é só conforto: a decisão é sempre do servidor, porque o browser está nas mãos do utilizador.
 
@@ -153,7 +153,7 @@ Uma forma de testar se o desenho ficou claro é pegar numa ação e perguntar on
 ### Para confirmar
 
 1. Um colega propõe pôr a palavra-passe da base de dados num ficheiro JavaScript que o browser descarrega, "porque assim é mais rápido". O que lhe respondes?
-2. Se o PostgreSQL mudar para outro computador, qual dos três programas tem de saber o novo endereço? O browser tem de mudar alguma coisa?
+2. Se o MariaDB mudar para outro computador, qual dos três programas tem de saber o novo endereço? O browser tem de mudar alguma coisa?
 
 ## A conversa entre o browser e o servidor
 
@@ -333,7 +333,7 @@ A professora escreve o endereço da aplicação e abre a lista de equipamentos.
    ORDER BY nome;
    ```
 
-3. O PostgreSQL devolve as quatro linhas da tabela, ordenadas pelo nome.
+3. O MariaDB devolve as quatro linhas da tabela, ordenadas pelo nome.
 4. O servidor constrói o HTML da página, com uma linha por equipamento e uma ligação para cada um, e responde `200` com esse HTML.
 5. O browser desenha a página. A seguir pede a folha de estilos e o logótipo da escola, em pedidos separados.
 
@@ -350,7 +350,7 @@ A professora clica no projetor. A ligação aponta para `/equipamentos/2`, porqu
    WHERE id = 2;
    ```
 
-3. O PostgreSQL devolve uma linha.
+3. O MariaDB devolve uma linha.
 4. O servidor responde `200` com a página do projetor, que inclui um formulário de reserva com dois campos, o dia e o tempo, e um botão "Reservar".
 
 Se a professora tivesse escrito `/equipamentos/9` à mão, a consulta não devolvia nenhuma linha, e o servidor respondia `404` com uma página a dizer que esse equipamento não existe.
@@ -397,9 +397,9 @@ INSERT INTO reservas (equipamento_id, data, tempo, estado)
 VALUES (2, '2026-10-20', 3, 'confirmada');
 ```
 
-O PostgreSQL cria a linha, com o `id` seguinte, o 28. O servidor responde `200` com uma página de confirmação: "Reserva 28: Projetor, 20 de outubro, terceiro tempo". O browser mostra-a, e a professora sabe que a reserva ficou feita.
+O MariaDB cria a linha, com o `id` seguinte, o 28. O servidor responde `200` com uma página de confirmação: "Reserva 28: Projetor, 20 de outubro, terceiro tempo". O browser mostra-a, e a professora sabe que a reserva ficou feita.
 
-Uma nota sobre o SQL deste exemplo. Os valores aparecem escritos no meio das consultas para as leres com facilidade. No código do servidor, os valores que chegam de um pedido nunca se colam ao texto do SQL, porque quem envia o pedido podia escrever lá SQL seu. Vais ver porquê e como se faz no segundo módulo, quando ligares o servidor ao PostgreSQL.
+Uma nota sobre o SQL deste exemplo. Os valores aparecem escritos no meio das consultas para as leres com facilidade. No código do servidor, os valores que chegam de um pedido nunca se colam ao texto do SQL, porque quem envia o pedido podia escrever lá SQL seu. Vais ver porquê e como se faz no segundo módulo, quando ligares o servidor ao MariaDB.
 
 ### Passo 7: e se o projetor estivesse ocupado
 
@@ -463,7 +463,7 @@ Quando uma página não carrega, a primeira pergunta é: em que parte da convers
 
 **Falha da aplicação.** O pedido chegou ao servidor, e o servidor respondeu, mas com um código de erro. Um `404` diz que não há rota para aquele caminho, ou que o recurso pedido não existe. Um `500` diz que o código do servidor falhou ao tratar o pedido. Aqui há resposta e há código de estado, e o servidor costuma deixar uma mensagem no terminal onde está a correr. Para confirmar: que código veio? O que diz o terminal do servidor?
 
-**Falha do servidor de dados.** O browser só fala com o servidor de aplicação, por isso uma falha do PostgreSQL chega-lhe disfarçada: o servidor de aplicação tentou fazer uma consulta, não conseguiu, e respondeu `500`. Para confirmar, olha para a mensagem no terminal do servidor de aplicação, que costuma dizer que não conseguiu ligar-se à base de dados.
+**Falha do servidor de dados.** O browser só fala com o servidor de aplicação, por isso uma falha do MariaDB chega-lhe disfarçada: o servidor de aplicação tentou fazer uma consulta, não conseguiu, e respondeu `500`. Para confirmar, olha para a mensagem no terminal do servidor de aplicação, que costuma dizer que não conseguiu ligar-se à base de dados.
 
 A diferença entre a primeira e as outras duas é o código de estado: se há código, houve resposta, e o servidor está vivo. É a primeira coisa a ver, e no laboratório vais aprender a vê-la.
 
@@ -471,7 +471,7 @@ A diferença entre a primeira e as outras duas é o código de estado: se há c�
 
 ### Achar que o browser fala com a base de dados
 
-O erro mais comum é desenhar uma seta do browser para o PostgreSQL. A seta não existe. Se o browser precisa de dados, pede-os ao servidor de aplicação, que os pede à base de dados. Se te apanhares a pensar "o browser vai buscar à base de dados", corrige para "o browser pede ao servidor, que vai buscar à base de dados".
+O erro mais comum é desenhar uma seta do browser para o MariaDB. A seta não existe. Se o browser precisa de dados, pede-os ao servidor de aplicação, que os pede à base de dados. Se te apanhares a pensar "o browser vai buscar à base de dados", corrige para "o browser pede ao servidor, que vai buscar à base de dados".
 
 ### Achar que a página já estava feita
 

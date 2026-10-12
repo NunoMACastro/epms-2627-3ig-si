@@ -18,7 +18,7 @@ Tempo previsto: 50 minutos para os exercícios 1 a 8.
 
 ## O cenário: a biblioteca da escola
 
-A biblioteca da escola empresta livros aos alunos. Até agora, cada empréstimo era anotado num caderno: o título, o número de leitor do aluno e a data. A escola quer passar para uma aplicação web, com o mesmo desenho do guia: browser, servidor de aplicação em Node.js e base de dados PostgreSQL.
+A biblioteca da escola empresta livros aos alunos. Até agora, cada empréstimo era anotado num caderno: o título, o número de leitor do aluno e a data. A escola quer passar para uma aplicação web, com o mesmo desenho do guia: browser, servidor de aplicação em Node.js e base de dados MariaDB.
 
 O processo é este. Um aluno escolhe um livro na estante ou pesquisa-o na aplicação. No balcão, a funcionária confirma que há um exemplar disponível e regista o empréstimo, com a data de hoje e a data limite de devolução, quinze dias depois. Quando o aluno devolve o livro, a funcionária regista a devolução, com a data em que aconteceu. A coordenadora da biblioteca quer saber, todas as semanas, que empréstimos estão em atraso e que livros são mais requisitados, para decidir o que comprar.
 
@@ -99,7 +99,7 @@ Para cada ação, indica se corre no browser, no servidor de aplicação ou no s
 | Decidir se ainda há um exemplar de "Memorial do Convento" para emprestar | |
 | Mostrar a lista de livros com o tipo de letra da escola | |
 | Construir o HTML da lista de empréstimos em atraso | |
-| Guardar a palavra-passe de acesso ao PostgreSQL | |
+| Guardar a palavra-passe de acesso ao MariaDB | |
 | Mostrar um aviso quando a funcionária deixa o número de leitor vazio, antes de enviar | |
 
 Na última linha, explica numa frase porque é que o servidor tem de voltar a verificar o número de leitor.

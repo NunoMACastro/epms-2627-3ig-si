@@ -454,7 +454,7 @@ Já a conheces do primeiro tema. O servidor não está a correr, ou a porta do e
 
 ## Este servidor não usa await
 
-Talvez já tenhas visto servidores com `async` e `await` nas funções das rotas. Servem para esperar por uma operação demorada, como uma consulta à base de dados, sem bloquear o servidor enquanto ela não acaba. Neste servidor, nenhuma rota espera por nada: os dados estão num array na memória e a resposta é imediata. Por isso não há `await`. Ele vai aparecer quando as rotas passarem a perguntar ao PostgreSQL, no segundo módulo, e é aí que se explica.
+Talvez já tenhas visto servidores com `async` e `await` nas funções das rotas. Servem para esperar por uma operação demorada, como uma consulta à base de dados, sem bloquear o servidor enquanto ela não acaba. Neste servidor, nenhuma rota espera por nada: os dados estão num array na memória e a resposta é imediata. Por isso não há `await`. Ele vai aparecer quando as rotas passarem a perguntar ao MariaDB, no segundo módulo, e é aí que se explica.
 
 ## Erros frequentes
 
