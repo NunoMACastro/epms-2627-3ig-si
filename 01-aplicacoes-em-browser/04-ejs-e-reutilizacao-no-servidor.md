@@ -294,12 +294,12 @@ O cabeçalho abre etiquetas que só o rodapé fecha. Isto obriga a uma disciplin
 A página da lista mostra a sala pesquisada: "Pesquisa pela sala B12". A sala vem do pedido, do `?sala=`, e quem escreve o endereço pode escrever lá o que quiser. Imagina este pedido:
 
 ```text
-/equipamentos?sala=<b>B12</b>
+/equipamentos?sala=<i>B12</i>
 ```
 
-(O browser mostra os `<` e `>` na barra de endereço com códigos, `%3C` e `%3E`, porque não podem ir num endereço tal como estão; o Express desfaz esses códigos, e o `req.query.sala` fica com o texto `<b>B12</b>`.)
+(O browser mostra os `<` e `>` na barra de endereço com códigos, `%3C` e `%3E`, porque não podem ir num endereço tal como estão; o Express desfaz esses códigos, e o `req.query.sala` fica com o texto `<i>B12</i>`.)
 
-Com `<%= sala %>`, a página mostra exatamente o que o utilizador escreveu, com as etiquetas à vista: "Pesquisa pela sala <b>B12</b>". O EJS trocou os carateres que têm significado em HTML por códigos que o browser mostra como texto, e não interpreta. É isto o **escaping**:
+Com `<%= sala %>`, a página mostra exatamente o que o utilizador escreveu, com as etiquetas à vista: "Pesquisa pela sala `<i>B12</i>`". O EJS trocou os carateres que têm significado em HTML por códigos que o browser mostra como texto, e não interpreta. É isto o **escaping**:
 
 | Carácter | Escrito como |
 | --- | --- |
@@ -309,9 +309,9 @@ Com `<%= sala %>`, a página mostra exatamente o que o utilizador escreveu, com 
 | `"` | `&#34;` |
 | `'` | `&#39;` |
 
-O browser recebe `&lt;b&gt;B12&lt;/b&gt;`, desenha `<b>B12</b>` no ecrã, e não há negrito nenhum: para ele, aquilo é texto.
+O browser recebe `&lt;i&gt;B12&lt;/i&gt;`, desenha `<i>B12</i>` no ecrã, e não há itálico nenhum: para ele, aquilo é texto. O texto aparece a negrito, mas isso vem do `<strong>` que o modelo põe à volta de qualquer sala pesquisada, e não do que o utilizador escreveu.
 
-Com `<%- sala %>`, o EJS escreve o valor tal como está. O browser recebe `<b>B12</b>`, interpreta as etiquetas e mostra B12 a negrito. Parece inofensivo, mas o problema não é o negrito. Quem consegue meter um `<b>` na tua página consegue meter um `<script>`, e o browser executa-o como se fosse parte da página. Basta enviar a alguém um endereço com um script na sala, e quem o abrir corre esse script no teu site: pode ver o que está na página, mudar o que lá está, ou enviar dados para outro lado. A este ataque chama-se injeção de código na página, ou XSS (de cross-site scripting).
+Com `<%- sala %>`, o EJS escreve o valor tal como está. O browser recebe `<i>B12</i>`, interpreta as etiquetas e mostra B12 em itálico, sem as etiquetas. Parece inofensivo, mas o problema não é o itálico. Quem consegue meter um `<i>` na tua página consegue meter um `<script>`, e o browser executa-o como se fosse parte da página. Basta enviar a alguém um endereço com um script na sala, e quem o abrir corre esse script no teu site: pode ver o que está na página, mudar o que lá está, ou enviar dados para outro lado. A este ataque chama-se injeção de código na página, ou XSS (de cross-site scripting).
 
 A regra que sai daqui é simples. Todos os valores entram na página com `<%=`: os que vêm do pedido, porque qualquer pessoa os pode escrever, e os outros também, porque amanhã podem vir de um formulário ou de uma base de dados onde alguém escreveu um `<`. O `<%-` fica só para o `include` dos partials, cujo HTML foi escrito por ti. Se um dia precisares de pôr numa página HTML que vem de outro sítio, a resposta certa não é o `<%-`: é perguntar porque é que esse HTML não está num modelo.
 

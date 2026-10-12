@@ -212,7 +212,7 @@ middleware final (404)        só chega aqui um pedido a que ninguém respondeu
 
 Daqui saem as três regras do middleware, e cada uma corresponde a um erro que vais provocar no laboratório:
 
-1. **Um middleware que não responde tem de chamar `next()`.** Se não chamar, o pedido fica parado: o browser fica à espera, com o indicador de carregamento a rodar, até desistir. Não aparece nenhuma mensagem de erro, o que torna este engano difícil de encontrar.
+1. **Um middleware que não responde tem de chamar `next()`.** Se não chamar, o pedido fica parado: o browser fica à espera, com o indicador de carregamento a rodar, e a resposta nunca chega, porque o servidor não a manda nem fecha a ligação. Não aparece nenhuma mensagem de erro, o que torna este engano difícil de encontrar.
 2. **Um middleware que tem de ver os pedidos antes das rotas, ou preparar alguma coisa para elas, tem de vir antes delas.** O middleware de registo só escreve no terminal os pedidos que lhe chegam. Se estiver abaixo das rotas, um pedido a que uma rota respondeu já acabou e nunca lá chega, e o terminal só mostra os pedidos a que nenhuma rota respondeu, como o de um endereço que não existe. O mesmo vale para os middlewares que preparam dados para as rotas, como o que lê o corpo de um formulário, que vais conhecer no tema dos formulários: se estiver abaixo da rota, quando a rota corre os dados ainda não foram preparados.
 3. **Um middleware que responde a tudo tem de vir depois de tudo.** O que responde "não encontrado" tem de ser o último. Se estiver em primeiro, responde 404 a todos os pedidos, e as rotas nunca chegam a correr.
 

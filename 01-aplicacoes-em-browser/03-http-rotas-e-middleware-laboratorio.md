@@ -41,7 +41,7 @@ Guia: exemplo guiado, passo 1.
 O que deves ver: 200 com o projetor; 400 para `abc`, `0` e `2.5`; 404 para o 9.
 
 4. Agora uma experiência. Na linha `const id = Number(req.params.id);`, apaga o `Number(` e o `)` correspondente, para ficar `const id = req.params.id;`. Reinicia e abre `/equipamentos/2`.
-5. Prevê antes de abrir. Depois regista o que aconteceu, e explica-o no caderno com a última secção de "Três sítios por onde um pedido traz dados" do guia.
+5. Prevê antes de abrir. Depois regista o que aconteceu, e explica-o no caderno com a secção "Tudo chega como texto" do guia.
 6. Repõe o `Number(...)` e confirma que `/equipamentos/2` volta a responder 200.
 
 ## Parte 3: o filtro por sala

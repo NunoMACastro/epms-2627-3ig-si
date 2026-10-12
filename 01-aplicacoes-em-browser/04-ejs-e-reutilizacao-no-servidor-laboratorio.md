@@ -115,13 +115,13 @@ O que deves ver: 400, 400, 404 e 404, com as páginas "Pedido inválido", "Pedid
 
 Guia: secção "Escaping: o que vem de fora nunca vira HTML".
 
-1. Na página inicial, escreve na pesquisa `<b>B12</b>`, com as etiquetas, e carrega em "Pesquisar".
+1. Na página inicial, escreve na pesquisa `<i>B12</i>`, com as etiquetas, e carrega em "Pesquisar".
 
-O que deves ver: "Pesquisa pela sala <b>B12</b>.", com as etiquetas escritas, sem negrito, e a mensagem da lista vazia, porque nenhuma sala se chama assim. Na barra de endereço, as etiquetas aparecem com códigos (`%3Cb%3E`), e o servidor recebeu-as tal como as escreveste.
+O que deves ver: "Pesquisa pela sala `<i>B12</i>`.", com as etiquetas escritas e sem itálico, e a mensagem da lista vazia, porque nenhuma sala se chama assim. O texto da sala aparece a negrito, mas isso vem do `<strong>` que o teu modelo põe à volta de qualquer sala pesquisada. Na barra de endereço, as etiquetas aparecem com códigos (`%3Ci%3E`), e o servidor recebeu-as tal como as escreveste.
 
 2. Agora a experiência que mostra porque é que isto importa. No modelo da lista, troca `<%= sala %>` por `<%- sala %>`. Guarda e repete a pesquisa do passo 1. Prevê primeiro.
 
-O que deves ver: "Pesquisa pela sala **B12**.", com o B12 a negrito. O HTML que escreveste na pesquisa entrou na página como HTML.
+O que deves ver: "Pesquisa pela sala ***B12***.", com o B12 em itálico, e as etiquetas desapareceram. O HTML que escreveste na pesquisa entrou na página como HTML.
 
 3. Com o `<%-` ainda no modelo, pesquisa por `<script>alert("olá")</script>`.
 

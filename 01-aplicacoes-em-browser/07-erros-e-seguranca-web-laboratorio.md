@@ -90,7 +90,7 @@ Guia: secção "O escaping depende do sítio".
 
 O que deves ver: o pedido volta com a mensagem do nome comprido, e o browser mostra uma janela com "1". No código-fonte, o campo ficou `value=x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`: o espaço acabou o valor, e o `autofocus` e o `onfocus` passaram a ser atributos do campo, que correram um script quando o campo ganhou o foco. O `<%=` não mudou nada, porque o valor não tinha nenhum carácter de HTML.
 
-4. Repõe as aspas e o `maxlength`, envia o mesmo nome e confirma que agora aparece no campo como texto, sem janela nenhuma.
+4. Repõe as aspas, e só as aspas, e guarda. Recarrega a página do pedido, escreve outra vez o mesmo nome e envia. Confirma que agora o nome aparece no campo como texto, sem janela nenhuma. Só depois repõe o `maxlength="40"` e guarda. A ordem conta: com o `maxlength` reposto, o browser não te deixa escrever mais de 40 carateres, o nome cortado passa a ser válido, e o pedido é confirmado, em vez de voltar ao formulário.
 5. Lê no guia as tabelas do `<script>` e do `href`, e escreve no caderno, numa frase cada, porque é que o escaping também não protege esses dois sítios.
 
 ## Parte 7: o token contra o CSRF
@@ -105,7 +105,7 @@ O que deves ver: "Pedido recusado", com o código 403. O servidor já exige o to
 3. Acrescenta o campo escondido aos quatro formulários `POST`: o do `item-novo.ejs` e os três do `pedido.ejs`. Junta dois equipamentos, tira um e confirma o pedido: tudo funciona como antes.
 4. Abre o formulário de juntar um equipamento e o seu código-fonte. Copia para o caderno os primeiros oito carateres do valor do campo `_csrf`, e o seu comprimento.
 5. Nas ferramentas de programador, no separador "Elements" ("Elementos"; no Firefox, "Inspetor"), encontra o campo escondido do formulário e apaga o valor do `value` (faz duplo clique sobre ele). Envia o formulário. Regista o código e a página.
-6. Abre o pedido em dois separadores do mesmo browser. Num deles, confirma o pedido. No outro, que ficou aberto com a página antiga, carrega em "Cancelar o pedido". Prevê primeiro, e regista o que aconteceu e porquê.
+6. Junta um equipamento ao pedido. O pedido ficou vazio quando o confirmaste, no passo 3, e sem equipamentos a página do pedido não tem os botões de confirmar e de cancelar. Depois abre o pedido em dois separadores do mesmo browser. Num deles, confirma o pedido. No outro, que ficou aberto com a página antiga, carrega em "Cancelar o pedido". Prevê primeiro, e regista o que aconteceu e porquê.
 7. Escreve no caderno, por palavras tuas, porque é que uma página de outro site não consegue pôr o token certo no formulário que esconde.
 
 ## Parte 8: a matriz de falhas e a revisão de um colega

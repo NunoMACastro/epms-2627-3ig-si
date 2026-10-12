@@ -81,17 +81,21 @@ Guia: secção "O que o middleware faz a cada pedido" e exemplo guiado, passo 2.
 
 Guia: exemplo guiado, passos 2 e 3.
 
-1. Acrescenta o middleware que põe o `itensNoPedido` no `res.locals`, depois do middleware das sessões, e muda o menu do cabeçalho para "O teu pedido (...)". Muda as ligações do formulário antigo para `/pedido/item`.
-2. Recarrega a página inicial na janela normal. O menu mostra "O teu pedido (2)".
-3. Na janela anónima, abre o catálogo. O que mostra o menu? Junta lá o monitor.
-4. Volta à janela normal e recarrega. O que mostra o menu?
-5. Para a evidência deste tema, regista no caderno, para cada janela: o que tem o pedido, e os primeiros oito carateres do valor do cookie, a seguir ao `s%3A`. São duas sessões isoladas.
+1. Acrescenta o middleware que põe o `itensNoPedido` no `res.locals`, depois do middleware das sessões, e muda o menu do cabeçalho para "O teu pedido (...)". Muda as ligações do formulário antigo para `/pedido/item`. Guarda os ficheiros.
+2. Recarrega a página inicial na janela normal. Prevê primeiro: o menu mostra os dois equipamentos que juntaste na parte 4?
+
+O que deves ver: "O teu pedido (0)". Ao guardares o `server.js`, o `--watch` reiniciou o servidor. As sessões vivem na memória do servidor, e não no browser, e por isso desapareceram com o reinício. O browser ainda tem o cookie `catalogo.sid`, mas o servidor já não tem nada com aquele identificador, e trata-te como um browser novo. É a situação 3 das previsões da parte 1, e vais vê-la outra vez, de propósito, na parte 7. A partir daqui, cada vez que guardares o `server.js`, os pedidos das duas janelas voltam a zero.
+
+3. Na janela normal, junta outra vez o projetor e o portátil ao pedido. O menu passa a mostrar "O teu pedido (2)".
+4. Na janela anónima, abre o catálogo. O que mostra o menu? Junta lá o monitor.
+5. Volta à janela normal e recarrega. O que mostra o menu?
+6. Para a evidência deste tema, regista no caderno, para cada janela: o que tem o pedido, e os primeiros oito carateres do valor do cookie, a seguir ao `s%3A`. São duas sessões isoladas.
 
 ## Parte 6: tirar, confirmar e cancelar
 
 Guia: secção "Terminar a sessão" e exemplo guiado, passos 4 e 5.
 
-1. Acrescenta a rota de remoção do passo 4 e completa o `pedido.ejs` como no passo 5, com o botão de cada equipamento, a confirmação e o cancelamento. Acrescenta a função `erroDoNome` e as rotas da confirmação e do cancelamento.
+1. Acrescenta a rota de remoção do passo 4 e completa o `pedido.ejs` como no passo 5, com o botão de cada equipamento, a confirmação e o cancelamento. Acrescenta a função `erroDoNome` e as rotas da confirmação e do cancelamento. Guarda os ficheiros. O servidor reiniciou outra vez, e os pedidos das duas janelas perderam-se, como na parte 5: junta outra vez o projetor e o portátil na janela normal, e o monitor na janela anónima, e confirma no menu de cada uma "O teu pedido (2)" e "O teu pedido (1)".
 2. Na janela normal, tira o primeiro equipamento. O pedido fica com um.
 3. Confirma o pedido com o nome vazio (com o `novalidate`, se for preciso). Regista o código e a mensagem.
 4. Confirma com o teu nome. Prevê primeiro: para onde vai o browser, e o que acontece ao cookie?

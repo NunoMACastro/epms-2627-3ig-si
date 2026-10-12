@@ -163,11 +163,11 @@ O nome vem da pasta. Os campos `main`, `scripts`, `keywords`, `author` e `licens
 npm install express
 ```
 
-O npm vai buscar o Express ao repositório de pacotes, pela internet, e escreve no fim algo como `added 68 packages`. Sessenta e oito pacotes para instalar um: o Express usa outros pacotes, que usam outros, e o npm traz todos. Depois do comando, a pasta tem três coisas novas:
+O npm vai buscar o Express ao repositório de pacotes, pela internet, e escreve no fim algo como `added 68 packages`. O número exato muda um pouco de uma versão do Express para outra, mas são dezenas de pacotes para instalar um: o Express usa outros pacotes, que usam outros, e o npm traz todos. Depois do comando, a pasta tem três coisas novas:
 
-- **A pasta `node_modules`**, com o código dos 68 pacotes. É aqui que o Node os vai procurar.
+- **A pasta `node_modules`**, com o código de todos esses pacotes. É aqui que o Node os vai procurar.
 - **No `package.json`, uma secção `dependencies`**, com `"express": "^5.2.1"`. Diz que este projeto precisa do Express, na versão 5. O `^` quer dizer "a 5.2.1 ou uma mais recente, desde que continue a ser 5": uma versão 6 poderia mudar coisas de que o código depende, e por isso não é aceite.
-- **O ficheiro `package-lock.json`**, com a versão exata de cada um dos 68 pacotes que foram instalados. Serve para que outra pessoa, noutro computador, instale exatamente as mesmas versões.
+- **O ficheiro `package-lock.json`**, com a versão exata de cada um dos pacotes que foram instalados. Serve para que outra pessoa, noutro computador, instale exatamente as mesmas versões.
 
 Da pasta `node_modules`, três regras. Não se mexe lá dentro: é código dos pacotes, não teu. Não se copia nem se envia a ninguém: com o `package.json` e o `package-lock.json`, qualquer pessoa a recria com `npm install`, sem argumentos, que lê os dois ficheiros e instala o que lá está. E, por isso mesmo, não se guarda no Git: é a regra mais comum de um ficheiro `.gitignore`, que vais ver em Linguagens de Programação.
 

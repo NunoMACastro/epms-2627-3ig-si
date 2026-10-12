@@ -75,7 +75,7 @@ Cannot read properties of undefined (reading 'nome')
     at /Users/ana/projetos/catalogo/node_modules/ejs/lib/cjs/ejs.js:617:23
 ```
 
-Para ti, a programar, isto é ouro: diz o ficheiro, a linha e o erro. Para qualquer outra pessoa, é informação que não lhe diz respeito, e parte dela é perigosa. Mostra como estão organizadas as pastas do servidor e o nome de quem as tem, que bibliotecas usa e em que versões, e às vezes um bocado do código. Quem procura uma forma de atacar um servidor começa exatamente por aqui: provocar erros e ler o que eles revelam. A planificação deste tema pede, como evidência, uma resposta sem stack trace.
+Para ti, a programar, isto é ouro: diz o ficheiro, a linha e o erro. Para qualquer outra pessoa, é informação que não lhe diz respeito, e parte dela é perigosa. Mostra como estão organizadas as pastas do servidor e o nome de quem as tem, que bibliotecas usa (a pasta `node_modules` aparece nos caminhos, com o nome de cada ficheiro e a linha), e às vezes um bocado do código. Quem procura uma forma de atacar um servidor começa exatamente por aqui: provocar erros e ler o que eles revelam. A planificação deste tema pede, como evidência, uma resposta sem stack trace.
 
 O Express sabe disto. Quando o servidor corre em modo de produção, com a variável de ambiente `NODE_ENV=production`, a página de erro do Express mostra só "Internal Server Error", sem pormenores. Mas não convém depender de alguém se lembrar de pôr essa variável, e mesmo essa página não serve: está em inglês, não tem o cabeçalho nem o menu do catálogo, e não diz ao utilizador o que pode fazer. A solução é tratar tu os erros, com um middleware próprio.
 
