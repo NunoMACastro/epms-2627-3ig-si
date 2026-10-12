@@ -1,0 +1,6 @@
+<%# A página de um equipamento. Recebe o titulo e o equipamento. %>
+<%- include("partials/cabecalho") %>
+    <p>Número: <%= equipamento.id %></p>
+    <p>Sala: <a href="/equipamentos?sala=<%= equipamento.sala %>"><%= equipamento.sala %></a></p>
+    <p><a href="/equipamentos">Voltar à lista</a></p>
+<%- include("partials/rodape") %>

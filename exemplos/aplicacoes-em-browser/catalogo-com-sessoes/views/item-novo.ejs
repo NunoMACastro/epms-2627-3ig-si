@@ -1,0 +1,35 @@
+<%# O formulário para juntar um equipamento ao pedido. Recebe o titulo,
+    os equipamentos para a lista, os valores a pôr nos campos e os erros,
+    um por campo. O nome só se pede no fim, ao confirmar o pedido. %>
+<%- include("partials/cabecalho") %>
+    <% if (Object.keys(erros).length > 0) { %>
+      <p><strong>O equipamento não foi juntado ao pedido. Corrige os campos assinalados e volta a enviar.</strong></p>
+    <% } %>
+    <form method="post" action="/pedido/itens">
+      <p>
+        <label for="equipamento_id">Equipamento
+          <% if (erros.equipamento_id) { %><strong><%= erros.equipamento_id %></strong><% } %>
+        </label>
+        <select id="equipamento_id" name="equipamento_id" required>
+          <option value="">Escolhe um equipamento</option>
+          <% for (const equipamento of equipamentos) { %>
+            <option value="<%= equipamento.id %>" <% if (String(equipamento.id) === valores.equipamento_id) { %>selected<% } %>><%= equipamento.nome %>, sala <%= equipamento.sala %></option>
+          <% } %>
+        </select>
+      </p>
+      <p>
+        <label for="data">Dia
+          <% if (erros.data) { %><strong><%= erros.data %></strong><% } %>
+        </label>
+        <input id="data" name="data" type="date" value="<%= valores.data %>" required>
+      </p>
+      <p>
+        <label for="tempo">Tempo letivo, de 1 a 9
+          <% if (erros.tempo) { %><strong><%= erros.tempo %></strong><% } %>
+        </label>
+        <input id="tempo" name="tempo" type="number" min="1" max="9" value="<%= valores.tempo %>" required>
+      </p>
+      <button type="submit">Juntar ao pedido</button>
+    </form>
+    <p><a href="/pedido">Voltar ao pedido</a></p>
+<%- include("partials/rodape") %>

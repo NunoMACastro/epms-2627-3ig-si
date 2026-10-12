@@ -1,0 +1,10 @@
+<%# A página inicial, com a pesquisa por sala. O formulário envia por GET,
+    e o campo sala vai no endereço: /equipamentos?sala=B12. %>
+<%- include("partials/cabecalho") %>
+    <p>Pesquisa os equipamentos de uma sala.</p>
+    <form method="get" action="/equipamentos">
+      <label>Sala <input name="sala"></label>
+      <button type="submit">Pesquisar</button>
+    </form>
+    <p><a href="/pedido/item">Fazer um pedido de reserva</a></p>
+<%- include("partials/rodape") %>
