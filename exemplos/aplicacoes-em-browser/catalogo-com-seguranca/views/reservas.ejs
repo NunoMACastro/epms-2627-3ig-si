@@ -1,0 +1,14 @@
+<%# A lista das reservas. Recebe o titulo e as linhas, cada uma com a
+    reserva e o equipamento reservado. %>
+<%- include("partials/cabecalho") %>
+    <% if (linhas.length === 0) { %>
+      <p>Ainda não há reservas.</p>
+    <% } else { %>
+      <ul>
+        <% for (const linha of linhas) { %>
+          <li><a href="/reservas/<%= linha.reserva.id %>">Reserva <%= linha.reserva.id %></a>: <%= linha.equipamento.nome %>, dia <%= linha.reserva.data %>, tempo <%= linha.reserva.tempo %>, por <%= linha.reserva.nome %></li>
+        <% } %>
+      </ul>
+    <% } %>
+    <p><a href="/pedido/item">Fazer um pedido de reserva</a></p>
+<%- include("partials/rodape") %>

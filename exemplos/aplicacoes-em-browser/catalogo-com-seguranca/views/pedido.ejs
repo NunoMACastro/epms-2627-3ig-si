@@ -1,0 +1,40 @@
+<%# O pedido em curso, guardado na sessão. Recebe o titulo, as linhas (cada
+    uma com o item e o equipamento), e o nome e o erro do formulário de
+    confirmação, vazios da primeira vez. Cada formulário leva, no campo
+    escondido _csrf, o token da sessão. %>
+<%- include("partials/cabecalho") %>
+    <% if (linhas.length === 0) { %>
+      <p>O teu pedido está vazio.</p>
+    <% } else { %>
+      <ol>
+        <% for (let i = 0; i < linhas.length; i++) { %>
+          <li>
+            <%= linhas[i].equipamento.nome %>, sala <%= linhas[i].equipamento.sala %>: dia <%= linhas[i].item.data %>, tempo <%= linhas[i].item.tempo %>
+            <form method="post" action="/pedido/itens/<%= i + 1 %>/remocao">
+              <input type="hidden" name="_csrf" value="<%= csrf %>">
+              <button type="submit">Tirar do pedido</button>
+            </form>
+          </li>
+        <% } %>
+      </ol>
+    <% } %>
+    <p><a href="/pedido/item">Juntar um equipamento ao pedido</a></p>
+    <% if (linhas.length > 0) { %>
+      <h2>Confirmar o pedido</h2>
+      <form method="post" action="/pedido/confirmacao">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <p>
+          <label for="nome">O teu nome
+            <% if (erroNome) { %><strong><%= erroNome %></strong><% } %>
+          </label>
+          <input id="nome" name="nome" maxlength="40" value="<%= valorNome %>" required>
+        </p>
+        <button type="submit">Confirmar o pedido</button>
+      </form>
+      <h2>Cancelar o pedido</h2>
+      <form method="post" action="/pedido/cancelamento">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <button type="submit">Cancelar o pedido</button>
+      </form>
+    <% } %>
+<%- include("partials/rodape") %>
