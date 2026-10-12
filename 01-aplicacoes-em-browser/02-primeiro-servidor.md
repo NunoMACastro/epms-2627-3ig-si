@@ -163,10 +163,10 @@ O nome vem da pasta. Os campos `main`, `scripts`, `keywords`, `author` e `licens
 npm install express
 ```
 
-O npm vai buscar o Express ao repositório de pacotes, pela internet, e escreve no fim algo como `added 68 packages`. O número exato muda um pouco de uma versão do Express para outra, mas são dezenas de pacotes para instalar um: o Express usa outros pacotes, que usam outros, e o npm traz todos. Depois do comando, a pasta tem três coisas novas:
+O npm vai buscar o Express ao repositório de pacotes, pela internet, e escreve no fim algo como `added 65 packages`. O número exato muda um pouco de uma versão do Express para outra, mas são dezenas de pacotes para instalar um: o Express usa outros pacotes, que usam outros, e o npm traz todos. Depois do comando, a pasta tem três coisas novas:
 
 - **A pasta `node_modules`**, com o código de todos esses pacotes. É aqui que o Node os vai procurar.
-- **No `package.json`, uma secção `dependencies`**, com `"express": "^5.2.1"`. Diz que este projeto precisa do Express, na versão 5. O `^` quer dizer "a 5.2.1 ou uma mais recente, desde que continue a ser 5": uma versão 6 poderia mudar coisas de que o código depende, e por isso não é aceite.
+- **No `package.json`, uma secção `dependencies`**, com `"express": "^5.3.0"`. Diz que este projeto precisa do Express, na versão 5. O `^` quer dizer "a 5.3.0 ou uma mais recente, desde que continue a ser 5": uma versão 6 poderia mudar coisas de que o código depende, e por isso não é aceite.
 - **O ficheiro `package-lock.json`**, com a versão exata de cada um dos pacotes que foram instalados. Serve para que outra pessoa, noutro computador, instale exatamente as mesmas versões.
 
 Da pasta `node_modules`, três regras. Não se mexe lá dentro: é código dos pacotes, não teu. Não se copia nem se envia a ninguém: com o `package.json` e o `package-lock.json`, qualquer pessoa a recria com `npm install`, sem argumentos, que lê os dois ficheiros e instala o que lá está. E, por isso mesmo, não se guarda no Git: é a regra mais comum de um ficheiro `.gitignore`, que vais ver em Linguagens de Programação.
@@ -487,7 +487,7 @@ Os dois sistemas de módulos não se misturam. Se copiares um exemplo com `requi
 1. Que diferenças há entre correr JavaScript no browser e no Node? Dá um exemplo de uma coisa que só existe num dos dois.
 2. Porque é que o `ola.js` termina e o `server.js` não?
 3. Para que serve cada um destes: `package.json`, `node_modules`, `package-lock.json`? Qual deles não se envia a ninguém, e porquê?
-4. O que quer dizer `"express": "^5.2.1"`?
+4. O que quer dizer `"express": "^5.3.0"`?
 5. Porque é que se muda `"type"` para `"module"` depois do `npm init -y`? Que erro aparece se não se mudar?
 6. Na linha `app.get("/equipamentos", (req, res) => { res.json(equipamentos); });`, quando é que a função corre? Quantas vezes?
 7. Que diferença há, na resposta, entre `res.send("...")` e `res.json(...)`?

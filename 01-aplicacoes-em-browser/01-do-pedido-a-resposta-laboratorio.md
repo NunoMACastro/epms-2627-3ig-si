@@ -106,7 +106,7 @@ Guia: secção "Quando a conversa falha". Esta parte não precisa de internet.
 
 O que deves ver: uma página de erro desenhada pelo próprio browser, a dizer que o `localhost` recusou a ligação. O pedido saiu do browser e chegou ao teu computador, mas nenhum programa estava à escuta na porta 3999, e por isso ninguém respondeu. Não há código de estado porque não há resposta. É muito diferente da parte 4: lá, um servidor respondeu a dizer que não tinha o artigo; aqui, não houve servidor nenhum a responder.
 
-Vais ver esta mesma página muitas vezes no próximo tema, sempre que tentares abrir o teu servidor sem ele estar ligado, ou com a porta errada no endereço. Quando a vires, já sabes onde procurar.
+Vais ver esta mesma página muitas vezes no próximo tema. Quando a vires, já sabes o que quer dizer: o pedido saiu do browser, e nenhum programa respondeu naquela porta.
 
 Pergunta para o caderno: um colega abre `http://localhost:3000/equipamentos` e recebe esta página. Diz duas coisas que ele deve verificar.
 

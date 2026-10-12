@@ -78,7 +78,7 @@ Guia: secções "O npm e o ficheiro package.json" e "Módulos ES".
    npm install express
    ```
 
-   No fim, o npm escreve uma linha como `added 68 packages`. O número pode variar um pouco com a versão.
+   No fim, o npm escreve uma linha como `added 65 packages`. O número pode variar um pouco com a versão.
 
 5. Olha para a pasta, no editor. Tem agora:
    - a pasta `node_modules`, com dezenas de pastas lá dentro;

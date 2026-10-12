@@ -52,7 +52,9 @@ Guia: exemplo guiado, passo 2.
 2. Abre `/equipamentos?sala=B12`, `/equipamentos?sala=Z99` e `/equipamentos`, sem nada.
 3. Abre agora `/equipamentos?Sala=B12`, com o `S` maiúsculo. Prevê primeiro.
 
-O que deves ver: o portátil e o monitor; uma lista vazia, `[]`, com o código 200; a lista toda; e, com `Sala` maiúsculo, outra vez a lista toda. Os nomes dos parâmetros distinguem maiúsculas: `req.query.sala` não encontra `Sala`, fica `undefined`, e a rota devolve tudo.
+O que deves ver: o portátil e o monitor; uma lista vazia, `[]`, com o código 200; a lista toda; e, com `Sala` maiúsculo, outra vez a lista toda.
+
+Pergunta para o caderno: porque é que a rota devolve a lista toda com `?Sala=B12`, se a sala B12 existe e `?sala=B12` funciona? Pista: que valor tem `req.query.sala` neste pedido?
 
 ## Parte 4: ver os dados do pedido no browser
 

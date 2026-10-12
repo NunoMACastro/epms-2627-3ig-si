@@ -47,6 +47,6 @@ Se alguma coisa não correr como está escrito, a secção "Erros de arranque e 
 
 ## Versões com que foi testado
 
-Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 7 de outubro de 2026.
+Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 7 de outubro de 2026, e de novo com o Express 5.3.0, a versão que o `npm install` instala desde então, a 12 de outubro de 2026.
 
 ![Rodapé](../../../imagens/rodape.png)
