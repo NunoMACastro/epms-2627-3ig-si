@@ -1,0 +1,8 @@
+<%# A página de uma reserva, para onde o browser vai depois de reservar.
+    Recebe o titulo, a reserva e o equipamento reservado. %>
+<%- include("partials/cabecalho") %>
+    <p>Equipamento: <a href="/equipamentos/<%= equipamento.id %>"><%= equipamento.nome %></a>, sala <%= equipamento.sala %></p>
+    <p>Dia: <%= reserva.data %>, tempo <%= reserva.tempo %></p>
+    <p>Reservado por: <%= reserva.nome %></p>
+    <p><a href="/reservas">Ver todas as reservas</a></p>
+<%- include("partials/rodape") %>

@@ -693,9 +693,11 @@ Duas causas, e nenhuma dá erro. Escreveste `<% valor %>` em vez de `<%= valor %
 
 O EJS não conseguiu transformar o modelo num programa, porque o JavaScript das marcas está incompleto. Quase sempre é uma chaveta: um `<% for (...) { %>` ou um `<% if (...) { %>` sem o `<% } %>` correspondente, ou ao contrário. A palavra `catch` não está no teu modelo: é do código que o EJS junta à volta dele, e a falta da chaveta só se nota lá. Conta as chavetas que abrem e as que fecham.
 
-### A página de erro certa, com o código errado
+### A página de erro certa, com o código errado, e o servidor em baixo
 
-Pedes `/equipamentos/abc`, a página diz "Pedido inválido", e o separador Rede mostra o código 404, em vez de 400. No terminal aparece `Cannot set headers after they are sent to the client`. Falta o `return` depois do `res.status(400).render(...)`. Com o `res.json`, do tema anterior, o browser recebia a primeira resposta e o código certo. Com o `res.render`, a página só sai um instante depois, quando o EJS acaba de ler o modelo, e nesse instante o código da rota continua: não encontra o equipamento, chega ao `res.status(404)` e troca o código antes de a primeira página sair. O resultado é uma mistura das duas respostas. Depois de cada resposta de erro, o `return`, como sempre.
+Pedes `/equipamentos/abc`, a página diz "Pedido inválido", e o separador Rede mostra o código 404, em vez de 400. No terminal aparece `Cannot set headers after they are sent to the client`, e a seguir o servidor pára: o pedido seguinte, seja a que página for, já não tem resposta. Com o `node --watch`, o terminal acaba em `Failed running 'server.js'. Waiting for file changes before restarting...`, e o servidor só volta quando guardares um ficheiro.
+
+Falta o `return` depois do `res.status(400).render(...)`. Com o `res.json`, do tema anterior, o browser recebia a primeira resposta e o código certo, e o servidor continuava ligado. Com o `res.render`, a página só sai um instante depois, quando o EJS acaba de ler o modelo, e nesse instante o código da rota continua: não encontra o equipamento, chega ao `res.status(404)` e troca o código antes de a primeira página sair. Quando a segunda página fica pronta, a resposta já foi enviada, e o erro que isso provoca acontece fora da rota, onde ninguém o apanha: por isso o servidor vai abaixo. Depois de cada resposta de erro, o `return`, como sempre.
 
 ### As etiquetas do cabeçalho aparecem como texto na página
 

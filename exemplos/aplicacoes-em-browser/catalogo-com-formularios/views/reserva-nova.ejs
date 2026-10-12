@@ -1,0 +1,41 @@
+<%# O formulário de reserva. Recebe o titulo, os equipamentos para a lista,
+    os valores a pôr nos campos e os erros, um por campo. Da primeira vez,
+    os valores estão vazios e não há erros; depois de um envio com erros,
+    traz o que o utilizador escreveu e as mensagens. %>
+<%- include("partials/cabecalho") %>
+    <% if (Object.keys(erros).length > 0) { %>
+      <p><strong>A reserva não foi feita. Corrige os campos assinalados e volta a enviar.</strong></p>
+    <% } %>
+    <form method="post" action="/reservas">
+      <p>
+        <label for="equipamento_id">Equipamento
+          <% if (erros.equipamento_id) { %><strong><%= erros.equipamento_id %></strong><% } %>
+        </label>
+        <select id="equipamento_id" name="equipamento_id" required>
+          <option value="">Escolhe um equipamento</option>
+          <% for (const equipamento of equipamentos) { %>
+            <option value="<%= equipamento.id %>" <% if (String(equipamento.id) === valores.equipamento_id) { %>selected<% } %>><%= equipamento.nome %>, sala <%= equipamento.sala %></option>
+          <% } %>
+        </select>
+      </p>
+      <p>
+        <label for="data">Dia
+          <% if (erros.data) { %><strong><%= erros.data %></strong><% } %>
+        </label>
+        <input id="data" name="data" type="date" value="<%= valores.data %>" required>
+      </p>
+      <p>
+        <label for="tempo">Tempo letivo, de 1 a 9
+          <% if (erros.tempo) { %><strong><%= erros.tempo %></strong><% } %>
+        </label>
+        <input id="tempo" name="tempo" type="number" min="1" max="9" value="<%= valores.tempo %>" required>
+      </p>
+      <p>
+        <label for="nome">O teu nome
+          <% if (erros.nome) { %><strong><%= erros.nome %></strong><% } %>
+        </label>
+        <input id="nome" name="nome" maxlength="40" value="<%= valores.nome %>" required>
+      </p>
+      <button type="submit">Reservar</button>
+    </form>
+<%- include("partials/rodape") %>

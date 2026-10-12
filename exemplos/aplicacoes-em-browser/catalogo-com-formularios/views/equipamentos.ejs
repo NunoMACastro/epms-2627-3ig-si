@@ -1,0 +1,16 @@
+<%# A lista de equipamentos. Recebe o titulo, os equipamentos a mostrar
+    e a sala pesquisada, que fica vazia quando não houve pesquisa. %>
+<%- include("partials/cabecalho") %>
+    <% if (sala) { %>
+      <p>Pesquisa pela sala <strong><%= sala %></strong>.</p>
+    <% } %>
+    <% if (equipamentos.length === 0) { %>
+      <p>Não há equipamentos nesta sala.</p>
+    <% } else { %>
+      <ul>
+        <% for (const equipamento of equipamentos) { %>
+          <li><a href="/equipamentos/<%= equipamento.id %>"><%= equipamento.nome %></a>, na sala <%= equipamento.sala %></li>
+        <% } %>
+      </ul>
+    <% } %>
+<%- include("partials/rodape") %>
