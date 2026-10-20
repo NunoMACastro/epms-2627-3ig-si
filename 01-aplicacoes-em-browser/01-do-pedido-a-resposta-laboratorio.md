@@ -1,12 +1,39 @@
 ![Cabeçalho](../imagens/cabecalho.png)
 
-# Laboratório: observar pedidos e respostas no browser
+# Laboratório: Do pedido à resposta
 
-Laboratório do primeiro tema do módulo Aplicações baseadas em browsers. Cerca de 40 minutos. Segue os passos com o browser aberto ao lado. Cada passo diz o que fazer e o que deves ver; quando o que vês não bate certo com o que está escrito, para e tenta perceber porquê antes de avançar, e se não conseguires, chama o professor.
+Laboratório do tema Do pedido à resposta. Vais construir um registo dos pedidos que o browser faz e o diagrama de um redirecionamento. Avança ao teu ritmo. Cada passo explica a ideia, o que fazer e o que deves ver. O [guia](01-do-pedido-a-resposta.md) desenvolve a teoria.
 
-As ideias que aqui observas estão explicadas no [guia do tema](01-do-pedido-a-resposta.md). Sempre que um passo usar uma ideia nova, diz em que secção do guia está.
 
-## Antes de começar
+## O que vais construir
+
+Vais preencher uma tabela de observação e desenhar o percurso de dois pedidos. Não escreves um servidor neste laboratório.
+
+| Fase | O que muda | O que funciona no fim |
+| --- | --- | --- |
+| 1 | Abres as ferramentas do browser | Vês a lista onde os pedidos vão aparecer |
+| 2 | Pedes um artigo | Identificas método, estado e conteúdo |
+| 3 | Contas os recursos da página | Distingues documento, estilos, scripts e imagens |
+| 4 | Pedes um artigo inexistente | Reconheces uma resposta 404 com HTML |
+| 5 | Fazes uma pesquisa | Segues o redirecionamento em dois pedidos |
+| 6 | Pedes uma porta sem servidor | Distingues falta de resposta de erro HTTP |
+| 7 | Desenhas o percurso | Tens um diagrama com quatro setas |
+
+## Palavras que vais usar
+
+- **Pedido**: mensagem que o browser envia para obter alguma coisa.
+- **Resposta**: mensagem que o servidor devolve, com um código de estado e, normalmente, conteúdo.
+- **Método**: operação indicada no pedido. Aqui vais observar `GET`, que pede para ver.
+- **Cabeçalhos**: informação sobre a mensagem, como o tipo de conteúdo.
+- **Corpo**: conteúdo da mensagem, como o HTML de uma página.
+- **Código de estado**: número que diz como o servidor tratou o pedido.
+- **Redirecionamento**: resposta que manda o browser pedir outro endereço.
+- **Cache**: cópias de ficheiros que o browser guarda para não voltar a pedi-los.
+- **Porta**: número que identifica o programa à escuta num computador.
+- **Ferramentas de programador**: painel do browser onde observas a página e a rede.
+- **Rede**: separador das ferramentas que lista os pedidos e as respostas.
+
+## O que precisas
 
 Precisas de um browser de computador: Chrome, Edge ou Firefox. O Chrome e o Edge têm as mesmas ferramentas, porque são feitos sobre o mesmo motor; os passos estão escritos para eles. No Firefox os nomes mudam um pouco, e quando a diferença importa o passo diz qual é.
 
@@ -18,7 +45,14 @@ No teu caderno, ou num ficheiro de texto, prepara esta tabela. Vais preenchê-la
 | --- | --- | --- | --- | --- |
 | | | | | |
 
-## Parte 1: abrir as ferramentas de programador
+## Se alguma coisa falhar
+
+1. Confirma que abriste as ferramentas antes de recarregar a página. Só registam os pedidos feitos depois de abertas.
+2. Se a lista mostrar pedidos antigos, usa o botão de limpar antes da experiência seguinte.
+3. Se um endereço externo não abrir, confirma se outros sites abrem. Regista o que observaste; não inventes o código esperado.
+4. Na fase 6, usa a porta indicada só se não houver um servidor teu nela. Se houver, pede ao professor outra porta livre.
+
+## Fase 1: abrir as ferramentas de programador
 
 Todos os browsers de computador trazem ferramentas para quem desenvolve páginas. Uma delas mostra todos os pedidos que o browser faz e todas as respostas que recebe. É essa que vais usar.
 
@@ -31,9 +65,13 @@ O que deves ver: uma lista vazia, com cabeçalhos de colunas como Name, Status, 
 
 No Firefox, o separador chama-se também "Rede", e a lista já mostra a coluna do método. No Chrome e no Edge a coluna do método não aparece por omissão. Acrescenta-a agora: clica com o botão direito no cabeçalho de qualquer coluna e escolhe "Method" ("Método").
 
-## Parte 2: o pedido de uma página
+### Paragem 1
 
-Guia: secção "A conversa entre o browser e o servidor".
+A lista de Rede está aberta. Recarregar uma página acrescenta pedidos.
+
+## Fase 2: o pedido de uma página
+
+Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "A conversa entre o browser e o servidor".
 
 1. Com o separador Rede aberto, escreve na barra de endereço `https://pt.wikipedia.org/wiki/Computador` e carrega em Enter.
 2. A lista enche-se de pedidos. Por cima da lista há botões para filtrar por tipo: All, Doc, CSS, JS, Img e outros (no Firefox: Todos, HTML, CSS, JS, Imagens). Escolhe "Doc" (no Firefox, "HTML"). Fica um só pedido, chamado `Computador`.
@@ -47,11 +85,15 @@ Guia: secção "A conversa entre o browser e o servidor".
 6. Abre o separador "Response" ("Resposta"). Vês o HTML que o servidor mandou, como texto. É o corpo da resposta. Procura lá dentro o título do artigo, entre `<title>` e `</title>`.
 7. Preenche a primeira linha da tabela do caderno.
 
-Pergunta para o caderno: a porta do Remote Address é 443. Porque é que não a escreveste no endereço? (Guia: secção "Ler um endereço".)
+Pensa antes de continuares: porque não escreveste a porta 443 no endereço? A resposta: 443 é a porta habitual de `https`. Quando o endereço a omite, o browser usa-a automaticamente.
 
-## Parte 3: uma página são muitos pedidos
+### Paragem 2
 
-Guia: secção "Uma página são muitos pedidos".
+A tabela tem um pedido de documento, com método, estado e tipo de conteúdo.
+
+## Fase 3: uma página são muitos pedidos
+
+Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Uma página são muitos pedidos".
 
 1. Volta a escolher "All" ("Todos") nos filtros. Vês todos os pedidos que o browser fez para mostrar o artigo.
 2. No fundo do painel há uma barra que diz quantos pedidos foram feitos ("requests" ou "pedidos"). Copia o número para o caderno. Não há um número certo: muda com o artigo, com o browser e com o que o browser já tinha guardado. O que importa é a ordem de grandeza.
@@ -61,11 +103,15 @@ Guia: secção "Uma página são muitos pedidos".
 
 O que deves ver: dezenas de pedidos, de vários tipos, e o documento em primeiro lugar. Muitas imagens vêm de outros servidores, com nomes acabados em `wikimedia.org`, e não de `pt.wikipedia.org`. Um HTML pode mandar o browser buscar ficheiros a outros servidores, e o browser faz esses pedidos sozinho.
 
-Pergunta para o caderno: porque é que o documento é sempre o primeiro pedido?
+Pensa antes de continuares: porque aparece o pedido do documento antes dos recursos que ele indica? A resposta: o browser tem de ler o HTML para descobrir que estilos, imagens e scripts deve pedir.
 
-## Parte 4: um artigo que não existe
+### Paragem 3
 
-Guia: secção "Os códigos de estado".
+Registaste as contagens e comparaste o servidor do documento com o de uma imagem.
+
+## Fase 4: um artigo que não existe
+
+Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Os códigos de estado".
 
 1. Na barra de endereço, escreve `https://pt.wikipedia.org/wiki/Pagina_que_nao_existe_epms` e carrega em Enter.
 2. A página aparece: tem o logótipo, os menus e uma mensagem a dizer que a Wikipédia não tem nenhum artigo com aquele nome.
@@ -74,11 +120,15 @@ Guia: secção "Os códigos de estado".
 
 O que deves ver: o estado é `404`, apesar de a página estar bem desenhada. O servidor respondeu, e respondeu com um corpo em HTML, mas o código diz que o que se pediu não existe. Se só olhasses para a página, podias pensar que tinha corrido tudo bem.
 
-Pergunta para o caderno: na aplicação de reservas que serve de exemplo ao guia, se alguém pedir uma reserva que não existe, a resposta deve ter que código? E deve ter corpo?
+Pensa antes de continuares: que resposta deve ter uma reserva que não existe? A resposta: 404, com uma página HTML a explicar a falta. O código indica o resultado ao programa; o corpo dá uma mensagem à pessoa.
 
-## Parte 5: uma pesquisa
+### Paragem 4
 
-Guia: secções "Ler um endereço" e "Os códigos de estado".
+A tabela distingue uma resposta 404 de uma página que abriu com 200.
+
+## Fase 5: uma pesquisa
+
+Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secções "Ler um endereço" e "Os códigos de estado".
 
 1. Confirma que "Preserve log" está ativo. Carrega no botão que limpa a lista, um círculo cortado por uma barra, no canto do separador Rede.
 2. Escreve na barra de endereço `https://pt.wikipedia.org/w/index.php?search=projetor+de+video` e carrega em Enter.
@@ -88,16 +138,24 @@ Guia: secções "Ler um endereço" e "Os códigos de estado".
 6. Clica no segundo pedido e lê o estado.
 7. Preenche as duas linhas na tabela do caderno.
 
-O que deves ver: o primeiro pedido recebe `302`, e a resposta traz um cabeçalho `location` com o endereço do artigo "Projetor de vídeo". O browser leu esse cabeçalho e fez sozinho um segundo pedido `GET` a esse endereço, que recebeu `200`. Foram dois pedidos e duas respostas, e tu só escreveste um endereço. No `location` vês também `v%C3%ADdeo`: é a forma como o `í` vai escrito num endereço.
+O serviço externo pode mudar. Se houver mais pedidos ou outro destino, regista a sequência que o separador Rede realmente mostra e confirma-a com o professor.
+
+O que deves ver no percurso usado neste laboratório: o primeiro pedido recebe `302`, e a resposta traz um cabeçalho `location` com o endereço do artigo "Projetor de vídeo". O browser leu esse cabeçalho e fez sozinho um segundo pedido `GET` a esse endereço, que recebeu `200`. Foram dois pedidos e duas respostas, e tu só escreveste um endereço. No `location` vês também `v%C3%ADdeo`: é a forma como o `í` vai escrito num endereço.
 
 Perguntas para o caderno:
 
 1. No endereço que escreveste, qual é o caminho e qual é o parâmetro de pesquisa? Qual é o nome do parâmetro e qual é o seu valor?
 2. Quem decidiu ir ao segundo endereço: tu, o browser ou o servidor?
 
-## Parte 6: quando não há resposta
+As respostas: o caminho é `/w/index.php`; o parâmetro chama-se `search` e contém o texto `projetor de video`. O `+` representa o espaço nesta pesquisa. O servidor escolhe o destino ao enviar `location`; o browser faz o novo pedido.
 
-Guia: secção "Quando a conversa falha". Esta parte não precisa de internet.
+### Paragem 5
+
+A tabela tem os dois pedidos do redirecionamento e o cabeçalho que liga um ao outro.
+
+## Fase 6: quando não há resposta
+
+Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Quando a conversa falha". Esta parte não precisa de internet.
 
 1. Limpa a lista do separador Rede.
 2. Escreve na barra de endereço `http://localhost:3999/` e carrega em Enter.
@@ -108,19 +166,42 @@ O que deves ver: uma página de erro desenhada pelo próprio browser, a dizer qu
 
 Vais ver esta mesma página muitas vezes no próximo tema. Quando a vires, já sabes o que quer dizer: o pedido saiu do browser, e nenhum programa respondeu naquela porta.
 
-Pergunta para o caderno: um colega abre `http://localhost:3000/equipamentos` e recebe esta página. Diz duas coisas que ele deve verificar.
+Pensa antes de continuares: um colega abre `http://localhost:3000/equipamentos` e recebe esta página. O que deve verificar? A resposta: se o servidor está a correr no terminal e se escuta na porta 3000. Deve também confirmar `http`, em vez de `https`.
 
-## Parte 7: o diagrama de um pedido
+### Paragem 6
 
-Guia: secção "Exemplo guiado", passo 8.
+Registaste uma ligação recusada sem código de estado.
 
-Escolhe a pesquisa da parte 5 e desenha no caderno o diagrama dos pedidos e respostas, como o do guia: duas colunas, uma para o browser e outra para o servidor da Wikipédia, com o tempo a correr de cima para baixo. Em cada seta escreve o método e o caminho, se for um pedido, ou o código de estado e o que vinha no corpo ou no cabeçalho que interessa, se for uma resposta.
+## Fase 7: o diagrama de um pedido
 
-Não desenhes o servidor de dados. A Wikipédia tem certamente um, mas não o consegues ver do browser: tudo o que acontece entre o servidor de aplicação e a base de dados fica escondido de quem está do lado de fora. É o que o guia diz na secção "Três programas, três papéis", e agora viste-o.
+Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Exemplo guiado", passo 8.
 
-O diagrama deve ter quatro setas: dois pedidos e duas respostas.
+Escolhe a pesquisa da fase 5 e desenha no caderno o diagrama dos pedidos e respostas. Faz uma coluna para o browser e outra para o servidor da Wikipédia. O tempo corre de cima para baixo. Nas setas dos pedidos escreve o método e o caminho. Nas respostas, escreve o código de estado e o conteúdo do corpo ou o cabeçalho que interessa.
 
-## Problemas frequentes no laboratório
+Não desenhes o servidor de dados. A Wikipédia tem certamente um. Mas não o consegues ver do browser: tudo o que acontece entre o servidor de aplicação e a base de dados fica escondido de quem está do lado de fora. É o que o guia diz na secção "Três programas, três papéis". E agora viste-o.
+
+O diagrama deve ter quatro setas: dois pedidos e duas respostas. Confere o teu com este modelo. O destino real pode variar com o serviço.
+
+```text
+browser                                   servidor da Wikipédia
+   │                                               │
+   │ GET /w/index.php?search=projetor+de+video     │
+   │──────────────────────────────────────────────→│
+   │ 302, location: /wiki/Projetor_de_v%C3%ADdeo   │
+   │←──────────────────────────────────────────────│
+   │ GET /wiki/Projetor_de_v%C3%ADdeo              │
+   │──────────────────────────────────────────────→│
+   │ 200, HTML do artigo                           │
+   │←──────────────────────────────────────────────│
+```
+
+Leitura guiada: segue o tempo de cima para baixo. A primeira resposta indica outro destino. O browser inicia o segundo pedido e recebe o artigo; o servidor não envia o artigo por iniciativa própria.
+
+### Paragem 7
+
+O diagrama tem dois pedidos a sair do browser e duas respostas do servidor.
+
+## Problemas frequentes
 
 ### A lista do separador Rede está vazia
 
@@ -150,11 +231,23 @@ Faz a parte 6, que não precisa de rede. As outras partes podem ser feitas em ca
 
 No fim do laboratório deves ter:
 
-1. a tabela com uma linha por pedido observado: o da parte 2, o da parte 4, os dois da parte 5 e o da parte 6, este sem código de estado;
+1. A tabela tem uma linha para o pedido da fase 2, outra para o da fase 4 e duas para os da fase 5. A linha da fase 6 fica sem código de estado;
 2. o número de pedidos da página da parte 3, com o número de pedidos de CSS, de JavaScript e de imagens;
 3. as respostas às perguntas para o caderno de cada parte;
 4. o diagrama da parte 7.
 
 É este o registo que mostras ao professor no fim da aula. Explica-o por palavras tuas: o diagrama e a tabela são a evidência de que sabes ler a conversa entre o browser e um servidor.
+
+## Desafios
+
+1. Escolhe uma imagem da página. Compara o seu tipo de conteúdo com o do documento e explica por que são diferentes.
+2. Desenha o pedido e a resposta de um artigo inexistente. Depois compara esse desenho com o de uma ligação recusada.
+
+## Antes de terminares
+
+- [ ] A tabela distingue 200, 404, redirecionamento e falta de resposta.
+- [ ] Registaste as contagens que realmente observaste.
+- [ ] O diagrama mostra quem inicia cada pedido.
+- [ ] Consegues explicar, por palavras tuas, a diferença entre uma resposta 404 e uma ligação recusada.
 
 ![Rodapé](../imagens/rodape.png)

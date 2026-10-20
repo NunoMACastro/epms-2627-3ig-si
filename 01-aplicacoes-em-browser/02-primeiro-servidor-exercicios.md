@@ -1,20 +1,25 @@
 ![Cabeçalho](../imagens/cabecalho.png)
 
-# Ficha de exercícios: o primeiro servidor
+# Ficha de exercícios: Primeiro servidor
 
 Segundo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](02-primeiro-servidor.md) e de fazeres o [laboratório](02-primeiro-servidor-laboratorio.md). Os exercícios 1 e 2 fazem-se em papel; os outros, no computador.
 
-## Objetivo e contexto
+## O que precisas de saber
 
-No laboratório construíste o servidor do catálogo de equipamentos seguindo passos. Aqui constróis outro servidor, o da biblioteca da escola, que já conheces da ficha do primeiro tema, e tomas decisões que o exemplo do guia não tomou: como contar os pedidos que o servidor recebe, que livros entram numa resposta, e que forma tem uma resposta que não é uma lista.
+O [guia do tema](02-primeiro-servidor.md) e o [laboratório](02-primeiro-servidor-laboratorio.md).
+
+## O contexto desta ficha
+
+No laboratório construíste o servidor do catálogo de equipamentos seguindo passos. Aqui constróis outro servidor, o da biblioteca da escola, que já conheces da ficha do primeiro tema. E tomas decisões que o exemplo do guia não tomou: como contar os pedidos que o servidor recebe, que livros entram numa resposta. E que forma tem uma resposta que não é uma lista.
 
 Os exercícios 1 e 2 treinam a leitura: prever o que um servidor responde e perceber o que uma mensagem de erro diz. Os exercícios 3 a 6 treinam a escrita de rotas. O desafio é opcional.
 
 ## Como trabalhar
 
+Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
+
 Nos exercícios 1 e 2, responde antes de experimentar. Nos outros, antes de abrires o browser, escreve o que esperas ver; depois confirma. Quando uma coisa não funcionar, lê a mensagem do terminal pela ordem da secção "Como ler uma mensagem de erro do Node" do guia, antes de pedir ajuda.
 
-Tempo previsto: 60 minutos para os exercícios 1 a 6.
 
 ## Exercício 1: ler e prever
 
@@ -134,7 +139,7 @@ app.listen(PORTA, (erro) => {
 3. Escreve a rota `GET /livros`, que responde com a lista completa dos livros, em JSON. Este passo é igual ao exemplo do guia e serve de aquecimento.
 4. A coordenadora da biblioteca quer saber se a lista está a ser consultada. Acrescenta à rota uma linha no terminal que conte os pedidos à lista desde que o servidor foi ligado: `Pedido 1 à lista de livros` no primeiro pedido, `Pedido 2 à lista de livros` no segundo, e assim por diante.
 
-**A decisão nova:** até aqui, cada pedido era tratado sem precisar de nada dos pedidos anteriores. Este número tem de passar de um pedido para o seguinte.
+Neste exercício, até aqui, cada pedido era tratado sem precisar de nada dos pedidos anteriores. Este número tem de passar de um pedido para o seguinte.
 
 **Resultado esperado:** `http://localhost:3000/livros` mostra os três livros, com o código 200 e o tipo `application/json`, e `http://localhost:3000/` continua a responder como antes. Abre a lista e recarrega-a duas vezes com o botão de recarregar do browser: o terminal mostra, por esta ordem, `Pedido 1 à lista de livros`, `Pedido 2 à lista de livros` e `Pedido 3 à lista de livros`. Um pedido a `/` não muda a contagem. Se parares o servidor e o voltares a ligar, a contagem recomeça em 1.
 
@@ -178,7 +183,18 @@ b) Muda a porta do servidor da biblioteca para 3001 e liga os dois, cada um no s
 
 c) Para o servidor da biblioteca com Ctrl+C. O que acontece agora a um pedido a `http://localhost:3001/livros`? E a `http://localhost:3000/equipamentos`?
 
-## Desafio (opcional): os autores
+## Apoio
+
+- Exercício 1: separa as linhas do arranque das que estão dentro das funções.
+- Exercício 2: começa pelo nome do erro e pela palavra que ele diz não encontrar.
+- Exercício 3: decide o que precisa de continuar a existir entre dois pedidos.
+- Exercício 4: usa o campo de disponibilidade sem apagar livros da lista original.
+- Exercício 5: os números têm de depender dos dados de cada pedido.
+- Exercício 6: identifica cada processo pela porta que ele usa.
+
+## Desafio opcional
+
+### Os autores
 
 Acrescenta a rota `GET /autores`, que responde com uma lista só com os nomes dos autores, em JSON:
 
@@ -188,12 +204,14 @@ Acrescenta a rota `GET /autores`, que responde com uma lista só com os nomes do
 
 Pensa depois nisto, sem ter de o programar: se a biblioteca tiver dois livros do mesmo autor, o nome aparece duas vezes na tua resposta? Que decisão terias de tomar para isso não acontecer?
 
-## Entrega e autoavaliação
+## Critérios de conclusão
 
 Entrega:
 
 - as respostas dos exercícios 1, 2 e 6, por escrito;
 - o `server.js` da biblioteca com as rotas dos exercícios 3, 4 e 5 (e do desafio, se o fizeste). Não entregues a pasta `node_modules`.
+
+## Autoavaliação
 
 No fim, responde por escrito:
 

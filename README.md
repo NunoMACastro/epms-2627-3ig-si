@@ -1,25 +1,30 @@
 ![Cabeçalho](imagens/cabecalho.png)
 
-# Sistemas de Informação: materiais
+# Sistemas de Informação · 12.º IG
 
-Este repositório contém materiais já disponibilizados para Sistemas de Informação do 12.º ano, IG. Um tema pode ser publicado antes de ser dado nas aulas: podes lê-lo à frente.
+Materiais de Sistemas de Informação do 12.º ano do Curso Profissional de Técnico/a de Informática de Gestão. Cada material é publicado quando fica pronto, e podes lê-lo antes de ser dado na aula.
 
-## Organização
+## Por onde começar
 
-Os materiais estão agrupados por área, pela ordem em que a matéria começa a ser dada. A tabela diz também a que módulo da disciplina corresponde cada área.
+Começa pelo [guia Do pedido à resposta](01-aplicacoes-em-browser/01-do-pedido-a-resposta.md). Cada tema tem três tipos de documento:
 
-| Pasta | Área | Módulo |
-| --- | --- | --- |
-| [`01-aplicacoes-em-browser/`](01-aplicacoes-em-browser/README.md) | Aplicações web em que o servidor gera as páginas | Aplicações baseadas em browsers |
+- o guia, para ler e estudar;
+- o laboratório, para seguir passo a passo no computador, sem precisares de abrir o guia;
+- a ficha de exercícios, para praticares sozinho.
 
-Cada pasta de área tem um `README.md` com o índice dos temas publicados. As áreas dos módulos seguintes aparecem aqui quando tiverem material.
+## As áreas
 
-O código dos exemplos dos guias fica em `exemplos/`, organizado por área, com um `README.md` em cada exemplo a explicar como o correr. As imagens dos guias ficam em `imagens/`.
+| Área | Módulo |
+| --- | --- |
+| [Aplicações em browser](01-aplicacoes-em-browser/README.md) | M06, Aplicações baseadas em browsers |
 
-## Avaliações
+## Como estudar
 
-- [Diagnóstico inicial: dados, SQL e web](avaliacoes/diagnostico-inicial.md)
+Lê o guia antes de escrever código: primeiro a explicação, depois o exemplo guiado. Antes de correres um exemplo, tenta prever o resultado. A ficha pede decisões tuas; as resoluções dos exercícios trabalham-se na aula.
 
-Os enunciados indicam os recursos e condições aplicáveis. Não incluas dados pessoais ou credenciais nas respostas.
+## Outras pastas
+
+- [Exemplos](exemplos/aplicacoes-em-browser/): código para ler e correr.
+- [Avaliações](avaliacoes/diagnostico-inicial.md): diagnóstico já divulgado.
 
 ![Rodapé](imagens/rodape.png)

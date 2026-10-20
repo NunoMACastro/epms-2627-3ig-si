@@ -4,17 +4,22 @@
 
 Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](03-http-rotas-e-middleware.md) e de fazeres o [laboratório](03-http-rotas-e-middleware-laboratorio.md). Os exercícios 1, 2 e 5 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
 
-## Objetivo e contexto
+## O que precisas de saber
 
-O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista, a escrever no terminal os pedidos que recebe e a responder aos endereços que não existem. Pelo caminho, tens de tomar decisões que o catálogo do guia não tomou: como dizer qual das regras do identificador falhou, o que fazer com um parâmetro de pesquisa que só pode ter dois valores, e que forma dar à resposta de um endereço que não existe, num servidor que responde sempre em JSON.
+O [guia do tema](03-http-rotas-e-middleware.md) e o [laboratório](03-http-rotas-e-middleware-laboratorio.md).
+
+## O contexto desta ficha
+
+O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista, a escrever no terminal os pedidos que recebe e a responder aos endereços que não existem. Vais tomar decisões que o catálogo do guia não tomou. Escolhes a mensagem para cada regra do identificador e tratas uma pesquisa que só aceita dois valores. Também escolhes o formato do erro de um endereço inexistente, num servidor que responde sempre em JSON.
 
 ## Como trabalhar
 
+Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
+
 Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o resultado que esperas, e só depois abre o browser. Usa o separador Rede para confirmar o código de cada resposta.
 
-Se o teu servidor da biblioteca não tiver as rotas da ficha anterior, não faz mal: os exercícios 3, 4 e 6 só precisam do array `livros` e da rota `/`.
+Os exercícios 3, 4 e 6 só precisam do array `livros` e da rota `/`. Podes fazê-los mesmo que ainda não tenhas as outras rotas da ficha anterior.
 
-Tempo previsto: 70 minutos para os exercícios 1 a 7.
 
 ## Exercício 1: onde vêm os dados
 
@@ -32,7 +37,7 @@ Para cada pedido, diz onde vêm os dados (caminho, pesquisa ou corpo). Quando v�
 
 Guia: secção "Os códigos de estado que o teu código escolhe".
 
-A rota de detalhe dos livros vai ser escrita como a dos equipamentos no passo 1 do guia: primeiro verifica se o identificador é um inteiro positivo, depois procura o livro. O servidor tem também a rota `GET /livros` da ficha anterior, que responde com a lista toda. Com os três livros da ficha anterior, que código tem cada pedido?
+A rota de detalhe dos livros segue a dos equipamentos do guia. Primeiro verifica se o identificador é um inteiro positivo. Depois procura o livro. O servidor tem também a rota `GET /livros` da ficha anterior, que responde com a lista toda. Com os três livros da ficha anterior, que código tem cada pedido?
 
 1. `GET /livros/1`
 2. `GET /livros/x`
@@ -48,7 +53,7 @@ Guia: exemplo guiado, passo 1.
 
 No `server.js` da biblioteca, acrescenta a rota `GET /livros/:id`, que responde com o livro pedido, ou com 400 ou 404 e uma mensagem em JSON.
 
-A funcionária escreve muitas vezes o número do livro à mão e, quando se engana, quer saber o que corrigir. Por isso, a mensagem do 400 diz qual das duas regras do identificador falhou: ou não é um número inteiro, ou é um inteiro mas não é maior do que zero.
+A funcionária escreve muitas vezes o número do livro à mão e, quando se engana, quer saber o que corrigir. A mensagem do 400 distingue duas falhas. Num caso, o valor não é um número inteiro. No outro, é inteiro mas não é maior do que zero.
 
 **Resultado esperado:** os pedidos 1 a 4 do exercício 2, e mais o do livro 0, dão estas respostas:
 
@@ -73,7 +78,7 @@ A funcionária quer ver só os livros disponíveis, ou só os emprestados. Muda 
 
 **Resultado esperado:** `true` dá "Os Maias" e "Mensagem"; `false` dá "Memorial do Convento"; `talvez` dá 400, com uma mensagem que diga que valores são aceites.
 
-**A decisão nova:** o filtro do guia comparava o texto do parâmetro com um texto do array (a sala). Aqui, o parâmetro chega como texto, `"true"`, e o campo do livro é um booleano, `true`. Pensa em como os comparas, antes de escrever código.
+Neste exercício, o filtro do guia comparava o texto do parâmetro com um texto do array (a sala). Aqui, o parâmetro chega como texto, `"true"`, e o campo do livro é um booleano, `true`. Pensa em como os comparas, antes de escrever código.
 
 **Pista, só se precisares:** `"true" === true` é `false`.
 
@@ -111,7 +116,7 @@ Acrescenta ao servidor da biblioteca o middleware de registo e o middleware fina
 
 O middleware de registo é igual ao do guia. O final não: todas as respostas da biblioteca são JSON, incluindo as de erro, com a mensagem numa chave `erro`, para quem usa o servidor saber sempre onde a procurar. A resposta a um endereço que não existe também tem de ser assim, e tem de dizer que pedido não foi encontrado, com o método e o endereço.
 
-**A decisão nova:** o middleware final do guia responde sempre o mesmo texto. Este tem de construir a mensagem a partir do pedido. Que propriedades do `req` usas? E porque é que pôr o endereço do pedido nesta resposta não tem o perigo de que fala a secção de segurança do guia, quando diz que o texto do utilizador não se cola em HTML?
+Neste exercício, o middleware final do guia responde sempre o mesmo texto. Este tem de construir a mensagem a partir do pedido. Que propriedades do `req` usas? O guia avisa que o texto do utilizador não se cola em HTML. Por que podes pôr o endereço do pedido nesta resposta JSON?
 
 **Resultado esperado:** `GET /livro`, sem o `s`, dá 404 com `{"erro":"Pedido não encontrado: GET /livro"}`. `GET /livros/1` continua a dar "Os Maias". O terminal mostra uma linha por pedido, incluindo a do endereço errado.
 
@@ -121,9 +126,25 @@ Guia: secção "A tabela de contratos HTTP".
 
 Escreve a tabela de contratos HTTP do servidor da biblioteca, com uma linha por pedido que ele aceita, incluindo as rotas da ficha anterior que tiveres. Verifica cada linha no browser e marca as que verificaste.
 
-## Entrega e autoavaliação
+## Apoio
+
+- Exercício 1: o `?` separa caminho e pesquisa; um formulário `GET` também produz pesquisa.
+- Exercício 2: decide primeiro qual é o caminho, sem a pesquisa.
+- Exercício 3: testa separadamente um texto, zero e um número inexistente.
+- Exercício 4: um texto não vazio não é necessariamente o valor booleano que procuras.
+- Exercício 5: segue a fila até à primeira função que responde.
+- Exercício 6: mantém o formato das outras respostas e verifica o estado no browser.
+- Exercício 7: inclui os erros e o caso sem parâmetros, além do sucesso.
+
+## Desafio opcional
+
+Acrescenta ao servidor da biblioteca uma rota `/resumo-da-pesquisa` que aceite o mesmo filtro `disponivel` e responda com o número de livros selecionados. Mantém as regras dos valores aceites. Testa o caso sem filtro, os dois valores aceites e um valor inválido.
+
+## Critérios de conclusão
 
 Entrega as respostas dos exercícios 1, 2 e 5, o `server.js` da biblioteca com os exercícios 3, 4 e 6 e a tabela do exercício 7. Não entregues a pasta `node_modules`.
+
+## Autoavaliação
 
 No fim, responde por escrito:
 

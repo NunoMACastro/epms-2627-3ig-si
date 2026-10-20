@@ -1,25 +1,25 @@
 ![Cabeçalho](../../../imagens/cabecalho.png)
 
-# Catálogo de equipamentos: o primeiro servidor com Express
+# Catálogo com detalhe e filtro
 
-Exemplo guiado da aula de 6 de outubro de 2026, do tema Primeiro servidor, com os acrescentos que abriram o tema seguinte, HTTP, rotas e middleware. É material do professor e não está no repositório dos alunos.
+Exemplo guiado da aula de 6 de outubro de 2026, do tema Primeiro servidor, com os acrescentos que abriram o tema seguinte, HTTP, rotas e middleware. É uma etapa entre o [Primeiro servidor](../../../01-aplicacoes-em-browser/02-primeiro-servidor.md) e o [HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md).
 
 ## O que está nesta pasta
 
 - `server.js`: o servidor, com três rotas e os equipamentos em memória.
-- `package.json` e `package-lock.json`: o projeto e a versão exata do Express usada, a 5.2.1.
+- `package.json` e `package-lock.json`: o projeto e as versões exatas dos pacotes desta cópia.
 - A pasta `node_modules` não fica guardada. Cria-se com `npm install`, como se explica abaixo.
 
 ## Como o exemplo cresceu na aula
 
 1. **Primeira versão:** duas rotas GET, `/` e `/equipamentos`, com três equipamentos em memória, e o `app.listen` com a verificação de erro.
-2. **Acrescentos da mesma aula,** mantendo a simplicidade de um primeiro contacto: a rota de detalhe `/equipamentos/:id`, que responde 404 quando o equipamento não existe, e o filtro `?sala=` na rota da lista. Entrou um quarto equipamento, um monitor na B12, para o filtro devolver mais do que um.
+2. **Acrescentos da mesma aula,** mantendo a simplicidade de um primeiro contacto: a rota de detalhe `/equipamentos/:id`, que responde 404 quando o equipamento não existe. E o filtro `?sala=` na rota da lista. Entrou um quarto equipamento, um monitor na B12, para o filtro devolver mais do que um.
 
 Ficaram de fora, de propósito, o middleware e o POST. São mecanismos novos, e não mais uma rota, e por isso ficam para outras aulas.
 
 ## Configurar de raiz, como na aula
 
-Confirmar primeiro que o Node está instalado. Deve aparecer `v24`; o mínimo para o Express 5 é o 18.
+Usa o Node 24 adotado na disciplina. Confirma a versão instalada:
 
 ```bash
 node --version
@@ -38,7 +38,7 @@ node --version
    npm init -y
    ```
 
-3. Abrir o `package.json` e trocar `"type": "commonjs"` por `"type": "module"`. O npm atual já escreve a linha com `commonjs`, por isso troca-se o valor em vez de acrescentar a linha. Sem esta troca, o `import` dá erro.
+3. Correr `npm pkg set type=module` para definir os módulos ES. O comando acrescenta o campo se faltar e altera-o se existir. Confere depois o `package.json`: deve ter `"type": "module"`.
 
 4. Instalar o Express. Precisa de internet. Cria a pasta `node_modules` e o `package-lock.json`, e acrescenta o Express às dependências do `package.json`.
 
@@ -58,7 +58,7 @@ node --version
 
 8. Desligar o servidor com Ctrl+C no terminal. Depois de mudar o código, é preciso desligá-lo e voltar a ligá-lo; com `node --watch server.js`, o Node reinicia sozinho sempre que o ficheiro é gravado.
 
-## Correr a partir desta pasta
+## Como correr
 
 Para usar esta cópia em vez de a construir de raiz, basta instalar as dependências, que o `package-lock.json` fixa na versão testada, e ligar o servidor:
 
@@ -88,7 +88,7 @@ Respostas obtidas no teste de 6 de outubro:
 |---|---|---|
 | `SyntaxError: Cannot use import statement outside a module` | O `package.json` ainda tem `"type": "commonjs"` | Trocar para `"module"` |
 | `Não foi possível ligar o servidor: listen EADDRINUSE: address already in use :::3000` | Já há outro servidor a usar a porta 3000, quase sempre noutro terminal | Ctrl+C nesse terminal, ou mudar a `PORTA` |
-| O `npm install` fica parado ou falha | Não há internet na sala | Levar uma pasta com o `node_modules` já instalado e copiá-la para os computadores. Como plano B, um servidor com o módulo `node:http`, que vem com o Node e não precisa do npm |
+| O `npm install` fica parado ou falha | Não há internet na sala | Levar uma pasta com o `node_modules` já instalado e copiá-la para os computadores. Se não tiveres os pacotes disponíveis, pede ao professor um ambiente preparado |
 
 ## Porque é que o `app.listen` verifica o erro
 
@@ -102,15 +102,15 @@ No Express 5, a função passada ao `app.listen` também é chamada quando o ser
 
 ## Imagens de apoio
 
-Na pasta de cima estão duas imagens da arquitetura do Node.js, cada uma em PNG para projetar e em SVG para editar:
+As imagens de apoio estão em `imagens/` do repositório. Cada uma tem uma versão PNG e outra SVG:
 
-- `M06-B02-arquitetura-do-nodejs`: a versão completa, com as camadas, o event loop explicado em cinco passos e o caminho de um pedido a este servidor.
-- `M06-B02-arquitetura-do-nodejs-diagrama`: só o diagrama, com menos texto.
+- [Arquitetura do Node.js](../../../imagens/arquitetura-do-nodejs.png): a versão completa, com as camadas, o event loop explicado em cinco passos e o caminho de um pedido a este servidor.
+- [Diagrama da arquitetura do Node.js](../../../imagens/arquitetura-do-nodejs-diagrama.png): só o diagrama, com menos texto.
 
-As duas servem também o tema de arquitetura do Node em Linguagens de Programação; se lá forem precisas, liga-se a estas em vez de as copiar.
+As duas servem também o tema de arquitetura do Node em Linguagens de Programação; podes usar as mesmas imagens sem as duplicar.
 
-## Validação
+## Versões com que foi testado
 
-Testado a 6 de outubro de 2026 em Node 24.17.0 com Express 5.2.1, numa cópia ligada à porta 3100: todas as respostas da tabela, o erro de porta ocupada e o erro sem `"type": "module"`. Não foi testado em Windows.
+Node.js 24.22.0, npm 11.20.0 e Express 5.2.1, em macOS, a 20 de outubro de 2026. As respostas da tabela foram verificadas por HTTP numa pasta nova. O Windows não foi reensaiado.
 
 ![Rodapé](../../../imagens/rodape.png)

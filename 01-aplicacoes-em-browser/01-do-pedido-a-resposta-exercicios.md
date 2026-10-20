@@ -1,10 +1,14 @@
 ![Cabeçalho](../imagens/cabecalho.png)
 
-# Ficha de exercícios: do pedido à resposta
+# Ficha de exercícios: Do pedido à resposta
 
 Primeiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](01-do-pedido-a-resposta.md) e, de preferência, depois do [laboratório](01-do-pedido-a-resposta-laboratorio.md). Não precisas de computador: faz-se em papel ou num ficheiro de texto.
 
-## Objetivo e contexto
+## O que precisas de saber
+
+O [guia do tema](01-do-pedido-a-resposta.md) e o [laboratório](01-do-pedido-a-resposta-laboratorio.md).
+
+## O contexto desta ficha
 
 O guia seguiu um processo da escola, a reserva de equipamentos, do clique no browser até à base de dados. Esta ficha pede-te o mesmo raciocínio noutro processo, o empréstimo de livros na biblioteca, e acrescenta uma operação que o guia não mostrou: registar uma devolução.
 
@@ -12,9 +16,10 @@ Cada exercício treina uma ideia do guia, e o título diz qual. Os exercícios 1
 
 ## Como trabalhar
 
+Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
+
 Tenta responder sem abrir o guia. Quando não souberes, escreve o que achas e porquê, e só depois confirma no guia: uma resposta errada com o raciocínio escrito ensina-te mais do que uma resposta certa copiada. Em cada exercício que peça uma justificação, uma ou duas frases chegam.
 
-Tempo previsto: 50 minutos para os exercícios 1 a 8.
 
 ## O cenário: a biblioteca da escola
 
@@ -155,7 +160,20 @@ c) Desenha o diagrama do pedido, como o do passo 8 do guia, com as três colunas
 
 d) No fim da operação, o que mudou na tabela de empréstimos? Escreve a linha 41 como fica.
 
-## Desafio (opcional): informação para a coordenadora
+## Apoio
+
+- Exercício 1: distingue um facto de uma resposta a uma pergunta de alguém.
+- Exercício 2: separa a ação física de devolver do registo dessa devolução.
+- Exercício 3: começa por separar o que está antes e depois do `?`.
+- Exercício 4: pergunta que programa tem a responsabilidade por cada ação.
+- Exercício 5: decide se a operação só consulta ou altera dados.
+- Exercício 6: escolhe a família antes do código exato.
+- Exercício 7: procura primeiro se houve uma resposta HTTP.
+- Exercício 8: verifica o estado atual antes de decidir que alteração faz sentido.
+
+## Desafio opcional
+
+### Informação para a coordenadora
 
 A coordenadora da biblioteca quer, todas as segundas-feiras, a lista dos empréstimos em atraso.
 
@@ -165,9 +183,13 @@ b) Com a tabela acima e o dia de hoje, 7 de outubro, há algum empréstimo em at
 
 c) Se já te sentes à vontade com o SQL do 11.º ano, escreve a consulta que devolve os empréstimos em atraso num dia à tua escolha. Usa a data escrita diretamente na consulta, como no guia.
 
-## Entrega e autoavaliação
+## Critérios de conclusão
 
-Entrega as respostas dos exercícios 1 a 8, com o diagrama do exercício 8 desenhado ou fotografado. No fim, responde por escrito:
+Entrega as respostas dos exercícios 1 a 8, com o diagrama do exercício 8 desenhado ou fotografado.
+
+## Autoavaliação
+
+No fim, responde por escrito:
 
 - O que consigo explicar sem ajuda: escolhe uma das ideias da ficha e explica-a em duas frases, como se fosse a um colega que faltou.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

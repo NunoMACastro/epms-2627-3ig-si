@@ -16,18 +16,18 @@ A pasta `node_modules` não está aqui de propósito: recria-se com `npm install
 
 ## Como correr
 
-Precisas do Node.js instalado, na versão 22 ou mais recente (`node --version` diz qual tens), e de internet para o primeiro passo.
+Usa o Node.js 24 adotado na disciplina. `node --version` confirma a versão instalada. Precisas de internet para instalar os pacotes.
 
 1. Copia esta pasta para fora do repositório, por exemplo para a tua pasta de trabalho das aulas, e abre um terminal dentro dela.
 2. Instala as dependências, que o npm lê do `package.json` e do `package-lock.json`:
 
-   ```text
+   ```bash
    npm install
    ```
 
 3. Liga o servidor:
 
-   ```text
+   ```bash
    node server.js
    ```
 
@@ -47,6 +47,6 @@ Se alguma coisa não correr como está escrito, a secção "Erros de arranque e 
 
 ## Versões com que foi testado
 
-Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 7 de outubro de 2026, e de novo com o Express 5.3.0, a versão que o `npm install` instala desde então, a 12 de outubro de 2026.
+Node.js 24.22.0, npm 11.20.0 e Express 5.3.0, em macOS, a 20 de outubro de 2026. Os ensaios verificaram pedidos HTTP em portas de teste. O Windows e as ferramentas de programador não foram reensaiados.
 
 ![Rodapé](../../../imagens/rodape.png)

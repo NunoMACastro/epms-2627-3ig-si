@@ -2,7 +2,7 @@
 
 # Catálogo com middleware
 
-O servidor do exemplo guiado do [tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md): o catálogo de equipamentos do tema anterior, com a rota de detalhe e as suas duas verificações (o 400 para um identificador inválido e o 404 para um equipamento que não existe), o filtro por sala, uma página inicial com uma pesquisa enviada por `GET`, o middleware de registo, que escreve cada pedido no terminal, e o middleware final, que responde aos endereços que não existem. O guia explica o código passo a passo; aqui está pronto a correr.
+Este é o exemplo do [tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md), pronto a correr. O catálogo mostra detalhe, filtro e uma página de pesquisa. Distingue identificador inválido (400) de equipamento inexistente (404). O middleware de registo escreve cada pedido no terminal; o final responde ao que nenhuma rota reconheceu. O guia explica como as peças se juntam.
 
 A versão anterior, só com as duas primeiras rotas, está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md). A pasta [catalogo-com-reservas](../catalogo-com-reservas/README.md) acrescenta a este servidor um formulário de reserva enviado por `POST`; é do tema dos formulários.
 
@@ -18,7 +18,7 @@ A pasta `node_modules` recria-se com `npm install`.
 
 ## Como correr
 
-Precisas do Node.js 22 ou mais recente e de internet para o primeiro passo.
+Usa o Node.js 24 adotado na disciplina e confirma-o com `node --version`. A instalação dos pacotes precisa de internet.
 
 1. Copia esta pasta para fora do repositório e abre um terminal dentro dela.
 2. `npm install`
@@ -29,6 +29,6 @@ Precisas do Node.js 22 ou mais recente e de internet para o primeiro passo.
 
 ## Versões com que foi testado
 
-Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 9 de outubro de 2026, e de novo com o Express 5.3.0, a versão que o `npm install` instala desde então, a 12 de outubro de 2026.
+Node.js 24.22.0, npm 11.20.0 e Express 5.3.0, em macOS, a 20 de outubro de 2026. Os ensaios verificaram pedidos HTTP em portas de teste. O Windows e as ferramentas de programador não foram reensaiados.
 
 ![Rodapé](../../../imagens/rodape.png)

@@ -2,7 +2,9 @@
 
 # Cookies e sessões
 
-Módulo Aplicações baseadas em browsers. Sexto tema do módulo, com cinco aulas de 60 minutos, que chegam para a teoria deste guia (pouco mais de uma hora, repartida pelas aulas), para o laboratório (cerca de 120 minutos) e para a ficha (cerca de 80 minutos). Este guia explica porque é que o servidor não se lembra de nada entre dois pedidos, como um cookie resolve isso, porque é que os dados de um utilizador ficam no servidor e não no cookie, e como se configura, usa e termina uma sessão com o `express-session`. Explica também, com o mesmo cuidado, o que uma sessão não é: uma sessão não diz quem és. Os passos para o fazeres no teu computador estão no [laboratório](06-cookies-e-sessoes-laboratorio.md), e os exercícios para fazeres sozinho estão na [ficha](06-cookies-e-sessoes-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como guardar um pedido separado para cada browser numa sessão. Para praticar, tens o [laboratório](06-cookies-e-sessoes-laboratorio.md) e a [ficha de exercícios](06-cookies-e-sessoes-exercicios.md).
+
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## Neste guia
 
@@ -24,9 +26,9 @@ Módulo Aplicações baseadas em browsers. Sexto tema do módulo, com cinco aula
 
 ## O que vais aprender
 
-No tema anterior, cada reserva era de um só equipamento. Uma professora que quisesse o projetor e o portátil para a mesma aula tinha de preencher o formulário duas vezes, e escrever o nome duas vezes. Neste tema, o catálogo passa a ter um **pedido em curso**: a professora junta ao pedido o projetor, depois o portátil, navega pelo catálogo entre os dois, vê o pedido quando quiser, tira o que já não quer, e no fim escreve o nome uma vez e confirma tudo, ou cancela.
+No tema anterior, cada reserva era de um só equipamento. Uma professora que quisesse o projetor e o portátil para a mesma aula tinha de preencher o formulário duas vezes. E escrever o nome duas vezes. Neste tema, o catálogo passa a ter um **pedido em curso**. A professora junta primeiro o projetor, depois o portátil. Pode navegar pelo catálogo entre os dois, consultar o pedido quando quiser e retirar o que já não quer. No fim escreve o nome uma vez e confirma tudo, ou cancela.
 
-Para isto, o servidor tem de se lembrar, de um pedido HTTP para o seguinte, do que esta professora já juntou, e de não o misturar com o que outra pessoa, noutro computador, está a juntar ao mesmo tempo. É isso que as sessões fazem.
+Para isto, o servidor tem de se lembrar, de um pedido HTTP para o seguinte, do que esta professora já juntou. De não o misturar com o que outra pessoa, noutro computador, está a juntar ao mesmo tempo. É isso que as sessões fazem.
 
 No fim deste guia deves conseguir:
 
@@ -41,11 +43,13 @@ No fim deste guia deves conseguir:
 
 ## O que já sabes e vais usar
 
-Do tema anterior: o catálogo com formulários, com a validação de cada campo no servidor (as funções `textoDoCampo` e `diaValido`), o formulário outra vez quando há erros, e o redirecionamento 303 depois de um `POST` certo. O exemplo guiado parte desse catálogo; se não o tiveres a funcionar, a pasta [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md) dos exemplos tem-no pronto.
+- Validação no servidor, `textoDoCampo`, `diaValido`, formulário com erros e redirecionamento 303: [tema 05](05-formularios-e-validacao.md).
+- Cabeçalhos do pedido e da resposta e separador Rede: [tema 01](01-do-pedido-a-resposta.md).
+- Configuração fora do código e `.env`, do tema Arquitetura e setup Node de LP.
+- `.env.example`, que documenta as variáveis, e `--env-file`, que lê o `.env` no arranque, do mesmo tema de LP.
+- `.gitignore`, que mantém o `.env` fora do Git, do mesmo tema de LP. O segredo da sessão vai viver nesse ficheiro de ambiente.
 
-Do primeiro tema: os cabeçalhos de um pedido e de uma resposta HTTP, e o separador Rede das ferramentas de programador, onde os vês.
-
-De Linguagens de Programação, no tema Arquitetura e setup Node: a configuração fora do código, no ficheiro `.env`, com o `.env.example` a documentar o que lá deve estar, o `--env-file` do Node, que lê o `.env` ao arrancar, e o `.gitignore`, que mantém o `.env` fora do Git. O segredo da sessão vai viver aí.
+O exemplo parte do catálogo com formulários. Se não o tiveres a funcionar, copia [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md).
 
 ## O HTTP não se lembra de nada
 
@@ -54,6 +58,8 @@ Cada pedido HTTP chega sozinho ao servidor. Traz o método, o caminho, os cabeç
 Até aqui isto não fez falta. A lista dos equipamentos é igual para toda a gente. Uma reserva, no tema anterior, ia inteira num só `POST`, com os quatro campos no corpo. Mas um pedido em curso atravessa vários pedidos HTTP: juntar o projetor é um pedido, ver o catálogo é outro, juntar o portátil é outro, e confirmar é outro ainda. Entre eles, alguém tem de guardar o que já foi juntado.
 
 A primeira ideia que costuma aparecer é uma variável no servidor:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // A tentativa ingénua: o pedido numa variável do servidor, sem sessões.
@@ -64,11 +70,13 @@ app.post("/pedido/itens", (req, res) => {
 });
 ```
 
+Leitura guiada: `POST /pedido/itens` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+
 Funciona enquanto há uma só pessoa a usar o catálogo. Com duas, deixa de funcionar, e de uma forma traiçoeira: a variável é uma só, para o servidor inteiro, e todos os pedidos de todos os browsers a usam. A professora junta o projetor, e o colega que abre o catálogo noutra sala vê o projetor no pedido dele, sem ter juntado nada. O laboratório mostra-o com duas janelas do browser. O servidor precisa de saber **de que browser** vem cada pedido, para guardar um pedido separado para cada um. É aqui que entram os cookies.
 
 ## Cookies: o browser guarda e devolve
 
-Um **cookie** é um pequeno texto, com um nome e um valor, que o servidor pede ao browser para guardar, e que o browser devolve depois, sozinho, em todos os pedidos seguintes ao mesmo servidor.
+Um **cookie** é um pequeno texto, com um nome e um valor, que o servidor pede ao browser para guardar. Que o browser devolve depois, sozinho, em todos os pedidos seguintes ao mesmo servidor.
 
 O servidor pede-o com um cabeçalho na resposta, o `Set-Cookie`:
 
@@ -78,7 +86,7 @@ Location: /pedido
 Set-Cookie: catalogo.sid=s%3Am9fcUL...; Path=/; Expires=Mon, 12 Oct 2026 01:04:19 GMT; HttpOnly; SameSite=Lax
 ```
 
-O browser guarda o cookie `catalogo.sid`, com o valor que vem a seguir ao `=`, e a partir daí junta-o a cada pedido que faz a esse servidor, num cabeçalho do pedido, o `Cookie`:
+O browser guarda o cookie `catalogo.sid`, com o valor que vem a seguir ao `=`. A partir daí junta-o a cada pedido que faz a esse servidor, num cabeçalho do pedido, o `Cookie`:
 
 ```text
 GET /pedido HTTP/1.1
@@ -88,7 +96,7 @@ Cookie: catalogo.sid=s%3Am9fcUL...
 
 O servidor não precisa de fazer nada para receber o cookie: vem sempre, em todos os pedidos, até expirar ou ser apagado. É por aí que o servidor passa a reconhecer o browser: dois pedidos com o mesmo cookie vêm do mesmo browser.
 
-Na linha do `Set-Cookie`, depois do nome e do valor, vêm os **atributos** do cookie, separados por `;`. Dizem ao browser as regras do cookie: o `Path=/` diz que é para todos os caminhos do site; o `Expires` diz até quando o deve guardar; o `HttpOnly` e o `SameSite` são regras de segurança, que têm uma secção própria. Os atributos são instruções para o browser, e não viajam de volta: no cabeçalho `Cookie` do pedido só vão o nome e o valor.
+Na linha do `Set-Cookie`, depois do nome e do valor, vêm os **atributos** do cookie, separados por `;`. Dizem ao browser as regras do cookie: o `Path=/` diz que é para todos os caminhos do site. O `Expires` diz até quando o deve guardar. O `HttpOnly` e o `SameSite` são regras de segurança, que têm uma secção própria. Os atributos são instruções para o browser. E não viajam de volta: no cabeçalho `Cookie` do pedido só vão o nome e o valor.
 
 Dois pormenores que convém saber desde já. Um cookie é de um site: o browser só o envia ao servidor que o criou, e não a outros. E é de um browser: uma janela anónima, outro perfil do mesmo browser ou outro browser no mesmo computador têm os seus próprios cookies, separados. Para o servidor, são browsers diferentes.
 
@@ -104,25 +112,29 @@ A terceira é a privacidade. Um cookie fica guardado no computador, e qualquer p
 
 A solução é separar as duas coisas. Os dados do pedido ficam **no servidor**, num sítio próprio para cada browser. O cookie só leva um **identificador**: um código comprido e aleatório, que diz ao servidor qual dos sítios é o deste browser. A este conjunto, os dados guardados no servidor para um browser, mais o identificador que o browser guarda no cookie, chama-se uma **sessão**. É como o talão de um bengaleiro: o casaco fica lá dentro, e tu só levas o número. Quem te devolve o casaco é quem tem o talão.
 
-Para o identificador não poder ser inventado, o servidor **assina-o**: junta-lhe uma assinatura calculada a partir dele e de um segredo que só o servidor conhece. É a parte do valor do cookie que vem depois do ponto. Quando o cookie volta, o servidor recalcula a assinatura com o seu segredo; se não bater certo, porque alguém mudou o identificador, o servidor ignora o cookie e trata o pedido como vindo de um browser novo. Sem conhecer o segredo, ninguém consegue fabricar um identificador que o servidor aceite.
+Para o identificador não poder ser inventado, o servidor **assina-o**: junta-lhe uma assinatura calculada a partir dele e de um segredo que só o servidor conhece. É a parte do valor do cookie que vem depois do ponto. Quando o cookie volta, o servidor recalcula a assinatura com o seu segredo. Se a assinatura não bater certo, o servidor ignora o cookie e trata o pedido como vindo de um browser novo. A diferença mostra que o identificador ou a assinatura foram alterados, ou que o segredo já não é o mesmo. Sem conhecer o segredo, ninguém consegue fabricar um identificador que o servidor aceite.
 
 ## A sessão com o express-session
 
 O Express não trata as sessões sozinho, mas a mesma equipa que faz o Express mantém um middleware para isso, o `express-session`. Instala-se como os outros pacotes:
 
-```text
-npm install express-session
+```bash
+npm install express-session@1.19.0
 ```
 
 E importa-se no início do `server.js`, ao lado do Express:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 import session from "express-session";
 ```
 
+Leitura guiada: esta linha importa o pacote com o nome `session`. Ainda não o ativa; esse nome será usado para configurar o middleware.
+
 ### O segredo, fora do código
 
-O middleware precisa do segredo que assina os identificadores. O segredo é configuração, e uma configuração que não pode ser conhecida: se estivesse escrito no `server.js`, ia para o Git com o código, e qualquer pessoa com acesso ao repositório podia assinar os identificadores que quisesse. Por isso fica no `.env`, que não vai para o Git, como aprendeste em Linguagens de Programação. O `.env.example`, que vai para o Git, diz o nome da variável, sem o valor:
+O middleware precisa do segredo que assina os identificadores. O segredo é configuração. E uma configuração que não pode ser conhecida: se estivesse escrito no `server.js`, ia para o Git com o código. Qualquer pessoa com acesso ao repositório podia assinar os identificadores que quisesse. Por isso fica no `.env`, que não vai para o Git, como aprendeste em Linguagens de Programação. O `.env.example`, que vai para o Git, diz o nome da variável, sem o valor:
 
 ```text
 # O segredo que assina o cookie da sessão. Escreve no teu .env um texto longo
@@ -132,17 +144,19 @@ SESSION_SECRET=
 
 No teu `.env`, escreves `SESSION_SECRET=` seguido de um texto longo e aleatório. Este comando escreve um, com 64 carateres, que podes copiar:
 
-```text
+```bash
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
 O servidor arranca com o `--env-file`, para ler o `.env`:
 
-```text
+```bash
 node --watch --env-file=.env server.js
 ```
 
 No `server.js`, o segredo lê-se do ambiente. Se não existir, o servidor recusa-se a arrancar, com uma mensagem que diz o que fazer:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // O segredo que assina o cookie da sessão vem do ambiente, e nunca do código.
@@ -157,11 +171,15 @@ if (!SEGREDO) {
 const NOME_DO_COOKIE = "catalogo.sid";
 ```
 
+Leitura guiada: avalia a condição com os dados do exemplo. Só o ramo escolhido produz o resultado; o outro ramo não é executado.
+
 O `process.exit(1)` termina o programa logo ali; o 1 diz ao terminal que terminou com um erro. É melhor um servidor que não arranca e diz porquê do que um servidor que arranca sem segredo e falha mais tarde, a meio de um pedido. O nome do cookie fica numa constante, porque vai ser usado em dois sítios: na configuração e quando a sessão terminar.
 
 ### O middleware e as suas opções
 
 O middleware das sessões regista-se depois do `express.urlencoded` e antes das rotas, porque as rotas vão usar o que ele prepara:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // Middleware das sessões: lê o cookie de cada pedido, encontra a sessão
@@ -180,7 +198,9 @@ app.use(session({
 }));
 ```
 
-Cada opção tem uma razão, e escrevê-la ao lado é parte do trabalho: uma configuração de segurança que ninguém sabe justificar é uma configuração que alguém vai mudar sem saber o que estraga.
+Leitura guiada: este middleware corre antes do elemento seguinte da fila. Identifica o que prepara e se chama `next()` ou termina com uma resposta.
+
+Cada opção tem uma razão. E escrevê-la ao lado é parte do trabalho: uma configuração de segurança que ninguém sabe justificar é uma configuração que alguém vai mudar sem saber o que estraga.
 
 - `secret`: o segredo que assina o identificador, lido do `.env`.
 - `name`: o nome do cookie. Por omissão seria `connect.sid`, que diz a quem olha que o servidor usa o `express-session`; um nome do teu site não diz nada.
@@ -192,16 +212,20 @@ Cada opção tem uma razão, e escrevê-la ao lado é parte do trabalho: uma con
 
 Para cada pedido, o middleware procura o cookie `catalogo.sid`. Se o encontrar, e a assinatura estiver certa, vai buscar ao servidor os dados dessa sessão e põe-nos em `req.session`. Se não houver cookie, ou se a assinatura não bater certo, ou se a sessão já não existir no servidor, cria uma sessão nova e vazia. Em qualquer dos casos, a rota encontra um `req.session`, que é um objeto onde pode ler e escrever o que quiser:
 
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+
 ```js fragment
 req.session.pedido = []; // guardar
 const pedido = req.session.pedido; // ler
 ```
 
+Leitura guiada: a primeira linha guarda um array vazio na sessão. A segunda lê esse array para a variável local `pedido`; nenhuma delas envia uma resposta HTTP.
+
 No fim do pedido, se a sessão mudou, o middleware guarda-a no servidor e, se for preciso, manda ao browser o `Set-Cookie`. A rota não trata do cookie: trata só do `req.session`, como se fosse um objeto que se lembra de um pedido para o outro. Daqui a dois pedidos, o mesmo browser encontra lá o que lá deixou; outro browser encontra outro objeto, o seu.
 
 ### Onde ficam as sessões
 
-O `express-session` guarda as sessões, por omissão, na memória do próprio servidor, num armazém chamado `MemoryStore`. Tem duas consequências. Quando o servidor reinicia, todas as sessões desaparecem: o browser continua a enviar o cookie, mas o servidor já não tem nada com aquele identificador, e trata-o como um browser novo. E o `MemoryStore` não serve para um servidor a sério, que corre muito tempo e com muitos utilizadores: vai ocupando memória, e não funciona com mais do que um processo. O próprio `express-session` o avisa no terminal, quando o servidor corre em modo de produção. Para aprender, em `localhost`, serve; num servidor publicado, as sessões vão para uma base de dados, e é um assunto do segundo módulo.
+O `express-session` guarda as sessões, por omissão, na memória do próprio servidor, num armazém chamado `MemoryStore`. Tem duas consequências. Quando o servidor reinicia, todas as sessões desaparecem: o browser continua a enviar o cookie. Mas o servidor já não tem nada com aquele identificador. E trata-o como um browser novo. E o `MemoryStore` não serve para um servidor a sério, que corre muito tempo e com muitos utilizadores: vai ocupando memória. Não funciona com mais do que um processo. O próprio `express-session` o avisa no terminal, quando o servidor corre em modo de produção. Para aprender, em `localhost`, serve. Num servidor publicado, as sessões vão para uma base de dados. E é um assunto do segundo módulo.
 
 ## Os atributos do cookie
 
@@ -214,7 +238,7 @@ O cookie da sessão é a chave do pedido de alguém. Os atributos são a forma d
 | `Secure` | Só enviar o cookie por HTTPS, a ligação cifrada | Por HTTP sem cifra, quem estiver na mesma rede pode ler o cookie a passar. Em `http://localhost` não há HTTPS, por isso aqui fica `false`; num servidor publicado, com HTTPS, fica `true` |
 | `Expires`, a partir do `maxAge` | Apagar o cookie a esta hora | Uma sessão esquecida aberta num computador da escola acaba sozinha. Aqui, 30 minutos depois da última vez que o pedido mudou |
 
-O `maxAge` escreve-se em milissegundos, e por isso a conta `30 * 60 * 1000`: 30 minutos, 60 segundos cada, 1000 milissegundos cada segundo. A conta fica escrita, e não o resultado (1 800 000), para quem lê perceber o que é. O `express-session` transforma o `maxAge` no `Expires` do cookie, com a hora certa, e volta a fazê-lo sempre que a sessão muda: cada vez que juntas ou tiras um equipamento, o cookie ganha mais 30 minutos. Uma página que só lê o pedido não muda a sessão, e não mexe na hora.
+O `maxAge` escreve-se em milissegundos. E por isso a conta `30 * 60 * 1000`: 30 minutos, 60 segundos cada, 1000 milissegundos cada segundo. A conta fica escrita. E não o resultado (1 800 000), para quem lê perceber o que é. O `express-session` transforma o `maxAge` no `Expires` do cookie, com a hora certa. Volta a fazê-lo sempre que a sessão muda: cada vez que juntas ou tiras um equipamento, o cookie ganha mais 30 minutos. Uma página que só lê o pedido não muda a sessão. E não mexe na hora.
 
 Repara que nenhum destes atributos torna a sessão uma prova de identidade. Tornam mais difícil roubar o cookie, mas quem o tiver continua a ter a sessão. É a secção "Uma sessão não é uma autenticação".
 
@@ -222,9 +246,11 @@ Repara que nenhum destes atributos torna a sessão uma prova de identidade. Torn
 
 Quando a professora confirma o pedido, ou o cancela, o pedido acabou, e a sessão também deve acabar. Terminar uma sessão tem dois lados, e os dois são precisos.
 
-No servidor, a sessão é destruída: os dados desaparecem do armazém, e aquele identificador deixa de servir para alguma coisa. Faz-se com o `req.session.destroy`, que recebe uma função para correr quando acabar, como o `app.listen`: a função recebe um erro, se a destruição falhou, e é dentro dela que se responde.
+No servidor, a sessão é destruída: os dados desaparecem do armazém. E aquele identificador deixa de servir para alguma coisa. Faz-se com o `req.session.destroy`, que recebe uma função para correr quando acabar, como o `app.listen`: a função recebe um erro, se a destruição falhou. E é dentro dela que se responde.
 
 No browser, o cookie é apagado. Faz-se com o `res.clearCookie`, com o nome do cookie: o servidor manda um `Set-Cookie` com o valor vazio e uma data de expiração no passado, `Expires=Thu, 01 Jan 1970`, e o browser apaga-o.
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // Cancelar o pedido: termina a sessão sem criar reservas.
@@ -240,17 +266,19 @@ app.post("/pedido/cancelamento", (req, res) => {
 });
 ```
 
-Destruir a sessão no servidor é o que importa para a segurança. Apagar o cookie só limpa o browser; se a sessão continuasse a existir no servidor, quem tivesse copiado o cookie antes continuava a ter acesso a ela. Com o `destroy`, um cookie antigo, guardado por quem quer que seja, já não leva a nada: o servidor não encontra a sessão, e trata o pedido como vindo de um browser novo, com um pedido vazio. É a evidência que a planificação pede: o estado eliminado ao terminar.
+Leitura guiada: `POST /pedido/cancelamento` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+
+Destruir a sessão no servidor é o que importa para a segurança. Apagar o cookie só limpa o browser. Se a sessão continuasse a existir no servidor, quem tivesse copiado o cookie antes continuava a ter acesso a ela. Com o `destroy`, um cookie antigo, guardado por quem quer que seja, já não leva a nada: o servidor não encontra a sessão. Trata o pedido como vindo de um browser novo, com um pedido vazio. É a evidência que a planificação pede: o estado eliminado ao terminar.
 
 ## Uma sessão não é uma autenticação
 
 Uma sessão sabe uma coisa: que vários pedidos vieram **do mesmo browser**. Não sabe quem está ao teclado. O nome que a professora escreve ao confirmar o pedido é só um texto: qualquer pessoa podia ter escrito "Ana". E a sessão é de quem tiver o cookie, seja quem for.
 
-**Autenticação** é outra coisa: é confirmar quem uma pessoa é, por exemplo com um nome de utilizador e uma palavra-passe verificados pelo servidor. Este tema não faz autenticação, e não a finge. O catálogo não tem contas, nem palavras-passe, nem páginas que só alguns podem ver. Um pedido em curso não precisa de saber quem és: precisa de não se misturar com o de outra pessoa, e a sessão chega para isso. Usar uma sessão como se fosse uma prova de identidade (por exemplo, achar que quem tem o cookie com o nome "Ana" é a Ana) é um erro de segurança, e é o primeiro que este tema quer evitar.
+**Autenticação** é outra coisa: é confirmar quem uma pessoa é, por exemplo com um nome de utilizador e uma palavra-passe verificados pelo servidor. Este tema não faz autenticação. E não a finge. O catálogo não tem contas, nem palavras-passe, nem páginas que só alguns podem ver. Um pedido em curso não precisa de saber quem és: precisa de não se misturar com o de outra pessoa. E a sessão chega para isso. Usar uma sessão como se fosse uma prova de identidade (por exemplo, achar que quem tem o cookie com o nome "Ana" é a Ana) é um erro de segurança. É o primeiro que este tema quer evitar.
 
 Como a sessão é de quem tem o cookie, há dois ataques que convém conhecer pelo nome.
 
-O **roubo de sessão** (em inglês, session hijacking) é alguém conseguir o identificador de outra pessoa e usá-lo no seu browser. A partir daí, para o servidor, os dois browsers são o mesmo, e o atacante vê e muda o pedido da vítima. No laboratório fazes isto de propósito, copiando o valor do cookie de uma janela para outra. As defesas são as dos atributos: o `HttpOnly` impede um script de ler o cookie, o `Secure` impede que seja lido a passar pela rede, e a expiração encurta o tempo em que um cookie roubado serve.
+O **roubo de sessão** (em inglês, session hijacking) é alguém conseguir o identificador de outra pessoa e usá-lo no seu browser. A partir daí, para o servidor, os dois browsers são o mesmo. E o atacante vê e muda o pedido da vítima. No laboratório fazes isto de propósito, copiando o valor do cookie de uma janela para outra. As defesas são as dos atributos: o `HttpOnly` impede um script de ler o cookie, o `Secure` impede que seja lido a passar pela rede. A expiração encurta o tempo em que um cookie roubado serve.
 
 A **fixação de sessão** (session fixation) é o contrário: o atacante não rouba o identificador da vítima, consegue que a vítima use um identificador que ele já conhece. Se depois a vítima fizer alguma coisa importante nessa sessão (numa aplicação com contas, entrar com a palavra-passe), o atacante, que conhece o identificador, fica com acesso. A defesa é dar à sessão um identificador novo no momento importante, com o `req.session.regenerate`, que o `express-session` também tem. Não a usas neste tema, porque o catálogo não tem esse momento; mas, numa aplicação com autenticação, é obrigatória.
 
@@ -260,13 +288,19 @@ O exemplo parte do catálogo com formulários do tema anterior. O formulário de
 
 ### Passo 1: o segredo e o middleware das sessões
 
-Na pasta do catálogo, `npm install express-session`. Cria o `.env.example` e o `.env` da secção "O segredo, fora do código", e confirma que o `.gitignore` tem a linha `.env`. No `server.js`, o `import` da sessão, a leitura do segredo e o nome do cookie, logo a seguir ao `const PORTA`, e o middleware das sessões a seguir ao `express.urlencoded`.
+Na pasta do catálogo, `npm install express-session@1.19.0`. Cria o `.env.example` e o `.env` da secção "O segredo, fora do código", e confirma que o `.gitignore` tem a linha `.env`. No `server.js`, o `import` da sessão, a leitura do segredo e o nome do cookie, logo a seguir ao `const PORTA`, e o middleware das sessões a seguir ao `express.urlencoded`.
 
 A partir daqui, o servidor arranca com `node --watch --env-file=.env server.js`. Nada muda nas páginas: o middleware não cria sessão nenhuma enquanto nenhuma rota guardar alguma coisa nela, e por isso o browser não recebe cookie nenhum.
 
 ### Passo 2: juntar ao pedido
 
-O formulário de reserva do tema anterior passa a ser o formulário para juntar um equipamento ao pedido: os mesmos campos, menos o nome. O `validarReserva` passa a `validarItem`, com a mesma verificação do equipamento, do dia e do tempo, e sem o bloco do nome:
+O formulário de reserva do tema anterior passa a juntar um equipamento ao pedido: os mesmos campos, menos o nome. Na tua cópia, retira do `server.js` as rotas completas `GET /reservas/nova` e `POST /reservas`. Apaga `views/reserva-nova.ejs`, que deixa de ser usado. Mantém o array `reservas`, o contador, as rotas `GET /reservas` e `GET /reservas/:id`, e os modelos `reservas.ejs` e `reserva.ejs`.
+
+Nesta mesma etapa, troca as ligações para `/reservas/nova` por `/pedido/item` em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`. Usa o texto "Juntar um equipamento ao pedido". A ligação para ver `/reservas` mantém-se. Assim, nenhuma página continua a oferecer o formulário antigo.
+
+Substitui a função `validarReserva` por `validarItem`, com a mesma verificação do equipamento, do dia e do tempo, e sem o bloco do nome:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 /**
@@ -310,7 +344,11 @@ function validarItem(corpo) {
 }
 ```
 
+Leitura guiada: em `validarItem`, começa pelo parâmetro. Segue as verificações pela ordem escrita e identifica o valor de cada `return`.
+
 O modelo `views/item-novo.ejs` é o `reserva-nova.ejs` sem o campo do nome, a enviar para `/pedido/itens`:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# O formulário para juntar um equipamento ao pedido. Recebe o titulo,
@@ -350,7 +388,11 @@ O modelo `views/item-novo.ejs` é o `reserva-nova.ejs` sem o campo do nome, a en
 <%- include("partials/rodape") %>
 ```
 
+Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
+
 As rotas para mostrar o formulário e para receber o `POST`:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // O formulário para juntar um equipamento ao pedido.
@@ -389,9 +431,13 @@ app.post("/pedido/itens", (req, res) => {
 });
 ```
 
+Leitura guiada: `GET /pedido/item` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+
 A rota do `POST` valida como no tema anterior. A diferença está no que faz quando corre bem: em vez de criar uma reserva, junta o equipamento ao pedido desta sessão, em `req.session.pedido`. Da primeira vez, a sessão ainda não tem pedido nenhum, e o `req.session.pedido` é `undefined`: por isso o `if` cria-o, como um array vazio, antes do `push`. É neste momento que a sessão deixa de estar vazia, e o browser recebe o cookie. O item guarda o número do equipamento, e não o equipamento inteiro: o nome e a sala vêm sempre da lista dos equipamentos, que é a fonte de verdade.
 
 A página do pedido mostra o que lá está. Uma pequena função junta a cada item o seu equipamento, para a página poder mostrar o nome, como a lista das reservas fazia no tema anterior:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 /**
@@ -409,6 +455,10 @@ function linhasDoPedido(pedido) {
 }
 ```
 
+Leitura guiada: o ciclo percorre os itens do pedido. Para cada item, procura o equipamento pelo identificador e junta os dois numa linha. No fim, devolve o array das linhas.
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+
 ```js fragment
 // O pedido em curso: os equipamentos já juntos, a confirmação e o cancelamento.
 app.get("/pedido", (req, res) => {
@@ -417,6 +467,8 @@ app.get("/pedido", (req, res) => {
 });
 ```
 
+Leitura guiada: `GET /pedido` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+
 O `req.session.pedido || []` dá o pedido da sessão, ou um array vazio se ainda não houver pedido. O modelo `views/pedido.ejs` está completo no passo 5; por agora, basta-lhe a lista, a ligação para juntar mais um equipamento e a mensagem do pedido vazio.
 
 Abre o catálogo em duas janelas: uma normal e uma anónima. Na normal, junta o projetor e o portátil. Na anónima, abre `/pedido`: está vazio. Junta lá o monitor, e volta à normal: continua com os seus dois. São duas sessões, isoladas, uma para cada browser.
@@ -424,6 +476,8 @@ Abre o catálogo em duas janelas: uma normal e uma anónima. Na normal, junta o 
 ### Passo 3: o pedido no menu
 
 O menu passa a mostrar quantos equipamentos tem o pedido, em todas as páginas. O número vem da sessão, e todas as rotas teriam de o passar ao `res.render`. Em vez disso, um middleware põe-no no **`res.locals`**, um objeto que o Express junta automaticamente aos dados de todos os modelos:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // Para todas as páginas: quantos equipamentos tem o pedido desta sessão.
@@ -435,17 +489,25 @@ app.use((req, res, next) => {
 });
 ```
 
+Leitura guiada: este middleware corre antes do elemento seguinte da fila. Identifica o que prepara e se chama `next()` ou termina com uma resposta.
+
 Fica depois do middleware das sessões, porque lê o `req.session`, e antes das rotas, porque os modelos das rotas vão usar o valor. No cabeçalho, a ligação do menu passa a ser:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <a href="/pedido">O teu pedido (<%= itensNoPedido %>)</a>
 ```
 
-A ligação para o formulário do tema anterior, `/reservas/nova`, sai do menu, e a página inicial e a lista das reservas passam a ter uma ligação para `/pedido/item`.
+Leitura guiada: o EJS calcula a expressão entre as marcas. Com `<%=`, o valor entra como texto e os carateres de HTML são escapados.
+
+Mantém a ligação para `/pedido/item` que atualizaste no passo 2, no menu, na página inicial e na lista das reservas. A ligação para `/pedido` acrescenta a contagem; não substitui o acesso ao novo formulário.
 
 ### Passo 4: tirar do pedido
 
 Cada equipamento do pedido ganha um botão para o tirar. O botão é um pequeno formulário `POST`, porque tirar muda o pedido, e o caminho leva a posição do equipamento na lista: `/pedido/itens/2/remocao` tira o segundo.
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // Tirar um equipamento do pedido: POST /pedido/itens/2/remocao tira o segundo.
@@ -464,11 +526,33 @@ app.post("/pedido/itens/:posicao/remocao", (req, res) => {
 });
 ```
 
+Leitura guiada: `POST /pedido/itens/:posicao/remocao` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+
 A posição vem do pedido, por isso verifica-se como um identificador: tem de ser um inteiro, de 1 até ao número de equipamentos do pedido. O `splice(posicao - 1, 1)` tira do array um elemento, na posição indicada; o `- 1` é porque a página conta a partir de 1 e o array a partir de 0.
 
 ### Passo 5: confirmar e cancelar
 
+O botão de remoção precisa da posição de cada linha. O `for...of` dá-te cada elemento; aqui vais usar um **`for` com contador**, que também dá o índice. Lê as três partes de `for (let i = 0; i < linhas.length; i++)` por esta ordem:
+
+- `let i = 0` cria o contador uma vez, antes da primeira volta. Um array começa no índice 0.
+- `i < linhas.length` é a condição verificada antes de cada volta. Só se executa o corpo enquanto for verdadeira.
+- `i++` soma 1 ao contador depois de cada volta. Depois volta-se a verificar a condição.
+
+`linhas[i]` lê o elemento no índice atual. A página apresenta a posição com `i + 1`, porque para quem a usa o primeiro equipamento é o número 1.
+
+Antes de leres o modelo, prevê as posições para duas linhas: projetor e portátil. Confere a execução:
+
+| `i` antes da condição | `i < 2` | O que esta volta apresenta | Depois da volta |
+| --- | --- | --- | --- |
+| 0 | Verdadeiro | Projetor, posição 1 | `i++` passa `i` a 1 |
+| 1 | Verdadeiro | Portátil, posição 2 | `i++` passa `i` a 2 |
+| 2 | Falso | Nada; o ciclo termina | Não há incremento |
+
+O índice 2 já ficaria fora dessas duas linhas. A condição impede essa leitura.
+
 A página do pedido, completa, com os equipamentos, o botão de cada um, a confirmação com o nome e o cancelamento:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# O pedido em curso, guardado na sessão. Recebe o titulo, as linhas (cada
@@ -509,9 +593,13 @@ A página do pedido, completa, com os equipamentos, o botão de cada um, a confi
 <%- include("partials/rodape") %>
 ```
 
+Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
+
 O ciclo é um `for` com contador, e não um `for...of`, porque a página precisa da posição de cada equipamento para o botão de remoção. A confirmação e o cancelamento só aparecem quando o pedido tem alguma coisa.
 
 A confirmação valida o nome, cria uma reserva por equipamento e termina a sessão:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 /**
@@ -530,6 +618,10 @@ function erroDoNome(nome) {
   return "";
 }
 ```
+
+Leitura guiada: em `erroDoNome`, começa pelo parâmetro. Segue as verificações pela ordem escrita e identifica o valor de cada `return`.
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // Confirmar o pedido: cria uma reserva por equipamento e termina a sessão.
@@ -573,6 +665,8 @@ app.post("/pedido/confirmacao", (req, res) => {
 });
 ```
 
+Leitura guiada: `POST /pedido/confirmacao` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+
 Se o nome estiver errado, a resposta é a página do pedido outra vez, com o 400, o nome escrito e a mensagem, como no tema anterior. Se o pedido estiver vazio (o formulário não aparece, mas um pedido feito à mão pode chegar), a resposta é a página de erro. Quando tudo está certo, as reservas são criadas, a sessão é destruída, o cookie é apagado, e o browser vai para a lista das reservas.
 
 O cancelamento é a rota da secção "Terminar a sessão": destrói a sessão sem criar reservas, e volta à página inicial.
@@ -580,6 +674,8 @@ O cancelamento é a rota da secção "Terminar a sessão": destrói a sessão se
 ### Passo 6: o servidor completo
 
 O `server.js` no fim do exemplo:
+
+Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js
 // server.js: o catálogo de equipamentos da escola, agora com um pedido em curso.
@@ -945,7 +1041,9 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-Os modelos novos são o `item-novo.ejs` do passo 2 e o `pedido.ejs` do passo 5. O `reserva-nova.ejs` do tema anterior sai, e o cabeçalho, a página inicial e a lista das reservas têm as ligações novas.
+Leitura guiada: lê os dados iniciais, depois os middlewares pela ordem do ficheiro. Escolhe um pedido da tabela de resultados e segue só a rota que o recebe.
+
+Os modelos novos são o `item-novo.ejs` do passo 2 e o `pedido.ejs` do passo 5. O `reserva-nova.ejs` e as duas rotas antigas de criação saíram no passo 2. O cabeçalho, a página inicial e a lista das reservas já têm as ligações para `/pedido/item`. As rotas de consulta `/reservas` e `/reservas/:id` continuam disponíveis.
 
 ### Passo 7: os resultados
 
@@ -1009,6 +1107,22 @@ A página no ecrã foi construída antes da mudança. Recarrega-a: o número vem
 - **O `MemoryStore` é só para desenvolvimento.** Num servidor publicado, as sessões vão para um armazém próprio.
 - **O que ainda falta.** O `SameSite=Lax` dificulta o CSRF, mas não é toda a defesa. O tema Erros e segurança web acrescenta a proteção própria contra o CSRF nos pedidos que mudam o estado da sessão.
 
+
+## Palavras novas deste guia
+
+- Cookie: pequeno valor que o browser guarda a pedido do servidor e devolve nos pedidos seguintes.
+- Sessão: dados guardados no servidor para distinguir o estado de cada browser.
+- Identificador de sessão: código que permite ao servidor encontrar a sessão, sem levar o pedido inteiro.
+- Assinatura: verificação feita com um segredo, que permite detetar um identificador alterado.
+- `HttpOnly`: atributo que impede os scripts da página de lerem o cookie.
+- `Secure`: atributo que restringe o envio do cookie a HTTPS.
+- `SameSite`: atributo que limita quando o cookie segue em pedidos iniciados noutro site.
+- `MemoryStore`: armazém de sessões em memória, usado só em desenvolvimento.
+- `res.locals`: objeto com dados que os modelos da resposta podem usar.
+- Autenticação: verificação da identidade de quem usa uma aplicação.
+- Roubo de sessão: uso do identificador de outra pessoa para aceder à sessão dela.
+- Fixação de sessão: levar uma vítima a usar um identificador que o atacante já conhece.
+
 ## Verificar o que aprendeste
 
 1. Porque é que uma variável no servidor não serve para guardar o pedido de cada pessoa?
@@ -1024,6 +1138,8 @@ A página no ecrã foi construída antes da mudança. Recarrega-a: o número vem
 
 ## O que vem a seguir
 
-O próximo tema é Erros e segurança web. As páginas de erro do catálogo dizem pouco, de propósito, mas a página de erro do próprio Express, a dos erros 500, mostra o caminho dos ficheiros e o código: o tema trata disso. Trata também dos segredos, dos registos no terminal, do escaping em mais sítios do que o conteúdo e os atributos, e do CSRF, a defesa que falta aos formulários que mudam a sessão. É o último tema antes da integração do módulo, em que o catálogo junta tudo o que foi feito até aqui.
+Faz o [laboratório](06-cookies-e-sessoes-laboratorio.md) e depois a [ficha de exercícios](06-cookies-e-sessoes-exercicios.md).
+
+O próximo tema é Erros e segurança web. As páginas de erro do catálogo dizem pouco, de propósito. Mas a página de erro do próprio Express, a dos erros 500, mostra o caminho dos ficheiros e o código: o tema trata disso. Trata também dos segredos, dos registos no terminal, do escaping em mais sítios do que o conteúdo e os atributos. Do CSRF, a defesa que falta aos formulários que mudam a sessão. É o último tema antes da integração do módulo, em que o catálogo junta tudo o que foi feito até aqui.
 
 ![Rodapé](../imagens/rodape.png)

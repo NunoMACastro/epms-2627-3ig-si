@@ -2,9 +2,9 @@
 
 # Catálogo com reservas
 
-Este exemplo é uma primeira versão das reservas, e já não é o exemplo de nenhum tema. Foi publicado a 7 de outubro de 2026 com o tema HTTP, rotas e middleware. A 9 de outubro, esse tema passou a usar o [catalogo-com-middleware](../catalogo-com-middleware/README.md), que é o mesmo catálogo sem o formulário de reserva e sem o `POST`. A 12 de outubro, o tema Formulários e validação foi publicado com o seu próprio exemplo, o [catalogo-com-formularios](../catalogo-com-formularios/README.md), com páginas EJS, a validação de cada campo, o formulário outra vez quando há erros e o redirecionamento depois de uma reserva certa. Se estás a estudar os formulários, é esse o exemplo que procuras. Este fica aqui porque já foi distribuído: responde em JSON, verifica os campos numa só condição, com uma mensagem só para todos, e responde 201 em vez de redirecionar.
+Este exemplo é uma primeira versão das reservas, e já não é o exemplo de nenhum tema. Foi publicado a 7 de outubro de 2026 com o tema HTTP, rotas e middleware. A 9 de outubro, esse tema passou a usar o [catalogo-com-middleware](../catalogo-com-middleware/README.md), que é o mesmo catálogo sem o formulário de reserva e sem o `POST`. A 12 de outubro, Formulários e validação foi publicado com o exemplo [catalogo-com-formularios](../catalogo-com-formularios/README.md). Tem páginas EJS, validação de cada campo e mensagens de erro no formulário. Depois de uma reserva certa, redireciona para a página dela. Se estás a estudar os formulários, é esse o exemplo que procuras. Este fica aqui porque já foi distribuído: responde em JSON, verifica os campos numa só condição, com uma mensagem só para todos, e responde 201 em vez de redirecionar.
 
-O servidor: o catálogo de equipamentos com a rota de detalhe, o filtro por sala, dois middlewares, um formulário de reserva enviado por `POST` e um middleware final para os endereços que não existem. A rota de detalhe, o filtro, o middleware de registo e o middleware final estão explicados no [guia do tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md); o formulário, o `POST` e o middleware que lê o corpo estão explicados no [guia do tema Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md).
+O servidor tem catálogo, detalhe e filtro por sala. Inclui o middleware de registo, o que lê formulários e um middleware final para endereços inexistentes. O formulário de reserva envia por `POST`. A rota de detalhe, o filtro, o middleware de registo e o middleware final estão explicados no [guia do tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md). O formulário, o `POST` e o middleware que lê o corpo estão explicados no [guia do tema Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md).
 
 A versão com só as duas primeiras rotas está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md).
 
@@ -16,14 +16,14 @@ A versão com só as duas primeiras rotas está em [catalogo-de-equipamentos](..
 | `package.json` | O projeto: o `"type": "module"` e a dependência do Express |
 | `package-lock.json` | As versões exatas dos pacotes |
 
-A pasta `node_modules` recria-se com `npm install`.
+A pasta `node_modules` recria-se com `npm ci`.
 
 ## Como correr
 
-Precisas do Node.js 22 ou mais recente e de internet para o primeiro passo.
+Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `node --version`.
 
 1. Copia esta pasta para fora do repositório e abre um terminal dentro dela.
-2. `npm install`
+2. `npm ci`
 3. `node server.js`. O terminal mostra `Servidor a correr em http://localhost:3000` e fica ocupado.
 4. No browser, abre `http://localhost:3000/`: tens a pesquisa por sala e a ligação para o formulário de reserva. Cada endereço deve dar:
 
@@ -46,6 +46,10 @@ Precisas do Node.js 22 ou mais recente e de internet para o primeiro passo.
 
 ## Versões com que foi testado
 
-Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 7 de outubro de 2026, e de novo com o Express 5.3.0, a versão que o `npm install` instala desde então, a 12 de outubro de 2026.
+Reensaiado a 20 de outubro de 2026, com Node 24.22.0 e npm 11.20.0, em macOS. Os pedidos HTTP foram feitos por programa numa cópia descartável, com as versões do `package-lock.json`. O ensaio não incluiu um browser gráfico, Windows nem a rede da escola.
+
+Os ensaios anteriores ficaram registados assim:
+
+Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 7 de outubro de 2026. De novo com o Express 5.3.0, a versão que o `npm ci` instala desde então, a 12 de outubro de 2026.
 
 ![Rodapé](../../../imagens/rodape.png)

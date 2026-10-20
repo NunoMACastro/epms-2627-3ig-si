@@ -4,25 +4,32 @@
 
 Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](06-cookies-e-sessoes.md) e de fazeres o [laboratório](06-cookies-e-sessoes-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos.
 
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
+
+## O que precisas de saber
+
+O [guia](06-cookies-e-sessoes.md) e o [laboratório](06-cookies-e-sessoes-laboratorio.md) deste tema.
+
 ## Objetivo e contexto
 
-No balcão da biblioteca há um computador partilhado, que várias funcionárias usam ao longo do dia. A biblioteca quer que a página inicial mostre os três livros vistos mais recentemente nesse browser, para se voltar depressa a um livro que se estava a consultar, e um botão para apagar esse histórico.
+No balcão da biblioteca há um computador partilhado, que várias funcionárias usam ao longo do dia. A biblioteca quer que a página inicial mostre os três livros vistos mais recentemente nesse browser, para se voltar depressa a um livro que se estava a consultar. E um botão para apagar esse histórico.
 
-Não é um pedido em curso, como no guia: não se junta nada para confirmar no fim, e nada acaba com uma confirmação. É uma lembrança do que se fez, e isso obriga a decisões que o guia não tomou: quanto tempo deve durar a sessão num computador partilhado, por que ordem se mostram os livros, o que fazer a um livro visto duas vezes, e se apagar o histórico é o mesmo que terminar a sessão.
+Não é um pedido em curso, como no guia: não se junta nada para confirmar no fim. E nada acaba com uma confirmação. É uma lembrança do que se fez. Isso obriga a decisões novas. Quanto dura a sessão num computador partilhado? Em que ordem mostras os livros? O que fazes a um livro visto duas vezes? Apagar o histórico termina a sessão inteira?
 
 ## Como trabalhar
 
+Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
+
 Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas, e só depois experimenta. Usa uma janela normal e uma anónima para teres duas sessões, e o separador dos cookies do browser para ver o que lá está.
 
-Se o teu servidor da biblioteca não tiver tudo o que a ficha anterior pedia, os exercícios 3 a 5 só precisam do array `livros`, da rota `GET /livros/:id` com a sua página, e da página inicial com os partials.
+Podes continuar mesmo sem ter tudo o que a ficha anterior pedia. Os exercícios 3 a 5 só precisam do array `livros`, da rota `GET /livros/:id` com a sua página. Precisas também da página inicial com os partials.
 
-Tempo previsto: 80 minutos para os exercícios 1 a 6.
 
 ## Exercício 1: onde fica cada informação
 
 Guia: secções "O HTTP não se lembra de nada", "O pedido fica no servidor, e o cookie só leva o número" e "Uma sessão não é uma autenticação".
 
-Para cada informação, diz onde a guardas: numa variável do servidor (a mesma para todos os browsers), na sessão (no servidor, uma para cada browser), no cookie, ou em lado nenhum. Justifica numa frase.
+Para cada informação, escolhe onde a guardas. As opções são uma variável do servidor, a sessão, o cookie ou nenhum destes sítios. A variável é comum a todos os browsers. A sessão fica no servidor, uma por browser. Justifica numa frase.
 
 1. A lista dos livros da biblioteca.
 2. Os livros vistos recentemente neste browser.
@@ -47,7 +54,7 @@ A biblioteca do fim desta ficha está a correr, com a sessão a expirar ao fim d
 
 Guia: secção "A sessão com o express-session" e exemplo guiado, passo 1.
 
-Acrescenta a sessão à biblioteca: o `express-session`, o `.env.example` e o `.env` com o `SESSION_SECRET`, o servidor a recusar arrancar sem o segredo, e o middleware das sessões no sítio certo. Arranca com `node --watch --env-file=.env server.js`.
+Acrescenta a sessão à biblioteca: o `express-session`, o `.env.example` e o `.env` com o `SESSION_SECRET`, o servidor a recusar arrancar sem o segredo. O middleware das sessões no sítio certo. Arranca com `node --watch --env-file=.env server.js`.
 
 Escreve, ao lado de cada opção do middleware, um comentário com a razão do valor, como no guia. Duas decisões são tuas, e são diferentes das do catálogo:
 
@@ -85,6 +92,17 @@ A decisão: destruir a sessão inteira, com o `req.session.destroy`, ou apagar s
 
 Guia: secções "O que o middleware faz a cada pedido" e "Erros frequentes". Os dois erros deste exercício não estão nos erros frequentes do guia.
 
+Antes de leres o erro, conhece `unshift`: é um método que acrescenta um elemento no início de um array já existente. `push` acrescenta no fim. Neste exemplo de números, prevê a ordem que aparece:
+
+```js
+// Um ensaio de unshift num array de números, independente da biblioteca.
+const numeros = [4, 7];
+numeros.unshift(2);
+console.log(numeros);
+```
+
+O resultado é `[2, 4, 7]`. Primeiro o array contém 4 e 7; `unshift(2)` coloca o 2 antes deles e mantém a ordem dos restantes. O array passou a ter três elementos.
+
 Um colega fez os exercícios 3 a 5, e a biblioteca dele tem dois problemas.
 
 O primeiro: a página inicial abre bem, mas a primeira vez que se abre a página de um livro, dá 500, com `TypeError: Cannot read properties of undefined (reading 'unshift')`. A rota do livro dele termina assim:
@@ -103,15 +121,34 @@ O segundo: com o primeiro corrigido, as páginas dos livros e a lista funcionam,
 3. No catálogo do guia, o mesmo engano com o `itensNoPedido` faria falhar todas as páginas. Porquê a diferença?
 4. Onde deve ficar o middleware?
 
-## Para ires mais longe
+## Apoio
 
-Este exercício é opcional e não conta para o tempo da ficha.
+- Exercício 1: Pergunta se a informação pertence a todos ou só a este browser.
+- Exercício 2: Segue separadamente as duas janelas e a vida do servidor.
+- Exercício 3: Liga o nome e a duração ao uso do balcão partilhado.
+- Exercício 4: Testa um repetido, o quarto acesso e um livro inexistente.
+- Exercício 5: Pensa no que mais pode estar guardado na mesma sessão.
+- Exercício 6: Segue a ordem dos middlewares e confirma se a lista já existe antes de a usar.
+
+## Desafio opcional
+
+Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 **O leitor lembrado.** Depois de um empréstimo certo, o número de leitor fica guardado na sessão, e o formulário de empréstimo seguinte já o traz preenchido. Implementa-o. Depois, pensa no computador partilhado do balcão: a funcionária seguinte vê o número de leitor da anterior. Isto é um problema? O que limita esse problema na tua configuração? Escreve a tua resposta no caderno, e diz se mantinhas esta funcionalidade.
 
-## Entrega e autoavaliação
+## Critérios de conclusão
+
+- Os exercícios obrigatórios estão resolvidos, com as decisões pedidas por escrito.
+- O servidor responde aos casos de teste do enunciado.
+- Cada erro encontrado tem um caso reproduzível e uma explicação da causa.
+- A entrega inclui os ficheiros pedidos e exclui `node_modules` e segredos.
+
+## Entrega
+
 
 Entrega as respostas dos exercícios 1, 2 e 6, as decisões dos exercícios 3 a 5, e a pasta da biblioteca: o `server.js`, a pasta `views` e o `.env.example`. Não entregues o `.env` nem a pasta `node_modules`.
+
+## Autoavaliação
 
 No fim, responde por escrito:
 

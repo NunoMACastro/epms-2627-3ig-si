@@ -4,15 +4,23 @@
 
 Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](04-ejs-e-reutilizacao-no-servidor.md) e de fazeres o [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
 
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
+
+## O que precisas de saber
+
+O [guia](04-ejs-e-reutilizacao-no-servidor.md) e o [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md) deste tema.
+
 ## Objetivo e contexto
 
-O servidor da biblioteca responde, por agora, com JSON: a lista dos livros, com o filtro `?disponivel=`, os livros disponíveis, um livro de cada vez e os erros. Nesta ficha passa a responder com páginas, como o catálogo do guia. Pelo caminho, tens de tomar decisões que o catálogo não tomou: como mostrar um valor que é `true` ou `false` a quem lê a página, como usar o mesmo modelo em duas rotas diferentes, e como mostrar, numa página de erro, um valor que veio do pedido.
+O servidor da biblioteca responde, por agora, com JSON: a lista dos livros, com o filtro `?disponivel=`, os livros disponíveis, um livro de cada vez e os erros. Nesta ficha passa a responder com páginas, como o catálogo do guia. Pelo caminho, tens de tomar decisões que o catálogo não tomou. Como mostras um valor `true` ou `false` a quem lê a página? Como usas o mesmo modelo em duas rotas diferentes? Como mostras, numa página de erro, um valor que veio do pedido?
 
 ## Como trabalhar
 
+Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
+
 Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas ver, e só depois abre o browser. Usa o código-fonte da página e o separador Rede para confirmar o que chegou e com que código.
 
-Se o teu servidor da biblioteca não tiver tudo o que a ficha do tema anterior pedia, não faz mal: os exercícios 3 a 5 só precisam do array `livros`, da rota `/` e da rota `/livros/:id` com as suas verificações. O array é este:
+Podes fazer os exercícios mesmo que a tua biblioteca ainda não tenha tudo o que a ficha anterior pedia. Os exercícios 3 a 5 só precisam do array `livros`, da rota `/` e da rota `/livros/:id` com as suas verificações. O array é este:
 
 ```js
 const livros = [
@@ -22,7 +30,6 @@ const livros = [
 ];
 ```
 
-Tempo previsto: 70 minutos para os exercícios 1 a 6.
 
 ## Exercício 1: prever a página
 
@@ -62,7 +69,7 @@ Para cada valor, diz se entra na página com `<%=` ou com `<%-`, e justifica num
 
 Guia: exemplo guiado, passos 1 a 3 e 6.
 
-Prepara a biblioteca para o EJS (o `npm install ejs`, o `app.set` e a pasta `views`) e cria o modelo `views/livros.ejs`, com o título e a lista dos livros. Cada livro mostra o título, o autor e o estado, escrito como "disponível" ou "emprestado", e nunca como `true` ou `false`: quem lê a página não sabe o que é um booleano.
+Prepara a biblioteca para o EJS (o `npm install ejs@7.0.1`, o `app.set` e a pasta `views`) e cria o modelo `views/livros.ejs`, com o título e a lista dos livros. Cada livro mostra o título, o autor e o estado, escrito como "disponível" ou "emprestado". Nunca como `true` ou `false`: quem lê a página não sabe o que é um booleano.
 
 Muda as rotas:
 
@@ -86,7 +93,7 @@ Guia: exemplo guiado, passos 4 e 6.
 
 Cria o modelo `views/livro.ejs`, com o título do livro como título da página, o autor e o estado, escrito como no exercício 3. Na página da lista, o título de cada livro passa a ser uma ligação para a sua página.
 
-A rota `GET /livros/:id` responde com esta página, e os seus três erros passam a usar o `erro.ejs` do exercício 3, com os mesmos códigos e as mesmas duas mensagens de 400 da ficha anterior, uma para cada regra do identificador. Usa um só modelo de erro para os três casos.
+A rota `GET /livros/:id` responde com esta página. Os três erros passam a usar o `erro.ejs` do exercício 3. Mantém os códigos e as duas mensagens de 400 da ficha anterior, uma para cada regra do identificador. Usa um só modelo de erro para os três casos.
 
 **Resultado esperado:**
 
@@ -105,7 +112,7 @@ Guia: secção "Partes partilhadas: o cabeçalho e o rodapé" e exemplo guiado, 
 2. A rota `/` deixa de responder com texto e passa a responder com uma página inicial, `views/inicio.ejs`, com uma frase sobre a biblioteca.
 3. O middleware final passa a responder com a página de erro, com o 404 e uma mensagem tua.
 
-Antes de dares o exercício por acabado, abre todas as páginas da biblioteca, incluindo as de erro, e confirma que nenhuma ficou sem menu, sem rodapé ou com o título errado no separador do browser.
+Antes de dares o exercício por acabado, abre todas as páginas da biblioteca, incluindo as de erro. Confirma que nenhuma ficou sem menu, sem rodapé ou com o título errado no separador do browser.
 
 ## Exercício 6: encontrar os erros
 
@@ -132,15 +139,34 @@ O segundo: depois de mudar o estado de cada livro, todas as rotas que mostram a 
 4. Encontra o erro e escreve a linha corrigida.
 5. Porque é que esta mensagem aparece em todas as rotas que usam o `livros.ejs`, e a do primeiro problema só aparecia numa?
 
-## Para ires mais longe
+## Apoio
 
-Este exercício é opcional e não conta para o tempo da ficha.
+- Exercício 1: Segue um livro de cada vez e separa o modelo do HTML produzido.
+- Exercício 2: Distingue os ficheiros escritos por ti dos valores recebidos.
+- Exercício 3: Compara o que cada rota precisa de passar ao mesmo modelo.
+- Exercício 4: Separa a validade do identificador da existência do livro.
+- Exercício 5: Confere cada página, incluindo os erros.
+- Exercício 6: Compara os nomes de cada propriedade e as chavetas, sem mudar várias coisas de uma vez.
+
+## Desafio opcional
+
+Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 **A contagem.** Na página de todos os livros, por cima da lista, a frase "3 livros, 2 disponíveis". Decide onde se fazem as duas contas: na rota, que passa os números ao modelo, ou no modelo, a partir da lista. Escreve a tua decisão e a razão, com a secção "Ciclos e condições dentro do modelo" do guia ao lado, e implementa-a. A frase também deve aparecer bem quando só houver um livro.
 
-## Entrega e autoavaliação
+## Critérios de conclusão
+
+- Os exercícios obrigatórios estão resolvidos, com as decisões pedidas por escrito.
+- O servidor responde aos casos de teste do enunciado.
+- Cada erro encontrado tem um caso reproduzível e uma explicação da causa.
+- A entrega inclui os ficheiros pedidos e exclui `node_modules` e segredos.
+
+## Entrega
+
 
 Entrega as respostas dos exercícios 1, 2 e 6 e a pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`. Não entregues a pasta `node_modules`.
+
+## Autoavaliação
 
 No fim, responde por escrito:
 

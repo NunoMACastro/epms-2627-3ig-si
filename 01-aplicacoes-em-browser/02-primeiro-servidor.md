@@ -2,7 +2,7 @@
 
 # Primeiro servidor
 
-Módulo Aplicações baseadas em browsers. Segundo tema do módulo, com três aulas de 60 minutos. Este guia explica o que é o Node.js, como se prepara uma pasta para um servidor e como funciona, linha a linha, um servidor com duas rotas. Os passos para o fazeres no teu computador estão no [laboratório](02-primeiro-servidor-laboratorio.md), e os exercícios para fazeres sozinho estão na [ficha](02-primeiro-servidor-exercicios.md).
+Módulo Aplicações baseadas em browsers. Vais perceber o que é o Node.js e ler um servidor Express com duas rotas, desde o arranque até à resposta. Para construir o teu, segue o [laboratório](02-primeiro-servidor-laboratorio.md). Depois pratica com a [ficha de exercícios](02-primeiro-servidor-exercicios.md).
 
 ## Neste guia
 
@@ -19,12 +19,13 @@ Módulo Aplicações baseadas em browsers. Segundo tema do módulo, com três au
 11. Erros de arranque e como os ler
 12. Este servidor não usa await
 13. Erros frequentes
-14. Verificar o que aprendeste
-15. O que vem a seguir
+14. Palavras novas deste guia
+15. Verificar o que aprendeste
+16. O que vem a seguir
 
 ## O que vais aprender
 
-No primeiro tema desenhaste a conversa entre o browser e o servidor do lado de quem a vê, no browser. Neste tema passas para o outro lado: escreves o programa que fica à espera dos pedidos e lhes responde. É um servidor pequeno, com os equipamentos da escola guardados num array, ainda sem base de dados, e o browser fala com ele exatamente como fala com a Wikipédia: pelo mesmo HTTP, com pedidos e respostas como os que o primeiro tema descreveu.
+No primeiro tema desenhaste a conversa entre o browser e o servidor do lado de quem a vê, no browser. Neste tema passas para o outro lado: escreves o programa que fica à espera dos pedidos e lhes responde. É um servidor pequeno, com os equipamentos da escola guardados num array, ainda sem base de dados. E o browser fala com ele exatamente como fala com a Wikipédia: pelo mesmo HTTP, com pedidos e respostas como os que o primeiro tema descreveu.
 
 No fim deste guia deves conseguir:
 
@@ -37,7 +38,12 @@ No fim deste guia deves conseguir:
 
 ## O que já sabes e vais usar
 
-Do primeiro tema: os três programas (browser, servidor de aplicação e servidor de dados), o pedido e a resposta, a porta, as partes de um endereço, o método `GET`, os códigos de estado e a diferença entre "ligação recusada", em que nenhum programa respondeu, e um 404, em que um servidor respondeu a dizer que não tem o que se pediu. Se alguma destas ideias não estiver firme, relê a secção correspondente do [guia do primeiro tema](01-do-pedido-a-resposta.md) antes de continuares.
+Do [guia Do pedido à resposta](01-do-pedido-a-resposta.md):
+
+- os papéis do browser, do servidor de aplicação e do servidor de dados;
+- o pedido e a resposta HTTP, o método `GET` e os códigos de estado;
+- as partes de um endereço e o papel da porta;
+- a diferença entre ligação recusada e uma resposta 404.
 
 De JavaScript, dos anos anteriores:
 
@@ -47,7 +53,13 @@ De JavaScript, dos anos anteriores:
 - os textos com crases e `${ }`, como `` `Olá, ${nome}` ``, que metem o valor de uma variável no meio de um texto;
 - módulos, com `import` e `export`, que juntam código de vários ficheiros.
 
-Do terminal: abrir um terminal, ver em que pasta estás, mudar de pasta com `cd` e correr um comando.
+Do terminal, usado nas aulas anteriores:
+
+- abrir um terminal;
+- confirmar a pasta atual;
+- mudar de pasta com `cd` e correr um comando.
+
+O laboratório volta a mostrar estas ações quando precisa delas.
 
 A preparação completa de um projeto, com scripts, ficheiros de configuração, segredos fora do código e Git, é matéria de Linguagens de Programação. Neste tema fazes só o mínimo para um servidor correr, e o resto aproveita-se de lá quando for preciso.
 
@@ -55,15 +67,15 @@ A preparação completa de um projeto, com scripts, ficheiros de configuração,
 
 ### A linguagem e o sítio onde corre
 
-Até agora, quase todo o JavaScript que escreveste correu dentro do browser. O browser traz um programa que lê JavaScript e o executa, e dá a esse JavaScript acesso à página: o `document`, para encontrar e mudar elementos, o `window`, os eventos de clique.
+Até agora, quase todo o JavaScript que escreveste correu dentro do browser. O browser traz um programa que lê JavaScript e o executa. E dá a esse JavaScript acesso à página: o `document`, para encontrar e mudar elementos, o `window`, os eventos de clique.
 
-O **Node.js** é um programa que executa JavaScript fora do browser, diretamente no sistema operativo do computador. A linguagem é a mesma: as variáveis, as funções, os arrays e os objetos escrevem-se da mesma maneira. O que muda é o que está à volta. No Node não há página, e por isso não há `document` nem `window`. Em troca, há coisas que o browser não deixa fazer, por boas razões de segurança: ler e escrever ficheiros do disco, abrir ligações de rede e, o que interessa neste módulo, ficar à escuta numa porta, à espera de pedidos.
+O **Node.js** é um programa que executa JavaScript fora do browser, diretamente no sistema operativo do computador. A linguagem é a mesma: as variáveis, as funções, os arrays e os objetos escrevem-se da mesma maneira. O que muda é o que está à volta. No Node não há página. E por isso não há `document` nem `window`. Em troca, o Node pode fazer coisas que o browser não permite sem restrições, por razões de segurança. Pode ler e escrever ficheiros do disco e abrir ligações de rede. Neste módulo interessa ficar à escuta numa porta, à espera de pedidos.
 
-Uma forma de arrumar a ideia: o JavaScript é a língua, e o browser e o Node são dois sítios onde essa língua se fala, cada um com as suas coisas à volta. No browser, o JavaScript serve para mexer na página que o utilizador está a ver. No Node, serve, entre outras coisas, para escrever o servidor que constrói as páginas.
+Uma forma de arrumar a ideia: o JavaScript é a língua. E o browser e o Node são dois sítios onde essa língua se fala, cada um com as suas coisas à volta. No browser, o JavaScript serve para mexer na página que o utilizador está a ver. No Node, serve, entre outras coisas, para escrever o servidor que constrói as páginas.
 
 ### Primeiro contacto
 
-Um programa em Node é um ficheiro de texto com JavaScript. Este chama-se `ola.js`:
+Um programa em Node é um ficheiro de texto com JavaScript. Este chama-se `ola.js`. Antes de o leres, prevê: escreve na página ou no terminal? Termina ou fica à espera?
 
 ```js
 // ola.js: um programa que escreve duas linhas e termina.
@@ -74,7 +86,7 @@ console.log("Este JavaScript está a correr no Node, e não num browser.");
 
 Corre-se no terminal, dentro da pasta onde está o ficheiro, com o comando `node` seguido do nome do ficheiro:
 
-```text
+```bash
 node ola.js
 ```
 
@@ -85,11 +97,13 @@ Olá, EPMS!
 Este JavaScript está a correr no Node, e não num browser.
 ```
 
-Repara em duas coisas. A primeira é onde aparece o `console.log`: no terminal, e não na consola das ferramentas de programador do browser, porque não há browser nenhum envolvido. Vai ser assim também no servidor, e é uma fonte de confusão frequente: o que o servidor escreve com `console.log` aparece no terminal onde o servidor está a correr, nunca no browser.
+Leitura guiada: lê a constante primeiro. As duas chamadas seguintes escrevem mensagens pela ordem do ficheiro. A crase inclui o valor de `escola` na primeira mensagem.
+
+Repara em duas coisas. A primeira é onde aparece o `console.log`: no terminal. E não na consola das ferramentas de programador do browser. Isto acontece porque não há browser nenhum envolvido. Vai ser assim também no servidor. E é uma fonte de confusão frequente: o que o servidor escreve com `console.log` aparece no terminal onde o servidor está a correr, nunca no browser.
 
 A segunda é que o programa termina. Fez o que tinha a fazer, de cima para baixo, e acabou. O terminal fica outra vez livre para o comando seguinte. Um servidor, como vais ver, não se comporta assim.
 
-Para saber que versão do Node tens instalada, escreve `node --version`. Este guia foi escrito e testado com a versão 24 (o terminal mostra algo como `v24.17.0`). Uma versão 22 também serve para tudo o que aqui está. As versões 20 e anteriores já não recebem correções de segurança e não devem ser usadas.
+Para saber que versão do Node tens instalada, escreve `node --version`. Usa a versão 24 adotada na disciplina. Se aparecer outra versão, confirma com o professor antes de começares.
 
 ## O que há dentro do Node
 
@@ -105,7 +119,7 @@ Lida de cima para baixo:
 - **A libuv** é uma biblioteca escrita em C que trata do que é lento: a rede e os ficheiros. Quando o teu servidor está à espera de pedidos, não está parado a olhar para a porta: entregou essa espera à libuv, que avisa quando chega um pedido. É por isso que um servidor Node consegue atender muitos pedidos ao mesmo tempo, apesar de o teu código correr numa só linha de execução.
 - **O sistema operativo**, por fim, é quem tem as portas, as ligações de rede e os ficheiros.
 
-O lado direito da imagem segue um pedido `GET /equipamentos`: chega à porta onde o servidor escuta, a libuv dá por ele, o módulo `http` lê-o e prepara dois objetos, um com o pedido e outro para a resposta, o Express escolhe a rota certa e, por fim, chama a tua função, que responde. A resposta faz o caminho inverso até ao browser. No exemplo guiado vais escrever essa última caixa, a função da rota, e tudo o resto acontece sem escreveres uma linha.
+O lado direito da imagem segue um pedido `GET /equipamentos`. Chega à porta onde o servidor escuta e a libuv dá por ele. O módulo `http` lê-o e prepara dois objetos: um com o pedido e outro para a resposta. O Express escolhe a rota certa e chama a tua função, que responde. A resposta faz o caminho inverso até ao browser. No exemplo guiado vais escrever essa última caixa, a função da rota. E tudo o resto acontece sem escreveres uma linha.
 
 ## Um programa que não acaba: o processo servidor
 
@@ -117,7 +131,7 @@ Três consequências práticas, que vais encontrar logo na primeira aula:
 
 **Uma porta, um processo.** Só um programa de cada vez pode escutar numa porta. Se ligares o servidor num terminal e, esquecido, o voltares a ligar noutro, o segundo não consegue a porta e não arranca. O primeiro continua a correr e a responder.
 
-**O Node lê o ficheiro uma vez, quando arranca.** Se mudares o `server.js` com o servidor ligado, o servidor não dá por isso: continua a correr o código que leu ao arrancar. Para ver a mudança, paras o servidor com Ctrl+C e voltas a ligá-lo. Há uma forma de o Node fazer isto sozinho, `node --watch server.js`, que reinicia o servidor sempre que guardas o ficheiro e escreve `Restarting 'server.js'` no terminal. É cómoda, mas convém primeiro perceber o que ela faz por ti.
+**O Node lê o ficheiro uma vez, quando arranca.** Se mudares o `server.js` com o servidor ligado, ele não dá por isso. Continua a correr o código que leu ao arrancar. Para ver a mudança, paras o servidor com Ctrl+C e voltas a ligá-lo. Há uma forma de o Node fazer isto sozinho, `node --watch server.js`, que reinicia o servidor sempre que guardas o ficheiro e escreve `Restarting 'server.js'` no terminal. É cómoda. Mas convém primeiro perceber o que ela faz por ti.
 
 **O que está em memória perde-se quando o processo termina.** Os equipamentos do exemplo deste tema estão num array. Se o servidor acrescentasse um equipamento a esse array, ele desapareceria ao parar o servidor. É uma das razões para haver um servidor de dados, que guarda tudo no disco: chega no segundo módulo.
 
@@ -131,9 +145,9 @@ Convém não confundir os dois comandos. `node` executa um programa JavaScript. 
 
 ### A pasta do servidor e o package.json
 
-Cada servidor vive na sua pasta, e cada pasta tem um ficheiro `package.json`, que descreve o projeto: o nome, a versão, os pacotes de que precisa e algumas regras de funcionamento. Cria-se com:
+Cada servidor vive na sua pasta. E cada pasta tem um ficheiro `package.json`, que descreve o projeto: o nome, a versão, os pacotes de que precisa e algumas regras de funcionamento. Cria-se com:
 
-```text
+```bash
 npm init -y
 ```
 
@@ -159,17 +173,17 @@ O nome vem da pasta. Os campos `main`, `scripts`, `keywords`, `author` e `licens
 
 ### Instalar o Express
 
-```text
+```bash
 npm install express
 ```
 
-O npm vai buscar o Express ao repositório de pacotes, pela internet, e escreve no fim algo como `added 65 packages`. O número exato muda um pouco de uma versão do Express para outra, mas são dezenas de pacotes para instalar um: o Express usa outros pacotes, que usam outros, e o npm traz todos. Depois do comando, a pasta tem três coisas novas:
+O npm vai buscar o Express ao repositório de pacotes, pela internet. E escreve no fim algo como `added 65 packages`. O número exato muda um pouco de uma versão do Express para outra. Mas são dezenas de pacotes para instalar um: o Express usa outros pacotes, que usam outros. E o npm traz todos. Depois do comando, a pasta tem três coisas novas:
 
 - **A pasta `node_modules`**, com o código de todos esses pacotes. É aqui que o Node os vai procurar.
-- **No `package.json`, uma secção `dependencies`**, com `"express": "^5.3.0"`. Diz que este projeto precisa do Express, na versão 5. O `^` quer dizer "a 5.3.0 ou uma mais recente, desde que continue a ser 5": uma versão 6 poderia mudar coisas de que o código depende, e por isso não é aceite.
+- **No `package.json`, uma secção `dependencies`**, com `"express": "^5.3.0"`. Diz que este projeto precisa do Express, na versão 5. O `^` quer dizer "a 5.3.0 ou uma mais recente, desde que continue a ser 5": uma versão 6 poderia mudar coisas de que o código depende. E por isso não é aceite.
 - **O ficheiro `package-lock.json`**, com a versão exata de cada um dos pacotes que foram instalados. Serve para que outra pessoa, noutro computador, instale exatamente as mesmas versões.
 
-Da pasta `node_modules`, três regras. Não se mexe lá dentro: é código dos pacotes, não teu. Não se copia nem se envia a ninguém: com o `package.json` e o `package-lock.json`, qualquer pessoa a recria com `npm install`, sem argumentos, que lê os dois ficheiros e instala o que lá está. E, por isso mesmo, não se guarda no Git: é a regra mais comum de um ficheiro `.gitignore`, que vais ver em Linguagens de Programação.
+Da pasta `node_modules`, três regras. Não se mexe lá dentro: é código dos pacotes, não teu. Não se copia nem se envia a ninguém. Com o `package.json` e o `package-lock.json`, qualquer pessoa a recria com `npm install`, sem argumentos. O comando lê os dois ficheiros e instala o que lá está. Por isso mesmo, não se guarda no Git: é a regra mais comum de um ficheiro `.gitignore`, que vais ver em Linguagens de Programação.
 
 ## Módulos ES: o import e o "type": "module"
 
@@ -191,7 +205,7 @@ O Node tem dois sistemas de módulos, por razões históricas. O mais antigo cha
 const express = require("express");
 ```
 
-O mais recente, que é também o do browser, chama-se **módulos ES** (de ECMAScript, o nome oficial do JavaScript) e usa `import` e `export`. Neste módulo usa-se sempre `import`. Vais encontrar muitos exemplos na internet escritos com `require`: fazem o mesmo, mas não se misturam os dois sistemas no mesmo ficheiro, e um exemplo com `require` não se copia para um ficheiro com `import` sem o converter.
+O mais recente, que é também o do browser, chama-se **módulos ES** (de ECMAScript, o nome oficial do JavaScript) e usa `import` e `export`. Neste módulo usa-se sempre `import`. Vais encontrar muitos exemplos na internet escritos com `require`: fazem o mesmo. Mas não se misturam os dois sistemas no mesmo ficheiro. E um exemplo com `require` não se copia para um ficheiro com `import` sem o converter.
 
 O Node precisa de saber qual dos dois sistemas um ficheiro usa, e é isso que diz o campo `"type"` do `package.json`. Com `"type": "commonjs"`, que é o que o `npm init -y` escreve, o Node lê o ficheiro como CommonJS e não aceita o `import`:
 
@@ -209,11 +223,11 @@ Por isso, depois do `npm init -y`, troca-se uma palavra no `package.json`:
 
 (No ficheiro, não se apaga o resto: muda-se só `"commonjs"` para `"module"` na linha do `"type"`.)
 
-Se o campo `"type"` não existir de todo, o Node 24 tenta adivinhar: vê o `import`, corre o ficheiro como módulo ES e escreve um aviso a pedir que acrescentes `"type": "module"`. Funciona, mas o aviso aparece em cada arranque, e outras versões do Node não adivinham. A regra deste módulo é simples: o `package.json` de um servidor tem sempre `"type": "module"`.
+Se o campo `"type"` não existir de todo, o Node 24 tenta detetar o sistema de módulos. Vê o `import`, corre o ficheiro como módulo ES e pode escrever um aviso para acrescentares `"type": "module"`. Funciona. Mas o aviso aparece em cada arranque. E outras versões do Node não adivinham. A regra deste módulo é simples: o `package.json` de um servidor tem sempre `"type": "module"`.
 
 ## O Express
 
-O módulo `http` do Node chegava para escrever um servidor. Mas obriga a fazer à mão muita coisa repetitiva: olhar para o caminho e para o método de cada pedido e decidir, com uma série de `if`, que código corre; escrever os cabeçalhos da resposta; converter os dados para JSON. O **Express** é um pacote que faz esse trabalho e deixa-te escrever só o que é teu: que caminhos o servidor conhece e o que responde a cada um. É o pacote mais usado para isto em Node, e é o deste módulo, na versão 5.
+O módulo `http` do Node chegava para escrever um servidor. Mas obriga a fazer à mão muita coisa repetitiva: olhar para o caminho e para o método de cada pedido e decidir, com uma série de `if`, que código corre. Escrever os cabeçalhos da resposta. Converter os dados para JSON. O **Express** é um pacote que faz esse trabalho e deixa-te escrever só o que é teu: que caminhos o servidor conhece e o que responde a cada um. É o pacote mais usado para isto em Node. E é o deste módulo, na versão 5.
 
 Um servidor Express tem quatro peças, e vais vê-las todas no exemplo guiado:
 
@@ -222,7 +236,7 @@ Um servidor Express tem quatro peças, e vais vê-las todas no exemplo guiado:
 - **A função da rota** recebe dois objetos, `req` e `res`. O `req` (de request, pedido) tem tudo o que veio no pedido: o caminho, os parâmetros, os cabeçalhos. O `res` (de response, resposta) tem as ferramentas para construir a resposta. As mais usadas são `res.send`, que responde com um texto, e `res.json`, que responde com dados em JSON.
 - **`app.listen(porta, função)`** liga o servidor: pede ao sistema operativo para escutar na porta e, quando conseguir, ou quando falhar, chama a função.
 
-E uma coisa que o Express faz sem lhe pedires: se chegar um pedido para um caminho e um método que nenhuma rota trata, responde `404` com uma pequena página que diz, por exemplo, `Cannot GET /nao-existe`. Não tens de escrever nada para isso acontecer.
+O Express também trata os pedidos que nenhuma rota reconhece. Responde `404` com uma pequena página que diz, por exemplo, `Cannot GET /nao-existe`. Não tens de escrever nada para isso acontecer.
 
 ## Exemplo guiado: o catálogo de equipamentos
 
@@ -239,7 +253,7 @@ O resultado esperado, escrito antes de testar: abrir `http://localhost:3000/` mo
 
 Uma pasta nova, chamada `catalogo-de-equipamentos`, e lá dentro:
 
-```text
+```bash
 npm init -y
 npm install express
 ```
@@ -248,7 +262,7 @@ No `package.json`, troca-se `"commonjs"` por `"module"`. A pasta fica com o `pac
 
 ### Passo 2: o ficheiro server.js
 
-Na mesma pasta, o ficheiro `server.js`:
+Antes de leres o servidor, prevê: o que acontece ao pedir `/equipamentos`? E ao pedir `/nao-existe`? Na mesma pasta, o ficheiro `server.js` completo é:
 
 ```js
 // server.js: o primeiro servidor do catálogo de equipamentos da escola.
@@ -293,6 +307,8 @@ O mesmo código, com o `package.json` e o `package-lock.json`, está na pasta de
 
 ### Passo 3: o código, linha a linha
 
+Leitura guiada: começa pela preparação, depois pelas duas rotas e termina no `listen`. As secções seguintes separam essas peças para perceberes quando cada uma corre.
+
 `import express from "express";` vai buscar o Express à pasta `node_modules`. Sem o `npm install`, ou sem `"type": "module"`, é nesta linha que o servidor falha.
 
 `const app = express();` cria a aplicação. A partir daqui, tudo o que diz respeito ao servidor passa por `app`.
@@ -309,7 +325,7 @@ O mesmo código, com o `package.json` e o `package-lock.json`, está na pasta de
 
 `res.json(equipamentos);` responde com o array. O `res.json` converte o array para texto em JSON e põe o cabeçalho `Content-Type: application/json`, que diz ao browser que o corpo são dados e não uma página. Responde-se em JSON porque, por agora, o que interessa é ver os dados a sair do servidor. No tema 4, a mesma rota passa a construir uma página HTML a partir deste array, com uma linha por equipamento.
 
-Nas duas funções, o parâmetro `req` não é usado. Está lá porque o Express passa sempre os dois objetos pela mesma ordem, primeiro o pedido e depois a resposta, e a função só chega ao segundo se declarar o primeiro. No próximo tema vais usá-lo, para ler o que vem no endereço.
+Nas duas funções, o parâmetro `req` não é usado. Está lá porque o Express passa sempre os dois objetos pela mesma ordem, primeiro o pedido e depois a resposta. E a função só chega ao segundo se declarar o primeiro. No próximo tema vais usá-lo, para ler o que vem no endereço.
 
 `app.listen(PORTA, (erro) => { ... });` liga o servidor. Pede ao sistema operativo a porta 3000 e, quando tiver uma resposta, chama a função. Se correu bem, `erro` não tem nada e a função escreve no terminal o endereço do servidor. Se correu mal, por exemplo porque outro programa já está a usar a porta, `erro` traz a descrição do problema e a função escreve-a.
 
@@ -317,17 +333,17 @@ O `if (erro)` faz falta. Na versão 5 do Express, esta função é chamada nos d
 
 ### Passo 4: a ordem em que as coisas acontecem
 
-Quando escreves `node server.js`, o Node corre o ficheiro de cima para baixo, uma vez: faz o `import`, cria a aplicação, cria o array, regista as duas rotas (sem as executar), pede a porta e escreve a mensagem. A partir daí, o ficheiro já foi todo lido, mas o processo não termina, porque está à escuta.
+Quando escreves `node server.js`, o Node corre o ficheiro de cima para baixo, uma vez. Faz o `import`, cria a aplicação e o array. Depois regista as duas rotas, sem as executar, pede a porta e escreve a mensagem. A partir daí, o ficheiro já foi todo lido. Mas o processo não termina. Isto acontece porque está à escuta.
 
 Cada vez que chega um pedido, o Express olha para o método e para o caminho, procura entre as rotas registadas e chama a função da que corresponder. Depois de responder, volta a esperar.
 
-Há, portanto, dois momentos diferentes no mesmo ficheiro. O momento do arranque, que acontece uma vez, e o momento de cada pedido, que acontece tantas vezes quantas os pedidos. Saber em qual dos dois uma linha corre é o que te permite perceber muitos erros: um erro numa linha do arranque impede o servidor de ligar; um erro dentro da função de uma rota só aparece quando alguém pede essa rota.
+Há, portanto, dois momentos diferentes no mesmo ficheiro. O momento do arranque, que acontece uma vez. E o momento de cada pedido, que acontece tantas vezes quantas os pedidos. Saber em qual dos dois uma linha corre é o que te permite perceber muitos erros: um erro numa linha do arranque impede o servidor de ligar. Um erro dentro da função de uma rota só aparece quando alguém pede essa rota.
 
 ### Passo 5: ligar e observar no terminal
 
 Na pasta do projeto:
 
-```text
+```bash
 node server.js
 ```
 
@@ -416,7 +432,7 @@ No arranque. O Node procurou o Express em `node_modules` e não o encontrou. Há
 Error: Cannot find module '.../server.js'
 ```
 
-No arranque, antes de qualquer linha do teu código. O Node procurou o `server.js` na pasta onde estás no terminal, e ele não está lá. Estás noutra pasta. Confirma em que pasta estás com `pwd` (no Mac, no Linux e na PowerShell do Windows) ou com `cd` sem mais nada (na linha de comandos clássica do Windows), e muda para a pasta do projeto com `cd`.
+No arranque, antes de qualquer linha do teu código. O Node procurou o `server.js` na pasta onde estás no terminal. E ele não está lá. Estás noutra pasta. Confirma em que pasta estás com `pwd` (no Mac, no Linux e na PowerShell do Windows) ou com `cd` sem mais nada (na linha de comandos clássica do Windows). E muda para a pasta do projeto com `cd`.
 
 ### A porta ocupada
 
@@ -438,7 +454,7 @@ No arranque, com o número da linha. Escreveste `app.gett` em vez de `app.get`. 
 
 Se o nome mal escrito estiver dentro da função de uma rota, por exemplo `res.sendd` em vez de `res.send`, o servidor arranca sem problemas e escreve a mensagem do `listen`. O erro só acontece quando alguém pede essa rota: nesse momento, o terminal mostra `TypeError: res.sendd is not a function` e o browser recebe uma resposta `500`, com uma página que mostra o mesmo erro. O servidor continua a correr e as outras rotas continuam a responder.
 
-É o exemplo mais claro dos dois momentos do Passo 4. E é também uma razão de segurança para, mais à frente no módulo, não deixar o servidor mostrar estes pormenores ao browser: dizem a quem está do lado de fora como o servidor está feito por dentro.
+É o exemplo mais claro dos dois momentos do Passo 4. Há também uma razão de segurança para mais à frente esconder estes pormenores do browser. Dizem a quem está do lado de fora como o servidor está feito por dentro.
 
 ### Mudei o código e não aconteceu nada
 
@@ -482,6 +498,27 @@ Abrir o `server.js` no browser, com duplo clique, mostra o ficheiro como texto, 
 
 Os dois sistemas de módulos não se misturam. Se copiares um exemplo com `require`, converte-o para `import` antes de o usares.
 
+## Palavras novas deste guia
+
+- **Node.js**: programa que executa JavaScript fora do browser.
+- **V8**: motor que lê e executa o JavaScript no Node e no Chrome.
+- **libuv**: biblioteca que ajuda o Node a acompanhar a rede e os ficheiros sem bloquear à espera deles.
+- **Processo**: programa que está a correr.
+- **Pacote**: código preparado por outras pessoas para ser instalado e usado num projeto.
+- **npm**: programa que instala e organiza os pacotes de um projeto Node.
+- **Dependência**: pacote de que o teu projeto precisa para funcionar.
+- **`package.json`**: ficheiro que descreve o projeto, as dependências e algumas regras de funcionamento.
+- **`package-lock.json`**: ficheiro com as versões exatas dos pacotes instalados.
+- **`node_modules`**: pasta onde ficam os pacotes instalados.
+- **Módulo ES**: ficheiro que partilha código com `import` e `export`.
+- **CommonJS**: sistema de módulos mais antigo do Node, que usa `require`.
+- **Express**: pacote que escolhe as rotas e ajuda a construir respostas HTTP.
+- **Handler**: função que trata um pedido quando o Express encontra a rota correspondente.
+- **JSON**: formato de texto para representar dados, como objetos e arrays.
+- **Arranque**: momento em que o Node lê o ficheiro, prepara a aplicação e começa a escutar.
+- **`req`**: objeto com os dados do pedido que o Express entrega à função da rota.
+- **`res`**: objeto com os métodos que a função da rota usa para construir a resposta.
+
 ## Verificar o que aprendeste
 
 1. Que diferenças há entre correr JavaScript no browser e no Node? Dá um exemplo de uma coisa que só existe num dos dois.
@@ -497,7 +534,7 @@ Os dois sistemas de módulos não se misturam. Se copiares um exemplo com `requi
 
 ## O que vem a seguir
 
-No tema 3, HTTP, rotas e middleware, o servidor passa a usar o `req`. Vais escrever rotas que leem partes do endereço, como o número do equipamento em `/equipamentos/2` e o filtro em `/equipamentos?sala=B12`, e que escolhem o código de estado da resposta, como um 404 quando o equipamento pedido não existe. Vais também observar estes pedidos no browser, como no primeiro tema, e conhecer o middleware, que é código que corre antes das rotas.
+No tema 3, HTTP, rotas e middleware, o servidor passa a usar o `req`. Vais escrever rotas que leem partes do endereço, como o número do equipamento em `/equipamentos/2` e o filtro em `/equipamentos?sala=B12`. E que escolhem o código de estado da resposta, como um 404 quando o equipamento pedido não existe. Vais também observar estes pedidos no browser, como no primeiro tema. E conhecer o middleware, que é código que corre antes das rotas.
 
 Antes disso, faz o [laboratório](02-primeiro-servidor-laboratorio.md), em que constróis este servidor do zero e provocas, de propósito, os erros da secção 11, e a [ficha](02-primeiro-servidor-exercicios.md), com o servidor da biblioteca.
 
