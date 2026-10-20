@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1020" viewBox="0 0 1600 1020" font-family="Helvetica, Arial, sans-serif" fill="#222222">
+  <rect x="0" y="0" width="1600" height="1020" fill="#FFFFFF"/>
+
+  <!-- Título -->
+  <text x="40" y="55" font-size="34" font-weight="bold">Arquitetura do Node.js</text>
+  <text x="40" y="88" font-size="18" fill="#555555">O que está por baixo de <tspan font-family="Menlo, Consolas, monospace" fill="#222222">node server.js</tspan></text>
+
+  <!-- Chavetas laterais -->
+  <g stroke="#888888" stroke-width="2" fill="none">
+    <path d="M 88 122 L 80 122 L 80 373 L 88 373"/>
+    <path d="M 88 392 L 80 392 L 80 743 L 88 743"/>
+  </g>
+  <text transform="translate(64 248) rotate(-90)" text-anchor="middle" font-size="16" font-weight="bold" fill="#666666">JavaScript</text>
+  <text transform="translate(64 568) rotate(-90)" text-anchor="middle" font-size="16" font-weight="bold" fill="#666666">C e C++</text>
+
+  <!-- Camada 1: o teu código -->
+  <rect x="100" y="120" width="900" height="120" rx="10" fill="#FFF6D6" stroke="#D4A017" stroke-width="2"/>
+  <text x="120" y="152" font-size="22" font-weight="bold" fill="#7A5A00">O teu código</text>
+  <text x="120" y="178" font-size="16">Escrito por ti e pelos autores dos pacotes que instalas com o npm.</text>
+  <g font-size="15">
+    <rect x="120" y="194" width="110" height="32" rx="16" fill="#FFFFFF" stroke="#D4A017"/>
+    <text x="175" y="215" text-anchor="middle" font-family="Menlo, Consolas, monospace">server.js</text>
+    <rect x="242" y="194" width="96" height="32" rx="16" fill="#FFFFFF" stroke="#D4A017"/>
+    <text x="290" y="215" text-anchor="middle" font-family="Menlo, Consolas, monospace">express</text>
+    <rect x="350" y="194" width="268" height="32" rx="16" fill="#FFFFFF" stroke="#D4A017"/>
+    <text x="484" y="215" text-anchor="middle">outros pacotes (<tspan font-family="Menlo, Consolas, monospace">node_modules</tspan>)</text>
+  </g>
+
+  <!-- Camada 2: módulos do Node -->
+  <rect x="100" y="255" width="900" height="120" rx="10" fill="#E3F4E1" stroke="#3C9A3C" stroke-width="2"/>
+  <text x="120" y="287" font-size="22" font-weight="bold" fill="#1E5E1E">Módulos do Node.js</text>
+  <text x="120" y="313" font-size="16">Vêm com o Node e não se instalam. O Express é construído por cima do módulo http.</text>
+  <g font-size="15" font-family="Menlo, Consolas, monospace">
+    <rect x="120" y="329" width="70" height="32" rx="16" fill="#FFFFFF" stroke="#3C9A3C"/>
+    <text x="155" y="350" text-anchor="middle">http</text>
+    <rect x="202" y="329" width="56" height="32" rx="16" fill="#FFFFFF" stroke="#3C9A3C"/>
+    <text x="230" y="350" text-anchor="middle">fs</text>
+    <rect x="270" y="329" width="70" height="32" rx="16" fill="#FFFFFF" stroke="#3C9A3C"/>
+    <text x="305" y="350" text-anchor="middle">path</text>
+    <rect x="352" y="329" width="84" height="32" rx="16" fill="#FFFFFF" stroke="#3C9A3C"/>
+    <text x="394" y="350" text-anchor="middle">events</text>
+    <rect x="448" y="329" width="84" height="32" rx="16" fill="#FFFFFF" stroke="#3C9A3C"/>
+    <text x="490" y="350" text-anchor="middle">crypto</text>
+    <rect x="544" y="329" width="84" height="32" rx="16" fill="#FFFFFF" stroke="#3C9A3C"/>
+    <text x="586" y="350" text-anchor="middle">timers</text>
+    <text x="644" y="350" font-family="Helvetica, Arial, sans-serif" fill="#555555">e outros</text>
+  </g>
+
+  <!-- Camada 3: bindings -->
+  <rect x="100" y="390" width="900" height="80" rx="10" fill="#EEE8F7" stroke="#7B5EA7" stroke-width="2"/>
+  <text x="120" y="422" font-size="22" font-weight="bold" fill="#4B3473">Bindings em C++</text>
+  <text x="120" y="450" font-size="16">A ponte: ligam as funções JavaScript ao código em C e C++ que faz o trabalho.</text>
+
+  <!-- Camada 4: V8, libuv e outras bibliotecas -->
+  <rect x="100" y="485" width="290" height="260" rx="10" fill="#E1ECFA" stroke="#3B6FB6" stroke-width="2"/>
+  <text x="120" y="522" font-size="24" font-weight="bold" fill="#1F4A85">V8</text>
+  <g font-size="15">
+    <text x="120" y="556">Motor de JavaScript da Google,</text>
+    <text x="120" y="577">o mesmo do Chrome.</text>
+    <text x="120" y="609">Lê o teu JavaScript, compila-o</text>
+    <text x="120" y="630">e executa-o.</text>
+    <text x="120" y="662">Tem a pilha de chamadas</text>
+    <text x="120" y="683">(call stack) e a memória (heap).</text>
+  </g>
+
+  <rect x="405" y="485" width="300" height="260" rx="10" fill="#FDE9DA" stroke="#D9772B" stroke-width="2"/>
+  <text x="425" y="522" font-size="24" font-weight="bold" fill="#8A4210">libuv</text>
+  <g font-size="15">
+    <text x="425" y="556">Biblioteca em C que dá ao Node</text>
+    <text x="425" y="577">o event loop (à direita).</text>
+    <text x="425" y="609">Rede: entrega o trabalho ao sistema</text>
+    <text x="425" y="630">operativo, sem bloquear o código.</text>
+    <text x="425" y="662">Ficheiros, DNS, compressão:</text>
+    <text x="425" y="683">usa uma pool de 4 threads</text>
+    <text x="425" y="704">(thread pool).</text>
+  </g>
+
+  <rect x="720" y="485" width="280" height="260" rx="10" fill="#EEEEEE" stroke="#8A8A8A" stroke-width="2"/>
+  <text x="740" y="522" font-size="22" font-weight="bold" fill="#444444">Outras bibliotecas</text>
+  <g font-size="15">
+    <text x="740" y="560"><tspan font-weight="bold">llhttp</tspan>: lê os pedidos HTTP</text>
+    <text x="740" y="592"><tspan font-weight="bold">OpenSSL</tspan>: HTTPS e criptografia</text>
+    <text x="740" y="624"><tspan font-weight="bold">zlib</tspan>: compressão</text>
+    <text x="740" y="656"><tspan font-weight="bold">c-ares</tspan>: DNS</text>
+  </g>
+
+  <!-- Camada 5: sistema operativo -->
+  <rect x="100" y="760" width="900" height="80" rx="10" fill="#4A4F57" stroke="#33373D" stroke-width="2"/>
+  <text x="120" y="792" font-size="22" font-weight="bold" fill="#FFFFFF">Sistema operativo</text>
+  <text x="120" y="820" font-size="16" fill="#FFFFFF">Windows, macOS ou Linux: ficheiros, rede (portas e ligações), processos.</text>
+
+  <!-- Painel do event loop -->
+  <rect x="1040" y="120" width="520" height="720" rx="10" fill="#FAFAFA" stroke="#CCCCCC" stroke-width="2"/>
+  <text x="1060" y="155" font-size="22" font-weight="bold">O event loop</text>
+  <text x="1060" y="180" font-size="15" fill="#555555">Faz parte da libuv. Em cada volta passa por estas fases:</text>
+
+  <circle cx="1300" cy="365" r="140" fill="none" stroke="#D9772B" stroke-width="2.5"/>
+  <g fill="#D9772B">
+    <path d="M 1389.6 257.0 L 1380.7 241.9 L 1372.5 253.3 Z"/>
+    <path d="M 1430.4 416.9 L 1442.0 403.8 L 1428.7 399.5 Z"/>
+    <path d="M 1291.0 505.0 L 1307.0 512.0 L 1307.0 498.0 Z"/>
+    <path d="M 1164.0 399.7 L 1162.3 417.1 L 1175.6 412.8 Z"/>
+    <path d="M 1225.0 246.4 L 1207.9 250.2 L 1216.2 261.5 Z"/>
+  </g>
+  <text x="1300" y="362" text-anchor="middle" font-size="18" font-weight="bold" fill="#8A4210">event loop</text>
+  <text x="1300" y="384" text-anchor="middle" font-size="13" fill="#555555">uma volta de cada vez</text>
+
+  <g text-anchor="middle">
+    <rect x="1235" y="200" width="130" height="50" rx="8" fill="#FDE9DA" stroke="#D9772B" stroke-width="2"/>
+    <text x="1300" y="221" font-size="16" font-weight="bold" font-family="Menlo, Consolas, monospace">timers</text>
+    <text x="1300" y="240" font-size="13">setTimeout</text>
+
+    <rect x="1363" y="297" width="140" height="50" rx="8" fill="#FDE9DA" stroke="#D9772B" stroke-width="2"/>
+    <text x="1433" y="318" font-size="16" font-weight="bold" font-family="Menlo, Consolas, monospace">pending</text>
+    <text x="1433" y="337" font-size="13">callbacks adiados</text>
+
+    <rect x="1312" y="453" width="140" height="50" rx="8" fill="#F7C9A3" stroke="#D9772B" stroke-width="2.5"/>
+    <text x="1382" y="474" font-size="16" font-weight="bold" font-family="Menlo, Consolas, monospace">poll</text>
+    <text x="1382" y="493" font-size="13">rede e ficheiros</text>
+
+    <rect x="1148" y="453" width="140" height="50" rx="8" fill="#FDE9DA" stroke="#D9772B" stroke-width="2"/>
+    <text x="1218" y="474" font-size="16" font-weight="bold" font-family="Menlo, Consolas, monospace">check</text>
+    <text x="1218" y="493" font-size="13">setImmediate</text>
+
+    <rect x="1097" y="297" width="140" height="50" rx="8" fill="#FDE9DA" stroke="#D9772B" stroke-width="2"/>
+    <text x="1167" y="318" font-size="16" font-weight="bold" font-family="Menlo, Consolas, monospace">close</text>
+    <text x="1167" y="337" font-size="13">ligações fechadas</text>
+  </g>
+
+  <g font-size="15">
+    <text x="1060" y="548">1. O teu código corre numa só thread, na pilha</text>
+    <text x="1060" y="568">    de chamadas do V8.</text>
+    <text x="1060" y="596">2. Uma operação lenta, como ler um ficheiro ou</text>
+    <text x="1060" y="616">    esperar um pedido, é entregue à libuv.</text>
+    <text x="1060" y="644">3. A libuv passa-a ao sistema operativo ou à</text>
+    <text x="1060" y="664">    pool de threads, e o teu código continua.</text>
+    <text x="1060" y="692">4. Quando a operação acaba, a função que trata</text>
+    <text x="1060" y="712">    o resultado (o callback) entra numa fila.</text>
+    <text x="1060" y="740">5. O event loop tira-a da fila quando a pilha</text>
+    <text x="1060" y="760">    está vazia, e o V8 executa-a.</text>
+  </g>
+  <g font-size="15" font-weight="bold" fill="#8A4210">
+    <text x="1060" y="796">O Node só termina quando já não há nada à espera.</text>
+    <text x="1060" y="816">Um servidor à escuta numa porta nunca termina.</text>
+  </g>
+
+  <!-- Faixa de baixo: um pedido passo a passo -->
+  <text x="40" y="885" font-size="20" font-weight="bold">Um pedido ao servidor, passo a passo</text>
+  <g text-anchor="middle">
+    <rect x="68" y="900" width="180" height="60" rx="10" fill="#FFFFFF" stroke="#888888" stroke-width="2"/>
+    <text x="158" y="925" font-size="16" font-weight="bold">Browser</text>
+    <text x="158" y="946" font-size="13" font-family="Menlo, Consolas, monospace">GET /equipamentos</text>
+
+    <rect x="282" y="900" width="180" height="60" rx="10" fill="#4A4F57" stroke="#33373D" stroke-width="2"/>
+    <text x="372" y="925" font-size="16" font-weight="bold" fill="#FFFFFF">Sistema operativo</text>
+    <text x="372" y="946" font-size="13" fill="#FFFFFF">chega à porta 3000</text>
+
+    <rect x="496" y="900" width="180" height="60" rx="10" fill="#FDE9DA" stroke="#D9772B" stroke-width="2"/>
+    <text x="586" y="925" font-size="16" font-weight="bold">libuv</text>
+    <text x="586" y="946" font-size="13">fase poll</text>
+
+    <rect x="710" y="900" width="180" height="60" rx="10" fill="#EEEEEE" stroke="#8A8A8A" stroke-width="2"/>
+    <text x="800" y="925" font-size="16" font-weight="bold">llhttp</text>
+    <text x="800" y="946" font-size="13">lê o pedido</text>
+
+    <rect x="924" y="900" width="180" height="60" rx="10" fill="#E3F4E1" stroke="#3C9A3C" stroke-width="2"/>
+    <text x="1014" y="925" font-size="16" font-weight="bold">módulo http</text>
+    <text x="1014" y="946" font-size="13">cria req e res</text>
+
+    <rect x="1138" y="900" width="180" height="60" rx="10" fill="#FFF6D6" stroke="#D4A017" stroke-width="2"/>
+    <text x="1228" y="925" font-size="16" font-weight="bold">Express</text>
+    <text x="1228" y="946" font-size="13">escolhe a rota</text>
+
+    <rect x="1352" y="900" width="180" height="60" rx="10" fill="#FFF6D6" stroke="#D4A017" stroke-width="2"/>
+    <text x="1442" y="925" font-size="16" font-weight="bold">A tua função</text>
+    <text x="1442" y="946" font-size="13" font-family="Menlo, Consolas, monospace">res.json(...)</text>
+  </g>
+  <g stroke="#555555" stroke-width="2" fill="#555555">
+    <line x1="252" y1="930" x2="270" y2="930"/><path d="M 278 930 L 268 924 L 268 936 Z" stroke="none"/>
+    <line x1="466" y1="930" x2="484" y2="930"/><path d="M 492 930 L 482 924 L 482 936 Z" stroke="none"/>
+    <line x1="680" y1="930" x2="698" y2="930"/><path d="M 706 930 L 696 924 L 696 936 Z" stroke="none"/>
+    <line x1="894" y1="930" x2="912" y2="930"/><path d="M 920 930 L 910 924 L 910 936 Z" stroke="none"/>
+    <line x1="1108" y1="930" x2="1126" y2="930"/><path d="M 1134 930 L 1124 924 L 1124 936 Z" stroke="none"/>
+    <line x1="1322" y1="930" x2="1340" y2="930"/><path d="M 1348 930 L 1338 924 L 1338 936 Z" stroke="none"/>
+  </g>
+  <g stroke="#888888" stroke-width="1.5" fill="none">
+    <path d="M 1442 964 L 1442 978 L 166 978 L 166 966" stroke-dasharray="6 4"/>
+  </g>
+  <path d="M 158 962 L 166 972 L 174 962 Z" fill="#888888" transform="translate(0 0) rotate(180 166 967)"/>
+  <text x="800" y="1003" text-anchor="middle" font-size="15" fill="#555555">A resposta faz o caminho inverso, até ao browser.</text>
+</svg>
