@@ -2,7 +2,7 @@
 
 # Sistemas de Informação · 12.º IG
 
-Materiais de Sistemas de Informação do 12.º ano do Curso Profissional de Técnico/a de Informática de Gestão. Cada material é publicado quando fica pronto, e podes lê-lo antes de ser dado na aula.
+Materiais de Sistemas de Informação do 12.º ano do Curso Profissional de Técnico/a de Informática de Gestão. Podes estudar os materiais ao teu ritmo e lê-los antes de serem dados na aula.
 
 ## Por onde começar
 

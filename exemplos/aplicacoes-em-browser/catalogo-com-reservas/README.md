@@ -51,12 +51,8 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 
 Depois de acompanhares o exemplo guiado com EJS, usa esta cópia para comparar as respostas de uma reserva válida e de uma reserva com equipamento inexistente. Observa o código de estado, o tipo da resposta e o endereço que fica no browser. Explica como o JSON com 201 difere do redirecionamento 303 e como uma mensagem única difere dos erros por campo no formulário. Esta variante mantém uma validação mínima; não substitui a validação completa do percurso principal.
 
-## Versões com que foi testado
+## Versões e compatibilidade
 
-Reensaiado a 20 de outubro de 2026, com Node 24.22.0 e npm 11.20.0, em macOS. Os pedidos HTTP foram feitos por programa numa cópia descartável, com as versões do `package-lock.json`. O ensaio não incluiu um browser gráfico, Windows nem a rede da escola.
-
-Os ensaios anteriores ficaram registados assim:
-
-Node.js 24.17.0, npm 11.13.0 e Express 5.2.1, em macOS, a 7 de outubro de 2026. De novo com o Express 5.3.0, a versão que o `npm ci` instala desde então, a 12 de outubro de 2026.
+As versões de referência são Node.js 24.22.0 e npm 11.20.0. Usa as versões exatas das dependências do `package-lock.json`. A execução em Windows e as operações no browser continuam por confirmar nestas versões.
 
 ![Rodapé](../../../imagens/rodape.png)

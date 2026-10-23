@@ -771,7 +771,7 @@ Todas as páginas têm o menu no topo e o rodapé no fim, e todas chegam com o t
 
 ## O que o browser recebe
 
-A planificação deste tema pede uma coisa concreta: comparar o código de um modelo com o HTML que chega de facto ao browser. Há duas formas de ver o que chegou.
+Compara o código de um modelo com o HTML que chega de facto ao browser. Há duas formas de ver o que chegou.
 
 A primeira é o código-fonte da página. Com a página aberta, carrega em Ctrl+U (no Mac, Cmd+Option+U). Também podes carregar com o botão direito e escolher a opção de ver o código-fonte da página. O browser mostra o HTML exatamente como o recebeu. Abre o código-fonte de `/equipamentos?sala=B12` e compara-o com `views/equipamentos.ejs`:
 

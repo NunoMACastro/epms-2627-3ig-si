@@ -315,7 +315,7 @@ O que deves ver: também um 500. A reserva errada está no array, e a lista trop
 
 ### Respostas para conferires esta fase
 
-- **Passo 1.** Recarregar e aceitar o reenvio cria a reserva 2, igual à 1. Numa aplicação de reservas, ocupa o equipamento duas vezes, e a pessoa nem sabe que a segunda reserva existe. É esta a resposta que se quer no caderno.
+- **Passo 1.** Recarregar e aceitar o reenvio cria a reserva 2, igual à 1. Numa aplicação de reservas, ocupa o equipamento duas vezes, e a pessoa nem sabe que a segunda reserva existe.
 - **Passo 2.** Com `novalidate` e o formulário vazio, o `equipamento_id` chega como texto vazio, o `Number("")` dá 0. Não há equipamento 0: a reserva é guardada com o `equipamentoId` 0, e a página dela dá 500, com `Cannot read properties of undefined (reading 'id')` e o `>>` na linha 4 do `reserva.ejs`.
 - **Passo 3.** A lista também dá 500, no `reservas.ejs`. Confere esta ideia: um só pedido mal feito estragou uma página para toda a gente, até o servidor reiniciar.
 - **Passo 4.** Depois de parar e arrancar este servidor, a lista volta a funcionar e está vazia. O contador voltou a 1, porque os dados existem apenas na memória deste processo.
@@ -686,10 +686,10 @@ O browser ajuda a preencher. O servidor continua a verificar pedidos feitos sem 
 
 ### Respostas para conferires esta fase
 
-- **Passo 2.** Envio sem JavaScript: funciona igual. As páginas do catálogo não têm JavaScript nenhum: o formulário é HTML, o browser envia-o sozinho, e o que faz a reserva corre no servidor. É esta a explicação que se quer.
-- **Passo 3.** Os dois envios da evidência: nome vazio, 400 e "Escreve o teu nome.". Tempo fora do intervalo, 400 e "O tempo letivo é um número inteiro de 1 a 9.". A planificação pede exatamente estes três (sem JavaScript, valor vazio, valor fora do intervalo).
+- **Passo 2.** Envio sem JavaScript: funciona igual. As páginas do catálogo não têm JavaScript nenhum: o formulário é HTML, o browser envia-o sozinho, e o que faz a reserva corre no servidor.
+- **Passo 3.** Nome vazio: 400 e "Escreve o teu nome.". Tempo fora do intervalo: 400 e "O tempo letivo é um número inteiro de 1 a 9.".
 - **Passo 4.** A lista de verificação: num servidor igual ao do exemplo, as oito linhas estão cumpridas. As que mais falham, por experiência dos erros previsíveis: a lista do equipamento depois de um erro e o `for` das etiquetas.
-- **Passo 5.** A explicação oral que se quer ouvir: a validação do browser só existe quando o pedido vem do formulário, num browser que a respeite. Qualquer pessoa a pode tirar, e qualquer programa pode enviar o pedido sem formulário. O servidor não sabe de onde veio o pedido, e por isso verifica tudo.
+- **Passo 5.** A validação do browser só existe quando o pedido vem do formulário, num browser que a respeite. Qualquer pessoa a pode tirar, e qualquer programa pode enviar o pedido sem formulário. O servidor não sabe de onde veio o pedido, e por isso verifica tudo.
 
 
 

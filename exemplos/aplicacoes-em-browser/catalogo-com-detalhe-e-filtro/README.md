@@ -88,16 +88,16 @@ Compara as respostas com estes resultados esperados:
 |---|---|---|
 | `SyntaxError: Cannot use import statement outside a module` | O `package.json` ainda tem `"type": "commonjs"` | Trocar para `"module"` |
 | `Não foi possível ligar o servidor: listen EADDRINUSE: address already in use :::3000` | Já há outro servidor a usar a porta 3000, quase sempre noutro terminal | Ctrl+C nesse terminal, ou mudar a `PORTA` |
-| O `npm install` fica parado ou falha | Não há internet na sala | Levar uma pasta com o `node_modules` já instalado e copiá-la para os computadores. Se não tiveres os pacotes disponíveis, pede ao professor um ambiente preparado |
+| O `npm install` fica parado ou falha | Não há internet na sala | Pede ao professor um ambiente com as dependências preparadas para o teu computador |
 
 ## Porque é que o `app.listen` verifica o erro
 
-No Express 5, a função passada ao `app.listen` também é chamada quando o servidor não consegue ligar-se. Sem o `if (erro)`, com a porta ocupada, o programa escreve "Servidor a correr" e termina em silêncio: a mensagem é falsa e o aluno não vê o erro. A planificação pede, como evidência deste tema, que o aluno encontre e corrija um erro de porta, e sem estas linhas esse erro não aparece.
+No Express 5, a função passada ao `app.listen` também é chamada quando o servidor não consegue ligar-se. Sem o `if (erro)`, com a porta ocupada, o programa escreve "Servidor a correr" e termina em silêncio: a mensagem é falsa e não vês o erro. Com a verificação, recebes a mensagem que permite identificar a porta ocupada.
 
 ## Perguntas para a turma
 
 1. **Porque é que `?sala=b12` não encontra nada?** Porque as maiúsculas contam: `"b12" === "B12"` é falso.
-2. **`/equipamentos/abc` deve dar 404 ou 400?** Agora dá 404, porque `Number("abc")` dá `NaN` e o `find` não encontra nada. Mas `abc` nem é um número, e o código certo seria o 400, de pedido inválido. A planificação pede que se distinga o parâmetro inválido do recurso que não existe; decidir e acrescentar o caso é um bom exercício.
+2. **`/equipamentos/abc` deve dar 404 ou 400?** Agora dá 404, porque `Number("abc")` dá `NaN` e o `find` não encontra nada. Mas `abc` nem é um número, e o código certo seria o 400, de pedido inválido. Como exercício, podes decidir como distinguir o parâmetro inválido do recurso que não existe e acrescentar essa verificação.
 3. **O que muda entre `res.send` e `res.json`?** O primeiro respondeu com o tipo `text/html` e o segundo com `application/json`. Vê-se nos cabeçalhos da resposta, no separador Rede do browser.
 
 ## Imagens de apoio
@@ -109,8 +109,8 @@ As imagens de apoio estão em `imagens/` do repositório. Cada uma tem uma vers�
 
 As duas servem também o tema de arquitetura do Node em Linguagens de Programação; podes usar as mesmas imagens sem as duplicar.
 
-## Versões com que foi testado
+## Versões e compatibilidade
 
-Node.js 24.22.0, npm 11.20.0 e Express 5.2.1, em macOS, a 20 de outubro de 2026. As respostas da tabela foram verificadas por HTTP numa pasta nova. O Windows não foi reensaiado.
+As versões de referência são Node.js 24.22.0, npm 11.20.0 e Express 5.2.1. Usa as versões das dependências guardadas no `package-lock.json`. A execução em Windows continua por confirmar.
 
 ![Rodapé](../../../imagens/rodape.png)

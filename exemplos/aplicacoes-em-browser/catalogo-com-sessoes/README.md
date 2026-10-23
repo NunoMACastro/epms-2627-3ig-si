@@ -34,12 +34,8 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 5. No browser, abre `http://localhost:3000/` e faz um pedido de reserva, usando um nome fictício na confirmação. Abre o catálogo também numa janela anónima, para veres uma segunda sessão, separada da primeira. O passo 7 do exemplo guiado do guia diz o que deve acontecer.
 6. Para parar, Ctrl+C. As sessões e as reservas ficam em memória e desaparecem quando o servidor para.
 
-## Versões com que foi testado
+## Versões e compatibilidade
 
-Reensaiado a 20 de outubro de 2026, com Node 24.22.0 e npm 11.20.0, em macOS. Os pedidos HTTP foram feitos por programa numa cópia descartável, com as versões do `package-lock.json`. O ensaio não incluiu um browser gráfico, Windows nem a rede da escola.
-
-Os ensaios anteriores ficaram registados assim:
-
-Node.js 24.17.0, npm 11.13.0, Express 5.3.0, EJS 7.0.1 e express-session 1.19.0, em macOS, a 12 de outubro de 2026.
+As versões de referência são Node.js 24.22.0 e npm 11.20.0. Usa as versões exatas das dependências do `package-lock.json`. A execução em Windows e as operações no browser continuam por confirmar nestas versões.
 
 ![Rodapé](../../../imagens/rodape.png)

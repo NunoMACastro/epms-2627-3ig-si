@@ -270,7 +270,7 @@ app.post("/pedido/cancelamento", (req, res) => {
 
 Leitura guiada: `POST /pedido/cancelamento` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
 
-Destruir a sessão no servidor é o que importa para a segurança. Apagar o cookie só limpa o browser. Se a sessão continuasse a existir no servidor, quem tivesse copiado o cookie antes continuava a ter acesso a ela. Com o `destroy`, um cookie antigo, guardado por quem quer que seja, já não leva a nada: o servidor não encontra a sessão. Trata o pedido como vindo de um browser novo, com um pedido vazio. É a evidência que a planificação pede: o estado eliminado ao terminar.
+Destruir a sessão no servidor é o que importa para a segurança. Apagar o cookie só limpa o browser. Se a sessão continuasse a existir no servidor, quem tivesse copiado o cookie antes continuava a ter acesso a ela. Com o `destroy`, um cookie antigo, guardado por quem quer que seja, já não leva a nada: o servidor não encontra a sessão. Trata o pedido como vindo de um browser novo, com um pedido vazio.
 
 ## Uma sessão não é uma autenticação
 

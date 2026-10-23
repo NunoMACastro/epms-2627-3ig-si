@@ -31,12 +31,8 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 5. No browser, faz um pedido de reserva e abre o código-fonte do formulário: procura o campo escondido `_csrf`. Usa um nome fictício na confirmação. Para veres o 403, apaga o valor desse campo nas ferramentas de programador e envia. A matriz de falhas do guia diz como provocar as outras falhas.
 6. Para parar, Ctrl+C.
 
-## Versões com que foi testado
+## Versões e compatibilidade
 
-Reensaiado a 20 de outubro de 2026, com Node 24.22.0 e npm 11.20.0, em macOS. Os pedidos HTTP foram feitos por programa numa cópia descartável, com as versões do `package-lock.json`. O ensaio não incluiu um browser gráfico, Windows nem a rede da escola.
-
-Os ensaios anteriores ficaram registados assim:
-
-Node.js 24.17.0, npm 11.13.0, Express 5.3.0, EJS 7.0.1 e express-session 1.19.0, em macOS, a 12 de outubro de 2026.
+As versões de referência são Node.js 24.22.0 e npm 11.20.0. Usa as versões exatas das dependências do `package-lock.json`. A execução em Windows e as operações no browser continuam por confirmar nestas versões.
 
 ![Rodapé](../../../imagens/rodape.png)

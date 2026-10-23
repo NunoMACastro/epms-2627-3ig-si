@@ -27,8 +27,8 @@ Usa o Node.js 24 adotado na disciplina e confirma-o com `node --version`. A inst
 5. Repara no terminal: cada pedido deixa lá uma linha, escrita pelo middleware de registo. As linhas `GET /favicon.ico` são o browser a pedir o ícone do separador, que o catálogo não tem; o passo 3 do exemplo guiado explica-as.
 6. Para parar, Ctrl+C.
 
-## Versões com que foi testado
+## Versões e compatibilidade
 
-Node.js 24.22.0, npm 11.20.0 e Express 5.3.0, em macOS, a 20 de outubro de 2026. Os ensaios verificaram pedidos HTTP em portas de teste. O Windows e as ferramentas de programador não foram reensaiados.
+As versões de referência são Node.js 24.22.0, npm 11.20.0 e Express 5.3.0. As versões exatas das dependências estão no `package-lock.json`. A execução em Windows e as ferramentas de programador do browser continuam por confirmar nestas versões.
 
 ![Rodapé](../../../imagens/rodape.png)

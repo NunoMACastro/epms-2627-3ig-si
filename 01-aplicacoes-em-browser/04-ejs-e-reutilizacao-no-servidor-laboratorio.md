@@ -250,7 +250,7 @@ A primeira condição mostra a sala pesquisada, só quando há uma. A segunda es
 
 `?sala=Z99` mostra "Pesquisa pela sala Z99." e "Não há equipamentos nesta sala."; `/equipamentos`, sem pesquisa, mostra a lista sem a linha da pesquisa.
 
-Sem `sala: sala`: 500, `ReferenceError` com o caminho do `equipamentos.ejs` e o número da linha do `if (sala)` (o número depende do modelo do aluno. Com o modelo do passo 3 do guia, ainda sem os partials, que só entram na parte 5, é a linha 10. No modelo final do exemplo, com os partials, seria a linha 4), as linhas à volta com `>>` nessa linha. E `sala is not defined`. O erro aparece mesmo em `/equipamentos` sem pesquisa. E é essa a observação que conta: o modelo precisa da variável, mesmo vazia. E quem lha dá é a rota.
+Sem `sala: sala`: 500, `ReferenceError` com o caminho do `equipamentos.ejs` e o número da linha do `if (sala)` (o número depende do teu modelo. Com o modelo do passo 3 do guia, ainda sem os partials, que só entram na parte 5, é a linha 10. No modelo final do exemplo, com os partials, seria a linha 4), as linhas à volta com `>>` nessa linha. E `sala is not defined`. O erro aparece mesmo em `/equipamentos` sem pesquisa. E é essa a observação que conta: o modelo precisa da variável, mesmo vazia. E quem lha dá é a rota.
 
 ### Paragem 3
 
@@ -313,7 +313,7 @@ A sala é uma ligação para a pesquisa dessa sala: o valor entra duas vezes, no
 
 Na lista, as ligações levam a `/equipamentos/1` a `/equipamentos/4`; o projetor mostra "Número: 2" e a ligação para a sala A03, que volta à lista filtrada. `/equipamentos/abc` e `/equipamentos/9` ainda respondem com JSON, 400 e 404.
 
-Com `<%` sem `=`: nenhum erro, e quatro `<a>` vazios, que o browser quase não mostra. É o erro que mais tempo faz perder, e convém dizê-lo em voz alta: a falta de mensagem é o sintoma.
+Com `<%` sem `=`: nenhum erro, e quatro `<a>` vazios, que o browser quase não mostra. A falta de mensagem também é um sintoma: o código corre, mas as ligações ficam vazias.
 
 ### Paragem 4
 
@@ -507,7 +507,7 @@ A mensagem do middleware final não repete o endereço pedido. Podia, mas o ende
 | `/equipamentos/9` | 404 | Equipamento não encontrado |
 | `/nao-existe` | 404 | Página não encontrada |
 
-Erro a esperar. E difícil de ver: tirar um `return` ao trocar o `res.status(400).json(...)` pelo `render`. A página mostra "Pedido inválido". E o código é 404, com `Cannot set headers after they are sent to the client` no terminal: o `render` só envia a página depois de ler o modelo. Entretanto o código da rota chega ao `res.status(404)`. E o servidor vai abaixo: o erro acontece quando a segunda página fica pronta, fora da rota. E ninguém o apanha. O pedido seguinte fica sem resposta. Com o `node --watch`, o terminal acaba em `Failed running 'server.js'. Waiting for file changes before restarting...`. E o servidor só volta quando se guardar um ficheiro. Confirmado com `/equipamentos/abc` numa cópia sem esse `return`, com e sem o `--watch`, a 12 de outubro. O guia tem este caso nos erros frequentes. O código errado só se vê no separador Rede. E é por isso que a parte pede o código de cada página. O servidor em baixo vê-se na página seguinte que o aluno abrir.
+Erro a esperar. E difícil de ver: tirar um `return` ao trocar o `res.status(400).json(...)` pelo `render`. A página mostra "Pedido inválido". E o código é 404, com `Cannot set headers after they are sent to the client` no terminal: o `render` só envia a página depois de ler o modelo. Entretanto o código da rota chega ao `res.status(404)`. E o servidor vai abaixo: o erro acontece quando a segunda página fica pronta, fora da rota. E ninguém o apanha. O pedido seguinte fica sem resposta. Com o `node --watch`, o terminal acaba em `Failed running 'server.js'. Waiting for file changes before restarting...`. E o servidor só volta quando se guardar um ficheiro. O guia tem este caso nos erros frequentes. O código errado só se vê no separador Rede. E é por isso que a parte pede o código de cada página. O servidor em baixo vê-se na página seguinte que abrires.
 
 ### Paragem 6
 
@@ -582,7 +582,7 @@ Comparar a vista com a resposta permite localizar onde o EJS correu. A comparaç
 
 No separador Rede: 200 e `Content-Type: text/html; charset=utf-8`. Os pedidos do tema anterior tinham `application/json`.
 
-A resposta da evidência, nas palavras que se querem ouvir: o browser não executa o modelo porque o modelo nunca lá chega. O EJS correu no servidor, substituiu as marcas pelo que produziram. E o browser recebeu só o resultado, que é HTML. A tabela prova-o: o que estava no modelo e não é HTML (as marcas, o ciclo, a condição, o comentário) não está no código-fonte.
+O browser não executa o modelo porque o modelo nunca lá chega. O EJS correu no servidor, substituiu as marcas pelo que produziram. E o browser recebeu só o resultado, que é HTML. A tabela prova-o: o que estava no modelo e não é HTML (as marcas, o ciclo, a condição, o comentário) não está no código-fonte.
 
 
 

@@ -35,12 +35,8 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 
 Se mudares um modelo com o servidor ligado, basta recarregar a página. Se mudares o `server.js`, tens de reiniciar o servidor, ou usar `node --watch server.js`.
 
-## Versões com que foi testado
+## Versões e compatibilidade
 
-Reensaiado a 20 de outubro de 2026, com Node 24.22.0 e npm 11.20.0, em macOS. Os pedidos HTTP foram feitos por programa numa cópia descartável, com as versões do `package-lock.json`. O ensaio não incluiu um browser gráfico, Windows nem a rede da escola.
-
-Os ensaios anteriores ficaram registados assim:
-
-Node.js 24.17.0, npm 11.13.0, Express 5.3.0 e EJS 7.0.1, em macOS, a 12 de outubro de 2026.
+As versões de referência são Node.js 24.22.0 e npm 11.20.0. Usa as versões exatas das dependências do `package-lock.json`. A execução em Windows e as operações no browser continuam por confirmar nestas versões.
 
 ![Rodapé](../../../imagens/rodape.png)

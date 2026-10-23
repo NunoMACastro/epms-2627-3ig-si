@@ -141,7 +141,7 @@ Funciona enquanto há uma só pessoa a usar o catálogo. Com duas, deixa de func
 
 ### Respostas para conferires esta fase
 
-A janela anónima mostra `Pedido: 2`. A explicação que se quer: a variável é uma só, criada quando o servidor arranca. Todos os pedidos de todos os browsers a usam. O servidor não tem forma de saber de que browser vem cada pedido. Erro a esperar no fim: deixar as rotas provisórias, que depois chocam com as da parte 4 (a primeira rota registada responde).
+A janela anónima mostra `Pedido: 2`. A variável é uma só, criada quando o servidor arranca. Todos os pedidos de todos os browsers a usam. O servidor não tem forma de saber de que browser vem cada pedido. Erro a esperar no fim: deixar as rotas provisórias, que depois chocam com as da parte 4 (a primeira rota registada responde).
 
 ### Paragem 2
 
@@ -536,11 +536,11 @@ Mantém as ligações para `/pedido/item` atualizadas na fase 4, no menu, na pá
 
 ### Respostas para conferires esta fase
 
-- **Passo 2.** "O teu pedido (0)", e não (2). O passo 1 muda o `server.js`, o `--watch` reinicia o servidor, e as sessões, que estão na memória do servidor, perdem-se nas duas janelas. O browser fica com o cookie antigo, que já não leva a nada. É a previsão 3 da parte 1, vista mais cedo, e convém aproveitá-la: dizer em voz alta que a sessão vive no servidor. Que o cookie é só a chave. A partir daqui, cada vez que a turma guardar o `server.js`, os pedidos voltam a zero; o laboratório já o diz, e manda voltar a juntar os equipamentos.
+- **Passo 2.** "O teu pedido (0)", e não (2). O passo 1 muda o `server.js`, o `--watch` reinicia o servidor, e as sessões, que estão na memória do servidor, perdem-se nas duas janelas. O browser fica com o cookie antigo, que já não leva a nada. É a previsão 3 da parte 1: a sessão vive no servidor, e o cookie guarda a chave que a identifica. A partir daqui, cada vez que guardares o `server.js`, os pedidos voltam a zero. Volta a juntar os equipamentos antes de continuar.
 - **Passo 3.** Depois de juntar outra vez o projetor e o portátil, a janela normal mostra "O teu pedido (2)". O valor do cookie mudou: a sessão é nova, com outro identificador.
 - **Passo 4.** A anónima mostra "O teu pedido (0)" e, depois de juntar o monitor, "(1)".
 - **Passo 5.** A normal continua com 2.
-- **Passo 6.** Os valores dos cookies das duas janelas são diferentes: são dois identificadores aleatórios, e na prática nunca coincidem nos oito primeiros carateres. É a primeira evidência da planificação.
+- **Passo 6.** Os valores dos cookies das duas janelas são diferentes: são dois identificadores aleatórios, e na prática nunca coincidem nos oito primeiros carateres.
 
 Erro a esperar: o middleware do `res.locals` antes do das sessões, que dá 500 em todas as páginas com `reading 'pedido'`.
 
@@ -742,7 +742,7 @@ app.post("/pedido/cancelamento", (req, res) => {
 });
 ```
 
-Destruir a sessão no servidor é o que importa para a segurança. Apagar o cookie só limpa o browser; se a sessão continuasse a existir no servidor, quem tivesse copiado o cookie antes continuava a ter acesso a ela. Com o `destroy`, um cookie antigo, guardado por quem quer que seja, já não leva a nada: o servidor não encontra a sessão. Trata o pedido como vindo de um browser novo, com um pedido vazio. É a evidência que a planificação pede: o estado eliminado ao terminar.
+Destruir a sessão no servidor é o que importa para a segurança. Apagar o cookie só limpa o browser; se a sessão continuasse a existir no servidor, quem tivesse copiado o cookie antes continuava a ter acesso a ela. Com o `destroy`, um cookie antigo, guardado por quem quer que seja, já não leva a nada: o servidor não encontra a sessão. Trata o pedido como vindo de um browser novo, com um pedido vazio.
 
 ### Respostas para conferires esta fase
 

@@ -24,7 +24,7 @@ Uma associação regista reservas de equipamentos. Cada reserva refere um único
 
 ## O que precisas de saber antes
 
-Este diagnóstico identifica o que precisas de rever em dados, SQL, web e JavaScript. Não precisas de conhecer EJS: quando aparecer, diz o que consegues inferir e o que ainda não sabes. O SQL foi aprendido com MariaDB; a pergunta 9 conserva o nome PostgreSQL da versão já aplicada, como determinou a decisão que mudou a tecnologia do SI.
+Este diagnóstico identifica o que precisas de rever em dados, SQL, web e JavaScript. Não precisas de conhecer EJS: quando aparecer, diz o que consegues inferir e o que ainda não sabes. O SQL foi aprendido com MariaDB. Na pergunta 9 aparece PostgreSQL, outro sistema de bases de dados relacionais. Nessa pergunta, interessa o que muda quando o servidor de dados está noutro computador.
 
 ## Como está organizada
 
