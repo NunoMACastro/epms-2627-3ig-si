@@ -33,11 +33,13 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## O que precisas
 
-- Node 24 LTS: executa JavaScript no servidor. Abre o terminal do editor e corre `node --version`; deve aparecer `v24` seguido da versão instalada.
+- Node 24 LTS: executa JavaScript no servidor, no computador ou num contentor Docker preparado pelo professor. No terminal desse ambiente, corre `node --version`; deve aparecer `v24` seguido da versão instalada.
 - npm: instala os pacotes do projeto. Confirma com `npm --version`, que mostra a versão instalada.
 - Um editor para criares e guardares os ficheiros. No VS Code, abre a pasta de trabalho com "Ficheiro > Abrir Pasta".
 - Um browser com ferramentas de programador. Abre-as com F12 ou com o menu de ferramentas do browser.
 - Uma pasta nova para a tua cópia do exemplo de partida indicado abaixo. Não trabalhes dentro da pasta distribuída.
+
+Os comandos `node` e `npm` deste laboratório executam-se no ambiente indicado pelo professor. Se usares Docker, usa o terminal do contentor preparado, aberto na pasta do projeto.
 
 ## Se alguma coisa falhar
 
@@ -50,7 +52,9 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 Precisas do catálogo com middleware do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela. Se fizeste o laboratório da API da papelaria, em vez do do catálogo, faz esta cópia: a pasta da papelaria fica para Linguagens de Programação.
 
-Precisas também de internet para o `npm install ejs@7.0.1` da parte 2. Se a rede falhar, o professor tem a pasta `node_modules` numa pen.
+Precisas também de internet para o `npm install ejs@7.0.1` da fase 2. Para trabalhares sem rede, o professor precisa de preparar e testar previamente as dependências nos computadores da escola, incluindo Express e EJS 7.0.1. A cópia de apoio tem de ser compatível com esses postos. Uma pasta trazida de casa, por si só, não confirma essa compatibilidade.
+
+Se a rede falhar, usa a preparação fornecida pelo professor. Não repitas o `npm install` desta secção nem o `npm install ejs@7.0.1` da fase 2. Continuas a escrever, executar e corrigir o servidor. A instalação individual pelo npm fica por observar quando houver ligação. Não entregues nem guardes a pasta `node_modules` no Git.
 
 Arranca o servidor com `node --watch server.js`, dentro da pasta do projeto, e deixa-o ligado. O `--watch` reinicia-o quando guardas o `server.js`. Os modelos não precisam disso: o Express volta a lê-los a cada pedido, e basta recarregar a página.
 
@@ -58,8 +62,9 @@ Arranca o servidor com `node --watch server.js`, dentro da pasta do projeto, e d
 
 O EJS executa as marcas no servidor. O browser recebe o HTML produzido.
 
+`<%= ... %>` escreve o valor no HTML com escaping. Por exemplo, troca `<` por `&lt;`, para o valor aparecer como texto. `<% ... %>` executa JavaScript, como um `if` ou um `for`, sem escrever esse código na resposta. O HTML entre essas marcas só é produzido no ramo escolhido ou em cada volta do ciclo. `<%# ... %>` é um comentário do modelo e não entra no HTML da resposta.
 
-Este modelo não é o da referência de código desta fase:
+O modelo seguinte serve para preveres o HTML produzido. Ainda não é para o copiares para o projeto:
 
 ```ejs
 <h1><%= titulo %></h1>
@@ -114,7 +119,7 @@ Sem linhas em branco nem espaços no início das linhas, que o EJS deixa onde es
 </ul>
 ```
 
-O utilizador vê "<i>Rato</i> (C01)", com as etiquetas escritas e sem itálico. Em nenhum dos três casos aparece o comentário `<%# fim da lista %>`.
+O utilizador vê `<i>Rato</i> (C01)`, com as etiquetas escritas e sem itálico. Em nenhum dos três casos aparece o comentário `<%# fim da lista %>`.
 
 Se a tua previsão foi diferente: escrever o `<ul>` no caso 2 (o `else` não correu. E o `<ul>` está dentro dele). Escrever as marcas `<%` no HTML. E prever o itálico no caso 3. Este último é o que interessa: volta na parte 7.
 
@@ -323,7 +328,7 @@ Um partial é uma parte reutilizada por várias páginas. O cabeçalho abre o do
 3. Cria o `views/inicio.ejs` da referência de código desta fase e muda a rota `/` para o `res.render("inicio", { titulo: "Início" })`. A rota fica sem HTML nenhum.
 4. Abre `/`, `/equipamentos` e `/equipamentos/2`. As três têm o menu no topo e o rodapé no fim, e o título de cada uma é diferente, embora o cabeçalho seja o mesmo ficheiro.
 5. Muda o texto do rodapé, por exemplo para dizer o teu nome, guarda e recarrega as três páginas, sem reiniciar o servidor. A mudança aparece nas três.
-6. O terceiro erro de propósito. Em `equipamentos.ejs`, troca o `<%-` do `include` do cabeçalho por `<%=`. Guarda e recarrega a lista. Prevê primeiro.
+6. Outro erro de propósito. Em `equipamentos.ejs`, troca o `<%-` do `include` do cabeçalho por `<%=`. Guarda e recarrega a lista. Prevê primeiro.
 
 O que deves ver: o início da página escrito como texto, com `<!doctype html>`, `<title>`, `<nav>` e as outras etiquetas à vista, e a lista por baixo. O `<%=` fez escaping ao HTML do cabeçalho, e o browser mostrou-o como texto. Repara que o título do separador do browser deixou de ser o da página.
 
@@ -427,7 +432,7 @@ Como o cabeçalho usa o `titulo`, todas as rotas que renderizam uma página têm
 
 As três páginas têm o menu, o título próprio e o rodapé. A mudança do rodapé aparece nas três à primeira recarga, sem reiniciar.
 
-Com o `include` do cabeçalho em `<%=`: o início da página aparece escrito como texto, com `<!doctype html>`, `<title>Equipamentos | Catálogo de equipamentos</title>`, `<nav>`, os `<a>` e o `<h1>` à vista. E a lista por baixo, normal. O separador do browser deixa de mostrar o título. Isto acontece porque a página já não tem um `<title>` verdadeiro. E mostra o endereço. Não foi visto num browser. É o comportamento esperado de uma página sem `<title>`.
+Com o `include` do cabeçalho em `<%=`: o início da página aparece escrito como texto, com `<!doctype html>`, `<title>Equipamentos | Catálogo de equipamentos</title>`, `<nav>`, os `<a>` e o `<h1>` à vista. E a lista por baixo, normal. A página já não tem um `<title>` verdadeiro, e o separador deixa de mostrar o título que escreveste no modelo. O browser pode apresentar o endereço em seu lugar; a forma exata depende do browser.
 
 Se deixares o `<h1>` depois de incluir o cabeçalho, a página terá dois títulos. Se deixares o `</body></html>` depois do rodapé, terá dois fechos. O browser costuma não se queixar, mas o código-fonte mostra-o. Confere também o fim dos modelos.
 
@@ -516,7 +521,7 @@ O escaping transforma carateres de HTML em texto. Só os fragmentos escritos por
 
 O que deves ver: "Pesquisa pela sala `<i>B12</i>`.", com as etiquetas escritas e sem itálico, e a mensagem da lista vazia, porque nenhuma sala se chama assim. O texto da sala aparece a negrito, mas isso vem do `<strong>` que o teu modelo põe à volta de qualquer sala pesquisada. Na barra de endereço, as etiquetas aparecem com códigos (`%3Ci%3E`), e o servidor recebeu-as tal como as escreveste.
 
-2. Agora a experiência que mostra porque é que isto importa. No modelo da lista, troca `<%= sala %>` por `<%- sala %>`. Guarda e repete a pesquisa da referência de código desta fase. Prevê primeiro.
+2. Agora a experiência que mostra porque é que isto importa. No modelo da lista, troca `<%= sala %>` por `<%- sala %>`. Guarda e repete a pesquisa por `<i>B12</i>`. Prevê primeiro.
 
 O que deves ver: "Pesquisa pela sala ***B12***.", com o B12 em itálico, e as etiquetas desapareceram. O HTML que escreveste na pesquisa entrou na página como HTML.
 
@@ -534,7 +539,7 @@ O que deves ver: o browser mostra uma janela com "olá". O JavaScript que escrev
 | `<i>B12</i>` | "Pesquisa pela sala `<i>B12</i>`.", com as etiquetas escritas e sem itálico | "Pesquisa pela sala B12.", com o B12 em itálico e sem as etiquetas |
 | `<script>alert("olá")</script>` | O texto do script escrito na página | Uma janela com "olá"; a linha da pesquisa fica sem a sala |
 
-Nas duas pesquisas, a lista fica vazia, com a mensagem. Isto acontece porque nenhuma sala se chama assim. Com o `<%=`, o browser recebe `&lt;i&gt;B12&lt;/i&gt;`. Com o `<%-`, recebe `<i>B12</i>`. Nos dois casos a sala aparece a negrito, por causa do `<strong>` do modelo. É por isso que a experiência usa o itálico: com o `<b>` da versão anterior do laboratório, as duas versões apareciam a negrito. A diferença que se via era só as etiquetas desaparecerem. Se um aluno tiver feito a experiência com o `<b>`, é isso que lhe responde. A janela do `alert` não foi vista num browser: o servidor envia o `<script>` tal como foi escrito. E o browser executa-o, como executa qualquer script de uma página.
+Nas duas pesquisas, a lista fica vazia, com a mensagem. Isto acontece porque nenhuma sala se chama assim. Com o `<%=`, o browser recebe `&lt;i&gt;B12&lt;/i&gt;`. Com o `<%-`, recebe `<i>B12</i>`. Nos dois casos a sala aparece a negrito, por causa do `<strong>` do modelo. É por isso que a experiência usa o itálico: com o `<b>`, as duas versões apareceriam a negrito. A diferença visível seria só as etiquetas desaparecerem. Na pesquisa com o `alert`, o servidor envia o `<script>` tal como foi escrito. O browser executa-o como parte da página, e por isso aparece a janela com "olá".
 
 Confere a pergunta: "quem é que escreveu este script?" Tu. "E se o endereço desta pesquisa fosse enviado a um colega?" Corria no browser do colega, dentro da página do catálogo. É a injeção de código na página.
 
@@ -562,7 +567,7 @@ Comparar a vista com a resposta permite localizar onde o EJS correu. A comparaç
 
 3. No separador Rede, clica no pedido da lista e regista o código e o `Content-Type` da resposta. Abre um pedido do tema anterior que ainda tenhas noutro servidor, ou recorda-o: que `Content-Type` tinha?
 4. Volta às previsões da parte 1 e corrige a lápis o que previste mal. Para cada correção, escreve numa frase o que te enganou.
-5. Para a evidência deste tema, escreve no caderno, por palavras tuas, a resposta a esta pergunta: porque é que o browser nunca executa o modelo `equipamentos.ejs`? Usa a tabela da referência de código desta fase como prova.
+5. Para a evidência deste tema, escreve no caderno, por palavras tuas, a resposta a esta pergunta: porque é que o browser nunca executa o modelo `equipamentos.ejs`? Usa a tabela que acabaste de preencher como prova.
 
 ### Respostas para conferires esta fase
 
@@ -603,7 +608,7 @@ Confirma três coisas, por esta ordem: o nome no `res.render` é igual ao do fic
 
 ### O npm install ejs não funciona
 
-Sem internet, o npm não consegue descarregar o pacote. Pede ao professor a pasta da pen, ou faz a instalação em casa e traz a pasta do projeto.
+Sem internet, o npm não consegue descarregar o pacote. Usa a preparação fornecida pelo professor, com Express e EJS 7.0.1 preparados e testados nos computadores da escola, e uma cópia de apoio compatível. Se ainda não estiver disponível, avisa o professor antes de continuares. Trazer uma pasta instalada em casa não prova que funcione nesses postos. A instalação individual pelo npm fica por observar quando houver ligação. A pasta `node_modules` não faz parte da entrega nem vai para o Git.
 
 ### Mudei o modelo e a página não mudou
 

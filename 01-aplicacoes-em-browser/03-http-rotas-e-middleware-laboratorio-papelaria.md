@@ -37,9 +37,11 @@ Vais criar `papelaria-api` com oito artigos em memória. O resultado serve de po
 
 ## O que precisas
 
-Precisas do Node.js, versão 24 (`node --version`), de um editor de código, como o Visual Studio Code, de um terminal e do browser com as ferramentas de programador. Precisas também de internet para o `npm install` da parte 2. Se a rede da escola falhar, o professor tem a pasta `node_modules` numa pen.
+Precisas de um editor de código, como o Visual Studio Code, de um terminal e do browser com as ferramentas de programador. Usa o ambiente Node 24 indicado pelo professor, instalado no posto ou preparado em Docker. No terminal desse ambiente, `node --version` deve mostrar `v24` seguido da versão. Os comandos `npm` e `node` deste laboratório correm nesse terminal. Precisas também de internet para o `npm install` da fase 2.
 
-Trabalha numa pasta tua, fora do repositório dos materiais. A pasta que vais criar, `papelaria-api`, serve às duas disciplinas: de tarde, em Linguagens de Programação, vais pegar nela e transformá-la num projeto, com scripts, configuração e Git. Por isso, não lhe mudes o nome e não a apagues no fim da aula.
+Na falta de ligação, pede ao professor um ambiente com as dependências preparadas para este projeto e para o sistema em uso. O `npm install express` precisa de acesso aos pacotes; copiar uma pasta `node_modules` feita noutro computador não garante compatibilidade. Se receberes um ambiente preparado, continua a partir do passo indicado pelo professor e faz a instalação pelo npm quando houver ligação. A pasta `node_modules` não entra nas entregas nem no Git.
+
+Trabalha numa pasta tua, fora do repositório dos materiais. Este percurso articula SI e Linguagens de Programação com a mesma aplicação. A pasta que vais criar, `papelaria-api`, fica disponível para ser retomada em LP como projeto, com scripts, configuração e Git. O professor indica quando se faz essa continuação. Por isso, não lhe mudes o nome e não a apagues no fim da aula.
 
 Esta API responde só com dados, em JSON, e não tem páginas. A diferença está no conteúdo da resposta: este percurso envia dados, enquanto o catálogo também tem uma página HTML com formulário. O browser pode mostrar o JSON para o inspecionares; uma interface como o React pode usá-lo para construir páginas. Quem vai mostrar os dados é o React, mais à frente, em Linguagens de Programação. Por isso, este laboratório não tem a página com a pesquisa do laboratório do catálogo. O formulário de pesquisa por `GET`, que transforma um campo num parâmetro de pesquisa, está no passo 4 do exemplo guiado, e o professor mostra-o a funcionar no projetor.
 
@@ -216,7 +218,7 @@ O que deves ver: o caderno, o bloco de notas e a resma de papel, que são os tr�
 
 3. Prevê o resultado de `/api/artigos?categoria=papel` e só depois abre. A resposta é `[]` com 200: `"papel"` e `"Papel"` são textos diferentes na comparação `===`. Regista a explicação. A pesquisa vazia `?categoria=` devolve todos, porque o texto vazio não entra no `if`.
 
-Guarda esta experiência no caderno. De tarde, em Linguagens de Programação, vais fazer exatamente a mesma pergunta ao MongoDB Atlas, com o filtro `{ categoria: "papel" }`. Antes de a fazeres, lê o que escreveste aqui e faz a previsão.
+Guarda esta experiência no caderno para a continuação prevista em Linguagens de Programação. Quando o professor retomar este percurso em LP, podes comparar a mesma pergunta no MongoDB Atlas, com o filtro `{ categoria: "papel" }`. Antes de a fazeres, lê o que escreveste aqui e faz a previsão.
 
 ### Paragem 4
 
@@ -229,6 +231,8 @@ Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "Obs
 1. Com o separador Rede aberto, abre `/api/artigos?categoria=Escrita`.
 2. Clica no pedido e abre o separador "Payload" ("Carga", no Chrome em português). Regista o que aparece em "Query String Parameters".
 3. Abre `/api/artigos/3` e procura no Payload o 3. A resposta: está no caminho, que aparece em "Headers" ("Cabeçalhos"), em "Request URL". No pedido anterior, o Payload mostra `categoria: Escrita`.
+
+No Safari, abre "Network" e escolhe o pedido. No separador "Headers", a secção "Summary" mostra a URL e o código; "Query String Parameters" mostra `categoria: Escrita`. No pedido a `/api/artigos/3`, o 3 faz parte da URL e não aparece como parâmetro de pesquisa.
 
 ### Paragem 5
 
@@ -253,9 +257,11 @@ Leitura guiada: `req.method` e `req.url` descrevem o pedido atual. A última cha
 2. Guarda e faz três pedidos quaisquer. No terminal, aparece uma linha por pedido, com o método e o endereço. Aparecem também linhas `GET /favicon.ico`, que não pediste: é o browser a pedir sozinho o ícone do separador, como explica o passo 3 do exemplo guiado.
 3. Agora o primeiro erro de propósito. Apaga a linha `next();` do middleware. Guarda e abre `/api/artigos`. Prevê antes.
 
-O que deves ver: o browser fica à espera, com o indicador de carregamento a rodar, e não mostra nada. No terminal, aparece a linha `GET /api/artigos` e mais nada. Não há nenhuma mensagem de erro. O middleware recebeu o pedido, não respondeu e não o passou à frente: o pedido ficou parado.
+O que deves ver: o browser fica à espera de uma resposta nova. Pode continuar a mostrar a página anterior enquanto a navegação decorre. No terminal, aparece a linha `GET /api/artigos`, sem uma mensagem de erro do Express. O middleware recebeu o pedido, não respondeu e não o passou à frente: o pedido ficou parado.
 
-4. Repõe o `next();`, guarda e confirma que tudo volta a responder.
+No ambiente Docker indicado pelo professor, também aparecem pedidos automáticos para confirmar se a API responde. Reconheces esses pedidos pela pesquisa `verificacao=docker`; são separados da tua ação no browser.
+
+4. Repõe o `next();`, guarda e volta a abrir `/api/artigos` para confirmar que tudo responde. Se a navegação antiga terminar com erro de ligação durante o reinício, faz um pedido novo depois de o servidor arrancar.
 
 ### Paragem 6
 

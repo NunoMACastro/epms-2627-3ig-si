@@ -37,7 +37,7 @@ Vais preencher uma tabela de observação e desenhar o percurso de dois pedidos.
 
 Precisas de um browser de computador: Chrome, Edge ou Firefox. O Chrome e o Edge têm as mesmas ferramentas, porque são feitos sobre o mesmo motor; os passos estão escritos para eles. No Firefox os nomes mudam um pouco, e quando a diferença importa o passo diz qual é.
 
-As partes 2 a 5 precisam de internet. A parte 6 não, e podes fazê-la mesmo que a rede da escola falhe.
+As partes 2 a 5, feitas diretamente no browser, precisam de internet. Sem ligação, usa o percurso com registos indicado em "A internet da escola não está a funcionar". A parte 6 é local e podes fazê-la mesmo que a rede da escola falhe.
 
 No teu caderno, ou num ficheiro de texto, prepara esta tabela. Vais preenchê-la ao longo do laboratório, uma linha por pedido observado:
 
@@ -225,7 +225,17 @@ Os passos dão os dois nomes. Se mesmo assim não encontrares uma opção, a pos
 
 ### A internet da escola não está a funcionar
 
-Faz a parte 6, que não precisa de rede. As outras partes podem ser feitas em casa, ou observadas no projetor do professor.
+Usa os [registos HTTP para trabalhar sem internet](../laboratorios/aplicacoes-em-browser/do-pedido-a-resposta/README.md). O professor fornece-te uma cópia guardada no computador ou em papel. São pedidos e respostas recolhidos anteriormente; a data e a origem acompanham os registos.
+
+1. Abre o apoio e os registos de texto que ele indica. No caderno, escreve que estás a analisar um registo, com a data da recolha.
+2. Para o artigo e para o artigo inexistente, identifica o método, o caminho, o código de estado e o tipo de conteúdo. Preenche as linhas correspondentes da tabela.
+3. Segue a pesquisa, o cabeçalho `location` e o pedido ao destino. Preenche as duas linhas da tabela e desenha o diagrama da fase 7.
+4. Faz a fase 6 no teu computador, depois de confirmares que não há servidor na porta indicada. Regista a mensagem que observaste.
+5. Explica ao professor a diferença entre uma resposta 404 e uma ligação recusada, e quem inicia cada pedido do redirecionamento.
+
+As contagens de CSS, JavaScript e imagens da fase 3 ficam por fazer quando houver ligação. O mesmo acontece com os passos que exigem abrir as ferramentas ou observar o corpo da página em direto. Não inventes esses resultados a partir dos registos de texto.
+
+Este percurso permite-te interpretar pedidos e respostas em sala. A utilização das ferramentas do browser será observada quando houver ligação. Guarda a tabela e o diagrama para os comparares com essa observação.
 
 ## O que fica no teu caderno
 
@@ -237,6 +247,8 @@ No fim do laboratório deves ter:
 4. o diagrama da parte 7.
 
 É este o registo que mostras ao professor no fim da aula. Explica-o por palavras tuas: o diagrama e a tabela são a evidência de que sabes ler a conversa entre o browser e um servidor.
+
+Se fizeste o percurso sem internet, identifica essa opção no registo. As contagens e os passos ainda não observados ficam assinalados como por realizar.
 
 ## Desafios
 

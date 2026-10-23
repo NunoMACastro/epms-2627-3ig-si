@@ -181,7 +181,7 @@ O que deves ver: o browser fica à espera, com o indicador de carregamento a rod
 
 ### Paragem 5
 
-Consegues indicar o caminho, a pesquisa e o código da resposta observada nesta fase.
+Cada pedido aparece no terminal com o método e o endereço. Repuseste o `next()` e confirmaste que as rotas voltaram a responder.
 
 ## Fase 6: a página inicial com uma pesquisa
 
@@ -215,7 +215,7 @@ O que deves ver: o browser foi para `/equipamentos?sala=B12`. O formulário `GET
 
 ### Paragem 6
 
-O pedido volta a responder depois de repores o `next()`. No catálogo, a pesquisa da página inicial chega à mesma rota de lista.
+Ao enviares a pesquisa da página inicial, o browser abre `/equipamentos?sala=B12`. A rota da lista lê o parâmetro `sala` e responde com os equipamentos dessa sala.
 
 ## Fase 7: o middleware final e a ordem da fila
 

@@ -35,8 +35,8 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## O que precisas
 
-- Node 24 LTS: executa JavaScript no servidor. Abre o terminal do editor e corre `node --version`; deve aparecer `v24` seguido da versão instalada.
-- npm: instala os pacotes do projeto. Confirma com `npm --version`, que mostra a versão instalada.
+- Node 24 LTS: executa JavaScript no servidor. No terminal do computador ou do contentor Docker preparado, corre `node --version`; deve aparecer `v24` seguido da versão instalada.
+- npm: instala os pacotes do projeto. No mesmo terminal, confirma com `npm --version`, que mostra a versão instalada.
 - Um editor para criares e guardares os ficheiros. No VS Code, abre a pasta de trabalho com "Ficheiro > Abrir Pasta".
 - Um browser com ferramentas de programador. Abre-as com F12 ou com o menu de ferramentas do browser.
 - Uma pasta nova para a tua cópia do exemplo de partida indicado abaixo. Não trabalhes dentro da pasta distribuída.
@@ -52,7 +52,9 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 Precisas do catálogo com páginas do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-ejs](../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela.
 
-Arranca o servidor com `node --watch server.js`, dentro da pasta do projeto. As reservas ficam num array, em memória: sempre que o servidor reinicia, voltam a zero. Vais aproveitar isso para limpar as reservas de teste, guardando o `server.js` para o `--watch` o reiniciar.
+Se usares Docker, executa os comandos Node/npm no terminal do contentor preparado pelo professor, com a tua pasta de trabalho selecionada. Se não houver internet, usa a instalação do apoio fornecido pelo professor em vez de `npm install`; depois continua com os mesmos ficheiros.
+
+Arranca o servidor com `node --watch server.js`, dentro da pasta do projeto. As reservas ficam num array, em memória: sempre que o servidor reinicia, voltam a zero. Para limpar as reservas de teste, usa o terminal onde arrancaste este servidor. Faz Ctrl+C e volta a correr `node --watch server.js`. Assim, começas com o array vazio e o contador em 1, sem depender de guardar um ficheiro sem alterações.
 
 Mantém aberto o separador Rede das ferramentas de programador durante todo o laboratório.
 
@@ -194,7 +196,7 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 O corpo chega codificado e precisa de ser lido antes da rota. O `express.urlencoded` prepara o `req.body`.
 
 
-1. Acrescenta a rota `POST /reservas` da primeira versão da referência de código desta fase, e o modelo `views/reserva.ejs`. Não acrescentes ainda o `express.urlencoded`.
+1. Acrescenta as rotas `POST /reservas` e `GET /reservas` da referência de código desta fase. Cria os modelos `views/reserva.ejs` e `views/reservas.ejs`. Não acrescentes ainda o `express.urlencoded`.
 2. Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia. Prevê primeiro.
 
 O que deves ver: uma página de erro com o código 500 e, no início, `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. Sem o middleware, o `req.body` não existe.
@@ -206,7 +208,7 @@ O que deves ver: uma página de erro com o código 500 e, no início, `TypeError
 O que deves ver: a página "Reserva 1", com o projetor, o dia, o tempo e o teu nome.
 
 6. No separador Rede, clica no `POST` a `reservas` e abre o Payload. Copia para o caderno o que aparece em "Form Data". Confirma que os nomes são os `name` do formulário.
-7. Acrescenta a rota `GET /reservas` e o modelo `views/reservas.ejs` da referência de código desta fase, e abre `/reservas`: a reserva está na lista.
+7. Abre `/reservas` num segundo separador: a reserva está na lista. Mantém o primeiro separador na página "Reserva 1", para a experiência da fase seguinte. Não voltes a enviar o formulário nesta fase.
 
 
 
@@ -214,7 +216,7 @@ O que deves ver: a página "Reserva 1", com o projetor, o dia, o tempo e o teu n
 
 Lê as explicações e usa cada bloco no ficheiro indicado. Os ficheiros novos aparecem completos; as alterações dizem o que substituem.
 
-A seguir ao middleware de registo, acrescenta `app.use(express.urlencoded({ extended: false }));`. Lê o corpo do formulário e põe os campos em `req.body` antes de a rota os usar. E a rota do `POST`, numa primeira versão que guarda o que vier e responde com a página da reserva:
+A linha `app.use(express.urlencoded({ extended: false }));` lê o corpo do formulário e põe os campos em `req.body` antes de a rota os usar. O lugar certo é a seguir ao middleware de registo e antes das rotas. Coloca-a só quando os passos 3 e 5 o indicarem, para observares a diferença. A rota do `POST` tem esta primeira versão, que guarda o que vier e responde com a página da reserva:
 
 ```js fragment
 // Criar uma reserva: POST /reservas, com os campos no corpo do pedido.
@@ -283,11 +285,7 @@ app.get("/reservas", (req, res) => {
 
 A rota junta cada reserva ao seu equipamento, numa lista de linhas. O modelo só tem de mostrar essa lista. Como no tema anterior, a decisão sobre os dados fica na rota.
 
-Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia. Aparece a página "Reserva 1", e `/reservas` mostra-a na lista. Até aqui, parece tudo bem. Agora três experiências, que o laboratório faz contigo:
-
-- **Recarrega a página "Reserva 1".** O browser pergunta se queres reenviar os dados. Diz que sim, e abre `/reservas`: há duas reservas iguais. É o reenvio de um `POST`: o mesmo corpo cria uma segunda reserva. A fase 6 resolve-o com um redirecionamento.
-- **Envia um pedido sem passar pelo browser, com o equipamento 9.** No laboratório fazes isto tirando a validação do browser. A reserva fica guardada, a página da reserva dá erro 500 (o equipamento 9 não existe. E o modelo tenta ler `equipamento.nome`). A partir daí a lista das reservas também dá 500, para toda a gente. Uma reserva mal feita estragou a aplicação inteira.
-- **Envia com o nome só com espaços.** A reserva fica com um nome invisível.
+O envio do passo 5 criou a reserva 1. A lista do passo 7 mostra essa mesma reserva, sem criar outra. As experiências de reenvio e de dados inválidos ficam para a fase 4, onde cada pedido tem uma previsão e uma observação próprias.
 
 ### Respostas para conferires esta fase
 
@@ -303,7 +301,7 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 Guardar sem verificar permite que um pedido estrague os dados. Vais provocar a falha numa cópia de estudo.
 
 
-1. Com a página "Reserva 1" no ecrã, recarrega-a. O browser pergunta se queres reenviar os dados do formulário. Diz que sim. Depois abre `/reservas`. Quantas reservas há? Escreve no caderno porque é que isto é um problema numa aplicação de reservas.
+1. No primeiro separador, prevê o que acontece ao recarregar a página "Reserva 1". Recarrega-a e aceita reenviar os dados do formulário. Depois consulta `/reservas` no segundo separador. Quantas reservas há? Escreve no caderno porque é que isto é um problema numa aplicação de reservas.
 2. Agora vais enviar um pedido que o browser não deixaria passar. No `views/reserva-nova.ejs`, acrescenta ao `<form>` o atributo `novalidate`, que desliga a validação do browser nesse formulário. Guarda, abre `/reservas/nova` e envia o formulário sem preencher nada. Prevê primeiro.
 
 O que deves ver: uma página de erro com o código 500 e `Cannot read properties of undefined (reading 'id')`, a apontar para o `reserva.ejs`. A reserva foi guardada com um equipamento que não existe, e a página dela não consegue mostrar o nome do equipamento.
@@ -312,7 +310,7 @@ O que deves ver: uma página de erro com o código 500 e `Cannot read properties
 
 O que deves ver: também um 500. A reserva errada está no array, e a lista tropeça nela. A partir de agora, a lista das reservas está estragada para toda a gente, até o servidor reiniciar. Foi um só pedido.
 
-4. Guarda o `server.js`, sem mudar nada, para o `--watch` reiniciar o servidor e as reservas voltarem a zero. Deixa ficar o `novalidate`: vais precisar dele na parte seguinte.
+4. No terminal onde arrancaste este servidor, faz Ctrl+C e volta a correr `node --watch server.js`. Abre `/reservas` e confirma "Ainda não há reservas.". A reserva inválida e as duas reservas de teste desapareceram. Deixa ficar o `novalidate`: vais precisar dele na fase seguinte. O campo do dia continua com `type="date"`.
 
 
 ### Respostas para conferires esta fase
@@ -320,6 +318,7 @@ O que deves ver: também um 500. A reserva errada está no array, e a lista trop
 - **Passo 1.** Recarregar e aceitar o reenvio cria a reserva 2, igual à 1. Numa aplicação de reservas, ocupa o equipamento duas vezes, e a pessoa nem sabe que a segunda reserva existe. É esta a resposta que se quer no caderno.
 - **Passo 2.** Com `novalidate` e o formulário vazio, o `equipamento_id` chega como texto vazio, o `Number("")` dá 0. Não há equipamento 0: a reserva é guardada com o `equipamentoId` 0, e a página dela dá 500, com `Cannot read properties of undefined (reading 'id')` e o `>>` na linha 4 do `reserva.ejs`.
 - **Passo 3.** A lista também dá 500, no `reservas.ejs`. Confere esta ideia: um só pedido mal feito estragou uma página para toda a gente, até o servidor reiniciar.
+- **Passo 4.** Depois de parar e arrancar este servidor, a lista volta a funcionar e está vazia. O contador voltou a 1, porque os dados existem apenas na memória deste processo.
 
 ### Paragem 4
 
@@ -329,7 +328,7 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 Validar é verificar cada campo antes de mudar o array. Quando falha, o formulário volta com os valores e as mensagens.
 
 
-1. Acrescenta ao `server.js` as três funções da referência de código desta fase: a `textoDoCampo`, a `diaValido` e a `validarReserva`. Escreve-as, lendo os comentários.
+1. Acrescenta ao `server.js` as três funções da referência de código desta fase: a `textoDoCampo`, a `diaValido` e a `validarReserva`. Transcreve-as, lendo as explicações e os comentários. A `diaValido` é uma função de apoio fornecida: deves compreender o que verifica, aplicá-la e explicar os casos. Não tens de a escrever de raiz.
 2. Muda a rota `POST /reservas` para a da referência de código desta fase: valida primeiro, responde com o formulário quando há erros, e só depois constrói e guarda a reserva.
 3. Muda a rota `GET /reservas/nova` para passar os valores vazios e os erros vazios, e o modelo `reserva-nova.ejs` para o da referência de código desta fase. Mantém o `novalidate` no `<form>`.
 4. Envia o formulário vazio. Regista o código e as mensagens. Confirma em `/reservas` que nenhuma reserva foi guardada.
@@ -371,7 +370,7 @@ O `tempo` chega como texto, e é preciso confirmar que é um número inteiro. Fa
 
 O `data` é mais traiçoeiro. O campo `type="date"` envia o dia no formato `AAAA-MM-DD`, como `2026-10-20`, mas quem não usar o formulário pode enviar qualquer texto. Para o JavaScript, um dia é um objeto `Date`, e o `new Date("2026-10-20")` cria o dia 20 de outubro. Um texto que não é um dia, como `"abc"`, dá uma data inválida, e isso confirma-se com o `getTime()`, que nesse caso devolve `NaN`. O problema é o meio-termo: o `new Date("2026-02-30")` não dá uma data inválida. Dá 2 de março, porque o JavaScript acerta os dias a mais e passa para o mês seguinte, sem avisar. Um texto com o formato certo e um dia que não existe passava a verificação.
 
-A solução é confirmar que o dia que sai é o mesmo que entrou:
+A solução é confirmar que o dia que sai é o mesmo que entrou. A função `diaValido`, fornecida abaixo, trata desta verificação. Usa-a tal como está e segue a explicação para perceberes porque aceita ou recusa cada dia:
 
 ```js fragment
 /**
@@ -392,6 +391,8 @@ function diaValido(texto) {
 
 O `toISOString()` escreve a data no formato `2026-03-02T00:00:00.000Z`, e o `slice(0, 10)` fica com os dez primeiros carateres, o dia. Para `"2026-10-20"`, sai `"2026-10-20"`, igual ao que entrou. Para `"2026-02-30"`, sai `"2026-03-02"`, diferente, e a função devolve `false`. Para `"abc"`, a primeira verificação já devolveu `false`. Esta ideia, a de que um valor pode parecer do tipo certo e não servir, vale para muito mais do que datas.
 
+Se o pedido vier sem corpo, ou com um formato que o `express.urlencoded` não lê, o `req.body` pode não existir. A função trata-o como um objeto vazio: todos os campos faltam e recebem as mensagens já previstas. Esta proteção fica na validação; os erros provocados na primeira versão da fase 3 continuam a mostrar a falta do middleware.
+
 As cinco perguntas, juntas numa função:
 
 ```js fragment
@@ -400,10 +401,14 @@ As cinco perguntas, juntas numa função:
  * Só lê os quatro campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarReserva(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -448,7 +453,11 @@ A função devolve duas coisas, num objeto. Os `valores` são os quatro campos j
 
 Cada mensagem diz o que fazer, e não só o que está mal: "Escolhe o dia da reserva." ajuda mais do que "Dia inválido.". Quem se enganou não está a ler o código: está a olhar para o formulário e quer saber o que mudar.
 
-As três funções mostradas nesta fase (`textoDoCampo`, `diaValido` e `validarReserva`) ficam no `server.js`, a seguir aos arrays e antes do middleware de registo. A rota do `POST` passa a validar primeiro, a responder com o formulário quando há erros, e só depois a guardar:
+As três funções mostradas nesta fase (`textoDoCampo`, `diaValido` e `validarReserva`) ficam no `server.js`, a seguir aos arrays e antes do middleware de registo.
+
+Para saber se há erros, a rota conta as propriedades do objeto `erros`. O `Object.keys(resultado.erros)` devolve uma lista com os nomes dessas propriedades, como `["data", "nome"]`. A propriedade `length` dá o número de elementos da lista. Se for maior do que zero, há pelo menos um erro. Com o objeto vazio, `{}`, a lista também fica vazia e o número é zero.
+
+A rota do `POST` passa a validar primeiro, a responder com o formulário quando há erros, e só depois a guardar:
 
 ```js fragment
 // Criar uma reserva: POST /reservas, com os campos no corpo do pedido.
@@ -497,7 +506,9 @@ app.get("/reservas/nova", (req, res) => {
 });
 ```
 
-O modelo `views/reserva-nova.ejs` fica com a frase do topo, os valores e as mensagens, como mostra este modelo completo:
+Na lista do equipamento, é preciso voltar a marcar a opção escolhida. O `equipamento.id` é um número, como `2`, mas o valor recebido do formulário é texto, como `"2"`. O `String(equipamento.id)` converte o número em texto para o comparar com `valores.equipamento_id`, usando `===`. Quando são iguais, o modelo escreve o atributo `selected` nessa opção. Sem a conversão, `2 === "2"` seria `false` e a lista voltaria ao início.
+
+O modelo `views/reserva-nova.ejs` fica com a frase do topo, os valores e as mensagens, como mostra este modelo completo. Mantém também o atributo temporário `novalidate` pedido no passo 3:
 
 ```ejs
 <%# O formulário de reserva. Recebe o titulo, os equipamentos para a lista,
@@ -562,9 +573,9 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 O 303 indica ao browser uma página que pode pedir com `GET`. Recarregar essa página não repete a criação.
 
 
-1. Com a página de uma reserva no ecrã, recarrega-a e aceita reenviar. Confirma em `/reservas` que ficou uma reserva repetida. É o problema da parte 4, que a validação não resolveu.
-2. Guarda o `server.js` para limpar as reservas. Na rota do `POST`, troca as duas últimas linhas pelo `res.redirect(303, ...)` da referência de código desta fase. Acrescenta a rota `GET /reservas/:id`, abaixo da rota do formulário e da lista.
-3. Faz uma reserva. Repara no endereço que o browser mostra no fim, e nos dois pedidos no separador Rede. Regista o código de cada um e o `Location` da resposta ao `POST`. Se não vires o `POST`, liga a opção que mantém o registo ("Preserve log") e envia outra vez.
+1. Com a página da reserva feita no passo 8 da fase 5 no ecrã, prevê o resultado de a recarregar. Recarrega-a e aceita reenviar. Confirma em `/reservas` que há duas reservas iguais. É o problema da fase 4, que a validação não resolveu.
+2. Na rota do `POST`, troca as duas últimas linhas pelo `res.redirect(303, ...)` da referência de código desta fase. Acrescenta a rota `GET /reservas/:id`, abaixo da rota do formulário e da lista, e guarda. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. Confirma em `/reservas` que a lista ficou vazia.
+3. Antes de enviar, liga no separador Rede a opção que mantém o registo ("Preserve log"). Faz uma reserva. Repara no endereço que o browser mostra no fim, e nos dois pedidos no separador Rede. Regista o código de cada um e o `Location` da resposta ao `POST`.
 4. Recarrega a página da reserva. O browser pergunta alguma coisa? Quantas reservas há em `/reservas`?
 5. Um erro de propósito. Muda a rota `GET /reservas/:id` para cima da rota `GET /reservas/nova`. Guarda e abre `/reservas/nova`. Prevê primeiro.
 
@@ -612,11 +623,12 @@ app.get("/reservas/:id", (req, res) => {
 });
 ```
 
-Faz uma reserva e repara na barra de endereço: depois de carregares em "Reservar", o browser mostra `/reservas/1`, e não `/reservas`. Recarrega a página: aparece a mesma reserva, e `/reservas` continua a ter só uma. No separador Rede, o envio aparece como dois pedidos: o `POST /reservas`, com o 303, e o `GET /reservas/1`, com o 200.
+No envio do passo 3, a barra de endereço passou a mostrar `/reservas/1`, em vez de `/reservas`. O recarregamento do passo 4 pede essa mesma reserva, e `/reservas` continua a ter só uma. No separador Rede, o envio aparece como dois pedidos: o `POST /reservas`, com o 303, e o `GET /reservas/1`, com o 200. Esta referência explica esses passos; não é preciso criar outra reserva.
 
 ### Respostas para conferires esta fase
 
 - **Passo 1.** Antes do redirecionamento, recarregar e reenviar cria uma reserva repetida, como na parte 4. A validação não resolve este problema, porque a reserva repetida é válida.
+- **Passo 2.** O arranque explícito limpa as duas reservas de teste e repõe o contador em 1.
 - **Passo 3.** Depois do redirecionamento: o browser termina em `/reservas/1`. No separador Rede, o `POST /reservas` com o 303 e `Location: /reservas/1`, e o `GET /reservas/1` com o 200.
 - **Passo 4.** Recarregar `/reservas/1` não pergunta nada e não cria reserva nenhuma: é um `GET`, e `/reservas` continua com uma só.
 - **Passo 5.** Com `/reservas/:id` acima de `/reservas/nova`: "Pedido inválido", 400, com "O número da reserva tem de ser um número inteiro positivo.".
@@ -629,20 +641,21 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 O servidor constrói a reserva pelos campos permitidos. O identificador é escolhido pelo servidor, mesmo que o pedido traga outro.
 
 
-1. No `reserva-nova.ejs`, dentro do `<form>`, acrescenta um campo escondido, que o utilizador não vê mas o browser envia: `<input type="hidden" name="id" value="999">`. Faz uma reserva.
+1. No `reserva-nova.ejs`, dentro do `<form>`, acrescenta um campo escondido, que o utilizador não vê mas o browser envia: `<input type="hidden" name="id" value="999">`. Guarda. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. Abre o formulário, prevê o número que o servidor vai dar e faz uma reserva.
 2. Confirma no Payload que o `id=999` foi enviado. Que número ficou a ter a reserva? Escreve no caderno porque é que o 999 não entrou, apontando a linha do `server.js` responsável.
-3. Tira o campo escondido.
-4. O último erro de propósito, e o mais perigoso. Na rota do `POST`, apaga o `return` que vem a seguir ao `res.status(400).render(...)`. Guarda e envia o formulário vazio (o `novalidate` ainda lá está). Prevê primeiro: o que mostra o browser, e o que acontece no terminal?
+3. Tira o campo escondido e guarda o modelo.
+4. O último erro de propósito, e o mais perigoso. Para separar esta experiência da anterior, faz Ctrl+C no terminal deste servidor. Na rota do `POST`, apaga o `return` que vem a seguir ao `res.status(400).render(...)` e guarda. Arranca de novo com `node --watch server.js`. Abre o formulário e envia-o vazio (o `novalidate` ainda lá está). Prevê primeiro: o que mostra o browser, e o que acontece no terminal?
 
 O que deves ver: a barra de endereço muda para `/reservas/1`, como se a reserva tivesse corrido bem, e o browser diz que não consegue ligar-se ao servidor. No terminal aparece `Cannot set headers after they are sent to the client` e, a seguir, `Failed running 'server.js'. Waiting for file changes before restarting...`: o servidor foi abaixo. Sem o `return`, a rota continuou depois do formulário com os erros, guardou a reserva vazia e redirecionou. Quando a página do formulário ficou pronta, já não havia a quem a enviar. O erro deitou o servidor abaixo antes de o browser pedir a página da reserva.
 
-5. Repõe o `return` e guarda. O servidor volta, com as reservas a zero.
+5. Repõe o `return` e guarda. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. Confirma que `/reservas/nova` mostra o formulário e que `/reservas` está vazio. Confirma também que retiraste o campo escondido e que o dia voltou a `type="date"`. O `novalidate` só sai no início da fase 8.
 
 
 ### Respostas para conferires esta fase
 
-- **Passo 2.** O `id=999` aparece no Payload e no `req.body`, e a reserva fica com o número seguinte do contador. A linha responsável é a construção da reserva campo a campo, em que o `id` vem do `proximoIdReserva`, e não do pedido; a `validarReserva` nem lê o `id`. Podes explicar pela construção da reserva ou pelos campos que a validação lê: as duas observações mostram porque é que o 999 não entra.
+- **Passo 2.** O `id=999` aparece no Payload e no `req.body`, e a reserva fica com o número 1, porque reiniciaste o servidor antes do envio. A linha responsável é a construção da reserva campo a campo, em que o `id` vem do `proximoIdReserva`, e não do pedido; a `validarReserva` nem lê o `id`. Podes explicar pela construção da reserva ou pelos campos que a validação lê: as duas observações mostram porque é que o 999 não entra.
 - **Passo 4.** Sem o `return`: a barra de endereço muda para `/reservas/1`, o browser não consegue ligar-se, e o terminal mostra o `Cannot set headers after they are sent to the client` e o `Failed running`. A reserva vazia foi guardada, mas perde-se com a queda do servidor (está em memória). Com uma base de dados, a reserva errada ficaria lá guardada mesmo depois de o servidor parar.
+- **Passo 5.** Com o `return` reposto e um novo arranque, o formulário funciona e não há reservas. A experiência terminou com o código corrigido e os dados limpos.
 
 ### Paragem 7
 
@@ -696,7 +709,7 @@ Falta o `String(...)` na comparação do `selected`.
 
 ### O servidor foi abaixo e não volta
 
-O `--watch` só reinicia quando guardas um ficheiro. Corrige o que o terminal indica e guarda. Se o terminal não mostrar nenhum erro, faz Ctrl+C e volta a arrancar com `node --watch server.js`.
+O `--watch` espera por alterações nos ficheiros que acompanha. Corrige o que o terminal indica e guarda. Para garantir um novo arranque, faz Ctrl+C no terminal deste servidor e volta a correr `node --watch server.js`.
 
 ### Não consigo escolher o 30 de fevereiro no calendário
 
@@ -704,7 +717,7 @@ O `--watch` só reinicia quando guardas um ficheiro. Corrige o que o terminal in
 
 ### A página das reservas dá 500
 
-Há no array uma reserva com um equipamento que não existe, da parte 4. Guarda o `server.js` para o servidor reiniciar e as reservas voltarem a zero.
+Há no array uma reserva com um equipamento que não existe, da fase 4. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. O novo arranque limpa o array e repõe o contador em 1. Confirma a lista vazia antes de continuar.
 
 ## O que fica no teu caderno
 
@@ -783,10 +796,14 @@ function diaValido(texto) {
  * Só lê os quatro campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarReserva(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),

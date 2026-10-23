@@ -4,6 +4,8 @@
 
 Laboratório do sexto tema do módulo Aplicações baseadas em browsers. Partes do teu catálogo com formulários do tema anterior e dás-lhe um pedido em curso, guardado numa sessão: juntar equipamentos, ver o pedido, tirar, confirmar e cancelar. Pelo caminho, vês porque é que uma variável do servidor não chega, mexes nos cookies com as tuas próprias mãos. Roubas uma sessão a ti mesmo, para perceberes porque é que uma sessão não é uma prova de identidade.
 
+As experiências fazem-se no teu servidor local, com dados inventados e apenas com os cookies das sessões que criaste para este trabalho. Na confirmação, usa também um nome fictício. O nome é um texto associado às reservas, não uma verificação de quem está a usar o catálogo.
+
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](06-cookies-e-sessoes.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
 
 ## O que vais construir
@@ -38,7 +40,7 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## O que precisas
 
-- Node 24 LTS: executa JavaScript no servidor. Abre o terminal do editor e corre `node --version`; deve aparecer `v24` seguido da versão instalada.
+- Node 24 LTS, instalado no computador ou no ambiente Docker preparado pelo professor: executa JavaScript no servidor. No terminal desse ambiente, corre `node --version`; deve aparecer `v24` seguido da versão instalada.
 - npm: instala os pacotes do projeto. Confirma com `npm --version`, que mostra a versão instalada.
 - Um editor para criares e guardares os ficheiros. No VS Code, abre a pasta de trabalho com "Ficheiro > Abrir Pasta".
 - Um browser com ferramentas de programador. Abre-as com F12 ou com o menu de ferramentas do browser.
@@ -53,23 +55,27 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## Preparar o projeto
 
-Precisas do catálogo com formulários do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela.
+Precisas do catálogo com formulários do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela. Se usares o apoio sem internet em Docker, segue a instalação preparada pelo professor. Usa o par de `package.json` e `package-lock.json` indicado para este tema, em vez de instalar a partir da internet. O código de partida continua a ser o catálogo com formulários; ter a dependência já instalada não acrescenta as rotas nem as páginas de sessões.
 
 Vais precisar de dois "browsers" diferentes no mesmo computador. A forma mais simples é uma janela normal e uma janela anónima do mesmo browser (no Chrome, Ctrl+Shift+N; no Mac, Cmd+Shift+N): têm cookies separados. Duas janelas normais não servem, porque partilham os cookies.
 
+Se a janela anónima estiver desativada no computador da escola, usa dois browsers diferentes. O que precisas é de dois conjuntos de cookies separados, não apenas de duas janelas.
+
 Nas ferramentas de programador, vais usar o separador Rede, a consola, e o separador onde o browser mostra os cookies: no Chrome, "Application" ("Aplicação"), secção "Cookies"; no Firefox, "Armazenamento".
+
+Se o browser da escola não permitir criar ou editar cookies, acompanha a demonstração do professor nesses passos. Escreve a tua previsão e o resultado observado, e assinala que os acompanhaste em demonstração. Esses passos ficam por realizares individualmente quando tiveres um browser que o permita.
 
 ## Fase 1: prever antes de programar
 
 A sessão pertence ao browser que apresenta o identificador. Um reinício do armazém em memória apaga os dados do servidor.
 
 
-O catálogo do fim do exemplo guiado está a correr. Para cada situação, escreve no caderno o que esperas.
+Imagina o catálogo final já a correr. As situações seguintes são independentes: em cada uma, parte do estado que ela descreve. Nesta fase, escreve apenas o que esperas no caderno; ainda vais construir as rotas e as páginas necessárias para experimentar.
 
 1. Abres a página inicial pela primeira vez. O browser recebe algum cookie?
 2. Na janela normal, juntas o projetor ao pedido. Na janela anónima, abres `/pedido`. O que vês?
 3. Na janela normal, com dois equipamentos no pedido, o servidor reinicia. Recarregas `/pedido`. O que vês, e o browser ainda tem o cookie?
-4. Copias o valor do cookie da janela normal para a janela anónima. O que mostra `/pedido` na anónima?
+4. A janela normal tem um pedido com dois equipamentos. Copias o valor do cookie dessa janela para a janela anónima. O que mostra `/pedido` na anónima?
 5. Na janela normal, cancelas o pedido. Antes, tinhas copiado o valor do cookie. Depois do cancelamento, voltas a pôr esse valor no browser. O que mostra `/pedido`?
 6. Na consola de uma página do catálogo, escreves `document.cookie`. O que aparece?
 
@@ -89,7 +95,7 @@ As previsões mais erradas, por experiência de quem vê sessões pela primeira 
 
 ### Paragem 1
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Compara as tuas previsões com as respostas desta fase e explica as diferenças. Ainda não executaste estas experiências: vais fazê-las ao longo do laboratório e voltar às previsões na fase 8.
 ## Fase 2: a tentativa ingénua
 
 Uma variável global pertence ao processo inteiro. Dois browsers diferentes recebem os mesmos dados dessa variável.
@@ -145,7 +151,7 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 O segredo assina o identificador. O middleware encontra os dados da sessão antes de as rotas os usarem.
 
 
-1. Instala o `express-session` com `npm install express-session@1.19.0` e confirma a linha nova no `package.json`.
+1. Instala o `express-session` com `npm install express-session@1.19.0` e confirma a linha nova no `package.json`. Se o apoio sem internet já instalou essa versão pelo par de manifestos preparado, confirma-a e continua sem repetir a instalação pela internet.
 2. Cria o `.env.example`, com o comentário e a linha `SESSION_SECRET=` sem valor, e confirma que o `.gitignore` tem a linha `.env`. Se o teu projeto não tiver `.gitignore`, cria-o, com as linhas `node_modules/` e `.env`.
 3. No `server.js`, acrescenta o `import` da sessão, a leitura do segredo com a verificação e o nome do cookie. O middleware das sessões, como na referência de código desta fase.
 4. Para o servidor (Ctrl+C) e arranca-o com `node --watch --env-file=.env server.js`. Prevê primeiro: ainda não há `.env`.
@@ -159,6 +165,8 @@ O que deves ver: a mensagem do teu `server.js`, a começar por `Falta o SESSION_
 6. Gera um segredo com o comando da referência de código desta fase, cola-o no `.env` a seguir ao `SESSION_SECRET=`, e arranca outra vez. O servidor arranca, e as páginas funcionam como antes.
 
 
+
+Se usares a configuração Docker preparada pelo professor, o comando de arranque fornecido recebe o segredo do ambiente. Não precisas de o copiar para o código nem de o mostrar ao browser. Os passos 4 e 5 demonstram duas falhas diferentes do arranque com `--env-file`: ficheiro ausente e segredo vazio. No Docker, ensaia-os numa cópia de trabalho com o comando indicado pelo professor, sem alterar o segredo do ambiente comum. Depois repõe o arranque preparado.
 
 ### Referência de código desta fase
 
@@ -275,7 +283,7 @@ Cada sessão começa sem pedido. A primeira alteração cria a lista e guarda os
 
 1. Abre o separador dos cookies do browser, na janela normal, e confirma que `http://localhost:3000` não tem cookie nenhum. Navega pelo catálogo e confirma que continua sem cookie. Escreve no caderno porquê, com a opção do middleware responsável.
 2. No `server.js`, retira as rotas completas `GET /reservas/nova` e `POST /reservas`, que criavam uma reserva diretamente. Mantém `GET /reservas` e `GET /reservas/:id`. Substitui `validarReserva` por `validarItem` e acrescenta as rotas `GET /pedido/item`, `POST /pedido/itens` e `GET /pedido`, e a função `linhasDoPedido` desta fase. Cria `views/item-novo.ejs` com o modelo mostrado abaixo.
-3. Cria o `views/pedido.ejs` provisório completo desta fase e apaga o antigo `views/reserva-nova.ejs`. Em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`, troca cada ligação `/reservas/nova` por `/pedido/item`, com o texto "Juntar um equipamento ao pedido". Guarda tudo e confirma que o menu, a página inicial e a lista das reservas abrem o novo formulário. O modelo provisório mostra a lista e o pedido vazio; os botões entram na fase 6.
+3. Cria o `views/pedido.ejs` provisório completo desta fase e apaga o antigo `views/reserva-nova.ejs`. Em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`, troca cada ligação `/reservas/nova` por `/pedido/item`. No menu, usa o texto "Juntar um equipamento ao pedido"; na página inicial e na lista das reservas, usa "Fazer um pedido de reserva". Guarda tudo e confirma que o menu, a página inicial e a lista das reservas abrem o novo formulário. O modelo provisório mostra a lista e o pedido vazio; os botões entram na fase 6.
 4. Com o separador Rede aberto, junta o projetor ao pedido. No `POST` a `itens`, copia para o caderno a linha do `Set-Cookie`: o nome, o início do valor e os atributos.
 5. No separador dos cookies, confirma o `catalogo.sid`, e regista o que diz cada coluna: a expiração, o `HttpOnly`, o `Secure` e o `SameSite`.
 6. Junta o portátil. No `GET` a `pedido` que veio a seguir, procura o cabeçalho `Cookie` do pedido. O que leva, e o que não leva, em comparação com o `Set-Cookie`?
@@ -289,7 +297,7 @@ Lê as explicações e usa cada bloco no ficheiro indicado. Os ficheiros novos a
 
 O formulário de reserva do tema anterior passa a juntar um equipamento ao pedido: os mesmos campos, menos o nome. Na tua cópia, retira do `server.js` as rotas completas `GET /reservas/nova` e `POST /reservas`. Apaga `views/reserva-nova.ejs`, que deixa de ser usado. Mantém o array `reservas`, o contador, as rotas `GET /reservas` e `GET /reservas/:id`, e os modelos `reservas.ejs` e `reserva.ejs`.
 
-Nesta mesma etapa, troca as ligações para `/reservas/nova` por `/pedido/item` em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`. Usa o texto "Juntar um equipamento ao pedido". A ligação para ver `/reservas` mantém-se. Assim, nenhuma página continua a oferecer o formulário antigo.
+Nesta mesma etapa, troca as ligações para `/reservas/nova` por `/pedido/item` em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`. No menu, usa o texto "Juntar um equipamento ao pedido"; na página inicial e na lista das reservas, usa "Fazer um pedido de reserva". A ligação para ver `/reservas` mantém-se. Assim, nenhuma página continua a oferecer o formulário antigo.
 
 Substitui a função `validarReserva` por `validarItem`, com a mesma verificação do equipamento, do dia e do tempo, e sem o bloco do nome:
 
@@ -299,10 +307,14 @@ Substitui a função `validarReserva` por `validarItem`, com a mesma verificaç�
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -442,9 +454,9 @@ app.get("/pedido", (req, res) => {
 });
 ```
 
-O `req.session.pedido || []` dá o pedido da sessão, ou um array vazio se ainda não houver pedido. O modelo `views/pedido.ejs` está completo no passo 5; por agora, basta-lhe a lista, a ligação para juntar mais um equipamento e a mensagem do pedido vazio.
+O `req.session.pedido || []` dá o pedido da sessão, ou um array vazio se ainda não houver pedido. O modelo provisório completo `views/pedido.ejs` vem a seguir; mostra a lista, a ligação para juntar mais um equipamento e a mensagem do pedido vazio. A versão com os botões de remoção, confirmação e cancelamento entra na fase 6.
 
-Abre o catálogo em duas janelas: uma normal e uma anónima. Na normal, junta o projetor e o portátil. Na anónima, abre `/pedido`: está vazio. Junta lá o monitor, e volta à normal: continua com os seus dois. São duas sessões, isoladas, uma para cada browser.
+Depois de realizares os passos 4 a 7 desta fase, tens o projetor e o portátil na janela normal. Esta referência serve para conferires o código: não voltes a juntar os equipamentos só por a leres. Antes da fase 5, a normal tem os seus dois itens e a anónima ainda não juntou nenhum. Na fase seguinte vais comparar as duas sessões, depois da alteração que reinicia o servidor.
 
 ### `views/pedido.ejs` provisório completo
 
@@ -543,7 +555,7 @@ Terminar tem dois lados: destruir a sessão no servidor e apagar o cookie no bro
 1. Acrescenta a rota de remoção apresentada nesta fase. Substitui o `pedido.ejs` pela versão completa desta fase. Ela inclui os botões de cada equipamento, a confirmação e o cancelamento. Acrescenta a função `erroDoNome` e as rotas da confirmação e do cancelamento. Guarda os ficheiros. O servidor reiniciou outra vez, e os pedidos das duas janelas perderam-se, como na parte 5: junta outra vez o projetor e o portátil na janela normal. Junta o monitor na janela anónima. Confirma no menu de cada uma "O teu pedido (2)" e "O teu pedido (1)".
 2. Na janela normal, tira o primeiro equipamento. O pedido fica com um.
 3. Confirma o pedido com o nome vazio (com o `novalidate`, se for preciso). Regista o código e a mensagem.
-4. Confirma com o teu nome. Prevê primeiro: para onde vai o browser, e o que acontece ao cookie?
+4. Confirma com um nome inventado, por exemplo "Ana". Prevê primeiro: para onde vai o browser, e o que acontece ao cookie?
 
 O que deves ver: a lista das reservas, com a reserva nova, e o menu com "O teu pedido (0)". No separador Rede, a resposta ao `POST` a `confirmacao` tem um `Set-Cookie` com o valor vazio e a data de 1970. No separador dos cookies, o `catalogo.sid` desapareceu.
 
@@ -672,7 +684,11 @@ app.post("/pedido/confirmacao", (req, res) => {
     return;
   }
 
-  const nome = textoDoCampo(req.body.nome);
+  let corpo = req.body;
+  if (!corpo) {
+    corpo = {};
+  }
+  const nome = textoDoCampo(corpo.nome);
   const erroNome = erroDoNome(nome);
   if (erroNome !== "") {
     res.status(400).render("pedido", { titulo: "O teu pedido", linhas: linhasDoPedido(pedido), valorNome: nome, erroNome: erroNome });
@@ -756,7 +772,9 @@ O que deves ver: o pedido da janela normal, com os dois equipamentos. Para o ser
 O que deves ver: o pedido vazio. A assinatura deixou de bater certo, e o servidor ignorou o cookie.
 
 4. Na consola de uma página do catálogo, na janela normal, escreve `document.cookie` e carrega em Enter. Regista o que aparece, e explica-o com o atributo responsável.
-5. Com um pedido a meio na janela normal, guarda o `server.js` sem mudar nada, para o `--watch` reiniciar o servidor. Recarrega `/pedido`. O que aconteceu ao pedido? E o cookie, ainda está no browser?
+5. Com um pedido a meio na janela normal, vai ao terminal onde arrancaste este servidor e pára-o com Ctrl+C. Na mesma pasta, arranca-o de novo com `node --watch --env-file=.env server.js`. Não apagues os cookies. Recarrega `/pedido`. O que aconteceu ao pedido? E o cookie, ainda está no browser?
+
+Guardar um ficheiro sem alterações pode não provocar um reinício. A paragem e o arranque explícitos permitem comparar o estado antes e depois do reinício do teu processo.
 
 
 ### Respostas para conferires esta fase
@@ -923,10 +941,14 @@ function diaValido(texto) {
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -1125,7 +1147,11 @@ app.post("/pedido/confirmacao", (req, res) => {
     return;
   }
 
-  const nome = textoDoCampo(req.body.nome);
+  let corpo = req.body;
+  if (!corpo) {
+    corpo = {};
+  }
+  const nome = textoDoCampo(corpo.nome);
   const erroNome = erroDoNome(nome);
   if (erroNome !== "") {
     res.status(400).render("pedido", { titulo: "O teu pedido", linhas: linhasDoPedido(pedido), valorNome: nome, erroNome: erroNome });
@@ -1342,6 +1368,7 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
       <a href="/">Início</a> |
       <a href="/equipamentos">Todos os equipamentos</a> |
       <a href="/reservas">Reservas</a> |
+      <a href="/pedido/item">Juntar um equipamento ao pedido</a> |
       <a href="/pedido">O teu pedido (<%= itensNoPedido %>)</a>
     </nav>
     <h1><%= titulo %></h1>

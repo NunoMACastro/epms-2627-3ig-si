@@ -1,0 +1,56 @@
+Registos HTTP públicos do laboratório Do pedido à resposta
+
+Recolha: 20 de outubro de 2026.
+Fonte: Wikipédia em português, nos endereços identificados em cada registo.
+Os rótulos de método, endereço e ferramenta foram acrescentados para leitura.
+As linhas a seguir a «Excerto da resposta» conservam os valores recolhidos.
+Não foram guardados o corpo das páginas, cookies nem cabeçalhos pessoais.
+
+Registo 1: artigo existente
+
+Método: GET
+Endereço pedido: https://pt.wikipedia.org/wiki/Computador
+Ferramenta: curl; versão e hora não registadas nesta recolha.
+Excerto da resposta:
+HTTP/2 200
+content-type: text/html; charset=UTF-8
+
+Registo 2: artigo inexistente
+
+Método: GET
+Endereço pedido: https://pt.wikipedia.org/wiki/Pagina_que_nao_existe_epms
+Ferramenta: curl; versão e hora não registadas nesta recolha.
+Excerto da resposta:
+HTTP/2 404
+content-type: text/html; charset=UTF-8
+
+Registo 3: pesquisa
+
+Método: GET
+Endereço pedido: https://pt.wikipedia.org/w/index.php?search=projetor+de+video
+Ferramenta: curl; versão e hora não registadas nesta recolha.
+Excerto da resposta:
+HTTP/2 302
+location: https://pt.wikipedia.org/wiki/Projetor_de_v%C3%ADdeo
+content-type: text/html; charset=UTF-8
+
+Registo 4: endereço indicado pelo redirecionamento
+
+Método: GET
+Endereço pedido: https://pt.wikipedia.org/wiki/Projetor_de_v%C3%ADdeo
+Ferramenta: curl 8.7.1, em macOS.
+Esta consulta foi feita separadamente, depois da recolha dos registos 1 a 3.
+Excerto da resposta:
+HTTP/2 200
+date: Tue, 20 Oct 2026 14:05:57 GMT
+content-type: text/html; charset=UTF-8
+
+Limites da recolha
+
+Estes registos não mostram o corpo HTML nem o título dentro de <title>.
+Não foi guardado o endereço remoto do servidor.
+Não foram observadas contagens de CSS, JavaScript, imagens ou pedidos totais.
+Não foi capturada a interface das ferramentas de programador.
+O quarto registo confirma o destino numa consulta separada; não é um registo
+de navegação automática do browser.
+O serviço externo pode responder de outra forma noutra data ou noutro cliente.

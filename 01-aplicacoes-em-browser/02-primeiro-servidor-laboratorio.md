@@ -19,7 +19,9 @@ O resultado é um servidor que responde ao browser e uma tabela que explica o se
 | 6 | Acrescentas um registo | Vês uma mensagem por pedido à lista |
 | 7 | Provocas quatro erros | Corriges cada causa e voltas a testar |
 | 8 | Paras o servidor | Reconheces uma ligação recusada |
-| 9, opcional | Guardas no Git | Guardas os ficheiros sem os pacotes instalados |
+| 9, opcional até à prática do commit em LP | Guardas no Git | Guardas os ficheiros sem os pacotes instalados |
+
+A fase 9 é opcional até praticares o commit em Linguagens de Programação. Depois dessa prática, passa a ser obrigatória em Sistemas de Informação.
 
 ## Palavras que vais usar
 
@@ -34,7 +36,7 @@ O resultado é um servidor que responde ao browser e uma tabela que explica o se
 - **JSON**: texto que representa dados, como um array de objetos.
 - **Processo**: programa que está a correr.
 - **Arranque**: preparação que o servidor executa uma vez ao ser ligado.
-- **Commit**: registo de uma versão dos ficheiros no Git, usado só na fase opcional.
+- **Commit**: registo de uma versão dos ficheiros no Git, usado na fase 9.
 
 ## O que precisas
 
@@ -43,7 +45,7 @@ Precisas de:
 - o Node.js 24 instalado, para executar o JavaScript do servidor;
 - um editor de código, como o Visual Studio Code;
 - um terminal: o do sistema ou o que está dentro do editor;
-- internet, para o `npm install` da parte 3;
+- internet, para o `npm install` da parte 3, ou a pasta com dependências preparada pelo professor para os computadores da sala;
 - o browser com as ferramentas de programador, como no laboratório do primeiro tema.
 
 Ao longo do laboratório vais preencher um **registo de arranque**: uma pequena tabela, no caderno ou num ficheiro de texto, com o que fizeste e o que aconteceu. É o artefacto deste tema, e serve para mostrares que sabes pôr um servidor a correr e explicar porque é que ele não arrancou quando não arrancou. Prepara-a já:
@@ -105,6 +107,8 @@ O que deves ver: as duas linhas, e o terminal outra vez livre, à espera do coma
 
 Para saber mais: no [guia do tema](02-primeiro-servidor.md), secções "O npm e o ficheiro package.json" e "Módulos ES".
 
+Se não houver internet, pede ao professor a pasta preparada para os computadores da sala. Contém `package.json`, `package-lock.json` e `node_modules`, ainda sem `server.js`. Copia-a para a tua pasta `si`, com o nome `catalogo-de-equipamentos`, sem substituir trabalho teu. Abre essa pasta no editor e no terminal. Em vez dos passos 1 a 4, confirma o `"type": "module"` e a dependência do Express no `package.json`; depois continua no passo 5. No registo de arranque, escreve que recebeste as dependências preparadas. Os comandos que não executaste ficam por praticar quando houver ligação. Vais escrever o servidor na fase 4.
+
 1. Dentro da pasta `si`, cria uma pasta `catalogo-de-equipamentos` e entra nela no terminal:
 
    ```bash
@@ -135,7 +139,7 @@ Para saber mais: no [guia do tema](02-primeiro-servidor.md), secções "O npm e 
    - o ficheiro `package-lock.json`;
    - no `package.json`, uma secção nova, `dependencies`, com o Express e a versão.
 
-6. Regista no registo de arranque os três comandos desta parte e o que cada um mudou na pasta.
+6. Regista no registo de arranque os comandos que executaste nesta parte e o que cada um mudou na pasta. Se usaste a pasta preparada pelo professor, regista essa alternativa e os ficheiros que recebeste.
 
 Pensa antes de continuares: como recrias `node_modules`? A resposta: `npm install`, sem argumentos, lê as dependências do `package.json` e as versões do `package-lock.json`.
 
@@ -311,9 +315,9 @@ O que deves ver: a página de "ligação recusada" do primeiro tema, sem código
 
 Sem o processo, o browser não recebe um código de estado.
 
-## Fase 9 (opcional): guardar o trabalho no Git
+## Fase 9 (opcional até praticares o commit em LP): guardar o trabalho no Git
 
-Esta parte é só para quem já usou o Git em Linguagens de Programação. Se ainda não usaste, salta-a: o Git é dado lá.
+Esta fase é opcional até praticares o commit em Linguagens de Programação. Depois dessa prática, é obrigatória: aplicas aqui o que aprendeste lá.
 
 1. Na pasta `catalogo-de-equipamentos`, cria um ficheiro `.gitignore` com uma só linha: `node_modules/`. É a pasta que nunca se guarda, porque se recria com `npm install`.
 2. Corre `git init` e depois `git status`. Confirma que a pasta `node_modules` não aparece na lista.
@@ -337,7 +341,7 @@ Aparece uma mensagem a dizer que o ficheiro `npm.ps1` não pode ser carregado po
 
 ### O npm install falha ou fica parado
 
-O `npm install` precisa de internet. Se a rede da escola estiver em baixo, avisa o professor. Se aparecer uma mensagem com `EACCES` ou `permission denied`, não uses `sudo` nem mudes permissões por tua conta: chama o professor.
+Se a rede da escola estiver em baixo, avisa o professor e usa o percurso sem internet da fase 3. Não copies uma pasta `node_modules` de outro computador por tua iniciativa: a preparação tem de ser adequada aos postos da sala. Se aparecer uma mensagem com `EACCES` ou `permission denied`, não uses `sudo` nem mudes permissões por tua conta: chama o professor.
 
 ### O package.json deixou de funcionar depois de mudar o "type"
 
@@ -359,11 +363,11 @@ No Visual Studio Code é fácil ter vários terminais abertos. Procura o que diz
 
 No fim do laboratório deves ter:
 
-1. O registo de arranque tem as versões, os comandos das fases 3 e 5 e a experiência do `console.log` da fase 6. Inclui os quatro erros da fase 7. Cada um tem a previsão, a linha da mensagem que interessa e a correção;
+1. O registo de arranque tem as versões, os comandos executados nas fases 3 e 5 e a experiência do `console.log` da fase 6. Se usaste dependências preparadas, identifica-as e assinala a instalação por praticar. Inclui os quatro erros da fase 7. Cada um tem a previsão, a linha da mensagem que interessa e a correção;
 2. as respostas às perguntas das partes 3, 4 e 5;
 3. a explicação da parte 7, erro 4.
 
-O professor vai pedir-te que expliques um dos erros: o que diz a mensagem, como soubeste onde procurar e o que corrigiste. É a evidência deste tema.
+O professor vai pedir-te que expliques um dos erros de arranque, dos erros 1 a 3: o que diz a mensagem, como soubeste onde procurar e o que corrigiste. É a evidência deste tema. O erro 4 ajuda-te a distinguir o arranque da execução de uma rota.
 
 ## Desafios
 
