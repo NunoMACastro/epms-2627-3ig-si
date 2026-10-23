@@ -146,7 +146,9 @@ Leitura guiada: cada propriedade do objeto corresponde ao `name` de um campo. Os
 
 Repara nas aspas: os quatro valores são texto, incluindo o 2 e o 3. É a regra do tema 3 outra vez. O corpo de um pedido é texto, e é o servidor que decide que um campo é um número e o converte. O `extended: false` escolhe a forma simples de ler este formato, que chega para formulários.
 
-A segunda regra do middleware, do tema 3, aplica-se aqui por inteiro. Um middleware que prepara alguma coisa para as rotas tem de estar antes delas. Se o `express.urlencoded` estiver abaixo da rota do `POST`, ou se não estiver de todo, quando a rota corre o corpo ainda não foi lido. E o `req.body` não existe: é `undefined`. A primeira linha que tentar ler `req.body.equipamento_id` falha com `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. E o browser recebe um 500. A ordem certa do ficheiro fica: o middleware de registo, o `express.urlencoded`, as rotas e o middleware final.
+A segunda regra do middleware, do tema 3, aplica-se aqui por inteiro. Um middleware que prepara alguma coisa para as rotas tem de estar antes delas. Se o `express.urlencoded` estiver abaixo da rota do `POST`, ou se não estiver de todo, quando a rota corre o corpo ainda não foi lido. E o `req.body` não existe: é `undefined`. Um acesso direto a `req.body.equipamento_id`, sem verificar se existe corpo, falha com `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. Nesse caso, o browser recebe um 500. A ordem certa do ficheiro fica: o middleware de registo, o `express.urlencoded`, as rotas e o middleware final.
+
+Mesmo com o middleware no sítio certo, um pedido sem corpo pode deixar `req.body` como `undefined`. O mesmo acontece se o corpo usar um formato que o `express.urlencoded` não lê. A função de validação abaixo trata esses casos como campos em falta e a rota responde 400 com o formulário e os erros. A guarda evita a falha de execução, mas não substitui o middleware: sem ele, nem os campos de um formulário válido são lidos.
 
 O middleware tem também um limite. Por omissão, não aceita um corpo com mais de 100 kilobytes. Um pedido maior é recusado antes da rota, com o código 413. Esse código significa que o pedido é grande demais. Para um formulário de reserva, 100 kilobytes são mais de cem mil letras. E nunca vais lá chegar por engano. O limite existe para alguém não conseguir encher a memória do servidor com um único pedido gigante. É o primeiro dos **limites** deste tema: o servidor decide quanto aceita. E não deixa essa decisão a quem envia.
 
@@ -202,7 +204,7 @@ O `tempo` chega como texto, e é preciso confirmar que é um número inteiro. Fa
 
 O `data` é mais traiçoeiro. O campo `type="date"` envia o dia no formato `AAAA-MM-DD`, como `2026-10-20`, mas quem não usar o formulário pode enviar qualquer texto. Para o JavaScript, um dia é um objeto `Date`, e o `new Date("2026-10-20")` cria o dia 20 de outubro. Um texto que não é um dia, como `"abc"`, dá uma data inválida, e isso confirma-se com o `getTime()`, que nesse caso devolve `NaN`. O problema é o meio-termo: o `new Date("2026-02-30")` não dá uma data inválida. Dá 2 de março, porque o JavaScript acerta os dias a mais e passa para o mês seguinte, sem avisar. Um texto com o formato certo e um dia que não existe passava a verificação.
 
-A solução é confirmar que o dia que sai é o mesmo que entrou:
+A solução é confirmar que o dia que sai é o mesmo que entrou. A função `diaValido` é um apoio fornecido para esta verificação. Deves compreender o que recebe, aplicá-la na validação e explicar porque aceita ou recusa os casos apresentados. Não tens de a escrever de raiz:
 
 Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
@@ -243,6 +245,8 @@ Há uma quinta pergunta, que não é sobre nenhum campo: e os campos que não de
 
 ### A função que valida a reserva
 
+Antes de ler os campos, a função verifica se recebeu um corpo. O `if (!corpo)` reconhece a ausência e põe um objeto vazio, `{}`, no parâmetro local `corpo`. Não altera o `req.body`. Ler uma propriedade desse objeto dá `undefined`, que a `textoDoCampo` já converte em texto vazio. Assim, as verificações habituais encontram todos os campos em falta, sem tentar ler propriedades de um corpo inexistente.
+
 As cinco perguntas, juntas numa função:
 
 Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
@@ -253,10 +257,14 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
  * Só lê os quatro campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarReserva(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -510,11 +518,13 @@ Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, o
 
 A rota junta cada reserva ao seu equipamento, numa lista de linhas. O modelo só tem de mostrar essa lista. Como no tema anterior, a decisão sobre os dados fica na rota.
 
-Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia. Aparece a página "Reserva 1", e `/reservas` mostra-a na lista. Até aqui, parece tudo bem. Agora três experiências, que o laboratório faz contigo:
+Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia. Aparece a página "Reserva 1", e `/reservas` mostra-a na lista. Até aqui, parece tudo bem. Numa cópia de estudo, prevê e observa estas falhas antes de acrescentares a validação:
 
 - **Recarrega a página "Reserva 1".** O browser pergunta se queres reenviar os dados. Diz que sim, e abre `/reservas`: há duas reservas iguais. É o problema da secção "Quando corre bem", e o passo 4 resolve-o.
-- **Envia um pedido sem passar pelo browser, com o equipamento 9.** No laboratório fazes isto tirando a validação do browser. A reserva fica guardada, a página da reserva dá erro 500 (o equipamento 9 não existe. E o modelo tenta ler `equipamento.nome`). A partir daí a lista das reservas também dá 500, para toda a gente. Uma reserva mal feita estragou a aplicação inteira.
 - **Envia com o nome só com espaços.** A reserva fica com um nome invisível.
+- **Envia o formulário vazio, sem a ajuda do browser.** Acrescenta temporariamente `novalidate` ao `<form>`, guarda, recarrega `/reservas/nova` e envia sem preencher nada. O equipamento chega como texto vazio, que `Number` converte em 0. Não há equipamento 0. A reserva fica guardada, mas a página dá 500 ao tentar ler `equipamento.id`. A lista das reservas também dá 500. Uma reserva mal feita estragou uma página para toda a gente. É esta a experiência da fase 4 do laboratório.
+
+Depois de registares o que aconteceu, retira o `novalidate` e guarda o modelo. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. As reservas estão em memória: o novo arranque limpa-as e repõe o contador em 1. Confirma em `/reservas` que a lista está vazia antes de continuar. Guardar um ficheiro sem alterações não garante que o `--watch` reinicie o processo.
 
 ### Passo 3: validar, e o formulário outra vez
 
@@ -678,7 +688,7 @@ app.get("/reservas/:id", (req, res) => {
 
 Leitura guiada: `GET /reservas/:id` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
 
-Faz uma reserva e repara na barra de endereço: depois de carregares em "Reservar", o browser mostra `/reservas/1`, e não `/reservas`. Recarrega a página: aparece a mesma reserva, e `/reservas` continua a ter só uma. No separador Rede, o envio aparece como dois pedidos: o `POST /reservas`, com o 303, e o `GET /reservas/1`, com o 200.
+Guarda o `server.js`. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`, para começar com as reservas vazias. Faz uma reserva e repara na barra de endereço: depois de carregares em "Reservar", o browser mostra `/reservas/1`, e não `/reservas`. Recarrega a página: aparece a mesma reserva, e `/reservas` continua a ter só uma. No separador Rede, o envio aparece como dois pedidos: o `POST /reservas`, com o 303, e o `GET /reservas/1`, com o 200.
 
 ### Passo 5: o servidor completo
 
@@ -745,10 +755,14 @@ function diaValido(texto) {
  * Só lê os quatro campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarReserva(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -965,7 +979,9 @@ Uma nota sobre o separador Rede: em alguns browsers, a lista é limpa quando a p
 
 ### TypeError: Cannot read properties of undefined (reading 'equipamento_id')
 
-O `req.body` não existe: o `express.urlencoded` não está registado, ou está abaixo da rota do `POST`. O browser recebe um 500. Põe-no a seguir ao middleware de registo e antes de todas as rotas.
+Algum código tentou ler `req.body.equipamento_id` diretamente, quando o `req.body` não existia. Isso pode acontecer na primeira versão, ainda sem validação. Confirma que o `express.urlencoded` está registado a seguir ao middleware de registo e antes de todas as rotas. Confirma também que o pedido tem corpo no formato `application/x-www-form-urlencoded`.
+
+Na versão com `validarReserva`, a guarda transforma a ausência de corpo num objeto vazio. O resultado esperado é 400 com o formulário e os erros dos campos. Se ainda recebes este `TypeError`, compara a tua função e a rota com a versão completa: falta a guarda ou ficou uma leitura direta.
 
 ### O campo chega vazio, mesmo preenchido
 
@@ -1035,6 +1051,6 @@ A reserva aponta para um equipamento que não existe, e o modelo tenta ler o `eq
 
 Faz o [laboratório](05-formularios-e-validacao-laboratorio.md) e depois a [ficha de exercícios](05-formularios-e-validacao-exercicios.md).
 
-O próximo tema é Cookies e sessões. Até aqui, o servidor não se lembra de nada entre dois pedidos: cada pedido chega sozinho. O servidor não sabe se foi a mesma pessoa que fez o anterior. Por isso o formulário de reserva pede o nome todas as vezes. Com as sessões, o servidor passa a lembrar-se de quem está a usar a aplicação, entre pedidos. A página de reserva pode, por exemplo, mostrar as reservas dessa pessoa. A segurança dos formulários (o CSRF, que a secção anterior refere) volta depois, no tema Erros e segurança web.
+O próximo tema é Cookies e sessões. O servidor conserva as reservas em memória enquanto o processo está a correr. Ainda não associa os pedidos à mesma pessoa: não sabe se quem fez um pedido também fez o anterior. Por isso o formulário de reserva pede o nome todas as vezes. Com as sessões, o servidor passa a associar pedidos da mesma pessoa. A página de reserva pode, por exemplo, mostrar as reservas dessa pessoa. A segurança dos formulários (o CSRF, que a secção anterior refere) volta depois, no tema Erros e segurança web.
 
 ![Rodapé](../imagens/rodape.png)

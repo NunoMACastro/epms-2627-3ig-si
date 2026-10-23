@@ -59,7 +59,7 @@ Acrescenta a rota `GET /emprestimos/novo`, com o modelo `views/emprestimo-novo.e
 
 Decide que livros aparecem na lista: todos, ou só os disponíveis? Escreve a tua decisão e a razão no caderno. Pensa também nisto: se a lista só tiver os disponíveis, o servidor ainda tem de verificar se o livro está disponível?
 
-Acrescenta ao menu do cabeçalho uma ligação para os empréstimos, que o exercício 5 vai criar.
+Acrescenta ao menu do cabeçalho uma ligação para os empréstimos, que o exercício 5 vai criar. Mantém as ligações e a identificação da página atual do tema anterior. A lista dos empréstimos identifica «Empréstimos»; o formulário não identifica nenhuma ligação como atual.
 
 **Resultado esperado:** `GET /emprestimos/novo` mostra o formulário; carregar numa etiqueta põe o cursor no campo; o browser não deixa enviar com o número de leitor 12.
 
@@ -71,12 +71,16 @@ Acrescenta o `express.urlencoded` no sítio certo, uma função `validarEmpresti
 
 - o livro tem de ser um livro que existe, e tem de estar disponível; são duas mensagens diferentes, porque a funcionária precisa de saber qual das duas falhou;
 - o número de leitor é obrigatório e é um número inteiro de 1000 a 9999;
-- com erros, a resposta é o formulário outra vez, com o 400, os valores que a funcionária escreveu e uma mensagem junto de cada campo errado;
+- com erros, a resposta é o formulário outra vez, com o 400 e uma mensagem junto de cada campo errado. Conserva o número de leitor. O livro continua escolhido se ainda fizer parte das opções;
 - sem erros, o empréstimo fica guardado num array, com um `id` dado pelo servidor, o `livroId`, o `leitor` (como número) e `devolvido: false`. O livro passa a não estar disponível.
+
+Se mostras só os disponíveis, um livro pode ter sido emprestado entre a abertura do formulário e o envio. Nesse caso, mostra a mensagem de indisponibilidade e volta à opção «Escolhe um livro». Conserva o número de leitor, para a funcionária não ter de o escrever outra vez. Se mostras todos os livros, o livro continua escolhido, com a mensagem a explicar porque foi recusado.
 
 Duas decisões são tuas. A primeira: em que ponto da função mudas o livro para não disponível, e porque é que tem de ser aí? Escreve a resposta no caderno. A segunda: para onde redirecionas a funcionária depois de um empréstimo certo? Para a lista dos empréstimos, para a página do livro, ou para o formulário vazio, pronto para o próximo? Escolhe uma, implementa-a com um 303, e justifica-a numa frase.
 
-**Resultado esperado:** os cinco pedidos do exercício 2 dão o que lá previste, se a tua previsão estiver certa. Depois do primeiro, `GET /livros/disponiveis` só tem "Os Maias".
+Conclui o teste do redirecionamento depois de criares a lista dos empréstimos no exercício 5. Se o destino escolhido já existir, podes confirmar já na Rede o 303 e o `GET` para esse destino. Depois do exercício 5, confirma a sequência completa, recarrega a página de destino e verifica se o número de empréstimos na lista se mantém. Justifica no caderno porque não se criou outro empréstimo.
+
+**Resultado esperado:** os cinco pedidos do exercício 2 dão o que lá previste, se a tua previsão estiver certa. Depois do primeiro, `GET /livros/disponiveis` só tem "Os Maias". No teste concluído depois do exercício 5, recarregar a página de destino não regista outro empréstimo, qualquer que seja a tua escolha.
 
 ## Exercício 5: a lista dos empréstimos
 
@@ -84,7 +88,19 @@ Guia: exemplo guiado, passo 2.
 
 Acrescenta a rota `GET /emprestimos`, com o modelo `views/emprestimos.ejs`: uma lista com cada empréstimo, o título do livro e o número de leitor. Uma mensagem quando ainda não há empréstimos. Faz com que a rota junte a cada empréstimo o seu livro, para o modelo só ter de mostrar.
 
-Depois, faz um empréstimo e recarrega a página onde o redirecionamento te deixou. Confirma que não se criou um segundo empréstimo, e escreve no caderno porquê.
+A lista mostra a ligação «Novo empréstimo» apenas enquanto houver pelo menos um livro disponível. Quando já não houver nenhum, mostra uma mensagem clara em vez dessa ligação. A lista dos empréstimos continua visível nos dois casos.
+
+Decide que dado precisas de preparar para o modelo e como o vais calcular. Escreve essa decisão no caderno. Não basta olhar para o número de empréstimos: pensa no estado dos livros.
+
+Começa numa cópia com os dados iniciais e sem empréstimos. Prevê o que deve aparecer e verifica estes três momentos:
+
+| Momento | Livros disponíveis | O que confirmar na lista dos empréstimos |
+| --- | ---: | --- |
+| Antes de emprestar | 2 | Mensagem de lista vazia e ligação «Novo empréstimo» |
+| Depois de emprestar "Mensagem" ao leitor 1234 | 1 | Um empréstimo e a ligação |
+| Depois de emprestar "Os Maias" ao leitor 5678 | 0 | Dois empréstimos, mensagem de indisponibilidade e nenhuma ligação «Novo empréstimo» |
+
+Confirma também que o cabeçalho identifica «Empréstimos» nesta página e que as páginas do tema anterior continuam a funcionar. Depois de criares a lista, retoma e conclui o teste de redirecionamento do exercício 4.
 
 ## Exercício 6: encontrar os erros
 
@@ -118,7 +134,7 @@ app.post("/emprestimos", (req, res) => {
 - Exercício 2: Segue a ordem dos pedidos: o estado pode mudar entre duas linhas.
 - Exercício 3: Pensa no que ajuda a funcionária sem substituir as verificações do servidor.
 - Exercício 4: Marca as verificações e procura a primeira linha que muda dados.
-- Exercício 5: A página só deve mostrar: a associação ao livro é preparada antes.
+- Exercício 5: Distingue os empréstimos que a página mostra dos livros que ainda podem ser emprestados.
 - Exercício 6: Usa o método visto na Rede e o estado antes e depois do pedido como pistas.
 
 ## Desafio opcional
@@ -127,7 +143,9 @@ Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 **A devolução.** Na lista dos empréstimos, cada empréstimo que ainda não foi devolvido ganha um botão "Registar a devolução". O botão envia um `POST` para `/emprestimos/:id/devolucao`, com o número do empréstimo no caminho. A devolução marca o empréstimo como devolvido, volta a pôr o livro disponível e redireciona para a lista. Na ficha do tema 3, um formulário não conseguia pôr o número do empréstimo no caminho; com o EJS, consegue: pensa em como.
 
-Decide os códigos e as páginas para estes casos. E escreve a tua decisão no caderno: o número do empréstimo não é um inteiro positivo. O empréstimo não existe. O empréstimo já foi devolvido. A devolução correu bem.
+Decide os códigos e as páginas para estes casos. Escreve e justifica a tua decisão no caderno: o número do empréstimo não é um inteiro positivo. O empréstimo não existe. O empréstimo já foi devolvido. A devolução correu bem.
+
+Confirma que os erros dão uma página HTML e não alteram os dados. Depois de uma devolução bem-sucedida, a lista deve mostrar o empréstimo como devolvido e o livro deve voltar a estar disponível. Repetir o pedido de devolução deve dar o erro que escolheste para um empréstimo já devolvido.
 
 ## Critérios de conclusão
 
@@ -139,7 +157,7 @@ Decide os códigos e as páginas para estes casos. E escreve a tua decisão no c
 ## Entrega
 
 
-Entrega as respostas dos exercícios 1, 2 e 6, as decisões dos exercícios 3 e 4. A pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`. Não entregues a pasta `node_modules`.
+Entrega as respostas dos exercícios 1, 2 e 6, as decisões dos exercícios 3 a 5. A pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`. Não entregues a pasta `node_modules`.
 
 ## Autoavaliação
 

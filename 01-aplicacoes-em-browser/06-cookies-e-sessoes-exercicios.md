@@ -44,6 +44,8 @@ Guia: secções "A sessão com o express-session", "Os atributos do cookie" e "T
 
 A biblioteca do fim desta ficha está a correr, com a sessão a expirar ao fim de 10 minutos. Para cada situação, diz o que mostra a página inicial, na parte dos livros vistos.
 
+Usa os 10 minutos nestas previsões. No exercício 3, vais escolher e justificar a duração da tua implementação; não tens de usar o mesmo valor.
+
 1. Na janela normal, vês "Os Maias", depois "Mensagem", depois outra vez "Os Maias", e voltas à página inicial.
 2. Logo a seguir, abres a página inicial na janela anónima.
 3. Na janela normal, vês os três livros, um a seguir ao outro, e depois um quarto pedido a `/livros/9`, que não existe. Voltas à página inicial.
@@ -59,13 +61,24 @@ Acrescenta a sessão à biblioteca: o `express-session`, o `.env.example` e o `.
 Escreve, ao lado de cada opção do middleware, um comentário com a razão do valor, como no guia. Duas decisões são tuas, e são diferentes das do catálogo:
 
 - o nome do cookie, que não deve dizer que é do catálogo;
-- a expiração. O computador do balcão é partilhado: quanto tempo deve uma sessão esquecida continuar aberta? Escolhe um valor, e escreve no caderno porque é diferente dos 30 minutos do catálogo.
+- a expiração. O computador do balcão é partilhado: quanto tempo deve uma sessão esquecida continuar aberta? Escolhe um valor curto e justifica no caderno porque é adequado a esse uso, comparando-o com os 30 minutos do catálogo.
 
 **Resultado esperado:** sem `.env`, o servidor não arranca; com o segredo, arranca, e nenhuma página cria cookie ainda.
 
 ## Exercício 4: os livros vistos recentemente
 
 Guia: secção "O que o middleware faz a cada pedido" e exemplo guiado, passos 2 e 3.
+
+Antes de escreveres o código, conhece `unshift`: é um método que acrescenta um elemento no início de um array já existente. `push` acrescenta no fim. Neste exemplo de números, prevê a ordem que aparece:
+
+```js
+// Um ensaio de unshift num array de números, independente da biblioteca.
+const numeros = [4, 7];
+numeros.unshift(2);
+console.log(numeros);
+```
+
+O resultado é `[2, 4, 7]`. Primeiro o array contém 4 e 7; `unshift(2)` coloca o 2 antes deles e mantém a ordem dos restantes. O array passou a ter três elementos.
 
 Sempre que a página de um livro é mostrada com sucesso, o livro passa a ser o mais recente da lista dos vistos, guardada na sessão. A página inicial mostra a lista, com o título de cada livro como ligação para a sua página, e só a mostra quando houver algum livro.
 
@@ -78,7 +91,13 @@ As regras são estas, e cada uma é uma decisão que tens de escrever no código
 
 Decide também o que guardas na sessão para cada livro: o livro inteiro, ou só o seu `id`? Escreve a razão no caderno. Para mostrares os títulos na página inicial, segue o exemplo do guia: um middleware que põe a lista no `res.locals`.
 
+As duas escolhas são válidas se cumprirem as regras do histórico. Se guardares o livro inteiro, usa o `id` para identificar o mesmo livro e justifica a duplicação dos dados, incluindo o risco de a cópia ficar desatualizada. A disponibilidade para fazer um empréstimo continua a ser verificada no array `livros` atual, nunca na cópia guardada na sessão. Não precisas de criar um mecanismo para atualizar os objetos guardados: editar os dados do catálogo não faz parte deste exercício.
+
 **Resultado esperado:** depois de ver os livros 1, 2, 1, 3 e 2, por esta ordem, a página inicial mostra "Mensagem", "Memorial do Convento" e "Os Maias". Na janela anónima, a página inicial não mostra lista nenhuma.
+
+Essa sequência testa a ordem e os repetidos, mas só tem três livros diferentes. Para testares o limite, usa uma cópia de estudo. Acrescenta temporariamente ao array `livros` um quarto livro: `{ id: 4, titulo: "Livro de ensaio", autor: "Autor fictício", disponivel: true }`. Pára apenas o servidor dessa cópia com Ctrl+C e arranca-o novamente com `node --watch --env-file=.env server.js`. A sessão em memória começa vazia.
+
+Nessa cópia, abre os livros 1, 2, 3 e 4, por esta ordem, e volta à página inicial. Prevê que livro deve sair do histórico e verifica o resultado. Faz depois um pedido a `/livros/9`, que continua sem existir, e um a `/livros/abc`, com identificador inválido. Confirma que nenhum deles altera o histórico. Quando terminares, retira o livro de ensaio, repõe os três livros iniciais e pára e arranca novamente o servidor da cópia. O quarto livro serve só para este teste.
 
 ## Exercício 5: apagar o histórico
 
@@ -88,34 +107,28 @@ Na página inicial, por baixo da lista dos vistos, um botão "Apagar o históric
 
 A decisão: destruir a sessão inteira, com o `req.session.destroy`, ou apagar só a lista dos vistos, com `delete req.session.vistos`? As duas apagam a lista. Pensa no que mais a sessão da biblioteca pode guardar (o desafio desta ficha guarda o número de leitor), e escreve no caderno qual escolheste e porquê.
 
+Se fizeres o desafio, explica também o que aconteceria ao número do último leitor atendido ao destruir a sessão inteira. Confirma que os dados do histórico deixam de estar na sessão: esconder a lista na página ou apagar apenas o cookie não elimina os dados guardados no servidor.
+
 ## Exercício 6: encontrar os erros
 
 Guia: secções "O que o middleware faz a cada pedido" e "Erros frequentes". Os dois erros deste exercício não estão nos erros frequentes do guia.
 
-Antes de leres o erro, conhece `unshift`: é um método que acrescenta um elemento no início de um array já existente. `push` acrescenta no fim. Neste exemplo de números, prevê a ordem que aparece:
+Um colega fez os exercícios 3 a 5. Analisa separadamente estes dois problemas, em cópias diferentes da biblioteca.
 
-```js
-// Um ensaio de unshift num array de números, independente da biblioteca.
-const numeros = [4, 7];
-numeros.unshift(2);
-console.log(numeros);
-```
-
-O resultado é `[2, 4, 7]`. Primeiro o array contém 4 e 7; `unshift(2)` coloca o 2 antes deles e mantém a ordem dos restantes. O array passou a ter três elementos.
-
-Um colega fez os exercícios 3 a 5, e a biblioteca dele tem dois problemas.
-
-O primeiro: a página inicial abre bem, mas a primeira vez que se abre a página de um livro, dá 500, com `TypeError: Cannot read properties of undefined (reading 'unshift')`. A rota do livro dele termina assim:
+O primeiro: a sessão contém o histórico `[2, 3, 1]`, e a página inicial mostra "Mensagem", "Memorial do Convento" e "Os Maias", por esta ordem. A funcionária carrega em "Apagar o histórico". No separador Rede, o `POST /historico/limpeza` responde 303 e o `GET /` seguinte responde 200. A página continua a mostrar os mesmos três livros. A rota de limpeza dele é esta:
 
 ```js fragment
-  req.session.vistos.unshift(livro.id);
-  res.render("livro", { titulo: livro.titulo, livro: livro });
+// POST /historico/limpeza: esta rota tem um erro de propósito.
+app.post("/historico/limpeza", (req, res) => {
+  let vistos = req.session.vistos || [];
+  vistos = [];
+  res.redirect(303, "/");
 });
 ```
 
-1. Porque é que o erro aparece na primeira vez? O que é que o colega se esqueceu de fazer, que o guia faz no `POST /pedido/itens`?
+1. Porque continua o histórico? Que dados é que o pedido seguinte lê? Corrige a rota de acordo com a decisão que tomaste no exercício 5.
 
-O segundo: com o primeiro corrigido, as páginas dos livros e a lista funcionam, mas a página inicial dá 500, com `livrosVistos is not defined`. O colega pôs o middleware que enche o `res.locals.livrosVistos` logo antes do middleware final.
+O segundo: noutra cópia, as páginas dos livros e a lista funcionam, mas a página inicial dá 500, com `livrosVistos is not defined`. O colega pôs o middleware que enche o `res.locals.livrosVistos` logo antes do middleware final.
 
 2. Porque é que só a página inicial falha, e as outras não?
 3. No catálogo do guia, o mesmo engano com o `itensNoPedido` faria falhar todas as páginas. Porquê a diferença?
@@ -126,15 +139,17 @@ O segundo: com o primeiro corrigido, as páginas dos livros e a lista funcionam,
 - Exercício 1: Pergunta se a informação pertence a todos ou só a este browser.
 - Exercício 2: Segue separadamente as duas janelas e a vida do servidor.
 - Exercício 3: Liga o nome e a duração ao uso do balcão partilhado.
-- Exercício 4: Testa um repetido, o quarto acesso e um livro inexistente.
+- Exercício 4: Testa um repetido, um quarto livro válido e os pedidos inválidos. Um quarto acesso a um livro já visto não testa o limite de três livros diferentes.
 - Exercício 5: Pensa no que mais pode estar guardado na mesma sessão.
-- Exercício 6: Segue a ordem dos middlewares e confirma se a lista já existe antes de a usar.
+- Exercício 6: Segue separadamente cada pedido e os middlewares por onde passa. Compara o resultado esperado com o obtido.
 
 ## Desafio opcional
 
 Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
-**O leitor lembrado.** Depois de um empréstimo certo, o número de leitor fica guardado na sessão, e o formulário de empréstimo seguinte já o traz preenchido. Implementa-o. Depois, pensa no computador partilhado do balcão: a funcionária seguinte vê o número de leitor da anterior. Isto é um problema? O que limita esse problema na tua configuração? Escreve a tua resposta no caderno, e diz se mantinhas esta funcionalidade.
+**O leitor lembrado.** Depois de um empréstimo certo, o número de leitor fica guardado na sessão, e o formulário de empréstimo seguinte já o traz preenchido. Implementa-o apenas com números de leitor fictícios. Depois, pensa no computador partilhado do balcão: enquanto a sessão estiver aberta, a funcionária seguinte pode ver o número do último leitor atendido pela funcionária anterior. Trata-se do leitor atendido, não de um número da própria funcionária.
+
+Isto é um problema? O que limita esse problema na tua configuração? Escreve a tua resposta no caderno, e justifica se manterias ou rejeitarias esta funcionalidade. A expiração curta reduz o tempo de exposição, mas não impede que outra pessoa veja o número antes de a sessão terminar. Guardar esse número não verifica a identidade de quem está ao balcão.
 
 ## Critérios de conclusão
 

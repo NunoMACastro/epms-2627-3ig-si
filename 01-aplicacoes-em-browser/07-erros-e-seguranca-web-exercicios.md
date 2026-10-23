@@ -20,7 +20,7 @@ Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois
 
 Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas. E só depois experimenta. Para provocar falhas, usa as formas do laboratório: um erro posto de propósito num modelo, o comando do `fetch` com um corpo grande. O separador "Elements" para mexer no campo escondido.
 
-Podes continuar mesmo sem ter tudo o que a ficha anterior pedia. Os exercícios 3 e 4 só precisam da sessão, da página inicial, do formulário de empréstimo e da lista dos empréstimos.
+Podes começar o exercício 3 com a sessão, a página inicial, o formulário de empréstimo e a lista dos empréstimos. Para completar o exercício 4, precisas também do histórico dos livros vistos e do botão que o apaga, da ficha anterior. A devolução continua opcional.
 
 
 ## Exercício 1: quem errou
@@ -30,7 +30,7 @@ Guia: secções "Quem errou: o pedido ou o servidor" e "O middleware de erro".
 Para cada situação na biblioteca do fim desta ficha, diz se é uma falha do pedido ou do servidor, o código, e o que vê a funcionária.
 
 1. `GET /livros/abc`
-2. Um empréstimo com o leitor 12
+2. Um empréstimo com o leitor 12, token válido e os restantes campos válidos
 3. Um empréstimo enviado sem o campo `_csrf`
 4. O modelo `livro.ejs` com `<%= livro.editora.nome %>`, e os livros não têm editora
 5. Um empréstimo com um número de leitor de 200 000 algarismos
@@ -72,6 +72,8 @@ A decisão é onde se cria o token. No catálogo, havia um sítio só: o primeir
 
 Para cada formulário que tens, decide em que rota chamas a função que cria o token. Pensa numa funcionária que abre o formulário de empréstimo noutro computador e em alguém que viu dois livros e volta à página inicial para apagar o histórico. Se tens a devolução, considera também quem abre diretamente a lista dos empréstimos, sem passar pelo formulário de empréstimo. Escreve as tuas decisões no caderno.
 
+Podes preparar o token noutras localizações, desde que cumpras os resultados esperados. Justifica como cada escolha protege os formulários que tens.
+
 **Resultado esperado:** o formulário de empréstimo e o de apagar o histórico funcionam. Cada um, com o campo `_csrf` apagado nas ferramentas de programador, dá "Pedido recusado" com o 403. A página inicial sem livros vistos não cria cookie nenhum. Estes testes completam o percurso obrigatório. Se tens o botão de devolução, confirma também que funciona com o token e dá 403 sem ele.
 
 ## Exercício 5: a revisão de configuração
@@ -79,6 +81,8 @@ Para cada formulário que tens, decide em que rota chamas a função que cria o 
 Guia: secções "O que se escreve no terminal", "Os segredos" e "Segurança: o que este tema junta".
 
 Uma colega mostrou-te este bocado do servidor dela. Encontra todos os problemas de segurança, diz para cada um o que pode correr mal, e escreve a correção.
+
+Revê a tua análise para completar os aspetos que faltem. Podes agrupar problemas relacionados, explicando os riscos e as correções de cada um.
 
 ```js fragment
 const SEGREDO = process.env.SESSION_SECRET || "biblioteca123";
@@ -104,20 +108,43 @@ app.use((erro, req, res, next) => {
 
 Guia: secções "O CSRF" e "Erros frequentes". Os dois erros deste exercício não estão nos erros frequentes do guia.
 
-Um colega fez os exercícios 3 e 4, e a biblioteca dele tem dois problemas.
+Um colega fez os exercícios 3 e 4, e a biblioteca dele tem dois problemas. Analisa cada um numa cópia diferente da biblioteca, para um erro não interferir com o outro.
 
-O primeiro: todos os formulários dão "Erro no servidor", com o código 500, e o terminal mostra `TypeError: Cannot read properties of undefined (reading 'csrf')`. O colega pôs o middleware de verificação do token logo a seguir ao middleware de registo, no topo do ficheiro.
+O primeiro: um pedido sem o campo `_csrf` regista um empréstimo e recebe 303 para `/emprestimos`. Devia ser recusado com 403. O middleware de verificação está depois do `express.urlencoded`, das sessões e do `res.locals`, antes das rotas. O código dele é este, com um erro de propósito:
 
-1. O que é que está `undefined`, e porquê?
-2. Porque é que o resultado é um 500, e não um 403?
-3. Onde deve ficar a verificação, e depois de que dois middlewares?
+```js fragment
+// Exercício 6: esta verificação tem um erro de propósito.
+app.use((req, res, next) => {
+  if (req.method !== "POST") {
+    next();
+    return;
+  }
+  const token = req.session.csrf;
+  if (!req.body || req.body._csrf !== token) {
+    res.status(403).render("erro", {
+      titulo: "Pedido recusado",
+      paginaAtiva: "",
+      mensagem: "Este formulário já não é válido. Volta à página, recarrega-a e tenta outra vez.",
+    });
+    return;
+  }
+  next();
+});
+```
 
-O segundo: a primeira vez que a funcionária abre o formulário de empréstimo e o envia, recebe "Pedido recusado". Volta atrás, recarrega o formulário, envia outra vez, e funciona. A rota do formulário dele é esta:
+Analisa este caso em papel. A cópia acabou de arrancar, o livro 1 está disponível e este é o primeiro pedido. Não foi aberto nenhum formulário nem enviado um cookie. O pedido é `POST /emprestimos`, com `Content-Type: application/x-www-form-urlencoded` e o corpo `livro_id=1&leitor=1234`, sem `_csrf`. Os campos do empréstimo são válidos. Estas condições isolam o problema da verificação.
+
+1. Que valores são comparados neste pedido?
+2. Porque é que a verificação deixa o pedido passar para a rota?
+3. Como a corrigias para este pedido receber 403, conservando o tratamento de um corpo que não foi preparado?
+
+O segundo: noutra cópia, a primeira vez que a funcionária abre o formulário de empréstimo e o envia, recebe "Pedido recusado". Volta atrás, recarrega o formulário, envia outra vez, e funciona. A rota do formulário dele é esta:
 
 ```js fragment
 app.get("/emprestimos/novo", (req, res) => {
   res.render("emprestimo-novo", {
     titulo: "Novo empréstimo",
+    paginaAtiva: "",
     livros: livros.filter((livro) => livro.disponivel),
     valores: { livro_id: "", leitor: req.session.leitor || "" },
     erros: {},
@@ -136,13 +163,17 @@ app.get("/emprestimos/novo", (req, res) => {
 - Exercício 3: Segue um erro que acontece antes do middleware dos dados da página.
 - Exercício 4: Abre cada página como se fosse a primeira visita de uma sessão.
 - Exercício 5: Revê segredo, cookie, registos e resposta ao utilizador separadamente.
-- Exercício 6: Segue a ordem real: quando se lê a sessão e quando se cria o token.
+- Exercício 6: No primeiro caso, segue os valores lidos e o resultado da condição. No segundo, segue a ordem entre criar o token e construir a página.
 
 ## Desafio opcional
 
 Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
-**O código de referência.** Quando a página "Erro no servidor" aparece, a funcionária não tem nada para dizer ao técnico além de "deu erro". O middleware deve criar um código curto e aleatório para cada falha. Podes usar oito carateres gerados com `randomBytes`. Escreve esse código no terminal, ao lado do stack trace. Mostra-o também na página: "Se o problema continuar, indica o código a3f9c2e1". Decide: este código revela alguma coisa sobre o servidor? E porque é que ajuda quem o vai corrigir?
+**O código de referência.** Quando a página "Erro no servidor" aparece, a funcionária não tem nada para dizer ao técnico além de "deu erro". O middleware deve criar um código curto e aleatório para cada falha. Usa oito carateres em representação hexadecimal, que usa os algarismos de 0 a 9 e as letras de a a f. Parte de quatro bytes aleatórios gerados com `randomBytes`: cada byte corresponde a dois carateres hexadecimais.
+
+Escreve o código no terminal, ao lado da data, do pedido e do stack trace. Mostra o mesmo código apenas na página de erro 500: "Se o problema continuar, indica o código a3f9c2e1". Mantém a página dos erros 4xx como estava. O código não deve conter detalhes internos do erro, dados da sessão nem credenciais de acesso. Por ser curto e aleatório, pode repetir-se; não garante uma referência única para sempre.
+
+Decide: que diferença há entre mostrar esta referência e mostrar a mensagem interna do erro? E porque é que a referência ajuda quem o vai corrigir?
 
 ## Critérios de conclusão
 

@@ -64,6 +64,8 @@ Classifica cada item como dado ou informação. O primeiro está feito como exem
 
 Para os itens que classificaste como informação, escreve a pergunta de alguém da biblioteca a que cada um responde.
 
+Explica também como os dados permitem obter essa resposta. Justifica qualquer classificação alternativa que proponhas, relacionando-a com a pergunta e com o uso dos dados.
+
 ## Exercício 2: o processo do empréstimo
 
 Guia: secção "Um sistema de informação começa numa organização".
@@ -116,7 +118,7 @@ Guia: secção "Os métodos: ver ou mudar".
 Indica o método, `GET` ou `POST`, para cada pedido.
 
 1. Ver a lista de livros.
-2. Pesquisar livros de um autor.
+2. Enviar um formulário com o número de leitor apenas para consultar os empréstimos desse leitor, sem registar alterações.
 3. Registar um empréstimo.
 4. Ver os empréstimos em atraso.
 5. Registar a devolução de um livro.

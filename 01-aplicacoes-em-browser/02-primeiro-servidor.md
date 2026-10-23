@@ -53,6 +53,8 @@ De JavaScript, dos anos anteriores:
 - os textos com crases e `${ }`, como `` `Olá, ${nome}` ``, que metem o valor de uma variável no meio de um texto;
 - módulos, com `import` e `export`, que juntam código de vários ficheiros.
 
+Antes da ficha, confirma também duas bases de JavaScript com o professor. `let` permite atribuir outro valor a uma variável; `const` não permite essa nova atribuição. Uma variável declarada dentro de uma função é criada quando essa função corre. Uma variável declarada fora dela pertence ao código que a envolve. Se estas diferenças ainda não estiverem claras, revê-as antes de começares os exercícios.
+
 Do terminal, usado nas aulas anteriores:
 
 - abrir um terminal;
@@ -183,7 +185,9 @@ O npm vai buscar o Express ao repositório de pacotes, pela internet. E escreve 
 - **No `package.json`, uma secção `dependencies`**, com `"express": "^5.3.0"`. Diz que este projeto precisa do Express, na versão 5. O `^` quer dizer "a 5.3.0 ou uma mais recente, desde que continue a ser 5": uma versão 6 poderia mudar coisas de que o código depende. E por isso não é aceite.
 - **O ficheiro `package-lock.json`**, com a versão exata de cada um dos pacotes que foram instalados. Serve para que outra pessoa, noutro computador, instale exatamente as mesmas versões.
 
-Da pasta `node_modules`, três regras. Não se mexe lá dentro: é código dos pacotes, não teu. Não se copia nem se envia a ninguém. Com o `package.json` e o `package-lock.json`, qualquer pessoa a recria com `npm install`, sem argumentos. O comando lê os dois ficheiros e instala o que lá está. Por isso mesmo, não se guarda no Git: é a regra mais comum de um ficheiro `.gitignore`, que vais ver em Linguagens de Programação.
+Da pasta `node_modules`, três regras. Não se mexe lá dentro: é código dos pacotes, não teu. Não faz parte das entregas nem se guarda no Git. Com o `package.json` e o `package-lock.json`, qualquer pessoa a recria com `npm install`, sem argumentos. O comando lê os dois ficheiros e instala o que lá está. A exclusão do Git é a regra mais comum de um ficheiro `.gitignore`, que vais ver em Linguagens de Programação.
+
+Se faltar internet, o professor pode fornecer uma pasta com as dependências já preparadas e testadas para os computadores da sala. Essa cópia permite trabalhar localmente, mas não mostra que instalaste os pacotes. No registo de arranque, distingues o que recebeste preparado do que executaste. A instalação pelo npm fica para praticares quando houver ligação.
 
 ## Módulos ES: o import e o "type": "module"
 
@@ -523,7 +527,7 @@ Os dois sistemas de módulos não se misturam. Se copiares um exemplo com `requi
 
 1. Que diferenças há entre correr JavaScript no browser e no Node? Dá um exemplo de uma coisa que só existe num dos dois.
 2. Porque é que o `ola.js` termina e o `server.js` não?
-3. Para que serve cada um destes: `package.json`, `node_modules`, `package-lock.json`? Qual deles não se envia a ninguém, e porquê?
+3. Para que serve cada um destes: `package.json`, `node_modules`, `package-lock.json`? Qual deles fica fora das entregas e do Git, e porquê?
 4. O que quer dizer `"express": "^5.3.0"`?
 5. Porque é que se muda `"type"` para `"module"` depois do `npm init -y`? Que erro aparece se não se mudar?
 6. Na linha `app.get("/equipamentos", (req, res) => { res.json(equipamentos); });`, quando é que a função corre? Quantas vezes?

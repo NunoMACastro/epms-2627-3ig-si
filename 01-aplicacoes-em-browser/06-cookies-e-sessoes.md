@@ -28,6 +28,8 @@ Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula se
 
 No tema anterior, cada reserva era de um só equipamento. Uma professora que quisesse o projetor e o portátil para a mesma aula tinha de preencher o formulário duas vezes. E escrever o nome duas vezes. Neste tema, o catálogo passa a ter um **pedido em curso**. A professora junta primeiro o projetor, depois o portátil. Pode navegar pelo catálogo entre os dois, consultar o pedido quando quiser e retirar o que já não quer. No fim escreve o nome uma vez e confirma tudo, ou cancela.
 
+Nos ensaios, usa um nome fictício, como "Ana Reserva", e os dados inventados dos equipamentos. O nome escrito não verifica quem está a usar o catálogo: não há contas nem autenticação.
+
 Para isto, o servidor tem de se lembrar, de um pedido HTTP para o seguinte, do que esta professora já juntou. De não o misturar com o que outra pessoa, noutro computador, está a juntar ao mesmo tempo. É isso que as sessões fazem.
 
 No fim deste guia deves conseguir:
@@ -278,7 +280,7 @@ Uma sessão sabe uma coisa: que vários pedidos vieram **do mesmo browser**. Nã
 
 Como a sessão é de quem tem o cookie, há dois ataques que convém conhecer pelo nome.
 
-O **roubo de sessão** (em inglês, session hijacking) é alguém conseguir o identificador de outra pessoa e usá-lo no seu browser. A partir daí, para o servidor, os dois browsers são o mesmo. E o atacante vê e muda o pedido da vítima. No laboratório fazes isto de propósito, copiando o valor do cookie de uma janela para outra. As defesas são as dos atributos: o `HttpOnly` impede um script de ler o cookie, o `Secure` impede que seja lido a passar pela rede. A expiração encurta o tempo em que um cookie roubado serve.
+O **roubo de sessão** (em inglês, session hijacking) é alguém conseguir o identificador de outra pessoa e usá-lo no seu browser. A partir daí, para o servidor, os dois browsers são o mesmo. E o atacante vê e muda o pedido da vítima. No laboratório observas este efeito nas tuas próprias sessões locais, copiando o cookie de uma janela tua para outra, com dados inventados. As defesas são as dos atributos: o `HttpOnly` impede um script de ler o cookie, o `Secure` impede que seja lido a passar pela rede. A expiração encurta o tempo em que um cookie roubado serve.
 
 A **fixação de sessão** (session fixation) é o contrário: o atacante não rouba o identificador da vítima, consegue que a vítima use um identificador que ele já conhece. Se depois a vítima fizer alguma coisa importante nessa sessão (numa aplicação com contas, entrar com a palavra-passe), o atacante, que conhece o identificador, fica com acesso. A defesa é dar à sessão um identificador novo no momento importante, com o `req.session.regenerate`, que o `express-session` também tem. Não a usas neste tema, porque o catálogo não tem esse momento; mas, numa aplicação com autenticação, é obrigatória.
 
@@ -298,7 +300,7 @@ O formulário de reserva do tema anterior passa a juntar um equipamento ao pedid
 
 Nesta mesma etapa, troca as ligações para `/reservas/nova` por `/pedido/item` em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`. Usa o texto "Juntar um equipamento ao pedido". A ligação para ver `/reservas` mantém-se. Assim, nenhuma página continua a oferecer o formulário antigo.
 
-Substitui a função `validarReserva` por `validarItem`, com a mesma verificação do equipamento, do dia e do tempo, e sem o bloco do nome:
+Substitui a função `validarReserva` por `validarItem`, com a mesma verificação do equipamento, do dia e do tempo, e sem o bloco do nome. Mantém a guarda inicial do tema anterior. Sem corpo lido, o objeto vazio faz os três campos falharem na validação habitual, e a rota mostra o formulário com 400 e as mensagens:
 
 Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
@@ -308,10 +310,14 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -469,7 +475,27 @@ app.get("/pedido", (req, res) => {
 
 Leitura guiada: `GET /pedido` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
 
-O `req.session.pedido || []` dá o pedido da sessão, ou um array vazio se ainda não houver pedido. O modelo `views/pedido.ejs` está completo no passo 5; por agora, basta-lhe a lista, a ligação para juntar mais um equipamento e a mensagem do pedido vazio.
+O `req.session.pedido || []` dá o pedido da sessão, ou um array vazio se ainda não houver pedido. Antes de abrir essa página, cria `views/pedido.ejs` com esta versão provisória completa. Mostra a lista, a ligação para juntar mais um equipamento e a mensagem do pedido vazio. Os botões de remoção, confirmação e cancelamento entram nos passos seguintes.
+
+Antes de experimentares, prevê o que a página mostra com um pedido vazio e com dois equipamentos. Confere as duas situações depois de criares o modelo.
+
+```ejs
+<%# views/pedido.ejs: a primeira lista dos itens da sessão. %>
+<%- include("partials/cabecalho") %>
+<% if (linhas.length === 0) { %>
+  <p>O teu pedido está vazio.</p>
+<% } else { %>
+  <ul>
+    <% for (const linha of linhas) { %>
+      <li><%= linha.equipamento.nome %>, sala <%= linha.equipamento.sala %>, dia <%= linha.item.data %>, tempo <%= linha.item.tempo %></li>
+    <% } %>
+  </ul>
+<% } %>
+<p><a href="/pedido/item">Juntar um equipamento</a></p>
+<%- include("partials/rodape") %>
+```
+
+Leitura guiada: `linhasDoPedido` já juntou cada equipamento ao item da sessão. A vista mostra o nome, a sala, o dia e o tempo de cada linha. Se não houver linhas, mostra a mensagem do pedido vazio.
 
 Abre o catálogo em duas janelas: uma normal e uma anónima. Na normal, junta o projetor e o portátil. Na anónima, abre `/pedido`: está vazio. Junta lá o monitor, e volta à normal: continua com os seus dois. São duas sessões, isoladas, uma para cada browser.
 
@@ -550,7 +576,7 @@ Antes de leres o modelo, prevê as posições para duas linhas: projetor e port�
 
 O índice 2 já ficaria fora dessas duas linhas. A condição impede essa leitura.
 
-A página do pedido, completa, com os equipamentos, o botão de cada um, a confirmação com o nome e o cancelamento:
+Substitui agora o conteúdo provisório de `views/pedido.ejs` por esta versão completa, com os equipamentos, o botão de cada um, a confirmação com o nome e o cancelamento. Na confirmação, escreve um nome fictício.
 
 Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
@@ -621,6 +647,8 @@ function erroDoNome(nome) {
 
 Leitura guiada: em `erroDoNome`, começa pelo parâmetro. Segue as verificações pela ordem escrita e identifica o valor de cada `return`.
 
+Na confirmação também pode chegar um pedido sem corpo, mesmo quando a sessão já tem equipamentos. A variável local `corpo` recebe `req.body`; se não existir, fica com um objeto vazio, como na validação do item. A `textoDoCampo` recebe então `undefined` para o nome e devolve texto vazio. A `erroDoNome` encontra o erro habitual, sem criar reservas nem terminar a sessão.
+
 Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
@@ -635,7 +663,12 @@ app.post("/pedido/confirmacao", (req, res) => {
     return;
   }
 
-  const nome = textoDoCampo(req.body.nome);
+  // Sem corpo lido, o nome fica vazio e a validação devolve a sua mensagem.
+  let corpo = req.body;
+  if (!corpo) {
+    corpo = {};
+  }
+  const nome = textoDoCampo(corpo.nome);
   const erroNome = erroDoNome(nome);
   if (erroNome !== "") {
     res.status(400).render("pedido", { titulo: "O teu pedido", linhas: linhasDoPedido(pedido), valorNome: nome, erroNome: erroNome });
@@ -748,10 +781,14 @@ function diaValido(texto) {
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -950,7 +987,12 @@ app.post("/pedido/confirmacao", (req, res) => {
     return;
   }
 
-  const nome = textoDoCampo(req.body.nome);
+  // Sem corpo lido, o nome fica vazio e a validação devolve a sua mensagem.
+  let corpo = req.body;
+  if (!corpo) {
+    corpo = {};
+  }
+  const nome = textoDoCampo(corpo.nome);
   const erroNome = erroDoNome(nome);
   if (erroNome !== "") {
     res.status(400).render("pedido", { titulo: "O teu pedido", linhas: linhasDoPedido(pedido), valorNome: nome, erroNome: erroNome });
@@ -1063,6 +1105,8 @@ Os modelos novos são o `item-novo.ejs` do passo 2 e o `pedido.ejs` do passo 5. 
 ## Observar os cookies no browser
 
 Há três sítios onde vês os cookies e a sessão a trabalhar.
+
+Faz estas observações apenas no catálogo local e nas sessões que criaste para o ensaio. Se o browser da escola impedir a edição de cookies, acompanha a demonstração do professor e regista as previsões e o que observas. A experiência individual fica por realizar quando tiveres acesso a um browser que a permita.
 
 **O separador Rede.** Junta um equipamento ao pedido e clica no `POST` a `itens`. Nos cabeçalhos da resposta está o `Set-Cookie`, com o nome, o valor e os atributos. Depois clica no `GET` a `pedido` que veio a seguir: nos cabeçalhos do pedido está o `Cookie`, só com o nome e o valor. Repete com um pedido à página inicial: o cookie também vai, embora a página inicial não precise dele. O browser envia-o sempre.
 

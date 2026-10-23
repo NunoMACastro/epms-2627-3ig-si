@@ -18,6 +18,8 @@ Os exercícios 1 e 2 treinam a leitura: prever o que um servidor responde e perc
 
 Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
 
+Os exercícios 4 e 5 são obrigatórios. Podes usar métodos de arrays que conheças ou ciclos equivalentes; não é obrigatório usar um método específico.
+
 Nos exercícios 1 e 2, responde antes de experimentar. Nos outros, antes de abrires o browser, escreve o que esperas ver; depois confirma. Quando uma coisa não funcionar, lê a mensagem do terminal pela ordem da secção "Como ler uma mensagem de erro do Node" do guia, antes de pedir ajuda.
 
 
@@ -39,10 +41,12 @@ const salas = [
   { codigo: "B12", lugares: 24 },
 ];
 
+// GET /: responde com o texto de apresentação das salas.
 app.get("/", (req, res) => {
   res.send("Salas da escola");
 });
 
+// GET /salas: regista o pedido no terminal e responde com as salas em JSON.
 app.get("/salas", (req, res) => {
   console.log("Pedido à lista de salas");
   res.json(salas);
@@ -102,7 +106,7 @@ ReferenceError: livro is not defined
 
 Guia: secção "Exemplo guiado".
 
-1. Na tua pasta de trabalho, cria uma pasta `biblioteca` e prepara-a como no laboratório: `npm init -y`, a mudança do `"type"` e `npm install express`.
+1. Na tua pasta de trabalho, cria uma pasta `biblioteca` e prepara-a como no laboratório: `npm init -y`, a mudança do `"type"` e `npm install express`. Se não houver internet, pede ao professor as dependências preparadas, como na alternativa da fase 3 do laboratório. A pasta fica com `package.json`, `package-lock.json` e `node_modules`, ainda sem `server.js`. Identifica os passos que recebeste preparados e os que executaste; não substituas trabalho teu.
 2. Cria o `server.js` com este código de partida:
 
 ```js
@@ -121,6 +125,7 @@ const livros = [
   { id: 3, titulo: "Memorial do Convento", autor: "José Saramago", disponivel: false },
 ];
 
+// GET /: responde com o texto de apresentação da biblioteca.
 app.get("/", (req, res) => {
   res.send("Biblioteca da escola: o servidor está a funcionar.");
 });

@@ -131,7 +131,7 @@ Passo a passo, para o pedido da lista dos equipamentos da sala B12, e com o sít
 
 Repara em que sítio aparece o EJS: só no servidor, nos passos 3 e 4. O browser recebe só HTML. Não recebe o ficheiro `.ejs`, as marcas nem os dados soltos. Também não executa o JavaScript do modelo. Esse código já correu no servidor, antes de a resposta sair. Por isso se diz que estas páginas são construídas **do lado do servidor**. Para o browser, uma página feita com EJS é igual a uma página escrita à mão.
 
-Isto tem uma consequência prática. O modelo pode usar os dados que a rota lhe passou. Mas não sabe nada do que se passa no browser: não sabe em que botão o utilizador carregou, nem pode reagir a um clique sem um pedido novo. Cada vez que a página muda, é porque o browser fez um pedido e o servidor construiu uma página nova.
+Isto tem uma consequência prática. O modelo pode usar os dados que a rota lhe passou. Mas não sabe nada do que se passa no browser: não sabe em que botão o utilizador carregou, nem pode reagir a um clique sem um pedido novo. Neste catálogo, sem JavaScript a correr no browser, mudar a lista apresentada exige um pedido novo. O servidor constrói então outra página com os dados escolhidos. Uma página também pode ter JavaScript próprio a correr no browser e a alterar o seu conteúdo. Esse código seria diferente do JavaScript do modelo EJS, que continua a executar-se só no servidor.
 
 Em Linguagens de Programação, a mesma turma constrói aplicações de outra maneira: o servidor envia só os dados, em JSON. É o React, a correr no browser, que constrói a página. As duas formas resolvem o mesmo problema, juntar dados e HTML, em sítios diferentes. Nesta disciplina, o servidor é que faz a página.
 

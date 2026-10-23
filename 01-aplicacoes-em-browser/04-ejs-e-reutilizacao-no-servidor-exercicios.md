@@ -77,6 +77,8 @@ Muda as rotas:
 2. `GET /livros/disponiveis` responde com a mesma página, o mesmo `livros.ejs`, com outro título e só os livros disponíveis. Não cries um segundo modelo: decide o que muda no `res.render`.
 3. Com um valor de `?disponivel=` que não seja `true` nem `false`, a resposta continua a ser 400, mas agora é uma página de erro. Cria o modelo `views/erro.ejs`, com um título e uma mensagem, e faz a mensagem dizer qual foi o valor recebido, para o leitor perceber o que escreveu mal.
 
+Para selecionar os livros de cada estado, podes usar `filter` ou ciclos equivalentes. O que conta é a lista escolhida e a resposta aos casos de teste.
+
 **Resultado esperado:**
 
 | Pedido | Código | O que a página mostra |
@@ -93,13 +95,16 @@ Guia: exemplo guiado, passos 4 e 6.
 
 Cria o modelo `views/livro.ejs`, com o título do livro como título da página, o autor e o estado, escrito como no exercício 3. Na página da lista, o título de cada livro passa a ser uma ligação para a sua página.
 
+A página de cada livro tem sempre a ligação "Voltar à lista", para `/livros`. Quando o livro está emprestado, mostra também "Ver livros disponíveis", para `/livros/disponiveis`. Quando está disponível, essa segunda ligação não aparece. Decide onde colocar a condição no modelo, sem criar outra página de detalhe.
+
 A rota `GET /livros/:id` responde com esta página. Os três erros passam a usar o `erro.ejs` do exercício 3. Mantém os códigos e as duas mensagens de 400 da ficha anterior, uma para cada regra do identificador. Usa um só modelo de erro para os três casos.
 
 **Resultado esperado:**
 
 | Pedido | Código | O que a página mostra |
 | --- | --- | --- |
-| `GET /livros/3` | 200 | "Memorial do Convento", de José Saramago, emprestado |
+| `GET /livros/1` | 200 | "Os Maias", de Eça de Queirós, disponível; "Voltar à lista", sem "Ver livros disponíveis" |
+| `GET /livros/3` | 200 | "Memorial do Convento", de José Saramago, emprestado; as duas ligações |
 | `GET /livros/x` | 400 | A página de erro, com a mensagem do número inteiro |
 | `GET /livros/-3` | 400 | A página de erro, com a mensagem do maior do que zero |
 | `GET /livros/7` | 404 | A página de erro, a dizer que o livro 7 não existe |
@@ -108,36 +113,53 @@ A rota `GET /livros/:id` responde com esta página. Os três erros passam a usar
 
 Guia: secção "Partes partilhadas: o cabeçalho e o rodapé" e exemplo guiado, passo 5.
 
-1. Cria os partials `cabecalho.ejs` e `rodape.ejs` da biblioteca, em `views/partials`, e usa-os em todas as páginas. O menu do cabeçalho tem três ligações: o início, todos os livros e os livros disponíveis.
+1. Cria os partials `cabecalho.ejs` e `rodape.ejs` da biblioteca, em `views/partials`, e usa-os em todas as páginas. O menu do cabeçalho tem três ligações: o início, todos os livros e os livros disponíveis. Identifica a ligação da página atual com negrito ou um texto equivalente, sem acrescentar CSS.
 2. A rota `/` deixa de responder com texto e passa a responder com uma página inicial, `views/inicio.ejs`, com uma frase sobre a biblioteca.
 3. O middleware final passa a responder com a página de erro, com o 404 e uma mensagem tua.
 
-Antes de dares o exercício por acabado, abre todas as páginas da biblioteca, incluindo as de erro. Confirma que nenhuma ficou sem menu, sem rodapé ou com o título errado no separador do browser.
+Cada rota passa ao modelo um dado chamado `paginaAtiva`, além dos dados que já passava. Escolhe os seus valores e usa condições no cabeçalho para decidir qual das três ligações fica identificada. Na versão final, todas as chamadas a `res.render` fornecem esse dado, incluindo as respostas de erro.
 
-## Exercício 6: encontrar os erros
+Confirma estes casos:
 
-Guia: secção "Erros frequentes". Os dois erros deste exercício não estão no guia, mas as mensagens leem-se da mesma maneira.
+| Página | Ligação identificada no menu |
+| --- | --- |
+| `/` | Início |
+| `/livros`, sem filtro | Todos os livros |
+| `/livros/disponiveis` | Disponíveis |
+| `/livros?disponivel=true` | Disponíveis |
+| `/livros?disponivel=false` | Nenhuma |
+| Detalhe de qualquer livro | Nenhuma |
+| Qualquer página de erro 400 ou 404 | Nenhuma |
 
-Um colega fez os exercícios 3 e 5, e a biblioteca dele tem dois problemas.
+Antes de dares o exercício por acabado, abre todas estas páginas. Confirma que mantêm as três ligações do menu, o rodapé e o título certo no separador do browser.
 
-O primeiro: `GET /livros` dá uma página de erro com o código 500, que acaba em `livros is not defined`, e `GET /livros/disponiveis`, que usa o mesmo modelo, funciona. A rota `/livros` dele tem esta linha:
+## Exercício 6: encontrar o erro
+
+Guia: secção "Erros frequentes". Este exercício tem um erro intencional que o guia não mostrou.
+
+Um colega fez os exercícios 3 e 5. O pedido `GET /livros` recebe o código 500, e o terminal aponta para o ciclo do modelo. O pedido `GET /livros/disponiveis` continua a mostrar os dois livros disponíveis, usando o mesmo `livros.ejs`.
+
+Na rota `/livros`, quando não há filtro, a chamada é esta. Usa o array `livros` do início da ficha:
 
 ```js fragment
-res.render("livros", { titulo: "Todos os livros", lista: livros });
+res.render("livros", { titulo: "Todos os livros", livros: livros.length, paginaAtiva: "livros" });
 ```
 
-1. Porque é que o erro diz que `livros` não está definido, se o array `livros` existe no `server.js`?
-2. Porque é que a outra rota, com o mesmo modelo, funciona?
-3. Qual é a correção mais pequena?
+A propriedade `paginaAtiva` usa aqui o valor `"livros"` para identificar "Todos os livros" no menu e está correta. A rota `/livros/disponiveis` passa a lista dos dois livros disponíveis na propriedade `livros`, como no exercício 3. Também fornece o valor correto de `paginaAtiva` para identificar "Disponíveis". A parte do modelo que mostra a lista é esta:
 
-O segundo: depois de mudar o estado de cada livro, todas as rotas que mostram a lista dão `SyntaxError: Unexpected token 'else' ... while compiling ejs`. A linha que ele mudou no `livros.ejs` é esta:
-
-```ejs
-<% if (livro.disponivel) %>disponível<% } else { %>emprestado<% } %>
+```ejs fragment
+<ul>
+  <% for (const livro of livros) { %>
+    <li><%= livro.titulo %></li>
+  <% } %>
+</ul>
 ```
 
-4. Encontra o erro e escreve a linha corrigida.
-5. Porque é que esta mensagem aparece em todas as rotas que usam o `livros.ejs`, e a do primeiro problema só aparecia numa?
+Responde primeiro em papel, antes de experimentar:
+
+1. Que valor e que tipo recebe o modelo na propriedade `livros`, em `GET /livros`? Segue esse valor até ao ciclo e explica a causa do erro.
+2. Escreve a chamada corrigida, mudando apenas o segundo argumento de `res.render`. Mantém o modelo.
+3. Porque funciona a outra rota com o mesmo modelo? Prevê o que cada pedido deve mostrar depois da correção. Só depois experimenta os dois pedidos numa cópia da biblioteca e compara com a previsão.
 
 ## Apoio
 
@@ -146,13 +168,17 @@ O segundo: depois de mudar o estado de cada livro, todas as rotas que mostram a 
 - Exercício 3: Compara o que cada rota precisa de passar ao mesmo modelo.
 - Exercício 4: Separa a validade do identificador da existência do livro.
 - Exercício 5: Confere cada página, incluindo os erros.
-- Exercício 6: Compara os nomes de cada propriedade e as chavetas, sem mudar várias coisas de uma vez.
+- Exercício 6: Segue o valor desde a chamada da rota até à instrução do modelo onde o erro aparece. Muda uma causa de cada vez.
 
 ## Desafio opcional
 
 Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
-**A contagem.** Na página de todos os livros, por cima da lista, a frase "3 livros, 2 disponíveis". Decide onde se fazem as duas contas: na rota, que passa os números ao modelo, ou no modelo, a partir da lista. Escreve a tua decisão e a razão, com a secção "Ciclos e condições dentro do modelo" do guia ao lado, e implementa-a. A frase também deve aparecer bem quando só houver um livro.
+**A contagem.** Acrescenta a frase "3 livros, 2 disponíveis" por cima da lista, apenas na página de todos os livros, `GET /livros` sem filtro. As listas filtradas e a de `/livros/disponiveis` continuam a funcionar, mas não mostram esta frase. Usa o dado de identificação da página do exercício 5 para distinguir os casos, mantendo o mesmo modelo de lista.
+
+Decide onde se fazem as duas contas: na rota, que passa os números ao modelo, ou no modelo, a partir da lista. Escreve a tua decisão e a razão, com a secção "Ciclos e condições dentro do modelo" do guia ao lado, e implementa-a. Ambas as escolhas são válidas quando cumprem o resultado pedido.
+
+Experimenta numa cópia com os três livros, depois com apenas um disponível, com apenas um emprestado e sem livros. Confirma o singular e o plural nas duas partes da frase, incluindo quando existe um único livro disponível. Depois de cada alteração, verifica também as listas filtradas: não devem mostrar a frase nem deixar de responder.
 
 ## Critérios de conclusão
 

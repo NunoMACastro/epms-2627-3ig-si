@@ -27,7 +27,7 @@ Módulo Aplicações baseadas em browsers. Este guia explica como uma operação
 
 Neste módulo vais construir uma aplicação web em que o servidor gera as páginas que o browser mostra. Antes de escreveres a primeira linha desse servidor, precisas de um desenho claro de quem faz o quê. Esse desenho mostra o que acontece no teu computador e no servidor. Também mostra onde ficam os dados e como estas partes conversam umas com as outras. Sem esse desenho, cada erro que aparecer vai parecer um mistério. Isto acontece porque não vais saber em que parte procurar.
 
-Este guia constrói esse desenho, sem código. Parte de uma situação real de uma escola, a reserva de equipamentos. E segue-a desde a necessidade de quem a faz até à informação que fica guardada e que alguém vai consultar mais tarde.
+Este guia constrói esse desenho, sem escrever um servidor. Parte de uma situação real de uma escola, a reserva de equipamentos. E segue-a desde a necessidade de quem a faz até à informação que fica guardada e que alguém vai consultar mais tarde.
 
 No fim deste guia deves conseguir:
 
@@ -67,9 +67,11 @@ A **organização** é a escola. Tem pessoas com papéis diferentes: professores
 
 Um **processo** é uma sequência de passos que a organização repete para atingir um fim. A reserva de um equipamento é um processo. O professor escolhe o equipamento e o tempo. Alguém verifica se está livre e a reserva fica registada. No dia, o professor levanta o equipamento e no fim devolve-o. Cada passo tem alguém que o faz e deixa alguma coisa registada.
 
-Os **dados** são os factos registados em cada passo, um a um: o equipamento 2, o dia 20 de outubro, o terceiro tempo, o estado "confirmada". Um dado sozinho diz pouco. "Projetor, 20 de outubro, terceiro tempo" é um facto, mas não responde a nenhuma pergunta de ninguém.
+Os **dados** são os factos registados em cada passo, um a um: o equipamento 2, o dia 20 de outubro, o terceiro tempo, o estado "confirmada". Um dado sozinho diz pouco. "Projetor, 20 de outubro, terceiro tempo" é um facto registado. Por si só, não diz a que pergunta de alguém se pretende responder.
 
-A **informação** é o resultado de juntar e organizar dados para responder a uma pergunta de alguém. "O projetor está livre no terceiro tempo de amanhã?" é uma pergunta de um professor, e a resposta é informação. "Quais foram os cinco equipamentos mais reservados neste período?" é uma pergunta da direção, e a resposta é informação que ajuda a decidir uma compra. Os mesmos dados, organizados de formas diferentes, respondem a perguntas diferentes.
+A **informação** é o resultado de interpretar e organizar dados para responder a uma pergunta de alguém. "O projetor está livre no terceiro tempo de amanhã?" é uma pergunta de um professor, e a resposta é informação. "Quais foram os cinco equipamentos mais reservados neste período?" é uma pergunta da direção, e a resposta é informação que ajuda a decidir uma compra. Os mesmos dados, organizados de formas diferentes, respondem a perguntas diferentes.
+
+Um mesmo registo pode ser um dado guardado e ser usado como informação numa pergunta concreta. Para justificares a distinção, indica a pergunta e explica como os dados permitem responder-lhe.
 
 Um **sistema de informação** é o conjunto de pessoas, processos, dados e tecnologia que recolhe dados quando o processo acontece e os transforma em informação quando alguém precisa dela. A aplicação web é a parte tecnológica do sistema. Mas não é o sistema inteiro: se os professores continuarem a usar a folha, a aplicação não tem dados. E não há informação nenhuma para tirar dela.
 
@@ -452,7 +454,7 @@ O tempo corre de cima para baixo. Cada seta horizontal é uma mensagem, com o qu
 
 ### Passo 9: da reserva à informação
 
-A reserva 28 é um dado. Junta-se às outras, e daqui a umas semanas a direção quer saber que equipamentos foram mais reservados, para decidir o que comprar. A pergunta responde-se com uma consulta que já conheces do diagnóstico:
+A reserva 28 é um registo guardado. Pode responder à professora que pergunta se a sua reserva ficou confirmada. Junta-se também às outras, e daqui a umas semanas a direção quer saber que equipamentos foram mais reservados, para decidir o que comprar. A pergunta responde-se com uma consulta que já conheces do diagnóstico:
 
 Antes de leres a consulta, prevê: a reserva cancelada entra na contagem?
 

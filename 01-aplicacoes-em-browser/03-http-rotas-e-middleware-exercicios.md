@@ -10,7 +10,7 @@ O [guia do tema](03-http-rotas-e-middleware.md) e o [laboratório](03-http-rotas
 
 ## O contexto desta ficha
 
-O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista, a escrever no terminal os pedidos que recebe e a responder aos endereços que não existem. Vais tomar decisões que o catálogo do guia não tomou. Escolhes a mensagem para cada regra do identificador e tratas uma pesquisa que só aceita dois valores. Também escolhes o formato do erro de um endereço inexistente, num servidor que responde sempre em JSON.
+O servidor da biblioteca responde, por agora, à lista dos livros, aos livros disponíveis e a um resumo. Nesta ficha passa a mostrar um livro de cada vez, a filtrar a lista, a escrever no terminal os pedidos que recebe e a responder aos endereços que não existem. Vais tomar decisões que o catálogo do guia não tomou. Escolhes a mensagem para cada regra do identificador e tratas uma pesquisa que só aceita dois valores. Também escolhes o formato do erro de um endereço inexistente. As rotas de dados e as respostas de erro usam JSON; a rota inicial `/` mantém a mensagem de texto.
 
 ## Como trabalhar
 
@@ -55,6 +55,8 @@ No `server.js` da biblioteca, acrescenta a rota `GET /livros/:id`, que responde 
 
 A funcionária escreve muitas vezes o número do livro à mão e, quando se engana, quer saber o que corrigir. A mensagem do 400 distingue duas falhas. Num caso, o valor não é um número inteiro. No outro, é inteiro mas não é maior do que zero.
 
+Mantém as duas mensagens distintas. Podes organizar as condições de outra forma, desde que os pedidos recebam as respostas pedidas; não tens de escrever dois `if`.
+
 **Resultado esperado:** os pedidos 1 a 4 do exercício 2, e mais o do livro 0, dão estas respostas:
 
 | Pedido | Código | Resposta |
@@ -74,39 +76,46 @@ A funcionária quer ver só os livros disponíveis, ou só os emprestados. Muda 
 - sem o parâmetro, a resposta é a lista toda, como antes;
 - `?disponivel=true` dá só os livros com `disponivel` igual a `true`;
 - `?disponivel=false` dá só os outros;
-- qualquer outro valor, como `?disponivel=talvez`, é um pedido mal feito.
+- qualquer outro valor, como `?disponivel=talvez` ou o valor vazio em `?disponivel=`, é um pedido mal feito.
 
-**Resultado esperado:** `true` dá "Os Maias" e "Mensagem"; `false` dá "Memorial do Convento"; `talvez` dá 400, com uma mensagem que diga que valores são aceites.
+**Resultado esperado:** `true` dá "Os Maias" e "Mensagem"; `false` dá "Memorial do Convento"; `talvez` e o valor vazio dão 400, com uma mensagem que diga que valores são aceites.
+
+O exercício é obrigatório. Podes usar condições e ciclos equivalentes; não é obrigatório usar um método específico de arrays.
 
 Neste exercício, o filtro do guia comparava o texto do parâmetro com um texto do array (a sala). Aqui, o parâmetro chega como texto, `"true"`, e o campo do livro é um booleano, `true`. Pensa em como os comparas, antes de escrever código.
 
 **Pista, só se precisares:** `"true" === true` é `false`.
 
-## Exercício 5: o middleware fora do sítio
+## Exercício 5: o registo que impede o arranque
 
 Guia: secção "O middleware".
 
-Um colega escreveu o servidor da biblioteca com os middlewares e as rotas por esta ordem (o conteúdo das rotas está resumido):
+Um colega deu um nome à função de registo dos pedidos. No `server.js`, colocou esta parte depois de `const app = express()` e antes de todas as rotas. O fragmento tem um único erro intencional; as outras partes do servidor mantêm-se corretas.
 
 ```js fragment
-app.use((req, res) => {
-  res.status(404).send("Página não encontrada.");
-});
-
-app.use((req, res, next) => {
+/**
+ * Escreve no terminal o método e o endereço do pedido e passa ao seguinte.
+ * Não produz uma resposta HTTP nem devolve um valor.
+ * @param {object} req o pedido, com o método e o endereço
+ * @param {object} res a resposta disponível para este pedido
+ * @param {Function} next a função que passa ao middleware seguinte
+ * @returns {void}
+ */
+const registarPedido = (req, res, next) => {
   console.log(`${req.method} ${req.url}`);
-});
+  next();
+};
 
-app.get("/livros/:id", (req, res) => { /* responde com um livro, ou com 400 ou 404 */ });
-app.get("/livros/disponiveis", (req, res) => { /* responde com os livros disponíveis */ });
-app.get("/livros", (req, res) => { /* responde com a lista */ });
+app.use(registarPedido());
 ```
 
-a) Que resposta tem um pedido `GET /livros`? E o que aparece no terminal?
+Responde em papel antes de experimentares.
 
-b) Este código tem três erros, todos ligados à fila do Express. Para cada um, diz qual é e que sintoma teria, se os outros dois estivessem corrigidos.
+a) Prevê quando corre `registarPedido`: no arranque ou quando chega um pedido? O servidor consegue chegar à instrução que o põe à escuta?
 
-c) Escreve a ordem certa destas cinco partes, só com os nomes: a rota `/livros`, a rota `/livros/:id`, a rota `/livros/disponiveis`, o middleware final e o middleware de registo.
+b) Identifica a linha que provoca o erro, explica a causa e corrige uma só linha.
+
+c) Com a correção feita, explica o que acontece à função de registo no arranque e quando chega `GET /livros`.
 
 ## Exercício 6: o registo e o fim da fila
 
@@ -114,11 +123,13 @@ Guia: secção "O middleware" e exemplo guiado, passos 3 e 5.
 
 Acrescenta ao servidor da biblioteca o middleware de registo e o middleware final, cada um no sítio certo. Se tiveres a rota `/livros/disponiveis` da ficha anterior, confirma também que ela está acima da rota `/livros/:id` do exercício 3.
 
-O middleware de registo é igual ao do guia. O final não: todas as respostas da biblioteca são JSON, incluindo as de erro, com a mensagem numa chave `erro`, para quem usa o servidor saber sempre onde a procurar. A resposta a um endereço que não existe também tem de ser assim, e tem de dizer que pedido não foi encontrado, com o método e o endereço.
+O middleware de registo é igual ao do guia. O final não: as respostas de erro da biblioteca usam JSON, com a mensagem numa chave `erro`, para quem usa o servidor saber sempre onde a procurar. As rotas de dados também respondem em JSON; a rota inicial `/` mantém o texto. A resposta a um endereço que não existe tem de indicar o método e o endereço do pedido.
 
 Neste exercício, o middleware final do guia responde sempre o mesmo texto. Este tem de construir a mensagem a partir do pedido. Que propriedades do `req` usas? O guia avisa que o texto do utilizador não se cola em HTML. Por que podes pôr o endereço do pedido nesta resposta JSON?
 
 **Resultado esperado:** `GET /livro`, sem o `s`, dá 404 com `{"erro":"Pedido não encontrado: GET /livro"}`. `GET /livros/1` continua a dar "Os Maias". O terminal mostra uma linha por pedido, incluindo a do endereço errado.
+
+O exercício é obrigatório. A mensagem pode ter outra redação, desde que mantenha o código 404, a chave `erro`, o método e o endereço do pedido.
 
 ## Exercício 7: o contrato da biblioteca
 
@@ -132,7 +143,7 @@ Escreve a tabela de contratos HTTP do servidor da biblioteca, com uma linha por 
 - Exercício 2: decide primeiro qual é o caminho, sem a pesquisa.
 - Exercício 3: testa separadamente um texto, zero e um número inexistente.
 - Exercício 4: um texto não vazio não é necessariamente o valor booleano que procuras.
-- Exercício 5: segue a fila até à primeira função que responde.
+- Exercício 5: lê também as instruções que correm antes de o servidor ficar à escuta.
 - Exercício 6: mantém o formato das outras respostas e verifica o estado no browser.
 - Exercício 7: inclui os erros e o caso sem parâmetros, além do sucesso.
 
