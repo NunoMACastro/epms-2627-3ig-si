@@ -2,7 +2,7 @@
 
 # Catálogo com detalhe e filtro
 
-Exemplo guiado da aula de 6 de outubro de 2026, do tema Primeiro servidor, com os acrescentos que abriram o tema seguinte, HTTP, rotas e middleware. É uma etapa entre o [Primeiro servidor](../../../01-aplicacoes-em-browser/02-primeiro-servidor.md) e o [HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md).
+Este exemplo prolonga o primeiro servidor com uma rota de detalhe e um filtro por sala. É uma etapa entre o [Primeiro servidor](../../../01-aplicacoes-em-browser/02-primeiro-servidor.md) e o [HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md).
 
 ## O que está nesta pasta
 
@@ -10,14 +10,14 @@ Exemplo guiado da aula de 6 de outubro de 2026, do tema Primeiro servidor, com o
 - `package.json` e `package-lock.json`: o projeto e as versões exatas dos pacotes desta cópia.
 - A pasta `node_modules` não fica guardada. Cria-se com `npm install`, como se explica abaixo.
 
-## Como o exemplo cresceu na aula
+## Da lista ao detalhe e ao filtro
 
-1. **Primeira versão:** duas rotas GET, `/` e `/equipamentos`, com três equipamentos em memória, e o `app.listen` com a verificação de erro.
-2. **Acrescentos da mesma aula,** mantendo a simplicidade de um primeiro contacto: a rota de detalhe `/equipamentos/:id`, que responde 404 quando o equipamento não existe. E o filtro `?sala=` na rota da lista. Entrou um quarto equipamento, um monitor na B12, para o filtro devolver mais do que um.
+1. **Ponto de partida:** duas rotas GET, `/` e `/equipamentos`, com os equipamentos em memória, e o `app.listen` com a verificação de erro.
+2. **Detalhe e filtro:** a rota `/equipamentos/:id` responde com um equipamento ou com 404 quando não o encontra. O filtro `?sala=` limita a lista aos equipamentos dessa sala. O portátil e o monitor estão na B12, para o filtro devolver mais do que um.
 
-Ficaram de fora, de propósito, o middleware e o POST. São mecanismos novos, e não mais uma rota, e por isso ficam para outras aulas.
+O exemplo usa apenas rotas GET. O middleware e o POST são mecanismos diferentes: o middleware entra no tema HTTP, rotas e middleware; o POST com formulário entra no tema Formulários e validação.
 
-## Configurar de raiz, como na aula
+## Configurar de raiz
 
 Usa o Node 24 adotado na disciplina. Confirma a versão instalada:
 
@@ -60,7 +60,7 @@ node --version
 
 ## Como correr
 
-Para usar esta cópia em vez de a construir de raiz, basta instalar as dependências, que o `package-lock.json` fixa na versão testada, e ligar o servidor:
+Para usar esta cópia em vez de a construir de raiz, basta instalar as dependências, que o `package-lock.json` fixa nas versões desta cópia, e ligar o servidor:
 
 ```bash
 npm install
@@ -69,7 +69,7 @@ node server.js
 
 ## O que experimentar
 
-Respostas obtidas no teste de 6 de outubro:
+Compara as respostas com estes resultados esperados:
 
 | Endereço | Resposta | Código |
 |---|---|---|

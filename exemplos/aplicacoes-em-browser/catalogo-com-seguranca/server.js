@@ -1,7 +1,7 @@
 // server.js: o catálogo de equipamentos da escola, com o pedido em curso na
 // sessão, agora preparado para quando as coisas correm mal: um middleware de
 // erro que regista a falha no terminal e mostra ao utilizador uma página que
-// não revela nada do servidor, e um token contra o CSRF em todos os
+// não revela detalhes internos do servidor, e um token contra o CSRF em todos os
 // formulários que mudam a sessão.
 import express from "express";
 import session from "express-session";
@@ -197,7 +197,8 @@ app.use((req, res, next) => {
     return;
   }
   const token = req.session.csrf;
-  if (!token || req.body._csrf !== token) {
+  // Sem corpo lido pelo express.urlencoded, não há campo _csrf para comparar.
+  if (!token || !req.body || req.body._csrf !== token) {
     res.status(403).render("erro", {
       titulo: "Pedido recusado",
       mensagem: "Este formulário já não é válido. Volta à página do formulário, recarrega-a e tenta outra vez.",
@@ -397,7 +398,7 @@ app.use((req, res) => {
 // Middleware de erro: tem quatro parâmetros, e o Express só o chama quando
 // uma rota, um middleware ou um modelo falham. Regista o erro completo no
 // terminal, para quem o vai corrigir, e mostra ao utilizador uma página que
-// não revela nada do servidor. Fica depois de tudo, como o middleware final.
+// não revela detalhes internos do servidor. Fica depois de tudo, como o middleware final.
 app.use((erro, req, res, next) => {
   console.error(`${new Date().toISOString()} ERRO ${req.method} ${req.url}`);
   console.error(erro.stack);

@@ -2,7 +2,9 @@
 
 # Catálogo com reservas
 
-Este exemplo é uma primeira versão das reservas, e já não é o exemplo de nenhum tema. Foi publicado a 7 de outubro de 2026 com o tema HTTP, rotas e middleware. A 9 de outubro, esse tema passou a usar o [catalogo-com-middleware](../catalogo-com-middleware/README.md), que é o mesmo catálogo sem o formulário de reserva e sem o `POST`. A 12 de outubro, Formulários e validação foi publicado com o exemplo [catalogo-com-formularios](../catalogo-com-formularios/README.md). Tem páginas EJS, validação de cada campo e mensagens de erro no formulário. Depois de uma reserva certa, redireciona para a página dela. Se estás a estudar os formulários, é esse o exemplo que procuras. Este fica aqui porque já foi distribuído: responde em JSON, verifica os campos numa só condição, com uma mensagem só para todos, e responde 201 em vez de redirecionar.
+Esta pasta serve para uma comparação opcional no tema Formulários e validação. O percurso principal usa o [catalogo-com-formularios](../catalogo-com-formularios/README.md), com páginas EJS, validação de cada campo e mensagens de erro no formulário. Depois de uma reserva certa, essa versão responde 303 e redireciona para a página dela. A versão desta pasta responde em JSON, verifica os campos numa só condição, com uma mensagem só para todos, e responde 201 em vez de redirecionar.
+
+Para estudar HTTP, rotas e middleware, usa o [catalogo-com-middleware](../catalogo-com-middleware/README.md), sem formulário de reserva nem `POST`.
 
 O servidor tem catálogo, detalhe e filtro por sala. Inclui o middleware de registo, o que lê formulários e um middleware final para endereços inexistentes. O formulário de reserva envia por `POST`. A rota de detalhe, o filtro, o middleware de registo e o middleware final estão explicados no [guia do tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md). O formulário, o `POST` e o middleware que lê o corpo estão explicados no [guia do tema Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md).
 
@@ -36,6 +38,7 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
    | `GET /equipamentos?sala=Z99` | 200 | `[]` |
    | `POST /reservas`, equipamento 2, dia 2026-10-20, tempo 3 | 201 | `{"id":1,"equipamentoId":2,"data":"2026-10-20","tempo":3}` |
    | `POST /reservas`, equipamento 9 | 400 | `{"erro":"Reserva inválida: confirma o equipamento, o dia e o tempo"}` |
+   | `POST /reservas`, sem corpo | 400 | a mesma mensagem de reserva inválida, em JSON |
    | `GET /reservas` | 200 | a lista com a reserva 1 |
    | `GET /nao-existe` | 404 | `Página não encontrada.` |
 
@@ -43,6 +46,10 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 
 5. Repara no terminal: cada pedido deixa lá uma linha, escrita pelo middleware de registo.
 6. Para parar, Ctrl+C. As reservas feitas perdem-se, porque estão em memória.
+
+## Comparação opcional
+
+Depois de acompanhares o exemplo guiado com EJS, usa esta cópia para comparar as respostas de uma reserva válida e de uma reserva com equipamento inexistente. Observa o código de estado, o tipo da resposta e o endereço que fica no browser. Explica como o JSON com 201 difere do redirecionamento 303 e como uma mensagem única difere dos erros por campo no formulário. Esta variante mantém uma validação mínima; não substitui a validação completa do percurso principal.
 
 ## Versões com que foi testado
 

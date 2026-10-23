@@ -2,7 +2,7 @@
 
 # Catálogo com sessões
 
-O servidor do exemplo guiado do [tema Cookies e sessões](../../../01-aplicacoes-em-browser/06-cookies-e-sessoes.md): o catálogo com formulários do tema anterior, agora com um pedido em curso guardado numa sessão. Junta-se ao pedido um ou mais equipamentos, um de cada vez, vê-se o pedido, tira-se o que já não se quer. No fim confirma-se tudo de uma vez, com o nome, ou cancela-se. Confirmar cria uma reserva por equipamento; confirmar e cancelar terminam a sessão. O guia explica o código passo a passo; aqui está pronto a correr.
+O servidor do exemplo guiado do [tema Cookies e sessões](../../../01-aplicacoes-em-browser/06-cookies-e-sessoes.md): o catálogo com formulários do tema anterior, agora com um pedido em curso guardado numa sessão. Junta-se ao pedido um ou mais equipamentos, um de cada vez, vê-se o pedido, tira-se o que já não se quer. No fim confirma-se tudo de uma vez, com um nome fictício, ou cancela-se. Confirmar cria uma reserva por equipamento; confirmar e cancelar terminam a sessão. O guia explica o código passo a passo; aqui está pronto a correr.
 
 A versão anterior, com uma reserva de cada vez, está em [catalogo-com-formularios](../catalogo-com-formularios/README.md).
 
@@ -31,7 +31,7 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 2. `npm ci`
 3. Copia o `.env.example` para um ficheiro novo, `.env`. Gera um segredo com `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` e cola-o no `.env`, a seguir ao `SESSION_SECRET=`.
 4. `node --env-file=.env server.js`, dentro desta pasta. O terminal mostra `Servidor a correr em http://localhost:3000`. Sem o `.env`, ou sem o segredo, o servidor não arranca, e diz porquê.
-5. No browser, abre `http://localhost:3000/` e faz um pedido de reserva. Abre o catálogo também numa janela anónima, para veres uma segunda sessão, separada da primeira. O passo 7 do exemplo guiado do guia diz o que deve acontecer.
+5. No browser, abre `http://localhost:3000/` e faz um pedido de reserva, usando um nome fictício na confirmação. Abre o catálogo também numa janela anónima, para veres uma segunda sessão, separada da primeira. O passo 7 do exemplo guiado do guia diz o que deve acontecer.
 6. Para parar, Ctrl+C. As sessões e as reservas ficam em memória e desaparecem quando o servidor para.
 
 ## Versões com que foi testado

@@ -68,10 +68,14 @@ function diaValido(texto) {
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),
@@ -270,7 +274,12 @@ app.post("/pedido/confirmacao", (req, res) => {
     return;
   }
 
-  const nome = textoDoCampo(req.body.nome);
+  // Sem corpo lido, o nome fica vazio e a validação devolve a sua mensagem.
+  let corpo = req.body;
+  if (!corpo) {
+    corpo = {};
+  }
+  const nome = textoDoCampo(corpo.nome);
   const erroNome = erroDoNome(nome);
   if (erroNome !== "") {
     res.status(400).render("pedido", { titulo: "O teu pedido", linhas: linhasDoPedido(pedido), valorNome: nome, erroNome: erroNome });

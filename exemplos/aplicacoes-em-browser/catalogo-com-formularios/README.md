@@ -28,7 +28,7 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 1. Copia esta pasta para fora do repositório e abre um terminal dentro dela.
 2. `npm ci`
 3. `node server.js`, dentro desta pasta. O terminal mostra `Servidor a correr em http://localhost:3000` e fica ocupado.
-4. No browser, abre `http://localhost:3000/reservas/nova` e faz uma reserva. O browser termina em `/reservas/1`. As respostas que cada pedido deve dar estão no passo 6 do exemplo guiado do guia.
+4. No browser, abre `http://localhost:3000/reservas/nova` e faz uma reserva com um nome fictício. O browser termina em `/reservas/1`. As respostas que cada pedido deve dar estão no passo 6 do exemplo guiado do guia.
 5. Para veres a validação do servidor, acrescenta `novalidate` ao `<form>` do `views/reserva-nova.ejs` e envia o formulário vazio. Tira-o no fim.
 6. Para parar, Ctrl+C. As reservas ficam em memória e desaparecem quando o servidor para.
 

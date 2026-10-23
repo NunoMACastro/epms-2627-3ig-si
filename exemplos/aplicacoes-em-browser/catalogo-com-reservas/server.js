@@ -87,9 +87,14 @@ app.get("/reservas/nova", (req, res) => {
 
 // Criar uma reserva: POST /reservas, com os dados no corpo do pedido.
 app.post("/reservas", (req, res) => {
-  const equipamentoId = Number(req.body.equipamento_id);
-  const data = req.body.data;
-  const tempo = Number(req.body.tempo);
+  // Sem corpo lido, usa-se um objeto vazio: a validação abaixo recusa os campos.
+  let corpo = req.body;
+  if (!corpo) {
+    corpo = {};
+  }
+  const equipamentoId = Number(corpo.equipamento_id);
+  const data = corpo.data;
+  const tempo = Number(corpo.tempo);
 
   const equipamento = equipamentos.find((equipamento) => equipamento.id === equipamentoId);
   if (!equipamento || !data || !Number.isInteger(tempo) || tempo < 1) {

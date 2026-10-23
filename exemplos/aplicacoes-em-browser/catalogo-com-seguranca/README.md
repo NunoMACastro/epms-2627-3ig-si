@@ -2,7 +2,7 @@
 
 # Catálogo com segurança
 
-O servidor do exemplo guiado do [tema Erros e segurança web](../../../01-aplicacoes-em-browser/07-erros-e-seguranca-web.md): o catálogo com sessões do tema anterior, preparado para falhar. Tem um middleware de erro que regista cada falha no terminal, com a data, o pedido e o stack trace. Mostra a quem fez o pedido uma página que não revela nada do servidor. Respeita o código 4xx dos erros que já o trazem, como o 413 de um corpo grande demais. O servidor recusa-se a arrancar com um segredo de sessão com menos de 32 carateres. Todos os formulários que mudam a sessão levam um token contra o CSRF, que o servidor verifica em cada pedido `POST`. O guia explica o código passo a passo; aqui está pronto a correr.
+O servidor do exemplo guiado do [tema Erros e segurança web](../../../01-aplicacoes-em-browser/07-erros-e-seguranca-web.md): o catálogo com sessões do tema anterior, preparado para falhar. Tem um middleware de erro que regista cada falha no terminal, com a data, o pedido e o stack trace. Mostra a quem fez o pedido uma página que não revela detalhes internos do servidor. Respeita o código 4xx dos erros que já o trazem, como o 413 de um corpo grande demais. O servidor recusa-se a arrancar com um segredo de sessão com menos de 32 carateres. Todos os formulários que mudam a sessão levam um token contra o CSRF, que o servidor verifica em cada pedido `POST`. Um `POST` sem corpo é recusado com 403 antes das rotas. Estas medidas tratam os casos explicados no guia e não garantem a segurança geral de uma aplicação. O guia explica o código passo a passo; aqui está pronto a correr.
 
 A versão anterior, sem estas proteções, está em [catalogo-com-sessoes](../catalogo-com-sessoes/README.md).
 
@@ -28,7 +28,7 @@ Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `nod
 2. `npm ci`
 3. Copia o `.env.example` para um ficheiro novo, `.env`. Gera um segredo com `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` e cola-o no `.env`, a seguir ao `SESSION_SECRET=`. Um segredo com menos de 32 carateres é recusado.
 4. `node --env-file=.env server.js`, dentro desta pasta. O terminal mostra `Servidor a correr em http://localhost:3000`.
-5. No browser, faz um pedido de reserva e abre o código-fonte do formulário: procura o campo escondido `_csrf`. Para veres o 403, apaga o valor desse campo nas ferramentas de programador e envia. A matriz de falhas do guia diz como provocar as outras falhas.
+5. No browser, faz um pedido de reserva e abre o código-fonte do formulário: procura o campo escondido `_csrf`. Usa um nome fictício na confirmação. Para veres o 403, apaga o valor desse campo nas ferramentas de programador e envia. A matriz de falhas do guia diz como provocar as outras falhas.
 6. Para parar, Ctrl+C.
 
 ## Versões com que foi testado

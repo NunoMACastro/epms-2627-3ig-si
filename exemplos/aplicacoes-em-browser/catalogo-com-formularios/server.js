@@ -56,10 +56,14 @@ function diaValido(texto) {
  * Só lê os quatro campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object|undefined} corpo o req.body do pedido, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarReserva(corpo) {
+  // Sem corpo lido, todos os campos faltam e recebem os erros já previstos.
+  if (!corpo) {
+    corpo = {};
+  }
   const valores = {
     equipamento_id: textoDoCampo(corpo.equipamento_id),
     data: textoDoCampo(corpo.data),

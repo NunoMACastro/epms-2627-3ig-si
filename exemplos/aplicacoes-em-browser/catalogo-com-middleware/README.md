@@ -4,7 +4,7 @@
 
 Este é o exemplo do [tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md), pronto a correr. O catálogo mostra detalhe, filtro e uma página de pesquisa. Distingue identificador inválido (400) de equipamento inexistente (404). O middleware de registo escreve cada pedido no terminal; o final responde ao que nenhuma rota reconheceu. O guia explica como as peças se juntam.
 
-A versão anterior, só com as duas primeiras rotas, está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md). A pasta [catalogo-com-reservas](../catalogo-com-reservas/README.md) acrescenta a este servidor um formulário de reserva enviado por `POST`; é do tema dos formulários.
+A versão anterior, só com as duas primeiras rotas, está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md). A pasta [catalogo-com-reservas](../catalogo-com-reservas/README.md) é uma comparação opcional do tema dos formulários. Acrescenta a este servidor um formulário de reserva enviado por `POST`, com resposta em JSON.
 
 ## O que está nesta pasta
 
