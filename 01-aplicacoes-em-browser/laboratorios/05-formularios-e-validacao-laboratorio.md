@@ -4,7 +4,7 @@
 
 Laboratório do quinto tema do módulo Aplicações baseadas em browsers. Partes do catálogo com páginas do tema anterior e acrescentas-lhe as reservas. Começas pelo formulário e pelo `POST` que o recebe. Depois, juntas a validação, o formulário com mensagens de erro e o redirecionamento no sucesso. Pelo caminho, vês o que corre mal sem cada uma destas peças. Isto acontece porque as provocas de propósito. No fim verificas o servidor de um colega com uma lista de verificação. O colega verifica o teu servidor.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../05-formularios-e-validacao.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../05-formularios-e-validacao.md) tem a teoria completa, para saberes mais. Antes de cada experiência, prevê de cabeça o resultado e confere-o com a resposta da fase.
 
 ## O que vais construir
 
@@ -63,7 +63,7 @@ Mantém aberto o separador Rede das ferramentas de programador durante todo o la
 Um `POST` pode mudar o estado. As previsões devem seguir a ordem dos pedidos, sem repor os dados entre linhas.
 
 
-O servidor do fim do exemplo guiado recebe estes pedidos `POST /reservas`, um a seguir ao outro, logo depois de arrancar. Para cada um, escreve no caderno o código da resposta e o que o browser acaba por mostrar.
+O servidor do fim do exemplo guiado recebe estes pedidos `POST /reservas`, um a seguir ao outro, logo depois de arrancar. Para cada um, prevê de cabeça o código da resposta e o que o browser acaba por mostrar. Só depois lê as respostas desta fase.
 
 | Corpo do pedido | Código | O que o browser mostra |
 | --- | --- | --- |
@@ -94,7 +94,7 @@ As previsões mais erradas, por experiência de temas anteriores: o equipamento 
 
 ### Paragem 1
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Compara as tuas previsões com as respostas desta fase e procura a razão de cada diferença. Ainda não fizeste estes pedidos: vais construir o servidor que lhes responde ao longo do laboratório e voltar a esta tabela na fase 8.
 ## Fase 2: o formulário
 
 O formulário junta campos pelo `name`. A etiqueta usa o `for` para apontar para o `id` do campo.
@@ -103,7 +103,7 @@ O formulário junta campos pelo `name`. A etiqueta usa o `for` para apontar para
 1. Acrescenta ao `server.js` o array `reservas` e o `proximoIdReserva`, e a rota `GET /reservas/nova` da referência de código desta fase.
 2. Cria o `views/reserva-nova.ejs`, com o formulário da referência de código desta fase. Acrescenta as duas ligações ao menu do cabeçalho e a ligação à página inicial.
 3. Abre `/reservas/nova` e carrega em cada etiqueta (o texto "Equipamento", "Dia" e os outros). O cursor vai para o campo dessa etiqueta: é o `for` a apontar para o `id`.
-4. Tenta enviar o formulário vazio, e depois com o tempo 12. Regista o que o browser faz, e se aparece algum pedido no separador Rede.
+4. Tenta enviar o formulário vazio, e depois com o tempo 12. Repara no que o browser faz, e se aparece algum pedido no separador Rede.
 5. Preenche tudo bem e envia. Prevê primeiro o que vais ver.
 
 O que deves ver: a página "Página não encontrada", com o 404, e no separador Rede um `POST` a `reservas`. Ainda não há rota para o `POST`, e o middleware final respondeu. Nos passos anteriores, não houve pedido nenhum: o browser não deixou o formulário sair.
@@ -190,7 +190,7 @@ Erro a esperar: o `for` a apontar para o `name` de um campo cujo `id` é diferen
 
 ### Paragem 2
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 3: ler o corpo, e dois erros de propósito
 
 O corpo chega codificado e precisa de ser lido antes da rota. O `express.urlencoded` prepara o `req.body`.
@@ -202,12 +202,12 @@ O corpo chega codificado e precisa de ser lido antes da rota. O `express.urlenco
 O que deves ver: uma página de erro com o código 500 e, no início, `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. Sem o middleware, o `req.body` não existe.
 
 3. Acrescenta a linha `app.use(express.urlencoded({ extended: false }));` no fim do ficheiro, logo antes do `app.listen`. Guarda e envia outra vez. Prevê primeiro.
-4. Regista o que aconteceu, e explica-o no caderno com a segunda regra do middleware.
+4. Repara no que aconteceu. Explica-o com a segunda regra do middleware, num comentário por cima da linha do `express.urlencoded`.
 5. Muda a linha para o sítio certo: a seguir ao middleware de registo e antes das rotas. Guarda e envia outra vez.
 
 O que deves ver: a página "Reserva 1", com o projetor, o dia, o tempo e o teu nome.
 
-6. No separador Rede, clica no `POST` a `reservas` e abre o Payload. Copia para o caderno o que aparece em "Form Data". Confirma que os nomes são os `name` do formulário.
+6. No separador Rede, clica no `POST` a `reservas` e abre o Payload. Lê o que aparece em "Form Data" e confirma que os nomes são os `name` do formulário.
 7. Abre `/reservas` num segundo separador: a reserva está na lista. Mantém o primeiro separador na página "Reserva 1", para a experiência da fase seguinte. Não voltes a enviar o formulário nesta fase.
 
 
@@ -295,13 +295,13 @@ No sítio certo: a página "Reserva 1". No Payload, em "Form Data": `equipamento
 
 ### Paragem 3
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 4: o que corre mal sem validação
 
 Guardar sem verificar permite que um pedido estrague os dados. Vais provocar a falha numa cópia de estudo.
 
 
-1. No primeiro separador, prevê o que acontece ao recarregar a página "Reserva 1". Recarrega-a e aceita reenviar os dados do formulário. Depois consulta `/reservas` no segundo separador. Quantas reservas há? Escreve no caderno porque é que isto é um problema numa aplicação de reservas.
+1. No primeiro separador, prevê o que acontece ao recarregar a página "Reserva 1". Recarrega-a e aceita reenviar os dados do formulário. Depois consulta `/reservas` no segundo separador. Quantas reservas há? Porque é que isto é um problema numa aplicação de reservas? Pensa antes de leres a resposta desta fase.
 2. Agora vais enviar um pedido que o browser não deixaria passar. No `views/reserva-nova.ejs`, acrescenta ao `<form>` o atributo `novalidate`, que desliga a validação do browser nesse formulário. Guarda, abre `/reservas/nova` e envia o formulário sem preencher nada. Prevê primeiro.
 
 O que deves ver: uma página de erro com o código 500 e `Cannot read properties of undefined (reading 'id')`, a apontar para o `reserva.ejs`. A reserva foi guardada com um equipamento que não existe, e a página dela não consegue mostrar o nome do equipamento.
@@ -322,7 +322,7 @@ O que deves ver: também um 500. A reserva errada está no array, e a lista trop
 
 ### Paragem 4
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 5: validar, e o formulário outra vez
 
 Validar é verificar cada campo antes de mudar o array. Quando falha, o formulário volta com os valores e as mensagens.
@@ -331,9 +331,9 @@ Validar é verificar cada campo antes de mudar o array. Quando falha, o formulá
 1. Acrescenta ao `server.js` as três funções da referência de código desta fase: a `textoDoCampo`, a `diaValido` e a `validarReserva`. Transcreve-as, lendo as explicações e os comentários. A `diaValido` é uma função de apoio fornecida: deves compreender o que verifica, aplicá-la e explicar os casos. Não tens de a escrever de raiz.
 2. Muda a rota `POST /reservas` para a da referência de código desta fase: valida primeiro, responde com o formulário quando há erros, e só depois constrói e guarda a reserva.
 3. Muda a rota `GET /reservas/nova` para passar os valores vazios e os erros vazios, e o modelo `reserva-nova.ejs` para o da referência de código desta fase. Mantém o `novalidate` no `<form>`.
-4. Envia o formulário vazio. Regista o código e as mensagens. Confirma em `/reservas` que nenhuma reserva foi guardada.
-5. Preenche tudo bem, mas com o tempo 12. Regista o código, a mensagem e o que ficou preenchido nos outros campos, incluindo a lista do equipamento.
-6. Agora o dia que não existe. O calendário do browser não te deixa escolher o 30 de fevereiro, por isso muda temporariamente, no modelo, o `type="date"` do campo do dia para `type="text"`. Escreve `2026-02-30` e envia. Regista a mensagem. Depois repõe o `type="date"`.
+4. Envia o formulário vazio. Repara no código, no separador Rede, e nas mensagens. Confirma em `/reservas` que nenhuma reserva foi guardada.
+5. Preenche tudo bem, mas com o tempo 12. Repara no código, na mensagem e no que ficou preenchido nos outros campos, incluindo a lista do equipamento.
+6. Agora o dia que não existe. O calendário do browser não te deixa escolher o 30 de fevereiro, por isso muda temporariamente, no modelo, o `type="date"` do campo do dia para `type="text"`. Escreve `2026-02-30` no campo e envia. Repara na mensagem. Depois repõe o `type="date"`.
 7. No nome, escreve `"><b>x</b>`, com as aspas, deixa o tempo vazio, e envia. Prevê primeiro: o que aparece no campo do nome, quando o formulário voltar?
 
 O que deves ver: o campo do nome com o texto `"><b>x</b>` tal como o escreveste, e nenhum negrito na página. O valor voltou ao `value` com `<%=`, que fez escaping às aspas e às etiquetas.
@@ -567,7 +567,7 @@ Erros a esperar: a lista do equipamento a voltar sempre ao início (falta o `Str
 
 ### Paragem 5
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 6: o redirecionamento
 
 O 303 indica ao browser uma página que pode pedir com `GET`. Recarregar essa página não repete a criação.
@@ -575,7 +575,7 @@ O 303 indica ao browser uma página que pode pedir com `GET`. Recarregar essa p�
 
 1. Com a página da reserva feita no passo 8 da fase 5 no ecrã, prevê o resultado de a recarregar. Recarrega-a e aceita reenviar. Confirma em `/reservas` que há duas reservas iguais. É o problema da fase 4, que a validação não resolveu.
 2. Na rota do `POST`, troca as duas últimas linhas pelo `res.redirect(303, ...)` da referência de código desta fase. Acrescenta a rota `GET /reservas/:id`, abaixo da rota do formulário e da lista, e guarda. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. Confirma em `/reservas` que a lista ficou vazia.
-3. Antes de enviar, liga no separador Rede a opção que mantém o registo ("Preserve log"). Faz uma reserva. Repara no endereço que o browser mostra no fim, e nos dois pedidos no separador Rede. Regista o código de cada um e o `Location` da resposta ao `POST`.
+3. Antes de enviar, liga no separador Rede a opção que mantém o registo ("Preserve log"). Faz uma reserva. Repara no endereço que o browser mostra no fim, e nos dois pedidos no separador Rede. Confirma o código de cada um e o `Location` da resposta ao `POST`.
 4. Recarrega a página da reserva. O browser pergunta alguma coisa? Quantas reservas há em `/reservas`?
 5. Um erro de propósito. Muda a rota `GET /reservas/:id` para cima da rota `GET /reservas/nova`. Guarda e abre `/reservas/nova`. Prevê primeiro.
 
@@ -635,14 +635,14 @@ No envio do passo 3, a barra de endereço passou a mostrar `/reservas/1`, em vez
 
 ### Paragem 6
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 7: os campos a mais, e o return esquecido
 
 O servidor constrói a reserva pelos campos permitidos. O identificador é escolhido pelo servidor, mesmo que o pedido traga outro.
 
 
 1. No `reserva-nova.ejs`, dentro do `<form>`, acrescenta um campo escondido, que o utilizador não vê mas o browser envia: `<input type="hidden" name="id" value="999">`. Guarda. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. Abre o formulário, prevê o número que o servidor vai dar e faz uma reserva.
-2. Confirma no Payload que o `id=999` foi enviado. Que número ficou a ter a reserva? Escreve no caderno porque é que o 999 não entrou, apontando a linha do `server.js` responsável.
+2. Confirma no Payload que o `id=999` foi enviado. Que número ficou a ter a reserva? Porque é que o 999 não entrou? Responde num comentário no `server.js`, por cima da linha responsável.
 3. Tira o campo escondido e guarda o modelo.
 4. O último erro de propósito, e o mais perigoso. Para separar esta experiência da anterior, faz Ctrl+C no terminal deste servidor. Na rota do `POST`, apaga o `return` que vem a seguir ao `res.status(400).render(...)` e guarda. Arranca de novo com `node --watch server.js`. Abre o formulário e envia-o vazio (o `novalidate` ainda lá está). Prevê primeiro: o que mostra o browser, e o que acontece no terminal?
 
@@ -659,16 +659,16 @@ O que deves ver: a barra de endereço muda para `/reservas/1`, como se a reserva
 
 ### Paragem 7
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 8: a evidência e a verificação por pares
 
 O browser ajuda a preencher. O servidor continua a verificar pedidos feitos sem essas ajudas.
 
 
 1. Tira o `novalidate` do `<form>`. A validação do browser volta a funcionar, e a do servidor continua lá.
-2. **Envio sem JavaScript.** Nas ferramentas de programador, desliga o JavaScript da página. No Chrome, abre o menu de comandos com Ctrl+Shift+P (no Mac, Cmd+Shift+P). Escreve "JavaScript" para encontrar a opção de o desligar. Recarrega o formulário, faz uma reserva e confirma que tudo funciona igual. No caderno, explica porquê: que JavaScript há nas tuas páginas, e onde corre o que faz a reserva? Volta a ligar o JavaScript.
-3. **Valor vazio e valor fora do intervalo.** Regista dois envios recusados pelo servidor. Num, deixa o nome vazio; no outro, usa um tempo fora do intervalo. Guarda o código e a mensagem de cada resposta. Como o browser já não os deixa passar, volta a pôr o `novalidate` só para estes dois envios, e tira-o no fim.
-4. **Verificação por pares.** Troca de computador com um colega. Com o servidor dele, verifica cada linha desta lista e marca-a como cumprida ou não. Ele faz o mesmo com o teu.
+2. **Envio sem JavaScript.** Nas ferramentas de programador, desliga o JavaScript da página. No Chrome, abre o menu de comandos com Ctrl+Shift+P (no Mac, Cmd+Shift+P). Escreve "JavaScript" para encontrar a opção de o desligar. Recarrega o formulário, faz uma reserva e confirma que tudo funciona igual. Porquê? Que JavaScript há nas tuas páginas, e onde corre o que faz a reserva? Pensa antes de leres a resposta desta fase. Volta a ligar o JavaScript.
+3. **Valor vazio e valor fora do intervalo.** Faz dois envios que o servidor recusa. Num, deixa o nome vazio; no outro, usa um tempo fora do intervalo. Confirma o código e a mensagem de cada resposta. Como o browser já não os deixa passar, volta a pôr o `novalidate` só para estes dois envios, e tira-o no fim.
+4. **Verificação por pares.** Troca de computador com um colega. Com o servidor dele, verifica cada linha desta lista: está cumprida ou não? Ele faz o mesmo com o teu.
 
 | Verificação | Cumprida? |
 | --- | --- |
@@ -681,8 +681,8 @@ O browser ajuda a preencher. O servidor continua a verificar pedidos feitos sem 
 | Recarregar a página da reserva não cria outra reserva | |
 | `/reservas/nova` mostra o formulário, e não "Pedido inválido" | |
 
-5. Para cada linha não cumprida, mostra ao colega o que falha e ajuda-o a encontrar a causa. Depois, cada um explica ao outro, sem ler, porque é que a validação do servidor é a que conta.
-6. Volta às previsões da parte 1 e corrige a lápis o que previste mal.
+5. Para cada linha não cumprida, mostra ao colega o que falha e ajuda-o a encontrar a causa. Depois, pensa: se o browser já verifica os campos, porque é que a validação do servidor é a que conta? A resposta vem a seguir.
+6. Volta à tabela da fase 1 e às respostas dela. Confere-as outra vez, agora que construíste cada peça do servidor que lhes responde.
 
 ### Respostas para conferires esta fase
 
@@ -695,7 +695,7 @@ O browser ajuda a preencher. O servidor continua a verificar pedidos feitos sem 
 
 ### Paragem 8
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 
 ## Problemas frequentes
 
@@ -718,18 +718,6 @@ O `--watch` espera por alterações nos ficheiros que acompanha. Corrige o que o
 ### A página das reservas dá 500
 
 Há no array uma reserva com um equipamento que não existe, da fase 4. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. O novo arranque limpa o array e repõe o contador em 1. Confirma a lista vazia antes de continuar.
-
-## O que fica no teu caderno
-
-1. As previsões da parte 1, com as correções da parte 8.
-2. O "Form Data" da parte 3 e os dois erros do `express.urlencoded`, com a explicação.
-3. As três experiências da parte 4, sem validação.
-4. Os envios da parte 5: o código, as mensagens e o que ficou preenchido.
-5. Os dois pedidos do redirecionamento da parte 6, com os códigos e o `Location`.
-6. A resposta da parte 7 sobre o `id=999`, e o que aconteceu sem o `return`.
-7. A evidência da parte 8: o envio sem JavaScript, o valor vazio e o valor fora do intervalo, e a lista de verificação do teu colega.
-
-O professor vai pedir-te que expliques, com o teu servidor aberto, porque é que a validação do servidor é a que conta. O que acontece ao recarregar a página de uma reserva com e sem o redirecionamento.
 
 ## Conferência dos ficheiros finais
 
@@ -1178,7 +1166,9 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 ## Antes de terminares
 
 - [ ] Desfizeste os erros provocados e confirmaste o catálogo a funcionar.
-- [ ] Guardaste as previsões, os resultados e as explicações pedidas.
+- [ ] O teu `server.js` tem os dois comentários pedidos: o lugar do `express.urlencoded`, da fase 3, e a razão por que o `id=999` não entrou, da fase 7.
+- [ ] O teu servidor aceita uma reserva com o JavaScript desligado, e recusa com 400 um nome vazio e um tempo fora do intervalo.
+- [ ] O teu servidor passou pela lista de verificação da fase 8, e o do teu colega também.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
 ![Rodapé](../../imagens/rodape.png)

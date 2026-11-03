@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: EJS e reutilização no servidor
 
-Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md) e de fazeres o [laboratório](../laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
+Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md) e de fazeres o [laboratório](../laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Os exercícios 1, 2 e 6 respondem-se sem correr código; os outros fazem-se no servidor da biblioteca da ficha do tema anterior.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -18,7 +18,9 @@ O servidor da biblioteca responde, por agora, com JSON: a lista dos livros, com 
 
 Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
 
-Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas ver, e só depois abre o browser. Usa o código-fonte da página e o separador Rede para confirmar o que chegou e com que código.
+As respostas dos exercícios 1, 2 e 6 escrevem-se no editor, num ficheiro de texto chamado `respostas-04.md`, ao lado das cópias da pasta `biblioteca`. Antes de cada resposta, põe o número do exercício e o da alínea.
+
+Nos exercícios 3 a 5, os resultados esperados são a referência. Confirma-os no browser, com o código-fonte da página e o separador Rede, para veres o que chegou e com que código.
 
 Podes fazer os exercícios mesmo que a tua biblioteca ainda não tenha tudo o que a ficha anterior pedia. Os exercícios 3 a 5 só precisam do array `livros`, da rota `/` e da rota `/livros/:id` com as suas verificações. O array é este:
 
@@ -155,11 +157,13 @@ A propriedade `paginaAtiva` usa aqui o valor `"livros"` para identificar "Todos 
 </ul>
 ```
 
-Responde primeiro em papel, antes de experimentar:
+Responde no `respostas-04.md`:
 
 1. Que valor e que tipo recebe o modelo na propriedade `livros`, em `GET /livros`? Segue esse valor até ao ciclo e explica a causa do erro.
 2. Escreve a chamada corrigida, mudando apenas o segundo argumento de `res.render`. Mantém o modelo.
-3. Porque funciona a outra rota com o mesmo modelo? Prevê o que cada pedido deve mostrar depois da correção. Só depois experimenta os dois pedidos numa cópia da biblioteca e compara com a previsão.
+3. Porque funciona a outra rota com o mesmo modelo? O que deve mostrar cada um dos dois pedidos depois da correção?
+
+A correção confirma-se numa cópia da biblioteca, com os dois pedidos.
 
 ## Apoio
 
@@ -176,13 +180,13 @@ Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 **A contagem.** Acrescenta a frase "3 livros, 2 disponíveis" por cima da lista, apenas na página de todos os livros, `GET /livros` sem filtro. As listas filtradas e a de `/livros/disponiveis` continuam a funcionar, mas não mostram esta frase. Usa o dado de identificação da página do exercício 5 para distinguir os casos, mantendo o mesmo modelo de lista.
 
-Decide onde se fazem as duas contas: na rota, que passa os números ao modelo, ou no modelo, a partir da lista. Escreve a tua decisão e a razão, com a secção "Ciclos e condições dentro do modelo" do guia ao lado, e implementa-a. Ambas as escolhas são válidas quando cumprem o resultado pedido.
+Decide onde se fazem as duas contas: na rota, que passa os números ao modelo, ou no modelo, a partir da lista. A secção "Ciclos e condições dentro do modelo" do guia ajuda-te a decidir. Escreve a tua decisão e a razão num comentário junto do código que faz as contas, com `//` no `server.js` ou com `<%# … %>` no modelo. Ambas as escolhas são válidas quando cumprem o resultado pedido.
 
 Experimenta numa cópia com os três livros, depois com apenas um disponível, com apenas um emprestado e sem livros. Confirma o singular e o plural nas duas partes da frase, incluindo quando existe um único livro disponível. Depois de cada alteração, verifica também as listas filtradas: não devem mostrar a frase nem deixar de responder.
 
 ## Critérios de conclusão
 
-- Os exercícios obrigatórios estão resolvidos, com as decisões pedidas por escrito.
+- Os exercícios obrigatórios estão resolvidos, e o `respostas-04.md` tem as respostas dos exercícios 1, 2 e 6.
 - O servidor responde aos casos de teste do enunciado.
 - Cada erro encontrado tem um caso reproduzível e uma explicação da causa.
 - A entrega inclui os ficheiros pedidos e exclui `node_modules` e segredos.
@@ -190,11 +194,11 @@ Experimenta numa cópia com os três livros, depois com apenas um disponível, c
 ## Entrega
 
 
-Entrega as respostas dos exercícios 1, 2 e 6 e a pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`. Não entregues a pasta `node_modules`.
+Entrega o `respostas-04.md`, com os exercícios 1, 2 e 6, e a pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`. Não entregues a pasta `node_modules`.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-04.md`:
 
 - O que consigo explicar sem ajuda: porque é que o browser nunca executa os modelos da biblioteca, com uma página tua como exemplo.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

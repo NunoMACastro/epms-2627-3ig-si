@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: Primeiro servidor
 
-Segundo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../02-primeiro-servidor.md) e de fazeres o [laboratório](../laboratorios/02-primeiro-servidor-laboratorio.md). Os exercícios 1 e 2 fazem-se em papel; os outros, no computador.
+Segundo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../02-primeiro-servidor.md) e de fazeres o [laboratório](../laboratorios/02-primeiro-servidor-laboratorio.md). Os exercícios 1 e 2 respondem-se sem correr código; os outros fazem-se no servidor da biblioteca.
 
 ## O que precisas de saber
 
@@ -20,7 +20,9 @@ Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a
 
 Os exercícios 4 e 5 são obrigatórios. Podes usar métodos de arrays que conheças ou ciclos equivalentes; não é obrigatório usar um método específico.
 
-Nos exercícios 1 e 2, responde antes de experimentar. Nos outros, antes de abrires o browser, escreve o que esperas ver; depois confirma. Quando uma coisa não funcionar, lê a mensagem do terminal pela ordem da secção "Como ler uma mensagem de erro do Node" do guia, antes de pedir ajuda.
+Os exercícios 1 e 2 respondem-se só a ler o código e as mensagens, sem os correr. Escreve as respostas no editor, num ficheiro de texto chamado `respostas-02.md`, com o número do exercício e a letra da alínea antes de cada uma. Guarda-o na tua pasta de trabalho de Sistemas de Informação, fora da `biblioteca`. Os exercícios 3 a 6 fazem-se no projeto `biblioteca`, que preparas no exercício 3. As respostas escritas do exercício 6 ficam num comentário no fim do `server.js` da biblioteca, com `//` no início de cada linha.
+
+Quando uma coisa não funcionar, lê a mensagem do terminal pela ordem da secção "Como ler uma mensagem de erro do Node" do guia, antes de pedir ajuda.
 
 
 ## Exercício 1: ler e prever
@@ -180,7 +182,7 @@ A decisão nova: até agora, todas as respostas em JSON foram arrays que já exi
 
 Guia: secção "Um programa que não acaba".
 
-Queres ter ligados ao mesmo tempo o catálogo de equipamentos do laboratório e o servidor da biblioteca.
+Queres ter ligados ao mesmo tempo o catálogo de equipamentos do laboratório e o servidor da biblioteca. As respostas das três alíneas ficam no comentário do fim do `server.js` da biblioteca.
 
 a) Antes de experimentares: se os dois usarem a porta 3000, o que acontece ao segundo que ligares?
 
@@ -213,12 +215,12 @@ Pensa depois nisto, sem ter de o programar: se a biblioteca tiver dois livros do
 
 Entrega:
 
-- as respostas dos exercícios 1, 2 e 6, por escrito;
-- o `server.js` da biblioteca com as rotas dos exercícios 3, 4 e 5 (e do desafio, se o fizeste). Não entregues a pasta `node_modules`.
+- o `respostas-02.md`, com os exercícios 1 e 2 respondidos;
+- o `server.js` da biblioteca com as rotas dos exercícios 3, 4 e 5 (e do desafio, se o fizeste), e com as respostas do exercício 6 no comentário do fim. Não entregues a pasta `node_modules`.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-02.md`:
 
 - O que consigo explicar sem ajuda: escolhe uma das rotas que escreveste e explica quando é que a sua função corre e o que o browser recebe.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: formulários e validação
 
-Quinto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../05-formularios-e-validacao.md) e de fazeres o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com páginas EJS.
+Quinto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../05-formularios-e-validacao.md) e de fazeres o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md). Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto; os outros fazem-se no servidor da biblioteca da ficha do tema anterior, com páginas EJS.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -20,7 +20,7 @@ Tens de tomar decisões que a reserva do guia não tomou. Que livros ofereces na
 
 Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
 
-Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas, e só depois experimenta. Usa o separador Rede para confirmar os códigos, e o Payload para confirmar os campos enviados. Para veres a validação do servidor, usa o `novalidate`, como no laboratório, e tira-o no fim.
+Os exercícios 1, 2 e 6 respondem-se sem correr código, num ficheiro de texto que escreves no editor, o `respostas-05.md`. Antes de cada resposta, põe o número do exercício e da alínea. Guarda-o na tua pasta de trabalho de Sistemas de Informação, fora da `biblioteca`. Nos exercícios 3 a 5 e no desafio, cada decisão que a ficha pede justificada fica num comentário no código, junto do que decidiste. Usa o separador Rede para confirmar os códigos, e o Payload para confirmar os campos enviados. Para veres a validação do servidor, usa o `novalidate`, como no laboratório, e tira-o no fim.
 
 Podes continuar mesmo sem ter tudo o que a ficha anterior pedia. Os exercícios 3 a 5 só precisam do array `livros`, da página de erro `erro.ejs` e dos partials. O array é o da ficha anterior: "Os Maias" (1) e "Mensagem" (2) disponíveis. E "Memorial do Convento" (3) emprestado.
 
@@ -57,7 +57,7 @@ Guia: secção "O formulário em HTML" e exemplo guiado, passo 1.
 
 Acrescenta a rota `GET /emprestimos/novo`, com o modelo `views/emprestimo-novo.ejs`. Esse formulário envia por `POST` para `/emprestimos`. Tem a lista dos livros, no campo `livro_id`, e o número de leitor, no campo `leitor`. Cada campo tem a sua etiqueta, ligada com o `for` e o `id`. Os atributos que ajudam quem preenche: o campo obrigatório e, no número de leitor, o mínimo e o máximo.
 
-Decide que livros aparecem na lista: todos, ou só os disponíveis? Escreve a tua decisão e a razão no caderno. Pensa também nisto: se a lista só tiver os disponíveis, o servidor ainda tem de verificar se o livro está disponível?
+Decide que livros aparecem na lista: todos, ou só os disponíveis? Escreve a decisão e a razão num comentário na rota `GET /emprestimos/novo`. Pensa também nisto: se a lista só tiver os disponíveis, o servidor ainda tem de verificar se o livro está disponível?
 
 Acrescenta ao menu do cabeçalho uma ligação para os empréstimos, que o exercício 5 vai criar. Mantém as ligações e a identificação da página atual do tema anterior. A lista dos empréstimos identifica «Empréstimos»; o formulário não identifica nenhuma ligação como atual.
 
@@ -76,9 +76,9 @@ Acrescenta o `express.urlencoded` no sítio certo, uma função `validarEmpresti
 
 Se mostras só os disponíveis, um livro pode ter sido emprestado entre a abertura do formulário e o envio. Nesse caso, mostra a mensagem de indisponibilidade e volta à opção «Escolhe um livro». Conserva o número de leitor, para a funcionária não ter de o escrever outra vez. Se mostras todos os livros, o livro continua escolhido, com a mensagem a explicar porque foi recusado.
 
-Duas decisões são tuas. A primeira: em que ponto da função mudas o livro para não disponível, e porque é que tem de ser aí? Escreve a resposta no caderno. A segunda: para onde redirecionas a funcionária depois de um empréstimo certo? Para a lista dos empréstimos, para a página do livro, ou para o formulário vazio, pronto para o próximo? Escolhe uma, implementa-a com um 303, e justifica-a numa frase.
+Duas decisões são tuas. A primeira: em que ponto da função mudas o livro para não disponível, e porque é que tem de ser aí? Responde num comentário por cima da linha que muda o livro. A segunda: para onde redirecionas a funcionária depois de um empréstimo certo? Para a lista dos empréstimos, para a página do livro, ou para o formulário vazio, pronto para o próximo? Escolhe uma, implementa-a com um 303, e justifica-a numa frase, num comentário por cima do redirecionamento.
 
-Conclui o teste do redirecionamento depois de criares a lista dos empréstimos no exercício 5. Se o destino escolhido já existir, podes confirmar já na Rede o 303 e o `GET` para esse destino. Depois do exercício 5, confirma a sequência completa, recarrega a página de destino e verifica se o número de empréstimos na lista se mantém. Justifica no caderno porque não se criou outro empréstimo.
+O teste completo do redirecionamento só se faz depois do exercício 5, quando a lista dos empréstimos já existir. Se o destino que escolheste já existe, podes confirmar já na Rede o 303 e o `GET` para esse destino. Recarregar a página de destino não pode registar outro empréstimo: explica porquê no comentário do redirecionamento.
 
 **Resultado esperado:** os cinco pedidos do exercício 2 dão o que lá previste, se a tua previsão estiver certa. Depois do primeiro, `GET /livros/disponiveis` só tem "Os Maias". No teste concluído depois do exercício 5, recarregar a página de destino não regista outro empréstimo, qualquer que seja a tua escolha.
 
@@ -90,9 +90,9 @@ Acrescenta a rota `GET /emprestimos`, com o modelo `views/emprestimos.ejs`: uma 
 
 A lista mostra a ligação «Novo empréstimo» apenas enquanto houver pelo menos um livro disponível. Quando já não houver nenhum, mostra uma mensagem clara em vez dessa ligação. A lista dos empréstimos continua visível nos dois casos.
 
-Decide que dado precisas de preparar para o modelo e como o vais calcular. Escreve essa decisão no caderno. Não basta olhar para o número de empréstimos: pensa no estado dos livros.
+Decide que dado precisas de preparar para o modelo e como o vais calcular. Escreve essa decisão num comentário na rota `GET /emprestimos`, junto do cálculo. Não basta olhar para o número de empréstimos: pensa no estado dos livros.
 
-Começa numa cópia com os dados iniciais e sem empréstimos. Prevê o que deve aparecer e verifica estes três momentos:
+Os casos de teste são estes três momentos, a partir dos dados iniciais e sem empréstimos:
 
 | Momento | Livros disponíveis | O que confirmar na lista dos empréstimos |
 | --- | ---: | --- |
@@ -143,13 +143,13 @@ Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 **A devolução.** Na lista dos empréstimos, cada empréstimo que ainda não foi devolvido ganha um botão "Registar a devolução". O botão envia um `POST` para `/emprestimos/:id/devolucao`, com o número do empréstimo no caminho. A devolução marca o empréstimo como devolvido, volta a pôr o livro disponível e redireciona para a lista. Na ficha do tema 3, um formulário não conseguia pôr o número do empréstimo no caminho; com o EJS, consegue: pensa em como.
 
-Decide os códigos e as páginas para estes casos. Escreve e justifica a tua decisão no caderno: o número do empréstimo não é um inteiro positivo. O empréstimo não existe. O empréstimo já foi devolvido. A devolução correu bem.
+Decide os códigos e as páginas para estes casos, e justifica a decisão num comentário por cima da rota da devolução: o número do empréstimo não é um inteiro positivo. O empréstimo não existe. O empréstimo já foi devolvido. A devolução correu bem.
 
 Confirma que os erros dão uma página HTML e não alteram os dados. Depois de uma devolução bem-sucedida, a lista deve mostrar o empréstimo como devolvido e o livro deve voltar a estar disponível. Repetir o pedido de devolução deve dar o erro que escolheste para um empréstimo já devolvido.
 
 ## Critérios de conclusão
 
-- Os exercícios obrigatórios estão resolvidos, com as decisões pedidas por escrito.
+- Os exercícios obrigatórios estão resolvidos: os exercícios 1, 2 e 6 no `respostas-05.md`, e as decisões dos exercícios 3 a 5 em comentários no código.
 - O servidor responde aos casos de teste do enunciado.
 - Cada erro encontrado tem um caso reproduzível e uma explicação da causa.
 - A entrega inclui os ficheiros pedidos e exclui `node_modules` e segredos.
@@ -157,11 +157,11 @@ Confirma que os erros dão uma página HTML e não alteram os dados. Depois de u
 ## Entrega
 
 
-Entrega as respostas dos exercícios 1, 2 e 6, as decisões dos exercícios 3 a 5. A pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`. Não entregues a pasta `node_modules`.
+Entrega o `respostas-05.md`, com as respostas dos exercícios 1, 2 e 6. Entrega também a pasta da biblioteca com os exercícios 3 a 5: o `server.js` e a pasta `views`, com as decisões nos comentários. Não entregues a pasta `node_modules`.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-05.md`:
 
 - O que consigo explicar sem ajuda: porque é que o servidor da biblioteca verifica o número de leitor, se o formulário já tem o mínimo e o máximo.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

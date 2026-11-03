@@ -6,7 +6,7 @@ Laboratório do sexto tema do módulo Aplicações baseadas em browsers. Partes 
 
 As experiências fazem-se no teu servidor local, com dados inventados e apenas com os cookies das sessões que criaste para este trabalho. Na confirmação, usa também um nome fictício. O nome é um texto associado às reservas, não uma verificação de quem está a usar o catálogo.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../06-cookies-e-sessoes.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../06-cookies-e-sessoes.md) tem a teoria completa, para saberes mais. Antes de cada experiência, prevê de cabeça o resultado e confere-o com a resposta da fase.
 
 ## O que vais construir
 
@@ -63,14 +63,14 @@ Se a janela anónima estiver desativada no computador da escola, usa dois browse
 
 Nas ferramentas de programador, vais usar o separador Rede, a consola, e o separador onde o browser mostra os cookies: no Chrome, "Application" ("Aplicação"), secção "Cookies"; no Firefox, "Armazenamento".
 
-Se o browser da escola não permitir criar ou editar cookies, acompanha a demonstração do professor nesses passos. Escreve a tua previsão e o resultado observado, e assinala que os acompanhaste em demonstração. Esses passos ficam por realizares individualmente quando tiveres um browser que o permita.
+Se o browser da escola não permitir criar ou editar cookies, acompanha a demonstração do professor nesses passos. Prevê o resultado de cabeça, como nos outros passos, e compara-o com o que a demonstração mostra. Esses passos ficam por realizares individualmente quando tiveres um browser que o permita.
 
 ## Fase 1: prever antes de programar
 
 A sessão pertence ao browser que apresenta o identificador. Um reinício do armazém em memória apaga os dados do servidor.
 
 
-Imagina o catálogo final já a correr. As situações seguintes são independentes: em cada uma, parte do estado que ela descreve. Nesta fase, escreve apenas o que esperas no caderno; ainda vais construir as rotas e as páginas necessárias para experimentar.
+Imagina o catálogo final já a correr. As situações seguintes são independentes: em cada uma, parte do estado que ela descreve. Nesta fase, só prevês, de cabeça. Ainda vais construir as rotas e as páginas necessárias para experimentar.
 
 1. Abres a página inicial pela primeira vez. O browser recebe algum cookie?
 2. Na janela normal, juntas o projetor ao pedido. Na janela anónima, abres `/pedido`. O que vês?
@@ -95,7 +95,7 @@ As previsões mais erradas, por experiência de quem vê sessões pela primeira 
 
 ### Paragem 1
 
-Compara as tuas previsões com as respostas desta fase e explica as diferenças. Ainda não executaste estas experiências: vais fazê-las ao longo do laboratório e voltar às previsões na fase 8.
+Compara as tuas previsões com as respostas desta fase e procura a razão de cada diferença. Ainda não executaste estas experiências: vais fazê-las ao longo do laboratório e voltar às previsões na fase 8.
 ## Fase 2: a tentativa ingénua
 
 Uma variável global pertence ao processo inteiro. Dois browsers diferentes recebem os mesmos dados dessa variável.
@@ -145,7 +145,7 @@ A janela anónima mostra `Pedido: 2`. A variável é uma só, criada quando o se
 
 ### Paragem 2
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 3: o segredo e o express-session
 
 O segredo assina o identificador. O middleware encontra os dados da sessão antes de as rotas os usarem.
@@ -275,17 +275,17 @@ Confere esta ideia: um servidor que não arranca e diz porquê é melhor do que 
 
 ### Paragem 3
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 4: juntar ao pedido
 
 Cada sessão começa sem pedido. A primeira alteração cria a lista e guarda os itens desse browser.
 
 
-1. Abre o separador dos cookies do browser, na janela normal, e confirma que `http://localhost:3000` não tem cookie nenhum. Navega pelo catálogo e confirma que continua sem cookie. Escreve no caderno porquê, com a opção do middleware responsável.
+1. Abre o separador dos cookies do browser, na janela normal, e confirma que `http://localhost:3000` não tem cookie nenhum. Navega pelo catálogo e confirma que continua sem cookie. Porquê? Que opção do middleware é responsável? Pensa antes de leres a resposta desta fase.
 2. No `server.js`, retira as rotas completas `GET /reservas/nova` e `POST /reservas`, que criavam uma reserva diretamente. Mantém `GET /reservas` e `GET /reservas/:id`. Substitui `validarReserva` por `validarItem` e acrescenta as rotas `GET /pedido/item`, `POST /pedido/itens` e `GET /pedido`, e a função `linhasDoPedido` desta fase. Cria `views/item-novo.ejs` com o modelo mostrado abaixo.
 3. Cria o `views/pedido.ejs` provisório completo desta fase e apaga o antigo `views/reserva-nova.ejs`. Em `views/partials/cabecalho.ejs`, `views/inicio.ejs` e `views/reservas.ejs`, troca cada ligação `/reservas/nova` por `/pedido/item`. No menu, usa o texto "Juntar um equipamento ao pedido"; na página inicial e na lista das reservas, usa "Fazer um pedido de reserva". Guarda tudo e confirma que o menu, a página inicial e a lista das reservas abrem o novo formulário. O modelo provisório mostra a lista e o pedido vazio; os botões entram na fase 6.
-4. Com o separador Rede aberto, junta o projetor ao pedido. No `POST` a `itens`, copia para o caderno a linha do `Set-Cookie`: o nome, o início do valor e os atributos.
-5. No separador dos cookies, confirma o `catalogo.sid`, e regista o que diz cada coluna: a expiração, o `HttpOnly`, o `Secure` e o `SameSite`.
+4. Com o separador Rede aberto, junta o projetor ao pedido. No `POST` a `itens`, procura a linha do `Set-Cookie` e lê o nome, o início do valor e os atributos.
+5. No separador dos cookies, confirma o `catalogo.sid` e vê o que diz cada coluna: a expiração, o `HttpOnly`, o `Secure` e o `SameSite`.
 6. Junta o portátil. No `GET` a `pedido` que veio a seguir, procura o cabeçalho `Cookie` do pedido. O que leva, e o que não leva, em comparação com o `Set-Cookie`?
 7. Tenta juntar um equipamento com o tempo 12 (com o `novalidate`, se o browser não deixar). O formulário volta com a mensagem, e o pedido continua com dois.
 
@@ -492,7 +492,7 @@ Se o primeiro equipamento der `Cannot read properties of undefined (reading 'pus
 
 ### Paragem 4
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 5: o menu, e duas sessões isoladas
 
 O `res.locals` põe dados à disposição dos modelos desta resposta. O menu mostra o tamanho do pedido desta sessão.
@@ -506,7 +506,7 @@ O que deves ver: "O teu pedido (0)". Ao guardares o `server.js`, o `--watch` rei
 3. Na janela normal, junta outra vez o projetor e o portátil ao pedido. O menu passa a mostrar "O teu pedido (2)".
 4. Na janela anónima, abre o catálogo. O que mostra o menu? Junta lá o monitor.
 5. Volta à janela normal e recarrega. O que mostra o menu?
-6. Para a evidência deste tema, regista no caderno, para cada janela: o que tem o pedido, e os primeiros oito carateres do valor do cookie, a seguir ao `s%3A`. São duas sessões isoladas.
+6. Para a evidência deste tema, compara as duas janelas: o que tem o pedido de cada uma, e os primeiros oito carateres do valor do cookie, a seguir ao `s%3A`. São duas sessões isoladas.
 
 
 
@@ -546,7 +546,7 @@ Erro a esperar: o middleware do `res.locals` antes do das sessões, que dá 500 
 
 ### Paragem 5
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 6: tirar, confirmar e cancelar
 
 Terminar tem dois lados: destruir a sessão no servidor e apagar o cookie no browser. Vais testar os dois.
@@ -554,15 +554,15 @@ Terminar tem dois lados: destruir a sessão no servidor e apagar o cookie no bro
 
 1. Acrescenta a rota de remoção apresentada nesta fase. Substitui o `pedido.ejs` pela versão completa desta fase. Ela inclui os botões de cada equipamento, a confirmação e o cancelamento. Acrescenta a função `erroDoNome` e as rotas da confirmação e do cancelamento. Guarda os ficheiros. O servidor reiniciou outra vez, e os pedidos das duas janelas perderam-se, como na parte 5: junta outra vez o projetor e o portátil na janela normal. Junta o monitor na janela anónima. Confirma no menu de cada uma "O teu pedido (2)" e "O teu pedido (1)".
 2. Na janela normal, tira o primeiro equipamento. O pedido fica com um.
-3. Confirma o pedido com o nome vazio (com o `novalidate`, se for preciso). Regista o código e a mensagem.
+3. Confirma o pedido com o nome vazio (com o `novalidate`, se for preciso). Repara no código e na mensagem.
 4. Confirma com um nome inventado, por exemplo "Ana". Prevê primeiro: para onde vai o browser, e o que acontece ao cookie?
 
 O que deves ver: a lista das reservas, com a reserva nova, e o menu com "O teu pedido (0)". No separador Rede, a resposta ao `POST` a `confirmacao` tem um `Set-Cookie` com o valor vazio e a data de 1970. No separador dos cookies, o `catalogo.sid` desapareceu.
 
-5. Agora o cancelamento, na janela anónima, com uma experiência a mais. Antes de cancelar, copia para o caderno o valor completo do cookie dessa janela. Depois cancela.
+5. Agora o cancelamento, na janela anónima, com uma experiência a mais. Antes de cancelar, copia o valor completo do cookie dessa janela. Depois cancela.
 6. No separador dos cookies da janela anónima, cria outra vez `catalogo.sid` com o valor copiado. No Chrome, faz duplo clique na linha vazia da tabela para acrescentares um cookie. Abre `/pedido`. Prevê primeiro.
 
-O que deves ver: "O teu pedido está vazio.". O cookie voltou ao browser, mas a sessão foi destruída no servidor, e o identificador já não leva a nada. Para a evidência deste tema, regista que o estado foi eliminado ao terminar, e como o confirmaste.
+O que deves ver: "O teu pedido está vazio.". O cookie voltou ao browser, mas a sessão foi destruída no servidor, e o identificador já não leva a nada. É a outra evidência deste tema: o estado foi eliminado ao terminar, e confirmaste-o com o cookie recriado.
 
 
 
@@ -756,7 +756,7 @@ Confere a pergunta: "se o servidor só apagasse o cookie, e não destruísse a s
 
 ### Paragem 6
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 7: o roubo de uma sessão, e as defesas
 
 O cookie funciona como uma chave. Quem copia uma chave válida pode abrir a mesma sessão.
@@ -771,7 +771,7 @@ O que deves ver: o pedido da janela normal, com os dois equipamentos. Para o ser
 
 O que deves ver: o pedido vazio. A assinatura deixou de bater certo, e o servidor ignorou o cookie.
 
-4. Na consola de uma página do catálogo, na janela normal, escreve `document.cookie` e carrega em Enter. Regista o que aparece, e explica-o com o atributo responsável.
+4. Na consola de uma página do catálogo, na janela normal, escreve `document.cookie` e carrega em Enter. Repara no que aparece. Que atributo do cookie o explica? Pensa antes de leres a resposta desta fase.
 5. Com um pedido a meio na janela normal, vai ao terminal onde arrancaste este servidor e pára-o com Ctrl+C. Na mesma pasta, arranca-o de novo com `node --watch --env-file=.env server.js`. Não apagues os cookies. Recarrega `/pedido`. O que aconteceu ao pedido? E o cookie, ainda está no browser?
 
 Guardar um ficheiro sem alterações pode não provocar um reinício. A paragem e o arranque explícitos permitem comparar o estado antes e depois do reinício do teu processo.
@@ -788,13 +788,13 @@ A pergunta que liga a parte 7 ao guia: "se o roubo é tão fácil com acesso ao 
 
 ### Paragem 7
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 8: a configuração justificada, e a evidência
 
 Cada opção responde a um risco ou necessidade. A configuração explica-se em função do ambiente local e do HTTPS.
 
 
-1. Copia para o caderno esta tabela e preenche a última coluna com a razão de cada valor, por palavras tuas. É o artefacto deste tema: a configuração da sessão, justificada.
+1. No teu `server.js`, reescreve o comentário de cada opção do middleware das sessões com a razão do valor, por palavras tuas. As opções são as desta tabela. É o artefacto deste tema: a configuração da sessão, justificada.
 
 | Opção | Valor no catálogo | Porquê |
 | --- | --- | --- |
@@ -807,9 +807,9 @@ Cada opção responde a um risco ou necessidade. A configuração explica-se em 
 | `cookie.secure` | `false` | |
 | `cookie.maxAge` | 30 minutos | |
 
-2. Na linha do `secure`, escreve também o que mudaria num servidor publicado, e porquê.
-3. Em pares: um explica ao outro, sem ler, para que servem o `HttpOnly`, o `SameSite` e o `Secure`. A diferença entre o roubo e a fixação de uma sessão. Depois trocam.
-4. Volta às previsões da parte 1 e corrige a lápis o que previste mal.
+2. No comentário do `secure`, escreve também o que mudaria num servidor publicado, e porquê.
+3. Pensa antes de leres a resposta desta fase: qual é a diferença entre o roubo e a fixação de uma sessão?
+4. Volta às seis situações da fase 1 e às respostas delas. Confere-as outra vez, agora que as viste acontecer nas fases 4 a 7.
 
 ### Respostas para conferires esta fase
 
@@ -824,11 +824,11 @@ Cada opção responde a um risco ou necessidade. A configuração explica-se em 
 | `cookie.secure` | `false` | Em `http://localhost` não há HTTPS; num servidor publicado, com HTTPS, passa a `true`, para o cookie nunca viajar sem cifra |
 | `cookie.maxAge` | 30 minutos | Uma sessão esquecida acaba sozinha |
 
-Na explicação em pares, o que se procura: o roubo é usar o identificador de outra pessoa. A fixação é pôr a vítima a usar um identificador que o atacante já conhece. A defesa é um identificador novo no momento importante (`req.session.regenerate`), que o catálogo não tem porque não tem autenticação.
+Sobre o roubo e a fixação: o roubo é usar o identificador de outra pessoa. A fixação é pôr a vítima a usar um identificador que o atacante já conhece. A defesa é um identificador novo no momento importante (`req.session.regenerate`), que o catálogo não tem porque não tem autenticação.
 
 ### Paragem 8
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 
 ## Problemas frequentes
 
@@ -851,18 +851,6 @@ No Chrome, no separador "Application", secção "Cookies", escolhe `http://local
 ### O pedido desapareceu sozinho
 
 O servidor reiniciou, ou passaram 30 minutos sem renovar a validade do cookie.
-
-## O que fica no teu caderno
-
-1. As previsões da parte 1, com as correções da parte 8.
-2. O resultado da tentativa ingénua da parte 2.
-3. Os dois erros de arranque da parte 3.
-4. O `Set-Cookie`, os atributos e o cabeçalho `Cookie` da parte 4.
-5. A evidência das duas sessões isoladas (parte 5) e do estado eliminado ao terminar (parte 6).
-6. As experiências da parte 7: o roubo, o identificador mudado, o `document.cookie` e o reinício.
-7. A tabela da configuração justificada, da parte 8.
-
-O professor vai pedir-te que expliques, com o teu servidor aberto, porque é que o pedido não se mistura entre as duas janelas. Porque é que o catálogo não pode confiar no nome guardado com o pedido.
 
 ## Conferência dos ficheiros finais
 
@@ -1475,7 +1463,8 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 ## Antes de terminares
 
 - [ ] Desfizeste os erros provocados e confirmaste o catálogo a funcionar.
-- [ ] Guardaste as previsões, os resultados e as explicações pedidas.
+- [ ] O middleware das sessões, no teu `server.js`, tem a razão de cada opção num comentário, por palavras tuas, e o do `secure` diz o que mudaria num servidor publicado.
+- [ ] Viste as duas evidências deste tema: duas sessões isoladas, na fase 5, e o estado eliminado ao terminar, na fase 6.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
 ![Rodapé](../../imagens/rodape.png)

@@ -7,7 +7,7 @@ Laboratório do tema Primeiro servidor. Vais construir um catálogo com duas rot
 
 ## O que vais construir
 
-O resultado é um servidor que responde ao browser e uma tabela que explica o seu arranque e os erros provocados.
+O resultado é um servidor que responde ao browser e, no fim do `server.js`, um comentário que explica os erros provocados no seu arranque.
 
 | Fase | O que muda | O que funciona no fim |
 | --- | --- | --- |
@@ -48,11 +48,7 @@ Precisas de:
 - internet, para o `npm install` da parte 3, ou a pasta com dependências preparada pelo professor para os computadores da sala;
 - o browser com as ferramentas de programador, como no laboratório do primeiro tema.
 
-Ao longo do laboratório vais preencher um **registo de arranque**: uma pequena tabela, no caderno ou num ficheiro de texto, com o que fizeste e o que aconteceu. É o artefacto deste tema, e serve para mostrares que sabes pôr um servidor a correr e explicar porque é que ele não arrancou quando não arrancou. Prepara-a já:
-
-| Parte | Comando ou ação | O que aconteceu | Se houve erro: a linha que interessa e a correção |
-| --- | --- | --- | --- |
-| | | | |
+Na fase 7 vais escrever um **registo de arranque**, num comentário no fim do `server.js`. Tem os erros que provocaste, a linha da mensagem que interessa em cada um e a correção. É o artefacto deste tema, e serve para mostrares que sabes pôr um servidor a correr e explicar porque é que ele não arrancou quando não arrancou.
 
 ## Se alguma coisa falhar
 
@@ -71,13 +67,12 @@ Os nomes dos menus são os que deves procurar; se a tradução do teu editor dif
 
 2. Escreve `node --version` e carrega em Enter. Deve aparecer uma versão começada por `v`, como `v24.17.0`.
 3. Escreve `npm --version`. Deve aparecer um número, como `11.13.0`, sem o `v`.
-4. Regista as duas versões na primeira linha do registo de arranque.
 
 Se o terminal disser que `node` não é reconhecido como comando, o Node não está instalado, ou o terminal foi aberto antes da instalação. Fecha o terminal e abre outro; se continuar, chama o professor.
 
 ### Paragem 1
 
-Registaste duas versões. Se o Node ou o npm não forem encontrados, resolve isso com o professor antes de avançar.
+Viste as duas versões. Se o Node ou o npm não forem encontrados, resolve isso com o professor antes de avançar.
 
 ## Fase 2: um programa que acaba
 
@@ -107,7 +102,7 @@ O que deves ver: as duas linhas, e o terminal outra vez livre, à espera do coma
 
 Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secções "O npm e o ficheiro package.json" e "Módulos ES".
 
-Se não houver internet, pede ao professor a pasta preparada para os computadores da sala. Contém `package.json`, `package-lock.json` e `node_modules`, ainda sem `server.js`. Copia-a para a tua pasta `si`, com o nome `catalogo-de-equipamentos`, sem substituir trabalho teu. Abre essa pasta no editor e no terminal. Em vez dos passos 1 a 4, confirma o `"type": "module"` e a dependência do Express no `package.json`; depois continua no passo 5. No registo de arranque, escreve que recebeste as dependências preparadas. Os comandos que não executaste ficam por praticar quando houver ligação. Vais escrever o servidor na fase 4.
+Se não houver internet, pede ao professor a pasta preparada para os computadores da sala. Contém `package.json`, `package-lock.json` e `node_modules`, ainda sem `server.js`. Copia-a para a tua pasta `si`, com o nome `catalogo-de-equipamentos`, sem substituir trabalho teu. Abre essa pasta no editor e no terminal. Em vez dos passos 1 a 4, confirma o `"type": "module"` e a dependência do Express no `package.json`; depois continua no passo 5. Na fase 7, o registo de arranque começa por dizer que recebeste as dependências preparadas. Os comandos que não executaste ficam por praticar quando houver ligação. Vais escrever o servidor na fase 4.
 
 1. Dentro da pasta `si`, cria uma pasta `catalogo-de-equipamentos` e entra nela no terminal:
 
@@ -138,8 +133,6 @@ Se não houver internet, pede ao professor a pasta preparada para os computadore
    - a pasta `node_modules`, com dezenas de pastas lá dentro;
    - o ficheiro `package-lock.json`;
    - no `package.json`, uma secção nova, `dependencies`, com o Express e a versão.
-
-6. Regista no registo de arranque os comandos que executaste nesta parte e o que cada um mudou na pasta. Se usaste a pasta preparada pelo professor, regista essa alternativa e os ficheiros que recebeste.
 
 Pensa antes de continuares: como recrias `node_modules`? A resposta: `npm install`, sem argumentos, lê as dependências do `package.json` e as versões do `package-lock.json`.
 
@@ -223,13 +216,13 @@ Para saber mais: no [guia do tema](../02-primeiro-servidor.md), passos 5 a 7 do 
    - `http://localhost:3000/equipamentos`
    - `http://localhost:3000/nao-existe`
 
-3. Para cada um, regista no caderno o código de estado e o tipo de conteúdo (o cabeçalho `content-type` da resposta, nos cabeçalhos do pedido). Devem ser, por esta ordem: 200 com `text/html`, 200 com `application/json` e 404 com `text/html`.
+3. Para cada um, procura o código de estado e o tipo de conteúdo (o cabeçalho `content-type` da resposta, nos cabeçalhos do pedido). Devem ser, por esta ordem: 200 com `text/html`, 200 com `application/json` e 404 com `text/html`.
 
 4. Para cada um dos três, identifica quem respondeu. A resposta: `res.send` responde a `/` e `res.json` responde a `/equipamentos`. No terceiro pedido nenhuma rota tua corresponde; o próprio Express responde 404.
 
 ### Paragem 5
 
-A tabela tem 200/HTML, 200/JSON e 404/HTML, por esta ordem.
+Os três pedidos deram 200/HTML, 200/JSON e 404/HTML, por esta ordem.
 
 ## Fase 6: o servidor fala no terminal
 
@@ -246,12 +239,10 @@ Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "O que 
    Não apareceu. O servidor está a correr o código que leu quando arrancou (guia: secção "Um programa que não acaba").
 
 3. No terminal, para o servidor com Ctrl+C e volta a ligá-lo com `node server.js`.
-4. Antes de continuares, prevê: se pedires a lista três vezes e a página inicial uma vez, quantas vezes aparece a frase no terminal? Escreve a previsão.
+4. Antes de continuares, prevê: se pedires a lista três vezes e a página inicial uma vez, quantas vezes aparece a frase no terminal?
 5. Faz os quatro pedidos e conta. A resposta à previsão é três: só os pedidos à lista passam pela função onde acrescentaste a mensagem.
 
 O que deves ver: a frase três vezes, uma por cada pedido à lista, e nenhuma pelo pedido à página inicial. Nada disto aparece no browser, nem na consola das ferramentas de programador: o `console.log` corre no servidor e escreve no terminal do servidor.
-
-6. Regista no registo de arranque o que aconteceu antes e depois de reiniciares.
 
 ### Paragem 6
 
@@ -261,13 +252,13 @@ Depois do reinício, três pedidos à lista produzem três mensagens no terminal
 
 Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "Erros de arranque e como os ler".
 
-Esta é a parte que conta como evidência do tema. Em cada erro, faz sempre os mesmos cinco passos, e regista-os no registo de arranque:
+Esta é a parte que conta como evidência do tema. Em cada erro, segue sempre os mesmos cinco passos. O que eles mandam escrever vai para o registo de arranque, o comentário no fim do `server.js`. Cada linha começa por `//`, e cada erro, pelo seu número. O registo fica no fim para o código não mudar de linha. Assim, as mensagens de erro continuam a apontar as linhas que este laboratório cita. Se recebeste as dependências preparadas, a primeira linha do registo di-lo.
 
 1. Observa o caso e escreve o resultado esperado e o obtido. Distingue um erro de escrita, de execução ou de lógica.
-2. Formula uma hipótese sobre a causa, antes de mudar o código.
-3. Verifica a hipótese com a linha da mensagem e o ficheiro indicado.
+2. Formula uma hipótese sobre a causa, antes de mudar o código, e escreve-a.
+3. Verifica a hipótese com a linha da mensagem e o ficheiro indicado. Copia para o registo a linha que interessa.
 4. Corrige uma causa de cada vez.
-5. Repete o caso e os pedidos que já passavam, e explica o que mudou.
+5. Repete o caso e os pedidos que já passavam, e escreve o que mudou.
 
 ### Erro 1: a porta ocupada
 
@@ -297,7 +288,7 @@ Esta é a parte que conta como evidência do tema. Em cada erro, faz sempre os m
 3. Corre `node server.js`. Arranca, e escreve a mensagem do costume.
 4. No browser, abre `http://localhost:3000/equipamentos`. Funciona.
 5. Abre `http://localhost:3000/`. No separador Rede, o código é 500. No terminal aparece `TypeError: res.sendd is not a function`.
-6. Explica por que o servidor arrancou apesar do erro. A resposta: `res.sendd` está dentro da função de `/`, que não corre no arranque. A rota da lista tem outra função, sem esse erro, e continua a responder.
+6. Porque é que o servidor arrancou apesar do erro? Pensa antes de leres a resposta. A resposta: `res.sendd` está dentro da função de `/`, que não corre no arranque. A rota da lista tem outra função, sem esse erro, e continua a responder.
 7. Correção: repõe `res.send`, reinicia o servidor e confirma que `/` volta a responder 200.
 
 ### Paragem 7
@@ -359,16 +350,6 @@ O endereço tem `https` em vez de `http`, ou a porta não é a 3000. Confirma o 
 
 No Visual Studio Code é fácil ter vários terminais abertos. Procura o que diz "Servidor a correr" e está ocupado. Se não o encontrares, pede ajuda ao professor. Não feches outros trabalhos nem pares processos que não reconheces.
 
-## O que fica no teu caderno
-
-No fim do laboratório deves ter:
-
-1. O registo de arranque tem as versões, os comandos executados nas fases 3 e 5 e a experiência do `console.log` da fase 6. Se usaste dependências preparadas, identifica-as e assinala a instalação por praticar. Inclui os quatro erros da fase 7. Cada um tem a previsão, a linha da mensagem que interessa e a correção;
-2. as respostas às perguntas das partes 3, 4 e 5;
-3. a explicação da parte 7, erro 4.
-
-O professor vai pedir-te que expliques um dos erros de arranque, dos erros 1 a 3: o que diz a mensagem, como soubeste onde procurar e o que corrigiste. É a evidência deste tema. O erro 4 ajuda-te a distinguir o arranque da execução de uma rota.
-
 ## Desafios
 
 1. Acrescenta `GET /salas`, com os nomes das salas onde há equipamentos, sem repetições. Mantém a lista completa de equipamentos a funcionar.
@@ -378,7 +359,8 @@ O professor vai pedir-te que expliques um dos erros de arranque, dos erros 1 a 3
 
 - [ ] Os três pedidos da fase 5 têm os códigos e tipos esperados.
 - [ ] Corrigiste os quatro erros e repetiste os pedidos que já funcionavam.
-- [ ] O registo distingue o arranque de cada pedido.
+- [ ] O registo de arranque tem os quatro erros, cada um com o caso, o esperado e o obtido, a hipótese, a linha da mensagem e a correção.
+- [ ] O registo distingue os erros do arranque do erro que só aparece num pedido.
 - [ ] Consegues explicar, por palavras tuas, por que a função de uma rota não corre no arranque.
 
 ![Rodapé](../../imagens/rodape.png)

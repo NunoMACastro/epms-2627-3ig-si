@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: erros e segurança web
 
-Sétimo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../07-erros-e-seguranca-web.md) e de fazeres o [laboratório](../laboratorios/07-erros-e-seguranca-web-laboratorio.md). Os exercícios 1, 2, 5 e 6 fazem-se em papel. Os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos e os livros vistos recentemente.
+Sétimo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../07-erros-e-seguranca-web.md) e de fazeres o [laboratório](../laboratorios/07-erros-e-seguranca-web-laboratorio.md). Fazes tudo no computador. Os exercícios 1, 2, 5 e 6 pedem respostas escritas. Os outros mudam o servidor da biblioteca da ficha do tema anterior, com os empréstimos e os livros vistos recentemente.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -18,7 +18,9 @@ O servidor da biblioteca vai passar a ser usado todos os dias, no balcão. Tem d
 
 Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
 
-Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas. E só depois experimenta. Para provocar falhas, usa as formas do laboratório: um erro posto de propósito num modelo, o comando do `fetch` com um corpo grande. O separador "Elements" para mexer no campo escondido.
+As respostas escritas vão para um ficheiro de texto `respostas-07.md`, que escreves no editor. Guarda-o na tua pasta de trabalho, ao lado das cópias da biblioteca, e põe o número do exercício antes de cada resposta. As decisões dos exercícios 3 e 4 ficam em comentários no `server.js`, junto do código que decidem.
+
+Antes de experimentares, prevê o resultado de cabeça. Para provocar falhas, usa as formas do laboratório: um erro posto de propósito num modelo, o comando do `fetch` com um corpo grande. O separador "Elements" para mexer no campo escondido.
 
 Podes começar o exercício 3 com a sessão, a página inicial, o formulário de empréstimo e a lista dos empréstimos. Para completar o exercício 4, precisas também do histórico dos livros vistos e do botão que o apaga, da ficha anterior. A devolução continua opcional.
 
@@ -54,15 +56,18 @@ Guia: secção "O middleware de erro" e exemplo guiado, passo 2.
 
 Acrescenta à biblioteca o middleware de erro no sítio certo. Regista no terminal a data, o pedido e o stack trace. Responde com o código 4xx do erro, quando ele trouxer um. Usa 500 nos restantes casos. Mostra sempre `erro.ejs` com uma mensagem tua.
 
-A decisão: no catálogo, o middleware tinha de garantir o `itensNoPedido`, porque o cabeçalho o usa. A página de erro da biblioteca precisa de algum valor do `res.locals`? Vê o que o teu `erro.ejs` e o teu cabeçalho usam, decide, e escreve no caderno a razão. Confirma a tua decisão com o pedido de 200 000 algarismos do exercício 1.
+A decisão: no catálogo, o middleware tinha de garantir o `itensNoPedido`, porque o cabeçalho o usa. A página de erro da biblioteca precisa de algum valor do `res.locals`? Vê o que o teu `erro.ejs` e o teu cabeçalho usam e decide. Escreve a razão num comentário, junto do middleware de erro.
 
-Depois, provoca o erro do exercício 1, número 4, e confirma: a página "Erro no servidor", o código 500, nenhum caminho no código-fonte, e o stack trace no terminal. Desfaz o erro no modelo.
+Casos de teste:
+
+- o pedido de 200 000 algarismos do exercício 1, que confirma a tua decisão;
+- o erro do exercício 1, número 4, posto de propósito no modelo: a página "Erro no servidor", o código 500, nenhum caminho no código-fonte, e o stack trace no terminal. No fim, desfaz o erro no modelo.
 
 ## Exercício 4: o token na biblioteca
 
 Guia: secção "O CSRF" e exemplo guiado, passo 4.
 
-Protege todos os pedidos `POST` da biblioteca com um token contra CSRF. Cria a função que prepara o token e a linha correspondente no middleware do `res.locals`. Acrescenta a verificação para todos os `POST`. Inclui o campo escondido em todos os formulários `POST`.
+Protege todos os pedidos `POST` da biblioteca com um token contra CSRF, como o do catálogo. Há um token por sessão, que o `res.locals` põe à disposição dos modelos. Todos os formulários `POST` o levam num campo escondido, e uma verificação confere-o em todos os `POST`.
 
 A decisão é onde se cria o token. No catálogo, havia um sítio só: o primeiro formulário que mudava a sessão. No percurso obrigatório, a biblioteca tem dois tipos de formulário `POST`, em páginas diferentes. Se fizeste o desafio da devolução do tema 5, tens também esse terceiro tipo:
 
@@ -70,9 +75,9 @@ A decisão é onde se cria o token. No catálogo, havia um sítio só: o primeir
 - o botão de devolução, um por empréstimo, na lista `/emprestimos`, apenas se fizeste esse desafio opcional;
 - o botão de apagar o histórico, na página inicial, só quando há livros vistos.
 
-Para cada formulário que tens, decide em que rota chamas a função que cria o token. Pensa numa funcionária que abre o formulário de empréstimo noutro computador e em alguém que viu dois livros e volta à página inicial para apagar o histórico. Se tens a devolução, considera também quem abre diretamente a lista dos empréstimos, sem passar pelo formulário de empréstimo. Escreve as tuas decisões no caderno.
+Para cada formulário que tens, decide em que rota chamas a função que cria o token. Pensa numa funcionária que abre o formulário de empréstimo noutro computador e em alguém que viu dois livros e volta à página inicial para apagar o histórico. Se tens a devolução, considera também quem abre diretamente a lista dos empréstimos, sem passar pelo formulário de empréstimo.
 
-Podes preparar o token noutras localizações, desde que cumpras os resultados esperados. Justifica como cada escolha protege os formulários que tens.
+Podes preparar o token noutras localizações, desde que cumpras os resultados esperados. Num comentário junto de cada sítio onde crias o token, justifica como essa escolha protege os formulários que tens.
 
 **Resultado esperado:** o formulário de empréstimo e o de apagar o histórico funcionam. Cada um, com o campo `_csrf` apagado nas ferramentas de programador, dá "Pedido recusado" com o 403. A página inicial sem livros vistos não cria cookie nenhum. Estes testes completam o percurso obrigatório. Se tens o botão de devolução, confirma também que funciona com o token e dá 403 sem ele.
 
@@ -80,7 +85,7 @@ Podes preparar o token noutras localizações, desde que cumpras os resultados e
 
 Guia: secções "O que se escreve no terminal", "Os segredos" e "Segurança: o que este tema junta".
 
-Uma colega mostrou-te este bocado do servidor dela. Encontra todos os problemas de segurança, diz para cada um o que pode correr mal, e escreve a correção.
+Uma colega mostrou-te este bocado do servidor dela. Encontra todos os problemas de segurança. No `respostas-07.md`, diz para cada um o que pode correr mal, e escreve a correção.
 
 Revê a tua análise para completar os aspetos que faltem. Podes agrupar problemas relacionados, explicando os riscos e as correções de cada um.
 
@@ -132,11 +137,9 @@ app.use((req, res, next) => {
 });
 ```
 
-Analisa este caso em papel. A cópia acabou de arrancar, o livro 1 está disponível e este é o primeiro pedido. Não foi aberto nenhum formulário nem enviado um cookie. O pedido é `POST /emprestimos`, com `Content-Type: application/x-www-form-urlencoded` e o corpo `livro_id=1&leitor=1234`, sem `_csrf`. Os campos do empréstimo são válidos. Estas condições isolam o problema da verificação.
+Analisa este caso a ler o código. A cópia acabou de arrancar, o livro 1 está disponível e este é o primeiro pedido. Não foi aberto nenhum formulário nem enviado um cookie. O pedido é `POST /emprestimos`, com `Content-Type: application/x-www-form-urlencoded` e o corpo `livro_id=1&leitor=1234`, sem `_csrf`. Os campos do empréstimo são válidos. Estas condições isolam o problema da verificação.
 
-1. Que valores são comparados neste pedido?
-2. Porque é que a verificação deixa o pedido passar para a rota?
-3. Como a corrigias para este pedido receber 403, conservando o tratamento de um corpo que não foi preparado?
+No `respostas-07.md`, explica porque é que a verificação deixa este pedido passar para a rota, com os valores que ela compara. Escreve também a correção que faz este pedido receber 403, conservando o tratamento de um corpo que não foi preparado.
 
 O segundo: noutra cópia, a primeira vez que a funcionária abre o formulário de empréstimo e o envia, recebe "Pedido recusado". Volta atrás, recarrega o formulário, envia outra vez, e funciona. A rota do formulário dele é esta:
 
@@ -153,8 +156,7 @@ app.get("/emprestimos/novo", (req, res) => {
 });
 ```
 
-4. Porque é que a primeira página não tinha o token, e a segunda tinha?
-5. Qual é a correção?
+No `respostas-07.md`, explica porque é que a primeira página não tinha o token, e a segunda tinha, e escreve a correção.
 
 ## Apoio
 
@@ -173,11 +175,11 @@ Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 Escreve o código no terminal, ao lado da data, do pedido e do stack trace. Mostra o mesmo código apenas na página de erro 500: "Se o problema continuar, indica o código a3f9c2e1". Mantém a página dos erros 4xx como estava. O código não deve conter detalhes internos do erro, dados da sessão nem credenciais de acesso. Por ser curto e aleatório, pode repetir-se; não garante uma referência única para sempre.
 
-Decide: que diferença há entre mostrar esta referência e mostrar a mensagem interna do erro? E porque é que a referência ajuda quem o vai corrigir?
+Responde num comentário, junto do middleware de erro: que diferença há entre mostrar esta referência e mostrar a mensagem interna do erro? E porque é que a referência ajuda quem o vai corrigir?
 
 ## Critérios de conclusão
 
-- Os exercícios obrigatórios estão resolvidos, com as decisões pedidas por escrito.
+- Os exercícios 1, 2, 5 e 6 estão respondidos no `respostas-07.md`, e as decisões dos exercícios 3 e 4 estão em comentários no `server.js`.
 - O servidor responde aos casos de teste do enunciado.
 - Cada erro encontrado tem um caso reproduzível e uma explicação da causa.
 - A entrega inclui os ficheiros pedidos e exclui `node_modules` e segredos.
@@ -185,11 +187,11 @@ Decide: que diferença há entre mostrar esta referência e mostrar a mensagem i
 ## Entrega
 
 
-Entrega as respostas dos exercícios 1, 2, 5 e 6, as decisões dos exercícios 3 e 4. A pasta da biblioteca: o `server.js`, a pasta `views` e o `.env.example`. Não entregues o `.env` nem a pasta `node_modules`.
+Entrega o `respostas-07.md`, com as respostas dos exercícios 1, 2, 5 e 6. Entrega também a pasta da biblioteca: o `server.js`, com as decisões dos exercícios 3 e 4 em comentários, a pasta `views` e o `.env.example`. Não entregues o `.env` nem a pasta `node_modules`.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim do `respostas-07.md`, responde:
 
 - O que consigo explicar sem ajuda: porque é que uma página de outro site não consegue fazer um empréstimo na biblioteca em nome da funcionária.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

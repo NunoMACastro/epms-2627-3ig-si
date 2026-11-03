@@ -18,6 +18,8 @@ Cada exercício treina uma ideia do guia, e o título diz qual. Os exercícios 1
 
 Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
 
+Se a fizeres no computador, escreve as respostas no editor, no `respostas-01.md`, o ficheiro de texto onde ficou a tabela do laboratório. Se ainda não o tens, cria-o numa pasta tua de Sistemas de Informação. Antes de cada resposta, põe o número do exercício e a letra da alínea. O diagrama do exercício 8 desenha-se à mão.
+
 Tenta responder sem abrir o guia. Quando não souberes, escreve o que achas e porquê, e só depois confirma no guia: uma resposta errada com o raciocínio escrito ensina-te mais do que uma resposta certa copiada. Em cada exercício que peça uma justificação, uma ou duas frases chegam.
 
 
@@ -187,13 +189,13 @@ c) Se já te sentes à vontade com o SQL do 11.º ano, escreve a consulta que de
 
 ## Critérios de conclusão
 
-Entrega as respostas dos exercícios 1 a 8, com o diagrama do exercício 8 desenhado ou fotografado.
+Entrega o `respostas-01.md`, ou as folhas, com os exercícios 1 a 8 respondidos, e o diagrama do exercício 8, desenhado ou fotografado.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-01.md` ou na folha:
 
-- O que consigo explicar sem ajuda: escolhe uma das ideias da ficha e explica-a em duas frases, como se fosse a um colega que faltou.
+- O que consigo explicar sem ajuda: escolhe uma das ideias da ficha e explica-a em duas frases, para alguém que faltou à aula.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.
 
 As respostas são corrigidas na aula. Não incluas dados pessoais reais: os números de leitor e os nomes desta ficha são inventados.

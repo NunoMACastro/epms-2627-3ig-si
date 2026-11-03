@@ -20,13 +20,13 @@ Se ainda não tens a conta, o cluster ou o utilizador, a fase 1 do [laboratório
 
 Faz os exercícios por ordem, porque cada um usa o que o anterior construiu. O desafio opcional fica para o fim.
 
-Nos exercícios com código, escreve cada ficheiro como está na ficha e lê a explicação que vem a seguir antes de o pores a correr. Antes de cada experiência, escreve no caderno o que esperas ver. Depois compara com o que aparece.
+Nos exercícios com código, escreve cada ficheiro como está na ficha e lê a explicação que vem a seguir antes de o pores a correr. Antes de cada experiência, prevê de cabeça o que vais ver, e depois compara com o que aparece.
 
 Os nomes da ficha são obrigatórios: a pasta `cinema-da-escola`, a base `cinema`, a coleção `filmes`, os campos dos documentos, os ficheiros e os caminhos das rotas.
 
 No browser, confirma o código de cada resposta no separador Rede das ferramentas de programador. Na maior parte dos browsers, as ferramentas abrem-se com F12, ou com Cmd+Option+I no Mac.
 
-As perguntas marcadas com "No caderno" respondem-se por escrito, no caderno ou num ficheiro de texto, e entregam-se com o projeto.
+As perguntas marcadas com "No `respostas-04.md`" respondem-se por escrito, num ficheiro de texto com esse nome, na raiz da pasta `cinema-da-escola`. Escreve-o no editor, com o número do exercício antes de cada resposta. Entrega-se com o projeto.
 
 ## O cenário
 
@@ -63,6 +63,8 @@ cinema-da-escola/
 └── views/
     └── cartaz.ejs
 ```
+
+O `respostas-04.md`, com as tuas respostas escritas, fica também na raiz do projeto.
 
 ## Exercício 1: o projeto, de raiz
 
@@ -259,7 +261,7 @@ A última linha fecha a ligação. Uma ligação aberta mantém o programa à es
 
 ### Passo 4: correr o seed
 
-1. No caderno, prevê o que o terminal vai escrever. Depois corre o seed:
+1. Prevê o que o terminal vai escrever, e depois corre o seed:
 
    ```bash
    npm run seed
@@ -267,7 +269,7 @@ A última linha fecha a ligação. Uma ligação aberta mantém o programa à es
 
    O que deves ver: três linhas, `Ligada à base de dados cinema`, `Apagados 0 filmes` e `Inseridos 8 filmes`, e o terminal pronto para outro comando.
 
-2. No caderno, prevê quantos filmes ficam na coleção se correres o seed outra vez. Depois corre-o.
+2. Prevê quantos filmes ficam na coleção se correres o seed outra vez, e depois corre-o.
 
    O que deves ver: `Apagados 8 filmes` e `Inseridos 8 filmes`. A coleção continua com oito.
 
@@ -279,13 +281,13 @@ A última linha fecha a ligação. Uma ligação aberta mantém o programa à es
 
 Antes de a API ir buscar filmes, descobre no Atlas o que ela vai ter de devolver. Neste exercício trabalhas sozinho.
 
-Na barra de consultas da coleção `filmes`, escreve um filtro para cada pergunta. No caderno, regista o filtro e os títulos dos filmes que aparecem.
+Na barra de consultas da coleção `filmes`, escreve um filtro para cada pergunta. No `respostas-04.md`, regista o filtro e os títulos dos filmes que aparecem.
 
 1. Que filmes são de animação?
 2. Que filmes pode ver um aluno de 12 anos?
 3. Que filmes de ficção científica pode ver um aluno de 12 anos?
 
-Antes de executares a pergunta 2, decide se um aluno de 12 anos pode ver um filme com a idade mínima de 12. A tua resposta escolhe o operador: `$lt`, menor do que, ou `$lte`, menor ou igual.
+Na pergunta 2, tens de decidir se um aluno de 12 anos pode ver um filme com a idade mínima de 12. A tua resposta escolhe o operador: `$lt`, menor do que, ou `$lte`, menor ou igual.
 
 ## Exercício 4: a API dos filmes
 
@@ -365,7 +367,7 @@ npm run dev
 
 O que deves ver: duas linhas, `Ligada à base de dados cinema` e `Cinema da escola em http://localhost:3000`.
 
-No caderno, prevê o código e a resposta de cada pedido. Depois abre-os no browser: `/api/estado`, `/api/filmes`, `/nao-existe` e `/api/filmes/3`.
+Prevê o código e a resposta de cada pedido, e depois abre-os no browser: `/api/estado`, `/api/filmes`, `/nao-existe` e `/api/filmes/3`.
 
 O que deves ver: 200 com o estado; 200 com os oito filmes, cada um com o `_id` e o `__v`; 404 com `{"erro":"Rota não encontrada"}`. O último também dá esse 404, porque ainda não há uma rota para um filme. No terminal, aparece uma linha por pedido.
 
@@ -409,7 +411,7 @@ A idade chega como texto, `"12"`, como tudo o que vem no endereço. O `Number` p
 
 Grava. O `--watch` volta a arrancar o servidor sozinho. Na barra de endereço, podes escrever os acentos e os espaços, como em `?genero=Ficção científica`. O browser codifica-os antes de enviar o pedido, e o Express devolve-os ao teu código como os escreveste.
 
-No caderno, prevê o resultado de cada pedido, e depois experimenta:
+Prevê o resultado de cada pedido, e depois experimenta:
 
 | Pedido | Código | Resposta |
 | --- | --- | --- |
@@ -420,11 +422,11 @@ No caderno, prevê o resultado de cada pedido, e depois experimenta:
 | `/api/filmes?idade=0` | 400 | O mesmo erro |
 | `/api/filmes?genero=Ficção científica&idade=12` | 200 | Os filmes da pergunta 3 do exercício 3 |
 
-Agora, um erro de propósito. Apaga as quatro linhas do `if` que verifica a idade, do `if (!Number.isInteger` até à chaveta que o fecha, e grava. No caderno, prevê o que acontece com `/api/filmes?idade=doze`, e depois experimenta.
+Agora, um erro de propósito. Apaga as quatro linhas do `if` que verifica a idade, do `if (!Number.isInteger` até à chaveta que o fecha, e grava. Prevê o que acontece com `/api/filmes?idade=doze`, e depois experimenta.
 
 O que deves ver: o código 500 e uma página de erro do Express que fala de `CastError` e de `Cast to Number failed for value "NaN"`. O `Number("doze")` não é um número, e o Mongoose recusou-o ao preparar a consulta. O servidor continua ligado, mas o utilizador recebe uma página com pormenores internos, em vez de uma mensagem clara. Repõe as quatro linhas e grava.
 
-No caderno: compara o filtro que escreveste no Atlas para a pergunta 3 do exercício 3 com o que o servidor passa ao Mongoose no pedido `/api/filmes?genero=Ficção científica&idade=12`. O que é igual, e de onde vem cada valor no servidor?
+No `respostas-04.md`: compara o filtro que escreveste no Atlas para a pergunta 3 do exercício 3 com o que o servidor passa ao Mongoose no pedido `/api/filmes?genero=Ficção científica&idade=12`. O que é igual, e de onde vem cada valor no servidor?
 
 ### Passo 3: um filme de cada vez
 
@@ -452,7 +454,7 @@ app.get("/api/filmes/:numero", async (req, res) => {
 
 Leitura guiada: o `:numero` é um parâmetro de rota, e o número também chega como texto. A rota verifica-o como verificou a idade, e responde 400 se não servir. O `find` devolve sempre uma lista, mesmo quando só um documento cumpre o filtro. Se a lista vier vazia, o filme não existe, e a resposta é 404. Se não, a rota envia o primeiro e único filme da lista.
 
-No caderno, prevê, e depois experimenta: `/api/filmes/3`, `/api/filmes/9` e `/api/filmes/abc`.
+Prevê o código e a resposta de cada pedido, e depois experimenta: `/api/filmes/3`, `/api/filmes/9` e `/api/filmes/abc`.
 
 O que deves ver: 200 com Os Goonies; 404 com `{"erro":"Não existe o filme 9"}`; 400 com `{"erro":"O número do filme tem de ser um número inteiro positivo"}`.
 
@@ -637,7 +639,7 @@ app.listen(PORTA, (erro) => {
 
 ### Passo 4: o que o browser recebe
 
-1. No caderno, escreve o HTML que esperas encontrar dentro do `<ul>` com o pedido `/cartaz?genero=Aventura`. Depois abre-o no browser e vê o código-fonte da página. Na maior parte dos browsers, abre-se com Ctrl+U, ou com Cmd+Option+U no Mac.
+1. Prevê o HTML que vais encontrar dentro do `<ul>` com o pedido `/cartaz?genero=Aventura`. Depois abre-o no browser e vê o código-fonte da página. Na maior parte dos browsers, abre-se com Ctrl+U, ou com Cmd+Option+U no Mac.
 
    O que deves ver: dentro do `<ul>`, duas linhas `<li>`, uma para Os Goonies e outra para o Jumanji, com os valores já escritos, e linhas em branco entre elas.
 
@@ -651,9 +653,9 @@ app.listen(PORTA, (erro) => {
    </ul>
    ```
 
-2. No caderno: que partes do teu modelo não aparecem no código-fonte, e porquê?
+2. No `respostas-04.md`: que partes do teu modelo não aparecem no código-fonte, e porquê?
 3. Experimenta `/cartaz` e `/cartaz?genero=Musical`. Com `Musical`, a página mostra só o título, "Cartaz: Musical", porque a lista vazia não tem linhas.
-4. No caderno: no teu código, que linha decide que filmes aparecem no cartaz, e que linha decide como cada filme aparece? Diz, para cada uma, se está na rota ou no modelo.
+4. No `respostas-04.md`: no teu código, que linha decide que filmes aparecem no cartaz, e que linha decide como cada filme aparece? Diz, para cada uma, se está na rota ou no modelo.
 
 ## Exercício 6: a duração máxima, sozinho
 
@@ -669,7 +671,7 @@ O clube quer saber que filmes cabem numa tarde curta. Acrescenta à lista da API
 | `/api/filmes?genero=Aventura&duracaoMaxima=110` | 200 | Os filmes de aventura que duram 110 minutos ou menos |
 | `/api/filmes?genero=Ficção científica&idade=12&duracaoMaxima=120` | 200 | Os filmes que cumprem as três condições |
 
-No caderno, antes de escreveres o código, escreve que filmes esperas em cada pedido de 200.
+No `respostas-04.md`, escreve que filmes esperas em cada pedido de 200.
 
 ## Exercício 7: o cartaz para uma idade, sozinho
 
@@ -710,20 +712,20 @@ Quando o pedido funcionar, confirma que `/api/filmes/3` continua a responder com
 ## Critérios de conclusão
 
 - O seed põe os oito filmes na base `cinema`, e pode correr-se mais de uma vez sem repetir filmes.
-- O caderno tem os três filtros do exercício 3, com os títulos de cada resposta, e as respostas às perguntas dos exercícios 4 e 5.
+- O `respostas-04.md` tem os três filtros do exercício 3, com os títulos de cada resposta, e as respostas às perguntas dos exercícios 4 e 5.
 - A API responde a todos os pedidos das tabelas dos exercícios 4 e 6, com os códigos e os textos certos.
 - O cartaz responde a todos os pedidos da tabela do exercício 7, com o título e os filmes certos.
 - A cadeia de ligação está só no `.env`, e o `.env` não sai do teu computador.
 
 ## Entrega
 
-Entregas, pelo meio e no prazo que o professor indicar, a pasta `cinema-da-escola` e as respostas escritas no caderno ou num ficheiro de texto. A pasta leva o `src`, com o seed, a pasta `views`, o `package.json`, o `package-lock.json`, o `.env.example` e o `.gitignore`.
+Entregas, pelo meio e no prazo que o professor indicar, a pasta `cinema-da-escola`, com as respostas escritas no `respostas-04.md`. A pasta leva o `src`, com o seed, a pasta `views`, o `respostas-04.md`, o `package.json`, o `package-lock.json`, o `.env.example` e o `.gitignore`.
 
 Não entregues a pasta `node_modules` nem o ficheiro `.env`. O `.env` tem a palavra-passe da tua base de dados, e quem a tiver entra nos teus dados.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-04.md`:
 
 1. Nos exercícios 6 e 7, o que te deu mais trabalho, e o que descobriste para o resolver?
 2. Consegues explicar, sem o código à frente, o caminho do pedido `/cartaz?genero=Aventura`, do browser à rota, da rota ao Atlas, e de volta ao browser?

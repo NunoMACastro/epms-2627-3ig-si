@@ -39,11 +39,13 @@ Precisas de um browser de computador: Chrome, Edge ou Firefox. O Chrome e o Edge
 
 As partes 2 a 5, feitas diretamente no browser, precisam de internet. Sem ligação, usa o percurso com registos indicado em "A internet da escola não está a funcionar". A parte 6 é local e podes fazê-la mesmo que a rede da escola falhe.
 
-No teu caderno, ou num ficheiro de texto, prepara esta tabela. Vais preenchê-la ao longo do laboratório, uma linha por pedido observado:
+Precisas também de um editor, como o Visual Studio Code. Nele, cria um ficheiro de texto chamado `respostas-01.md`, numa pasta tua de Sistemas de Informação, e põe lá esta tabela. Vais preenchê-la ao longo do laboratório, uma linha por pedido observado:
 
 | Parte | Método | Endereço (caminho) | Código de estado | Tipo de conteúdo |
 | --- | --- | --- | --- | --- |
 | | | | | |
+
+O diagrama da fase 7 desenha-se à mão.
 
 ## Se alguma coisa falhar
 
@@ -76,16 +78,16 @@ Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "A c
 1. Com o separador Rede aberto, escreve na barra de endereço `https://pt.wikipedia.org/wiki/Computador` e carrega em Enter.
 2. A lista enche-se de pedidos. Por cima da lista há botões para filtrar por tipo: All, Doc, CSS, JS, Img e outros (no Firefox: Todos, HTML, CSS, JS, Imagens). Escolhe "Doc" (no Firefox, "HTML"). Fica um só pedido, chamado `Computador`.
 3. Lê a linha desse pedido. O método deve ser `GET`, o estado `200` e o tipo `document`.
-4. Clica no nome `Computador`. Abre-se um painel com vários separadores sobre este pedido. No separador "Headers" ("Cabeçalhos"), procura a secção "General" ("Geral"). Encontra e copia para o caderno:
+4. Clica no nome `Computador`. Abre-se um painel com vários separadores sobre este pedido. No separador "Headers" ("Cabeçalhos"), procura a secção "General" ("Geral"). Encontra estes quatro campos:
    - Request URL: o endereço completo pedido;
    - Request Method: o método;
    - Status Code: o código de estado;
    - Remote Address: o endereço do computador que respondeu, com a porta no fim, depois de dois pontos.
 5. Ainda nos cabeçalhos, desce até "Response Headers" ("Cabeçalhos de resposta") e procura `content-type`. Deve dizer `text/html`, seguido do conjunto de caracteres.
 6. Abre o separador "Response" ("Resposta"). Vês o HTML que o servidor mandou, como texto. É o corpo da resposta. Procura lá dentro o título do artigo, entre `<title>` e `</title>`.
-7. Preenche a primeira linha da tabela do caderno.
+7. Preenche a primeira linha da tabela do `respostas-01.md`.
 
-Pensa antes de continuares: porque não escreveste a porta 443 no endereço? A resposta: 443 é a porta habitual de `https`. Quando o endereço a omite, o browser usa-a automaticamente.
+Pensa antes de continuares: porque é que o Remote Address mostra a porta 443 e o endereço pedido não a mostra? A resposta: 443 é a porta habitual de `https`. Quando o endereço a omite, o browser usa-a automaticamente.
 
 ### Paragem 2
 
@@ -96,7 +98,7 @@ A tabela tem um pedido de documento, com método, estado e tipo de conteúdo.
 Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Uma página são muitos pedidos".
 
 1. Volta a escolher "All" ("Todos") nos filtros. Vês todos os pedidos que o browser fez para mostrar o artigo.
-2. No fundo do painel há uma barra que diz quantos pedidos foram feitos ("requests" ou "pedidos"). Copia o número para o caderno. Não há um número certo: muda com o artigo, com o browser e com o que o browser já tinha guardado. O que importa é a ordem de grandeza.
+2. No fundo do painel há uma barra que diz quantos pedidos foram feitos ("requests" ou "pedidos"). Escreve o número no `respostas-01.md`, por baixo da tabela. Não há um número certo: muda com o artigo, com o browser e com o que o browser já tinha guardado. O que importa é a ordem de grandeza.
 3. Filtra por "CSS", depois por "JS", depois por "Img". Para cada tipo, regista quantos pedidos há.
 4. Volta a "All" e ordena a lista pela coluna da cascata ("Waterfall"), ou olha simplesmente para a ordem da lista, que é a ordem dos pedidos. Qual foi o primeiro pedido? Deve ser o documento `Computador`.
 5. Escolhe uma imagem na lista e clica nela. No separador "Headers", vê o Request URL. O servidor é o mesmo do artigo?
@@ -116,7 +118,7 @@ Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Os 
 1. Na barra de endereço, escreve `https://pt.wikipedia.org/wiki/Pagina_que_nao_existe_epms` e carrega em Enter.
 2. A página aparece: tem o logótipo, os menus e uma mensagem a dizer que a Wikipédia não tem nenhum artigo com aquele nome.
 3. Filtra por "Doc" e lê o estado do pedido.
-4. Preenche a linha correspondente na tabela do caderno.
+4. Preenche a linha correspondente na tabela.
 
 O que deves ver: o estado é `404`, apesar de a página estar bem desenhada. O servidor respondeu, e respondeu com um corpo em HTML, mas o código diz que o que se pediu não existe. Se só olhasses para a página, podias pensar que tinha corrido tudo bem.
 
@@ -134,15 +136,15 @@ Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secções "Le
 2. Escreve na barra de endereço `https://pt.wikipedia.org/w/index.php?search=projetor+de+video` e carrega em Enter.
 3. Repara no endereço que fica na barra depois de a página carregar. Não é o que escreveste.
 4. Filtra por "Doc". Devem aparecer dois pedidos. O primeiro é `index.php?search=projetor+de+video`. Lê o estado.
-5. Clica nesse primeiro pedido e, nos cabeçalhos de resposta, procura `location`. Copia o valor para o caderno.
+5. Clica nesse primeiro pedido e, nos cabeçalhos de resposta, procura `location` e lê o valor.
 6. Clica no segundo pedido e lê o estado.
-7. Preenche as duas linhas na tabela do caderno.
+7. Preenche as duas linhas na tabela.
 
 O serviço externo pode mudar. Se houver mais pedidos ou outro destino, regista a sequência que o separador Rede realmente mostra e confirma-a com o professor.
 
 O que deves ver no percurso usado neste laboratório: o primeiro pedido recebe `302`, e a resposta traz um cabeçalho `location` com o endereço do artigo "Projetor de vídeo". O browser leu esse cabeçalho e fez sozinho um segundo pedido `GET` a esse endereço, que recebeu `200`. Foram dois pedidos e duas respostas, e tu só escreveste um endereço. No `location` vês também `v%C3%ADdeo`: é a forma como o `í` vai escrito num endereço.
 
-Perguntas para o caderno:
+Pensa nestas perguntas antes de leres as respostas:
 
 1. No endereço que escreveste, qual é o caminho e qual é o parâmetro de pesquisa? Qual é o nome do parâmetro e qual é o seu valor?
 2. Quem decidiu ir ao segundo endereço: tu, o browser ou o servidor?
@@ -159,7 +161,7 @@ Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Qua
 
 1. Limpa a lista do separador Rede.
 2. Escreve na barra de endereço `http://localhost:3999/` e carrega em Enter.
-3. Lê a página que aparece e copia a mensagem de erro para o caderno.
+3. Lê a página que aparece e a mensagem de erro.
 4. Olha para o separador Rede. Há um pedido para `localhost`, e no estado não há número: aparece "(failed)" ("(falhou)"), a vermelho, ou uma mensagem como `net::ERR_CONNECTION_REFUSED`. No Firefox o estado fica simplesmente vazio.
 
 O que deves ver: uma página de erro desenhada pelo próprio browser, a dizer que o `localhost` recusou a ligação. O pedido saiu do browser e chegou ao teu computador, mas nenhum programa estava à escuta na porta 3999, e por isso ninguém respondeu. Não há código de estado porque não há resposta. É muito diferente da parte 4: lá, um servidor respondeu a dizer que não tinha o artigo; aqui, não houve servidor nenhum a responder.
@@ -176,7 +178,7 @@ Registaste uma ligação recusada sem código de estado.
 
 Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Exemplo guiado", passo 8.
 
-Escolhe a pesquisa da fase 5 e desenha no caderno o diagrama dos pedidos e respostas. Faz uma coluna para o browser e outra para o servidor da Wikipédia. O tempo corre de cima para baixo. Nas setas dos pedidos escreve o método e o caminho. Nas respostas, escreve o código de estado e o conteúdo do corpo ou o cabeçalho que interessa.
+Escolhe a pesquisa da fase 5 e desenha à mão o diagrama dos pedidos e respostas. Faz uma coluna para o browser e outra para o servidor da Wikipédia. O tempo corre de cima para baixo. Nas setas dos pedidos escreve o método e o caminho. Nas respostas, escreve o código de estado e o conteúdo do corpo ou o cabeçalho que interessa.
 
 Não desenhes o servidor de dados. A Wikipédia tem certamente um. Mas não o consegues ver do browser: tudo o que acontece entre o servidor de aplicação e a base de dados fica escondido de quem está do lado de fora. É o que o guia diz na secção "Três programas, três papéis". E agora viste-o.
 
@@ -227,28 +229,14 @@ Os passos dão os dois nomes. Se mesmo assim não encontrares uma opção, a pos
 
 Usa os [registos HTTP para trabalhar sem internet](01-do-pedido-a-resposta-laboratorio/README.md). O professor fornece-te uma cópia guardada no computador ou em papel. São pedidos e respostas recolhidos anteriormente; a data e a origem acompanham os registos.
 
-1. Abre o apoio e os registos de texto que ele indica. No caderno, escreve que estás a analisar um registo, com a data da recolha.
+1. Abre o apoio e os registos de texto que ele indica. No `respostas-01.md`, por cima da tabela, escreve que estás a analisar um registo, com a data da recolha.
 2. Para o artigo e para o artigo inexistente, identifica o método, o caminho, o código de estado e o tipo de conteúdo. Preenche as linhas correspondentes da tabela.
 3. Segue a pesquisa, o cabeçalho `location` e o pedido ao destino. Preenche as duas linhas da tabela e desenha o diagrama da fase 7.
-4. Faz a fase 6 no teu computador, depois de confirmares que não há servidor na porta indicada. Regista a mensagem que observaste.
-5. Explica ao professor a diferença entre uma resposta 404 e uma ligação recusada, e quem inicia cada pedido do redirecionamento.
+4. Faz a fase 6 no teu computador, depois de confirmares que não há servidor na porta indicada. Lê a mensagem que aparece e preenche a linha da fase 6.
 
 As contagens de CSS, JavaScript e imagens da fase 3 ficam por fazer quando houver ligação. O mesmo acontece com os passos que exigem abrir as ferramentas ou observar o corpo da página em direto. Não inventes esses resultados a partir dos registos de texto.
 
 Este percurso permite-te interpretar pedidos e respostas em sala. A utilização das ferramentas do browser será observada quando houver ligação. Guarda a tabela e o diagrama para os comparares com essa observação.
-
-## O que fica no teu caderno
-
-No fim do laboratório deves ter:
-
-1. A tabela tem uma linha para o pedido da fase 2, outra para o da fase 4 e duas para os da fase 5. A linha da fase 6 fica sem código de estado;
-2. o número de pedidos da página da parte 3, com o número de pedidos de CSS, de JavaScript e de imagens;
-3. as respostas às perguntas para o caderno de cada parte;
-4. o diagrama da parte 7.
-
-É este o registo que mostras ao professor no fim da aula. Explica-o por palavras tuas: o diagrama e a tabela são a evidência de que sabes ler a conversa entre o browser e um servidor.
-
-Se fizeste o percurso sem internet, identifica essa opção no registo. As contagens e os passos ainda não observados ficam assinalados como por realizar.
 
 ## Desafios
 
@@ -257,9 +245,9 @@ Se fizeste o percurso sem internet, identifica essa opção no registo. As conta
 
 ## Antes de terminares
 
-- [ ] A tabela distingue 200, 404, redirecionamento e falta de resposta.
-- [ ] Registaste as contagens que realmente observaste.
-- [ ] O diagrama mostra quem inicia cada pedido.
+- [ ] A tabela do `respostas-01.md` tem os pedidos das fases 2, 4, 5 e 6, e distingue 200, 404, redirecionamento e falta de resposta.
+- [ ] Por baixo da tabela, registaste as contagens da fase 3 que realmente observaste.
+- [ ] O diagrama da fase 7, desenhado à mão, mostra quem inicia cada pedido.
 - [ ] Consegues explicar, por palavras tuas, a diferença entre uma resposta 404 e uma ligação recusada.
 
 ![Rodapé](../../imagens/rodape.png)

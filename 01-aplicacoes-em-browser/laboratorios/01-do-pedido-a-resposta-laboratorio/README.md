@@ -16,8 +16,6 @@ Na fase 5, o terceiro registo mostra a resposta à pesquisa. O quarto mostra uma
 
 Na fase 3, escreve «não observado» nas contagens dos recursos. Estes registos guardam apenas pedidos de documentos. Não mostram pedidos de estilos, scripts ou imagens, nem o total que um browser faria.
 
-Na fase 2, escreve também «não observado» no endereço remoto e no título dentro de `<title>`. Esses campos não foram guardados no apoio.
-
 As recolhas são de 20 de outubro de 2026. São excertos de respostas reais, com os endereços pedidos e o método identificados ao lado. Não são capturas das ferramentas de programador. O corpo HTML, os cookies e outros cabeçalhos ficaram fora deste pacote.
 
 Faz a fase 6 no teu computador, como o laboratório indica. Quando a ligação regressar, faz também as fases com o separador Rede aberto. Ler estes registos permite interpretar respostas; a utilização das ferramentas do browser pratica-se no próprio browser.

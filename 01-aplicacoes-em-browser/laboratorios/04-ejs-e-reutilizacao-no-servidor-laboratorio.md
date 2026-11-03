@@ -4,7 +4,7 @@
 
 Laboratório do quarto tema do módulo Aplicações baseadas em browsers. Partes do teu catálogo com middleware do tema anterior e transformas as respostas em páginas. Começas pela lista e pela pesquisa com a lista vazia. Acrescentas o detalhe de cada equipamento, o cabeçalho e o rodapé partilhados, e as páginas de erro. Pelo caminho, provocas de propósito os erros que mais vais encontrar com o EJS, vês o escaping a funcionar e a falhar. No fim comparas os teus modelos com o HTML que o browser recebe de facto.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../04-ejs-e-reutilizacao-no-servidor.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../04-ejs-e-reutilizacao-no-servidor.md) tem a teoria completa, para saberes mais. Antes de cada experiência, prevê de cabeça o resultado e confere-o com a resposta da fase.
 
 ## O que vais construir
 
@@ -45,7 +45,7 @@ Os comandos `node` e `npm` deste laboratório executam-se no ambiente indicado p
 
 1. Confirma a pasta no terminal: `pwd` no macOS/Linux ou `Get-Location` na PowerShell. Nela devem existir `package.json` e `server.js`. Usa `cd` e o caminho da tua cópia para lá entrar.
 2. Confirma que guardaste o ficheiro e que o browser mostra o endereço do teu servidor.
-3. Lê a primeira mensagem do terminal antes de mudares código. Compara o resultado esperado, o obtido e uma hipótese para a causa.
+3. Lê a primeira mensagem do terminal antes de mudares código. Compara o resultado esperado, o obtido e uma hipótese para a causa. Escreve os três num comentário no fim do ficheiro que estás a corrigir: com `//` no `server.js`, com `<%# … %>` num modelo. Com o comentário no fim, o código não muda de linha, e as mensagens de erro continuam a apontar as linhas certas.
 4. Se a porta 3000 estiver ocupada, não pares outro processo. Na tua cópia, muda `PORTA` para 3100 e usa essa porta em todos os endereços deste laboratório.
 
 ## Preparar o projeto
@@ -80,13 +80,13 @@ O modelo seguinte serve para preveres o HTML produzido. Ainda não é para o cop
 <%# fim da lista %>
 ```
 
-Escreve no caderno o HTML que o browser recebe em cada um destes três casos. Podes ignorar as linhas em branco e os espaços no início das linhas.
+Prevê, de cabeça, o HTML que o browser recebe em cada um destes três casos. Podes ignorar as linhas em branco e os espaços no início das linhas.
 
 1. Com os dados `{ titulo: "Sala B12", equipamentos: [{ nome: "Portátil", sala: "B12" }, { nome: "Monitor", sala: "B12" }] }`.
 2. Com os dados `{ titulo: "Sala Z99", equipamentos: [] }`.
-3. Com os dados `{ titulo: "Teste", equipamentos: [{ nome: "<i>Rato</i>", sala: "C01" }] }`. Escreve também o que o utilizador vê no ecrã, e diz se o rato aparece em itálico.
+3. Com os dados `{ titulo: "Teste", equipamentos: [{ nome: "<i>Rato</i>", sala: "C01" }] }`. Prevê também o que o utilizador vê no ecrã: o rato aparece em itálico?
 
-No fim do laboratório, na parte 8, voltas a estas previsões.
+No fim do laboratório, na parte 8, voltas a estes três casos.
 
 
 ### Respostas para conferires esta fase
@@ -125,7 +125,7 @@ Se a tua previsão foi diferente: escrever o `<ul>` no caso 2 (o `else` não cor
 
 ### Paragem 1
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confere as tuas previsões com as respostas antes de continuares. Se alguma falhou, encontra no modelo a marca que leste mal.
 ## Fase 2: a primeira página, e um erro de propósito
 
 Uma rota escolhe os dados e pede um modelo com `res.render`. O Express precisa de saber que o motor é o EJS.
@@ -199,7 +199,7 @@ Erro a esperar: a pasta `views` dentro de outra pasta, ou o ficheiro gravado com
 
 ### Paragem 2
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 3: a pesquisa e a lista vazia
 
 Uma lista sem resultados continua a ser uma resposta válida. A condição no modelo transforma o vazio numa mensagem.
@@ -211,7 +211,7 @@ Uma lista sem resultados continua a ser uma resposta válida. A condição no mo
 
 O que deves ver: uma página de erro com o código 500 e `ReferenceError`. A mensagem mostra o caminho de `equipamentos.ejs` e um número de linha. Por baixo, mostra as linhas do modelo à volta, com `>>` a apontar para o `if (sala)`. No fim, `sala is not defined`. O modelo usou uma variável que a rota não lhe deu. Repara que o erro aparece mesmo sem pesquisa: não é a sala vazia que faz falta, é a variável.
 
-4. Copia para o caderno a linha da mensagem que diz o ficheiro e a linha. Depois repõe o `sala: sala` e confirma que a página volta.
+4. Encontra a linha da mensagem que diz o ficheiro e a linha. Depois repõe o `sala: sala` e confirma que a página volta.
 
 
 
@@ -254,7 +254,7 @@ Sem `sala: sala`: 500, `ReferenceError` com o caminho do `equipamentos.ejs` e o 
 
 ### Paragem 3
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 4: a página de um equipamento
 
 O identificador escolhe o equipamento no servidor. O modelo recebe o equipamento encontrado e mostra a sua página.
@@ -317,7 +317,7 @@ Com `<%` sem `=`: nenhum erro, e quatro `<a>` vazios, que o browser quase não m
 
 ### Paragem 4
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 5: o cabeçalho e o rodapé
 
 Um partial é uma parte reutilizada por várias páginas. O cabeçalho abre o documento; o rodapé fecha-o.
@@ -438,7 +438,7 @@ Se deixares o `<h1>` depois de incluir o cabeçalho, a página terá dois títul
 
 ### Paragem 5
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 6: as páginas de erro
 
 O código HTTP e a mensagem têm papéis diferentes. A rota escolhe o código; o modelo mostra a mensagem.
@@ -447,7 +447,7 @@ O código HTTP e a mensagem têm papéis diferentes. A rota escolhe o código; o
 1. Cria o `views/erro.ejs` da referência de código desta fase.
 2. Na rota de detalhe, troca as duas respostas de erro em JSON pelas da referência de código desta fase, sem tirar os `return`.
 3. Troca também o middleware final pelo da referência de código desta fase.
-4. Com o separador Rede aberto, abre `/equipamentos/abc`, `/equipamentos/0`, `/equipamentos/9` e `/nao-existe`, e regista o código e o título de cada página.
+4. Com o separador Rede aberto, abre `/equipamentos/abc`, `/equipamentos/0`, `/equipamentos/9` e `/nao-existe`, e confirma o código e o título de cada página.
 
 O que deves ver: 400, 400, 404 e 404, com as páginas "Pedido inválido", "Pedido inválido", "Equipamento não encontrado" e "Página não encontrada", todas com o menu e o rodapé. Os códigos são os do tema anterior: a rota continua a escolhê-los, e o modelo `erro.ejs` não sabe qual é.
 
@@ -511,7 +511,7 @@ Erro a esperar. E difícil de ver: tirar um `return` ao trocar o `res.status(400
 
 ### Paragem 6
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 7: o escaping a funcionar, e a falhar
 
 O escaping transforma carateres de HTML em texto. Só os fragmentos escritos por ti entram com `<%-`.
@@ -547,14 +547,14 @@ Se o browser da sala bloquear ou não mostrar a janela, a demonstração do itá
 
 ### Paragem 7
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 8: o que o browser recebe, e a evidência
 
 Comparar a vista com a resposta permite localizar onde o EJS correu. A comparação é uma prova do percurso dos dados.
 
 
 1. Abre `/equipamentos?sala=B12` e o código-fonte da página (Ctrl+U; no Mac, Cmd+Option+U). Põe ao lado, no editor, o teu `views/equipamentos.ejs`.
-2. Copia esta tabela para o caderno e preenche a última coluna, a comparar o modelo com o código-fonte:
+2. Para cada linha desta tabela, prevê de cabeça o que vais encontrar no código-fonte, e depois procura-o lá:
 
 | O que procurar | No modelo | No código-fonte |
 | --- | --- | --- |
@@ -565,9 +565,9 @@ Comparar a vista com a resposta permite localizar onde o EJS correu. A comparaç
 | O comentário do início | Um | |
 | O `<head>` e o menu | Nenhum | |
 
-3. No separador Rede, clica no pedido da lista e regista o código e o `Content-Type` da resposta. Abre um pedido do tema anterior que ainda tenhas noutro servidor, ou recorda-o: que `Content-Type` tinha?
-4. Volta às previsões da parte 1 e corrige a lápis o que previste mal. Para cada correção, escreve numa frase o que te enganou.
-5. Para a evidência deste tema, escreve no caderno, por palavras tuas, a resposta a esta pergunta: porque é que o browser nunca executa o modelo `equipamentos.ejs`? Usa a tabela que acabaste de preencher como prova.
+3. No separador Rede, clica no pedido da lista e vê o código e o `Content-Type` da resposta. Abre um pedido do tema anterior que ainda tenhas noutro servidor, ou recorda-o: que `Content-Type` tinha?
+4. Volta às respostas da parte 1 e compara-as com este código-fonte. Se alguma das tuas previsões falhou, procura aqui o que te enganou.
+5. Para a evidência deste tema, responde por palavras tuas, num comentário `<%# … %>` no fim do `views/equipamentos.ejs`: porque é que o browser nunca executa o modelo? Usa o que encontraste na tabela como prova. Depois, recarrega o código-fonte: o teu comentário também não aparece lá.
 
 ### Respostas para conferires esta fase
 
@@ -588,7 +588,7 @@ O browser não executa o modelo porque o modelo nunca lá chega. O EJS correu no
 
 ### Paragem 8
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 
 ## Problemas frequentes
 
@@ -621,16 +621,6 @@ Uma etiqueta ficou aberta ou foi fechada duas vezes. O cabeçalho abre o `<html>
 ### Aparecem no terminal pedidos GET /favicon.ico
 
 É o browser a pedir o ícone do separador, como no tema anterior. Agora a resposta é a página "Página não encontrada", com 404, que o browser ignora.
-
-## O que fica no teu caderno
-
-1. As previsões da parte 1, com as correções da parte 8.
-2. Os três erros provocados (partes 2, 3 e 4) e o do `include` (parte 5): a previsão, o que aconteceu e porquê.
-3. Os códigos e os títulos das quatro páginas de erro da parte 6.
-4. As quatro pesquisas da parte 7, com o que viste com `<%=` e com `<%-`.
-5. A tabela da parte 8 e a tua resposta à pergunta da evidência.
-
-Com a tabela da parte 8 aberta, explica ao professor porque é que o browser não executa o modelo. Diz também o que aconteceria se o `<%= sala %>` passasse a `<%- sala %>`.
 
 ## Conferência dos ficheiros finais
 
@@ -823,12 +813,12 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 
 ## Desafios
 
-1. No cabeçalho, mostra uma ligação adicional para a sala B12. Explica porque a mudança aparece em todas as páginas.
+1. No cabeçalho, mostra uma ligação adicional para a sala B12. Num comentário `<%# … %>` no cabeçalho, explica porque a mudança aparece em todas as páginas.
 
 ## Antes de terminares
 
 - [ ] Desfizeste os erros provocados e confirmaste o catálogo a funcionar.
-- [ ] Guardaste as previsões, os resultados e as explicações pedidas.
+- [ ] O `views/equipamentos.ejs` acaba com o teu comentário da parte 8, que explica porque é que o browser nunca executa o modelo.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
 ![Rodapé](../../imagens/rodape.png)

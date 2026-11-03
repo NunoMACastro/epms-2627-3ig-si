@@ -4,7 +4,7 @@
 
 Laboratório do sétimo tema do módulo Aplicações baseadas em browsers. Partes do teu catálogo com sessões do tema anterior. Provocas de propósito uma falha que ninguém previu e lês o que o Express mostra a quem a provoca. Substituis essa página por um middleware de erro teu. Olhas para o que o servidor escreve no terminal. Mexes no segredo. Vês o escaping a falhar num atributo sem aspas. Proteges os formulários contra o CSRF. E, no fim, fazes a matriz de falhas do teu servidor e verificas a de um colega.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../07-erros-e-seguranca-web.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../07-erros-e-seguranca-web.md) tem a teoria completa, para saberes mais. Antes de cada experiência, prevê de cabeça o que vai acontecer e confere a previsão com as respostas da fase.
 
 ## O que vais construir
 
@@ -45,7 +45,7 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 1. Confirma a pasta no terminal: `pwd` no macOS/Linux ou `Get-Location` na PowerShell. Nela devem existir `package.json` e `server.js`. Usa `cd` e o caminho da tua cópia para lá entrar.
 2. Confirma que guardaste o ficheiro e que o browser mostra o endereço do teu servidor.
-3. Lê a primeira mensagem do terminal antes de mudares código. Compara o resultado esperado, o obtido e uma hipótese para a causa.
+3. Lê a primeira mensagem do terminal antes de mudares código. Compara o resultado esperado, o obtido e uma hipótese para a causa. Escreve os três num comentário no fim do ficheiro que estás a corrigir: com `//` no `server.js`, e com `<%# … %>` num modelo EJS. No fim, o código não muda de linha, e as mensagens de erro continuam a apontar as linhas certas.
 4. Se a porta 3000 estiver ocupada, não pares outro processo. Na tua cópia, muda `PORTA` para 3100 e usa essa porta em todos os endereços deste laboratório.
 
 ## Preparar o projeto
@@ -54,12 +54,14 @@ Precisas do catálogo com sessões do laboratório do tema anterior, a funcionar
 
 Arranca o servidor com `node --watch --env-file=.env server.js`, e mantém o terminal à vista: neste laboratório, o terminal é tão importante como o browser.
 
+Na pasta do catálogo, cria também um ficheiro de texto `respostas-07.md`, que escreves no editor. É para lá que vão as duas evidências do tema, nas fases 3 e 6, e a matriz de falhas, na fase 8. Vai também a resposta sobre os scripts e os endereços, na fase 6. As explicações sobre o código ficam em comentários no próprio `server.js`, junto do código de que falam.
+
 ## Fase 1: prever antes de programar
 
 Uma falha prevista do pedido tem uma resposta de recusa. Uma falha inesperada do código precisa de ser corrigida no servidor.
 
 
-Para cada situação, com o catálogo do fim do exemplo guiado, escreve no caderno: é uma falha do pedido ou do servidor? Que código? O que vê quem fez o pedido?
+Para cada situação, com o catálogo do fim do exemplo guiado, prevê de cabeça: é uma falha do pedido ou do servidor? Que código? O que vê quem fez o pedido?
 
 1. `GET /equipamentos/abc`
 2. Um formulário de juntar ao pedido enviado sem o campo `_csrf`
@@ -68,7 +70,7 @@ Para cada situação, com o catálogo do fim do exemplo guiado, escreve no cader
 5. O servidor arrancado com o segredo `abc123`
 6. `GET /equipamentos/%E0%A4%A`
 
-No fim do laboratório, na parte 8, voltas a estas previsões.
+No fim do laboratório, na parte 8, voltas a estas seis situações.
 
 
 ### Respostas para conferires esta fase
@@ -86,7 +88,7 @@ As previsões mais erradas: o 413 e o endereço mal codificado como 500 (parecem
 
 ### Paragem 1
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 2: a página de erro do Express
 
 Uma mensagem técnica ajuda quem corrige o servidor. A mesma mensagem pode revelar informação a quem só usa a aplicação.
@@ -97,33 +99,33 @@ Uma mensagem técnica ajuda quem corrige o servidor. A mesma mensagem pode revel
 
 O que deves ver: uma página com o código 500, o `TypeError`, a mensagem `Cannot read properties of undefined (reading 'nome')` e o stack trace, com os caminhos das pastas do teu computador.
 
-3. Copia para o caderno três coisas que esta página revela sobre o teu servidor e que um desconhecido não devia saber. Confirma no terminal que o mesmo erro lá está.
+3. Encontra três coisas que esta página revela sobre o teu servidor e que um desconhecido não devia saber. Confirma no terminal que o mesmo erro lá está.
 4. Para o servidor e arranca-o assim, em modo de produção: no macOS e no Linux, `NODE_ENV=production node --env-file=.env server.js`; na PowerShell do Windows, primeiro `$env:NODE_ENV="production"` e depois `node --env-file=.env server.js`. Abre outra vez `/equipamentos/2`. O que mudou? Repara também no terminal: há um aviso novo, do tema anterior.
 5. Para o servidor e volta a arrancá-lo como antes, sem o modo de produção (na PowerShell, fecha o terminal e abre outro). Deixa o erro no modelo: vais precisar dele na parte seguinte.
 
 
 ### Respostas para conferires esta fase
 
-O que a página revela, para o passo 3: o caminho das pastas do projeto, com o nome da conta do utilizador do computador. O nome e a linha do ficheiro do modelo. Que o servidor usa o EJS e o Express (a `node_modules` aparece nos caminhos, com o nome de cada ficheiro e a linha. A versão não aparece). E um bocado do modelo, com as linhas à volta da que falhou. Compara as três coisas que registaste com estes exemplos.
+O que a página revela, para o passo 3: o caminho das pastas do projeto, com o nome da conta do utilizador do computador. O nome e a linha do ficheiro do modelo. Que o servidor usa o EJS e o Express (a `node_modules` aparece nos caminhos, com o nome de cada ficheiro e a linha. A versão não aparece). E um bocado do modelo, com as linhas à volta da que falhou. Compara as três coisas que encontraste com estes exemplos.
 
 Em modo de produção: "Internal Server Error", sem pormenores, e o aviso do `MemoryStore` no terminal. Porque não basta pôr `NODE_ENV=production`? A resposta: depende de alguém se lembrar. A página continua sem o catálogo, em inglês, e sem dizer o que fazer.
 
 ### Paragem 2
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 3: o middleware de erro
 
 O middleware de erro recebe quatro parâmetros. Fica depois do código que pode falhar e responde sem detalhes internos.
 
 
 1. Acrescenta o middleware de erro da referência de código desta fase, com as três partes, no fim do `server.js`, logo antes do `app.listen`.
-2. Abre `/equipamentos/2`. Regista o código, o título da página e o que o terminal mostra.
-3. Abre o código-fonte da página e procura um caminho de uma pasta do teu computador. Para a evidência deste tema, regista que não há nenhum, e como o confirmaste.
+2. Abre `/equipamentos/2`. Observa o código, o título da página e o que o terminal mostra.
+3. Abre o código-fonte da página e procura um caminho de uma pasta do teu computador. É uma das evidências deste tema: escreve no `respostas-07.md` que não há nenhum, e como o confirmaste.
 4. O primeiro erro de propósito. Tira o `next` dos parâmetros do middleware de erro, para ficar `(erro, req, res)`. Guarda e abre `/equipamentos/2`. Prevê primeiro.
 
 O que deves ver: a página do Express outra vez, com o stack trace. Com três parâmetros, o Express já não o reconhece como um middleware de erro.
 
-5. Repõe o `next`. O segundo erro de propósito: muda o middleware de erro para cima das rotas, logo a seguir ao middleware de registo. Guarda e abre `/equipamentos/2`. Prevê primeiro, e regista o que aconteceu. Depois, repõe-no no fim.
+5. Repõe o `next`. O segundo erro de propósito: muda o middleware de erro para cima das rotas, logo a seguir ao middleware de registo. Guarda e abre `/equipamentos/2`. Prevê primeiro, e confere o que aconteceu com as respostas desta fase. Depois, repõe-no no fim.
 6. Corrige o erro do modelo e confirma que a página do equipamento volta.
 7. Agora um erro que nasce antes das rotas. Com o servidor ligado, noutro terminal, envia um corpo de 200 000 carateres com este comando:
 
@@ -131,7 +133,7 @@ O que deves ver: a página do Express outra vez, com o stack trace. Com três pa
    node -e "fetch('http://localhost:3000/pedido/confirmacao', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'nome=' + 'a'.repeat(200000) }).then((resposta) => console.log(resposta.status))"
    ```
 
-   O comando escreve o código da resposta. Regista-o, e o que o terminal do servidor mostra. Depois, no browser, abre `/equipamentos/%E0%A4%A` e regista o código e o título da página.
+   O comando escreve o código da resposta. Observa-o, e o que o terminal do servidor mostra. Depois, no browser, abre `/equipamentos/%E0%A4%A` e observa o código e o título da página.
 
 8. Para perceberes porque é que o middleware garante o `itensNoPedido`, apaga essa linha, guarda, e repete o comando da referência de código desta fase. Prevê primeiro: que código dá, e porquê? Repõe a linha.
 
@@ -197,15 +199,15 @@ Três regras, e a primeira apanha toda a gente:
 
 ### Paragem 3
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 4: o que fica no terminal
 
 Um registo serve para reproduzir e corrigir falhas. Dados pessoais, segredos e cookies devem ficar fora dele.
 
 
-1. Olha para o terminal do servidor e identifica as duas fontes de registo: as linhas do middleware de registo e as do middleware de erro. Para uma falha da parte 3, escreve no caderno onde está o quando, o que pedido e o que falhou.
+1. Olha para o terminal do servidor e identifica as duas fontes de registo: as linhas do middleware de registo e as do middleware de erro. Numa falha da parte 3, encontra onde está o quando, o pedido e o que falhou.
 2. Uma experiência a não deixar ficar. Na rota da confirmação do pedido, logo no início, acrescenta `console.log(req.body);`. Faz um pedido e confirma-o com um nome fictício.
-3. Regista o que apareceu no terminal. Que dados do formulário estão lá, e quem os pode ler? Que risco haveria se o nome fosse real? Tira a linha.
+3. Olha para o que apareceu no terminal. Que dados do formulário estão lá, e quem os pode ler? Que risco haveria se o nome fosse real? Pensa antes de leres a resposta. Depois, tira a linha.
 
 
 ### Respostas para conferires esta fase
@@ -215,16 +217,16 @@ Um registo serve para reproduzir e corrigir falhas. Dados pessoais, segredos e c
 
 ### Paragem 4
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 5: os segredos
 
 Um segredo revelado tem de ser substituído. O ficheiro de ambiente é lido no arranque do processo.
 
 
 1. Acrescenta a verificação do tamanho do segredo, a seguir à verificação de que ele existe.
-2. Muda temporariamente o segredo no `.env` para `abc123` e guarda. Para o processo com Ctrl+C e arranca outra vez com `node --watch --env-file=.env server.js`. Prevê primeiro: o que faz o servidor? Regista a mensagem, e confirma que ela não mostra o segredo.
+2. Muda temporariamente o segredo no `.env` para `abc123` e guarda. Para o processo com Ctrl+C e arranca outra vez com `node --watch --env-file=.env server.js`. Prevê primeiro: o que faz o servidor? Lê a mensagem, e confirma que ela não mostra o segredo.
 3. Repõe o segredo bom e reinicia com Ctrl+C e `node --watch --env-file=.env server.js`. Junta um equipamento ao pedido e confirma no menu que o pedido tem um.
-4. Gera um segredo novo, troca-o no `.env` e guarda. Para garantir que o processo relê o `.env`, para com Ctrl+C e arranca outra vez com `node --watch --env-file=.env server.js`. Recarrega a página do pedido. Prevê primeiro: o que aconteceu ao pedido, e o cookie ainda está no browser? Escreve no caderno o que o reinício apaga e o que o segredo novo altera. Explica porque é que se troca um segredo que foi revelado.
+4. Gera um segredo novo, troca-o no `.env` e guarda. Para garantir que o processo relê o `.env`, para com Ctrl+C e arranca outra vez com `node --watch --env-file=.env server.js`. Recarrega a página do pedido. Prevê primeiro: o que aconteceu ao pedido, e o cookie ainda está no browser? Depois, num comentário no `server.js`, junto da verificação do tamanho do segredo, escreve o que o reinício apaga e o que o segredo novo altera. Explica também porque é que se troca um segredo que foi revelado.
 
 
 
@@ -259,20 +261,20 @@ No catálogo, reler o segredo novo exige reiniciar o servidor. Esse reinício ta
 
 ### Paragem 5
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 6: o escaping em cada sítio
 
 O escaping do HTML depende do contexto. No catálogo, os valores recebidos entram no texto de elementos HTML ou em atributos de texto com aspas. Os casos seguintes mostram porque esta regra não se estende aos scripts nem aos endereços. Faz estas experiências apenas na tua cópia local, com os valores fictícios indicados. No fim, repõe as alterações pedidas.
 
 
-1. A injeção guardada. Faz um pedido e confirma-o com o nome `<script>alert(1)</script>`. Abre a lista das reservas, e depois o código-fonte dela. Regista como o nome aparece no ecrã e como aparece no código-fonte. Para a evidência deste tema, regista que o HTML inserido foi apresentado como texto.
+1. A injeção guardada. Faz um pedido e confirma-o com o nome `<script>alert(1)</script>`. Abre a lista das reservas, e depois o código-fonte dela. Observa como o nome aparece no ecrã e como aparece no código-fonte. É a outra evidência deste tema: escreve no `respostas-07.md` que o HTML inserido foi apresentado como texto.
 2. Agora o atributo sem aspas. No `views/pedido.ejs`, no campo do nome da confirmação, tira as aspas do `value`, para ficar `value=<%= valorNome %>`, e tira também o `maxlength="40"`. Guarda.
 3. Junta um equipamento ao pedido. Na confirmação, escreve no nome exatamente `x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`, que tem mais de 40 carateres, e envia. Prevê primeiro.
 
 O que deves ver: o pedido volta com a mensagem do nome comprido. E o browser mostra uma janela com "1". No código-fonte, o campo ficou `value=x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`: o espaço acabou o valor. O `autofocus` e o `onfocus` passaram a ser atributos do campo, que correram um script quando o campo ganhou o foco. O `<%=` não mudou nada. Isto acontece porque o valor não tinha nenhum carácter de HTML.
 
 4. Repõe as aspas. E só as aspas. E guarda. Recarrega a página do pedido, escreve outra vez o mesmo nome e envia. Confirma que agora o nome aparece no campo como texto, sem janela nenhuma. Só depois repõe o `maxlength="40"` e guarda. A ordem conta: com o `maxlength` reposto, o browser não te deixa escrever mais de 40 carateres, o nome cortado passa a ser válido. O pedido é confirmado, em vez de voltar ao formulário.
-5. Lê nesta fase as tabelas do `<script>` e do `href`, e escreve no caderno, numa frase cada, porque é que o escaping também não protege esses dois sítios.
+5. Lê nesta fase as tabelas do `<script>` e do `href`. No `respostas-07.md`, escreve numa frase cada porque é que o escaping também não protege esses dois sítios.
 
 
 
@@ -315,7 +317,7 @@ Há ainda um caso que convém ver com estes olhos. O nome que alguém escreve ao
 
 ### Paragem 6
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 7: o token contra o CSRF
 
 O token é um código aleatório da sessão, incluído no formulário. Um `POST` só prossegue se apresentar o mesmo código.
@@ -327,10 +329,10 @@ O token é um código aleatório da sessão, incluído no formulário. Um `POST`
 O que deves ver: "Pedido recusado", com o código 403. O servidor já exige o token, e o formulário ainda não o envia.
 
 3. Acrescenta o campo escondido aos quatro formulários `POST`: o do `item-novo.ejs` e os três do `pedido.ejs`. Junta dois equipamentos, tira um e confirma o pedido: tudo funciona como antes.
-4. Abre o formulário de juntar um equipamento e o seu código-fonte. Copia para o caderno os primeiros oito carateres do valor do campo `_csrf`, e o seu comprimento.
-5. Nas ferramentas de programador, no separador "Elements" ("Elementos"; no Firefox, "Inspetor"), encontra o campo escondido do formulário e apaga o valor do `value` (faz duplo clique sobre ele). Envia o formulário. Regista o código e a página.
-6. Junta um equipamento ao pedido. O pedido ficou vazio quando o confirmaste, no passo 3, e sem equipamentos a página do pedido não tem os botões de confirmar e de cancelar. Depois abre o pedido em dois separadores do mesmo browser. Num deles, confirma o pedido. No outro, que ficou aberto com a página antiga, carrega em "Cancelar o pedido". Prevê primeiro, e regista o que aconteceu e porquê.
-7. Escreve no caderno, por palavras tuas, porque é que uma página de outro site não consegue pôr o token certo no formulário que esconde.
+4. Abre o formulário de juntar um equipamento e o seu código-fonte. Observa o valor do campo `_csrf`. Quantos carateres tem, e que carateres usa?
+5. Nas ferramentas de programador, no separador "Elements" ("Elementos"; no Firefox, "Inspetor"), encontra o campo escondido do formulário e apaga o valor do `value` (faz duplo clique sobre ele). Envia o formulário. Observa o código e a página.
+6. Junta um equipamento ao pedido. O pedido ficou vazio quando o confirmaste, no passo 3, e sem equipamentos a página do pedido não tem os botões de confirmar e de cancelar. Depois abre o pedido em dois separadores do mesmo browser. Num deles, confirma o pedido. No outro, que ficou aberto com a página antiga, carrega em "Cancelar o pedido". Prevê primeiro o que acontece, e porquê.
+7. Porque é que uma página de outro site não consegue pôr o token certo no formulário que esconde? Explica-o por palavras tuas, num comentário no `server.js`, junto do middleware que verifica o token.
 
 
 
@@ -530,7 +532,7 @@ O formulário de pesquisa da página inicial não leva token: envia por `GET`, e
 
 ### Paragem 7
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 ## Fase 8: a matriz de falhas e a revisão de um colega
 
 A matriz junta casos reproduzíveis e resultados conferidos. Outra pessoa deve conseguir repetir cada linha.
@@ -538,10 +540,10 @@ A matriz junta casos reproduzíveis e resultados conferidos. Outra pessoa deve c
 Em cada linha, indica o método e o endereço exatos, os dados enviados e o estado inicial necessário. Para isolar uma falha diferente do CSRF num `POST`, usa uma sessão e um token válidos. Sem eles, o pedido pode ser recusado antes de chegar à causa que queres observar.
 
 
-1. Copia para o caderno a matriz da referência de código desta fase, só com as colunas da falha e de como se provoca. Provoca cada falha no teu servidor e preenche as outras três colunas com o que viste, e não com o que o guia diz. Se alguma linha não der o mesmo que o guia, escreve a diferença: é aí que está o que tens de corrigir.
+1. Faz a matriz do teu servidor no `respostas-07.md`. Copia para lá a tabela da referência de código desta fase, só com as colunas da falha e de como se provoca. Provoca cada falha no teu servidor e preenche as outras três colunas com o que viste, e não com o que o guia diz. Se alguma linha não der o mesmo que o guia, escreve a diferença: é aí que está o que tens de corrigir.
 2. Acrescenta à matriz uma falha que o guia não tem, do teu servidor, com a forma de a provocar.
-3. **Revisão de um colega.** Troca de computador com um colega. Escolhe três linhas da matriz dele, incluindo a que ele acrescentou, e reproduz cada uma no servidor dele, seguindo só o que ele escreveu na coluna "como se provoca". Para cada linha, regista se conseguiste reproduzir a falha e se o resultado foi o que ele escreveu. Uma linha que não se consegue reproduzir com o que lá está escrito não é evidência: devolve-a com a razão.
-4. Volta às previsões da parte 1 e corrige a lápis o que previste mal.
+3. **Revisão de um colega.** Troca de computador com um colega. Escolhe três linhas da matriz dele, incluindo a que ele acrescentou, e reproduz cada uma no servidor dele, seguindo só o que ele escreveu na coluna "como se provoca". Para cada linha, escreve no `respostas-07.md` dele, por baixo da matriz, se conseguiste reproduzir a falha e se o resultado foi o que ele escreveu. Uma linha que não se consegue reproduzir com o que lá está escrito não é evidência: devolve-a, com a razão escrita.
+4. Volta às seis situações da parte 1 e encontra cada uma na tua matriz. Confere se o que previste de cabeça bate com o que viste.
 
 
 ### Referência de código desta fase
@@ -572,7 +574,7 @@ As linhas do 400 por um endereço mal codificado e do 413 mostram falhas que nas
 
 ### Paragem 8
 
-Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado e o obtido. Formula uma hipótese e muda uma causa de cada vez.
+Confirma os resultados descritos antes de continuares. Se houver diferença, escreve o esperado, o obtido e uma hipótese num comentário no fim do ficheiro que estás a corrigir. Muda uma causa de cada vez.
 
 ## Problemas frequentes
 
@@ -596,22 +598,9 @@ O servidor não está ligado, ou está noutra porta. Confirma no terminal do ser
 
 O `--watch` só reinicia quando guardas um ficheiro. Lê a mensagem do terminal, corrige e guarda.
 
-## O que fica no teu caderno
-
-1. As previsões da parte 1, com as correções da parte 8.
-2. O que a página do Express revela (parte 2), e a evidência da página de erro sem stack trace (parte 3).
-3. Os dois erros do middleware de erro e as respostas ao 413 e ao endereço mal codificado (parte 3).
-4. O `console.log(req.body)` e o que ele mostrou (parte 4).
-5. A mensagem do segredo curto e o efeito da troca do segredo (parte 5).
-6. A evidência do HTML inserido apresentado como texto, e o atributo sem aspas (parte 6).
-7. As experiências do token (parte 7).
-8. A matriz de falhas do teu servidor e a revisão do colega (parte 8).
-
-O professor vai pedir-te que provoques, à frente dele, uma falha da tua matriz, e que expliques o que o utilizador vê, o que fica no terminal, e porquê.
-
 ## Conferência dos ficheiros finais
 
-Depois de desfazeres todos os erros provocados, confere os teus ficheiros com esta versão completa. Os nomes e as rotas mantêm a sequência do catálogo.
+Depois de desfazeres todos os erros provocados, confere os teus ficheiros com esta versão completa. Os nomes e as rotas mantêm a sequência do catálogo. Os teus ficheiros têm, a mais, os comentários que escreveste: os das partes 5 e 7, e os da depuração, se os houver.
 
 ### `server.js` completo
 
@@ -1288,7 +1277,11 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 ## Antes de terminares
 
 - [ ] Desfizeste os erros provocados e confirmaste o catálogo a funcionar.
-- [ ] Guardaste as previsões, os resultados e as explicações pedidas.
+- [ ] O `respostas-07.md` tem a evidência da página de erro sem stack trace (parte 3) e a do HTML inserido apresentado como texto (parte 6).
+- [ ] O `respostas-07.md` tem a frase sobre o `<script>` e a frase sobre o `href` (parte 6).
+- [ ] O `respostas-07.md` tem a matriz de falhas do teu servidor, com a linha que acrescentaste, e a revisão do colega por baixo dela (parte 8).
+- [ ] O `server.js` tem o comentário sobre a troca do segredo, junto da verificação do tamanho (parte 5).
+- [ ] O `server.js` tem o comentário sobre o token, junto do middleware que o verifica (parte 7).
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
 ![Rodapé](../../imagens/rodape.png)

@@ -11,7 +11,7 @@ Partes do catálogo mínimo e terminas com uma pesquisa na página inicial, resp
 
 | Fase | O que muda | O que funciona no fim |
 | --- | --- | --- |
-| 1 | Prevês as respostas | Tens uma tabela para comparar com o ensaio |
+| 1 | Prevês as respostas | Sabes que resposta esperar de cada pedido |
 | 2 | Acrescentas detalhe e validação | Distingues identificador inválido de equipamento inexistente |
 | 3 | Acrescentas um filtro | Pedes uma lista inteira, filtrada ou vazia |
 | 4 | Inspecionas os dados | Localizas pesquisa e caminho no browser |
@@ -45,14 +45,14 @@ Em todo o laboratório, depois de mudares o `server.js`, reinicia o servidor (Ct
 1. Confirma que o terminal está na pasta onde estão `server.js` e `package.json`. Usa `pwd` ou, no `cmd` do Windows, `cd` sem argumentos.
 2. Confirma que o teu servidor está ligado e que o endereço usa a mesma porta e `http`.
 3. Guarda a alteração e reinicia o teu processo com Ctrl+C e `node server.js`, ou usa `node --watch server.js`.
-4. Lê o terminal antes de alterar outra linha. Escreve o esperado, o obtido e a hipótese que queres verificar.
+4. Lê o terminal antes de alterar outra linha. Escreve o esperado, o obtido e a hipótese que queres verificar num comentário no fim do `server.js`, para o código não mudar de linha.
 5. Provoca só um erro de cada vez e repõe o código antes da experiência seguinte.
 
 ## Fase 1: prever antes de programar
 
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secções "Três sítios por onde um pedido traz dados" e "Os códigos de estado que o teu código escolhe".
 
-Copia esta tabela para o caderno e preenche as duas últimas colunas com a tua previsão, antes de escreveres qualquer código. No fim do laboratório voltas a ela.
+Para cada pedido desta tabela, prevê de cabeça onde vêm os dados e que código esperas, antes de escreveres qualquer código. No fim do laboratório voltas a ela.
 
 | Pedido | Onde vêm os dados | Código que esperas |
 | --- | --- | --- |
@@ -68,7 +68,7 @@ A resposta, depois de fazeres a previsão: o detalhe do identificador 2 dá 200.
 
 ### Paragem 1
 
-Escreveste uma previsão para cada pedido. A fase 8 dá a tabela para a conferires depois de experimentar.
+Tens uma previsão para cada pedido. A fase 8 dá a tabela para a conferires depois de experimentar.
 
 ## Fase 2: a rota de detalhe
 
@@ -100,12 +100,12 @@ app.get("/equipamentos/:id", (req, res) => {
 
 Leitura guiada: lê a conversão primeiro. Cada verificação de erro responde e termina com `return`. Só o caso válido chega à resposta com o equipamento.
 2. Reinicia e abre, um de cada vez: `/equipamentos/2`, `/equipamentos/abc`, `/equipamentos/0`, `/equipamentos/2.5` e `/equipamentos/9`.
-3. Para cada um, regista o código (no separador Rede) e a mensagem.
+3. Para cada um, confirma o código no separador Rede e lê a mensagem.
 
 O que deves ver: 200 com o projetor; 400 para `abc`, `0` e `2.5`; 404 para o 9.
 
 4. Agora uma experiência. Na linha `const id = Number(req.params.id);`, apaga o `Number(` e o `)` correspondente, para ficar `const id = req.params.id;`. Reinicia e abre `/equipamentos/2`.
-5. Prevê antes de abrir. Depois regista o que aconteceu. A resposta é 400: `id` ficou com o texto `"2"`, e `Number.isInteger("2")` é falso. Sem a conversão, a primeira verificação recusa o pedido.
+5. Prevê antes de abrir, e depois confirma. A resposta é 400: `id` ficou com o texto `"2"`, e `Number.isInteger("2")` é falso. Sem a conversão, a primeira verificação recusa o pedido.
 6. Repõe o `Number(...)` e confirma que `/equipamentos/2` volta a responder 200.
 
 ### Paragem 2
@@ -149,12 +149,12 @@ Confirma no separador Rede o caminho e a pesquisa, em vez de adivinhar pelos dad
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "Observar os pedidos no browser".
 
 1. Com o separador Rede aberto, abre `/equipamentos?sala=A03`.
-2. Clica no pedido e abre o separador "Payload" ("Carga"). Regista o que aparece em "Query String Parameters".
+2. Clica no pedido e abre o separador "Payload" ("Carga"). Vê o que aparece em "Query String Parameters".
 3. Abre `/equipamentos/3` e procura no Payload o 3. A resposta: não aparece nos parâmetros de pesquisa; faz parte do caminho. Encontra-o em "Headers" ("Cabeçalhos"), no "Request URL" (endereço do pedido). Na pesquisa anterior, o Payload mostra `sala: A03`.
 
 ### Paragem 4
 
-Registaste a experiência desta fase e explicaste por que o resultado depende do lugar dos dados ou da comparação dos textos.
+Encontraste `sala: A03` no Payload e o 3 no endereço do pedido, nos Headers. O sítio por onde os dados viajam, o caminho ou a pesquisa, decide onde o browser os mostra.
 
 ## Fase 5: o middleware de registo
 
@@ -252,10 +252,10 @@ O middleware de registo ficou antes das rotas e o final depois delas. Repetiste 
 
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "A tabela de contratos HTTP".
 
-1. Escreve no caderno a tabela de contratos HTTP do teu servidor, com uma linha por pedido que ele aceita. Usa as colunas método, caminho, entrada e respostas possíveis, incluindo erros. Se acrescentaste alguma coisa, acrescenta a linha.
+1. Na tua pasta de trabalho de Sistemas de Informação, ao lado da pasta do catálogo, cria um ficheiro de texto chamado `respostas-03.md`. Escreve nele, no editor, a tabela de contratos HTTP do teu servidor, com uma linha por pedido que ele aceita. Usa as colunas método, caminho, entrada e respostas possíveis, incluindo erros. Se acrescentaste alguma coisa, acrescenta a linha.
 2. Verifica cada linha no browser, com o separador Rede aberto, e marca-a como verificada.
-3. Regista três pedidos de detalhe: um válido, outro com parâmetro inválido e outro com recurso inexistente. Para cada um, guarda o endereço, o código e a mensagem.
-4. Volta à tabela de previsões da parte 1 e corrige a lápis o que previste mal. Para cada correção, escreve numa frase o que te enganou.
+3. Faz três pedidos de detalhe: um válido, outro com parâmetro inválido e outro com recurso inexistente. Para cada um, confirma o código no separador Rede e lê a mensagem.
+4. Volta à tabela da parte 1 e confere as tuas previsões com a tabela da paragem 8. Se alguma falhou, descobre o que te enganou.
 
 ### Paragem 8
 
@@ -385,26 +385,17 @@ Confirma o cabeçalho `Content-Type`: esta rota deve enviar HTML com `res.send`.
 
 Há uma crase dentro do HTML, que o JavaScript leu como o fim do texto. Dentro de um texto com crases, o HTML não pode ter crases.
 
-## O que fica no teu caderno
-
-1. A tabela de previsões da parte 1, com as correções da parte 8.
-2. Os resultados das partes 2 e 3, incluindo as experiências do `Number` e do `Sala` maiúsculo, com a explicação.
-3. Os três erros do middleware (partes 5 e 7): a previsão, o que aconteceu e porquê.
-4. A tabela de contratos HTTP do teu servidor, verificada, e os três pedidos da evidência.
-
-O professor vai pedir-te que justifiques o código de estado de um dos três pedidos da evidência. Também te vai pedir que expliques o efeito de retirar `next()` ao middleware de registo.
-
 ## Desafios
 
 1. Acrescenta `GET /equipamentos/salas`, com as salas sem repetições. Decide onde deve ficar para não ser confundida com a rota de detalhe.
-2. Acrescenta a linha dessa rota ao contrato e testa também uma pesquisa sem resultados.
+2. Acrescenta a linha dessa rota ao contrato do `respostas-03.md` e testa também uma pesquisa sem resultados.
 
 ## Antes de terminares
 
 - [ ] O identificador inválido dá 400 e o equipamento inexistente dá 404.
 - [ ] O filtro vazio dá 200 com `[]`.
 - [ ] Repuseste os três erros provocados e repetiste os pedidos anteriores.
-- [ ] O contrato inclui os casos de erro.
+- [ ] O `respostas-03.md` tem a tabela de contratos do teu servidor, com os casos de erro, e verificaste cada linha.
 - [ ] Consegues explicar, por palavras tuas, o percurso de um pedido na fila do Express.
 
 ![Rodapé](../../imagens/rodape.png)

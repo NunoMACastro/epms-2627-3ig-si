@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: cookies e sessões
 
-Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../06-cookies-e-sessoes.md) e de fazeres o [laboratório](../laboratorios/06-cookies-e-sessoes-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos.
+Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../06-cookies-e-sessoes.md) e de fazeres o [laboratório](../laboratorios/06-cookies-e-sessoes-laboratorio.md). Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto; os outros fazem-se no servidor da biblioteca da ficha do tema anterior, com os empréstimos.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -20,7 +20,7 @@ Não é um pedido em curso, como no guia: não se junta nada para confirmar no f
 
 Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
 
-Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o que esperas, e só depois experimenta. Usa uma janela normal e uma anónima para teres duas sessões, e o separador dos cookies do browser para ver o que lá está.
+Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto que escreves no editor, o `respostas-06.md`. Antes de cada resposta, põe o número do exercício e da alínea. Uma correção de código, como a do exercício 6, vai no mesmo ficheiro, num bloco de código. Guarda-o na tua pasta de trabalho de Sistemas de Informação, fora da `biblioteca`. Nos exercícios 3 a 5 e no desafio, cada decisão que a ficha pede justificada fica num comentário no código, junto do que decidiste. Usa uma janela normal e uma anónima para teres duas sessões, e o separador dos cookies do browser para ver o que lá está.
 
 Podes continuar mesmo sem ter tudo o que a ficha anterior pedia. Os exercícios 3 a 5 só precisam do array `livros`, da rota `GET /livros/:id` com a sua página. Precisas também da página inicial com os partials.
 
@@ -61,7 +61,7 @@ Acrescenta a sessão à biblioteca: o `express-session`, o `.env.example` e o `.
 Escreve, ao lado de cada opção do middleware, um comentário com a razão do valor, como no guia. Duas decisões são tuas, e são diferentes das do catálogo:
 
 - o nome do cookie, que não deve dizer que é do catálogo;
-- a expiração. O computador do balcão é partilhado: quanto tempo deve uma sessão esquecida continuar aberta? Escolhe um valor curto e justifica no caderno porque é adequado a esse uso, comparando-o com os 30 minutos do catálogo.
+- a expiração. O computador do balcão é partilhado: quanto tempo deve uma sessão esquecida continuar aberta? Escolhe um valor curto e justifica, no comentário do `maxAge`, porque é adequado a esse uso, comparando-o com os 30 minutos do catálogo.
 
 **Resultado esperado:** sem `.env`, o servidor não arranca; com o segredo, arranca, e nenhuma página cria cookie ainda.
 
@@ -89,7 +89,7 @@ As regras são estas, e cada uma é uma decisão que tens de escrever no código
 - a lista tem, no máximo, três livros;
 - um pedido a um livro que não existe, ou com um identificador inválido, não entra na lista.
 
-Decide também o que guardas na sessão para cada livro: o livro inteiro, ou só o seu `id`? Escreve a razão no caderno. Para mostrares os títulos na página inicial, segue o exemplo do guia: um middleware que põe a lista no `res.locals`.
+Decide também o que guardas na sessão para cada livro: o livro inteiro, ou só o seu `id`? Escreve a razão num comentário, junto da linha que guarda o livro na sessão. Para mostrares os títulos na página inicial, segue o exemplo do guia: um middleware que põe a lista no `res.locals`.
 
 As duas escolhas são válidas se cumprirem as regras do histórico. Se guardares o livro inteiro, usa o `id` para identificar o mesmo livro e justifica a duplicação dos dados, incluindo o risco de a cópia ficar desatualizada. A disponibilidade para fazer um empréstimo continua a ser verificada no array `livros` atual, nunca na cópia guardada na sessão. Não precisas de criar um mecanismo para atualizar os objetos guardados: editar os dados do catálogo não faz parte deste exercício.
 
@@ -97,7 +97,7 @@ As duas escolhas são válidas se cumprirem as regras do histórico. Se guardare
 
 Essa sequência testa a ordem e os repetidos, mas só tem três livros diferentes. Para testares o limite, usa uma cópia de estudo. Acrescenta temporariamente ao array `livros` um quarto livro: `{ id: 4, titulo: "Livro de ensaio", autor: "Autor fictício", disponivel: true }`. Pára apenas o servidor dessa cópia com Ctrl+C e arranca-o novamente com `node --watch --env-file=.env server.js`. A sessão em memória começa vazia.
 
-Nessa cópia, abre os livros 1, 2, 3 e 4, por esta ordem, e volta à página inicial. Prevê que livro deve sair do histórico e verifica o resultado. Faz depois um pedido a `/livros/9`, que continua sem existir, e um a `/livros/abc`, com identificador inválido. Confirma que nenhum deles altera o histórico. Quando terminares, retira o livro de ensaio, repõe os três livros iniciais e pára e arranca novamente o servidor da cópia. O quarto livro serve só para este teste.
+Nessa cópia, os casos são estes. Depois de veres os livros 1, 2, 3 e 4, por esta ordem, a página inicial mostra só os livros 2, 3 e 4, pela ordem que escolheste. O livro 1, o menos recente, saiu. Um pedido a `/livros/9`, que continua sem existir, e um a `/livros/abc`, com identificador inválido, não alteram o histórico. Quando terminares, retira o livro de ensaio, repõe os três livros iniciais e pára e arranca novamente o servidor da cópia. O quarto livro serve só para este teste.
 
 ## Exercício 5: apagar o histórico
 
@@ -105,9 +105,9 @@ Guia: secção "Terminar a sessão".
 
 Na página inicial, por baixo da lista dos vistos, um botão "Apagar o histórico" envia um `POST` para `/historico/limpeza`, que apaga a lista e redireciona para a página inicial.
 
-A decisão: destruir a sessão inteira, com o `req.session.destroy`, ou apagar só a lista dos vistos, com `delete req.session.vistos`? As duas apagam a lista. Pensa no que mais a sessão da biblioteca pode guardar (o desafio desta ficha guarda o número de leitor), e escreve no caderno qual escolheste e porquê.
+A decisão: destruir a sessão inteira, com o `req.session.destroy`, ou apagar só a lista dos vistos, com `delete req.session.vistos`? As duas apagam a lista. Pensa no que mais a sessão da biblioteca pode guardar (o desafio desta ficha guarda o número de leitor). Escreve qual escolheste e porquê num comentário por cima da rota de limpeza.
 
-Se fizeres o desafio, explica também o que aconteceria ao número do último leitor atendido ao destruir a sessão inteira. Confirma que os dados do histórico deixam de estar na sessão: esconder a lista na página ou apagar apenas o cookie não elimina os dados guardados no servidor.
+Se fizeres o desafio, explica também, no mesmo comentário, o que aconteceria ao número do último leitor atendido ao destruir a sessão inteira. Confirma que os dados do histórico deixam de estar na sessão: esconder a lista na página ou apagar apenas o cookie não elimina os dados guardados no servidor.
 
 ## Exercício 6: encontrar os erros
 
@@ -149,11 +149,11 @@ Este exercício é opcional. Faz primeiro os exercícios 1 a 6.
 
 **O leitor lembrado.** Depois de um empréstimo certo, o número de leitor fica guardado na sessão, e o formulário de empréstimo seguinte já o traz preenchido. Implementa-o apenas com números de leitor fictícios. Depois, pensa no computador partilhado do balcão: enquanto a sessão estiver aberta, a funcionária seguinte pode ver o número do último leitor atendido pela funcionária anterior. Trata-se do leitor atendido, não de um número da própria funcionária.
 
-Isto é um problema? O que limita esse problema na tua configuração? Escreve a tua resposta no caderno, e justifica se manterias ou rejeitarias esta funcionalidade. A expiração curta reduz o tempo de exposição, mas não impede que outra pessoa veja o número antes de a sessão terminar. Guardar esse número não verifica a identidade de quem está ao balcão.
+Isto é um problema? O que limita esse problema na tua configuração? Responde num comentário junto da linha que guarda o número de leitor na sessão, e justifica se manterias ou rejeitarias esta funcionalidade. A expiração curta reduz o tempo de exposição, mas não impede que outra pessoa veja o número antes de a sessão terminar. Guardar esse número não verifica a identidade de quem está ao balcão.
 
 ## Critérios de conclusão
 
-- Os exercícios obrigatórios estão resolvidos, com as decisões pedidas por escrito.
+- Os exercícios obrigatórios estão resolvidos: os exercícios 1, 2 e 6 no `respostas-06.md`, e as decisões dos exercícios 3 a 5 em comentários no código.
 - O servidor responde aos casos de teste do enunciado.
 - Cada erro encontrado tem um caso reproduzível e uma explicação da causa.
 - A entrega inclui os ficheiros pedidos e exclui `node_modules` e segredos.
@@ -161,11 +161,11 @@ Isto é um problema? O que limita esse problema na tua configuração? Escreve a
 ## Entrega
 
 
-Entrega as respostas dos exercícios 1, 2 e 6, as decisões dos exercícios 3 a 5, e a pasta da biblioteca: o `server.js`, a pasta `views` e o `.env.example`. Não entregues o `.env` nem a pasta `node_modules`.
+Entrega o `respostas-06.md`, com as respostas dos exercícios 1, 2 e 6. Entrega também a pasta da biblioteca: o `server.js`, com as decisões dos exercícios 3 a 5 nos comentários, a pasta `views` e o `.env.example`. Não entregues o `.env` nem a pasta `node_modules`.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-06.md`:
 
 - O que consigo explicar sem ajuda: porque é que a janela anónima não vê os livros vistos na janela normal, com os cabeçalhos `Set-Cookie` e `Cookie`.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

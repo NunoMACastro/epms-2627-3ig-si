@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: HTTP, rotas e middleware
 
-Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../03-http-rotas-e-middleware.md) e de fazeres o [laboratório](../laboratorios/03-http-rotas-e-middleware-laboratorio.md). Os exercícios 1, 2 e 5 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
+Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../03-http-rotas-e-middleware.md) e de fazeres o [laboratório](../laboratorios/03-http-rotas-e-middleware-laboratorio.md). Os exercícios 1, 2 e 5 respondem-se sem correr código; os outros fazem-se no servidor da biblioteca da ficha do tema anterior.
 
 ## O que precisas de saber
 
@@ -16,7 +16,9 @@ O servidor da biblioteca responde, por agora, à lista dos livros, aos livros di
 
 Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
 
-Nos exercícios em papel, responde antes de experimentar. Nos de computador, escreve primeiro o resultado que esperas, e só depois abre o browser. Usa o separador Rede para confirmar o código de cada resposta.
+As respostas dos exercícios 1, 2 e 5 e a tabela do exercício 7 escrevem-se no editor, no `respostas-03.md` do laboratório. Se ainda não o tens, cria-o na tua pasta de trabalho de Sistemas de Informação. Antes de cada resposta, põe o número do exercício e a letra da alínea.
+
+Nos exercícios 3, 4 e 6, o resultado esperado é a referência: confirma cada resposta no browser, com o separador Rede aberto.
 
 Os exercícios 3, 4 e 6 só precisam do array `livros` e da rota `/`. Podes fazê-los mesmo que ainda não tenhas as outras rotas da ficha anterior.
 
@@ -109,7 +111,7 @@ const registarPedido = (req, res, next) => {
 app.use(registarPedido());
 ```
 
-Responde em papel antes de experimentares.
+Responde no `respostas-03.md`, sem correr o código.
 
 a) Prevê quando corre `registarPedido`: no arranque ou quando chega um pedido? O servidor consegue chegar à instrução que o põe à escuta?
 
@@ -135,7 +137,7 @@ O exercício é obrigatório. A mensagem pode ter outra redação, desde que man
 
 Guia: secção "A tabela de contratos HTTP".
 
-Escreve a tabela de contratos HTTP do servidor da biblioteca, com uma linha por pedido que ele aceita, incluindo as rotas da ficha anterior que tiveres. Verifica cada linha no browser e marca as que verificaste.
+Escreve no `respostas-03.md` a tabela de contratos HTTP do servidor da biblioteca, com uma linha por pedido que ele aceita, incluindo as rotas da ficha anterior que tiveres. Verifica cada linha no browser e marca as que verificaste.
 
 ## Apoio
 
@@ -153,11 +155,11 @@ Acrescenta ao servidor da biblioteca uma rota `/resumo-da-pesquisa` que aceite o
 
 ## Critérios de conclusão
 
-Entrega as respostas dos exercícios 1, 2 e 5, o `server.js` da biblioteca com os exercícios 3, 4 e 6 e a tabela do exercício 7. Não entregues a pasta `node_modules`.
+Entrega o `respostas-03.md`, com os exercícios 1, 2 e 5 e a tabela do exercício 7, e o `server.js` da biblioteca com os exercícios 3, 4 e 6. Não entregues a pasta `node_modules`.
 
 ## Autoavaliação
 
-No fim, responde por escrito:
+No fim, responde no `respostas-03.md`:
 
 - O que consigo explicar sem ajuda: escolhe uma das três regras do middleware e explica-a com um exemplo.
 - O que ainda não percebi bem: uma dúvida concreta, para levar à aula.

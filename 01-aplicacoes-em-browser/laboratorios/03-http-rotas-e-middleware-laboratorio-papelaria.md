@@ -11,7 +11,7 @@ Vais criar `papelaria-api` com oito artigos em memória. O resultado serve de po
 
 | Fase | O que muda | O que funciona no fim |
 | --- | --- | --- |
-| 1 | Prevês os pedidos | Tens uma tabela para comparar |
+| 1 | Prevês os pedidos | Sabes que resposta esperar de cada pedido |
 | 2 | Preparas projeto e lista | A API responde com os oito artigos |
 | 3 | Acrescentas detalhe | A API distingue 200, 400 e 404 |
 | 4 | Acrescentas categoria | A lista pode vir filtrada ou vazia |
@@ -54,14 +54,14 @@ Em todo o laboratório, depois de mudares o `server.js`, o servidor tem de ser r
 1. Confirma que o terminal está na pasta onde estão `server.js` e `package.json`. Usa `pwd` ou, no `cmd` do Windows, `cd` sem argumentos.
 2. Confirma que o teu servidor está ligado e que o endereço usa a mesma porta e `http`.
 3. Guarda a alteração e reinicia o teu processo com Ctrl+C e `node server.js`, ou usa `node --watch server.js`.
-4. Lê o terminal antes de alterar outra linha. Escreve o esperado, o obtido e a hipótese que queres verificar.
+4. Lê o terminal antes de alterar outra linha. Escreve o esperado, o obtido e a hipótese que queres verificar num comentário no fim do `server.js`, para o código não mudar de linha.
 5. Provoca só um erro de cada vez e repõe o código antes da experiência seguinte.
 
 ## Fase 1: prever antes de programar
 
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secções "Três sítios por onde um pedido traz dados" e "Os códigos de estado que o teu código escolhe".
 
-Copia esta tabela para o caderno e preenche as duas últimas colunas com a tua previsão, antes de escreveres qualquer código. Os artigos estão na parte 2: o artigo 2 é a esferográfica azul, e há oito artigos, com os identificadores de 1 a 8. No fim do laboratório voltas a esta tabela.
+Para cada pedido desta tabela, prevê de cabeça onde vêm os dados e que código esperas, antes de escreveres qualquer código. Os artigos estão na parte 2: o artigo 2 é a esferográfica azul, e há oito artigos, com os identificadores de 1 a 8. No fim do laboratório voltas a esta tabela.
 
 | Pedido | Onde vêm os dados | Código que esperas |
 | --- | --- | --- |
@@ -77,7 +77,7 @@ A resposta, depois de fazeres a previsão: o detalhe do identificador 2 dá 200.
 
 ### Paragem 1
 
-Escreveste uma previsão para cada pedido. A fase 8 dá a tabela para a conferires depois de experimentar.
+Tens uma previsão para cada pedido. A fase 8 dá a tabela para a conferires depois de experimentar.
 
 ## Fase 2: o projeto e a lista dos artigos
 
@@ -179,12 +179,12 @@ app.get("/api/artigos/:id", (req, res) => {
 
 Leitura guiada: segue conversão, validação, procura e resposta. O `return` de cada erro impede uma segunda resposta. Aqui os nomes são `artigos` e `artigo`, porque os dados são da papelaria.
 2. Guarda e abre, um de cada vez: `/api/artigos/2`, `/api/artigos/abc`, `/api/artigos/0`, `/api/artigos/2.5` e `/api/artigos/99`.
-3. Para cada um, regista o código (no separador Rede das ferramentas de programador) e a mensagem.
+3. Para cada um, confirma o código no separador Rede das ferramentas de programador e lê a mensagem.
 
 O que deves ver: 200 com a esferográfica azul; 400 para `abc`, `0` e `2.5`, com a mensagem do identificador; e 404 para o 99, com `Não existe o artigo 99`.
 
 4. Agora uma experiência. Na linha `const id = Number(req.params.id);`, apaga o `Number(` e o `)` correspondente, para ficar `const id = req.params.id;`. Guarda e abre `/api/artigos/2`.
-5. Prevê antes de abrir e regista o resultado. A resposta é 400: sem `Number`, o identificador é o texto `"2"`, e `Number.isInteger("2")` é falso.
+5. Prevê antes de abrir, e depois confirma. A resposta é 400: sem `Number`, o identificador é o texto `"2"`, e `Number.isInteger("2")` é falso.
 6. Repõe o `Number(...)` e confirma que `/api/artigos/2` volta a responder 200.
 
 ### Paragem 3
@@ -216,20 +216,20 @@ Leitura guiada: com uma categoria, `filter` cria uma lista nova com os artigos q
 
 O que deves ver: o caderno, o bloco de notas e a resma de papel, que são os três artigos da categoria Papel. Uma lista vazia, `[]`, com o código 200. Isto acontece porque a papelaria não tem nenhum artigo da categoria Cola. E a lista toda.
 
-3. Prevê o resultado de `/api/artigos?categoria=papel` e só depois abre. A resposta é `[]` com 200: `"papel"` e `"Papel"` são textos diferentes na comparação `===`. Regista a explicação. A pesquisa vazia `?categoria=` devolve todos, porque o texto vazio não entra no `if`.
+3. Prevê o resultado de `/api/artigos?categoria=papel` e só depois abre. A resposta é `[]` com 200: `"papel"` e `"Papel"` são textos diferentes na comparação `===`. A pesquisa vazia `?categoria=` devolve todos, porque o texto vazio não entra no `if`.
 
-Guarda esta experiência no caderno para a continuação prevista em Linguagens de Programação. Quando o professor retomar este percurso em LP, podes comparar a mesma pergunta no MongoDB Atlas, com o filtro `{ categoria: "papel" }`. Antes de a fazeres, lê o que escreveste aqui e faz a previsão.
+Guarda esta experiência para a continuação prevista em Linguagens de Programação. Escreve a explicação do `?categoria=papel` num comentário no fim do `server.js`, com `//` no início de cada linha. Quando o professor retomar este percurso em LP, podes comparar a mesma pergunta no MongoDB Atlas, com o filtro `{ categoria: "papel" }`. Antes de a fazeres, relê o teu comentário e faz a previsão.
 
 ### Paragem 4
 
-Registaste a experiência desta fase e explicaste por que o resultado depende do lugar dos dados ou da comparação dos textos.
+O `server.js` acaba com o teu comentário, que explica porque é que `?categoria=papel` dá `[]` com 200.
 
 ## Fase 5: ver os dados do pedido no browser
 
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "Observar os pedidos no browser".
 
 1. Com o separador Rede aberto, abre `/api/artigos?categoria=Escrita`.
-2. Clica no pedido e abre o separador "Payload" ("Carga", no Chrome em português). Regista o que aparece em "Query String Parameters".
+2. Clica no pedido e abre o separador "Payload" ("Carga", no Chrome em português). Vê o que aparece em "Query String Parameters".
 3. Abre `/api/artigos/3` e procura no Payload o 3. A resposta: está no caminho, que aparece em "Headers" ("Cabeçalhos"), em "Request URL". No pedido anterior, o Payload mostra `categoria: Escrita`.
 
 No Safari, abre "Network" e escolhe o pedido. No separador "Headers", a secção "Summary" mostra a URL e o código; "Query String Parameters" mostra `categoria: Escrita`. No pedido a `/api/artigos/3`, o 3 faz parte da URL e não aparece como parâmetro de pesquisa.
@@ -271,7 +271,7 @@ Depois de repores o `next()`, `/api/artigos` volta a responder com a lista. O pe
 
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "O middleware", com as três regras, e exemplo guiado, passo 5.
 
-1. Antes de acrescentares o middleware final, abre `/nao-existe` e regista o código e o que o browser mostra.
+1. Antes de acrescentares o middleware final, abre `/nao-existe` e vê o código e o que o browser mostra.
 
 O que deves ver: o código 404 e uma pequena página com o texto `Cannot GET /nao-existe`. Nenhuma rota respondeu, e o Express respondeu por ti, com a sua resposta de omissão, que é uma página HTML. Numa API, que responde sempre com dados, essa página é um problema: um programa que esteja à espera de JSON não a sabe ler.
 
@@ -304,10 +304,10 @@ O middleware de registo ficou antes das rotas e o final depois delas. Repetiste 
 
 Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "A tabela de contratos HTTP".
 
-1. Escreve no caderno a tabela de contratos HTTP da tua API, com uma linha por pedido que ela aceita, e mais uma para o que acontece a qualquer outro pedido. Em cada linha, todas as respostas possíveis, incluindo as de erro, com o código e o corpo.
+1. Na tua pasta de trabalho de Sistemas de Informação, fora da pasta `papelaria-api`, cria um ficheiro de texto chamado `respostas-03.md`. Escreve nele, no editor, a tabela de contratos HTTP da tua API. Põe uma linha por pedido que ela aceita, e mais uma para o que acontece a qualquer outro pedido. Em cada linha, todas as respostas possíveis, incluindo as de erro, com o código e o corpo.
 2. Verifica cada linha no browser, com o separador Rede aberto, e marca-a como verificada.
-3. Regista três pedidos de detalhe: um válido, outro com parâmetro inválido e outro com recurso inexistente. Para cada um, guarda o endereço, o código e a mensagem.
-4. Volta à tabela de previsões da parte 1 e corrige a lápis o que previste mal. Para cada correção, escreve numa frase o que te enganou.
+3. Faz três pedidos de detalhe: um válido, outro com parâmetro inválido e outro com recurso inexistente. Para cada um, confirma o código no separador Rede e lê a mensagem.
+4. Volta à tabela da parte 1 e confere as tuas previsões com o contrato da paragem 8. Se alguma falhou, descobre o que te enganou.
 
 Guarda a tabela. Em Linguagens de Programação, no tema API Express e contratos, vais escrever o contrato desta API antes de lhe acrescentares rotas novas. E a tua tabela é o ponto de partida.
 
@@ -424,26 +424,18 @@ Uma rota respondeu duas vezes: falta um `return` depois de uma resposta de erro.
 
 Confirma primeiro se o middleware final está acima das rotas, como na experiência da fase 7. Depois compara o caminho pedido com o da rota. Pode estar `/artigos` onde devia estar `/api/artigos`. Compara letra a letra o caminho do `app.get` com o endereço.
 
-## O que fica no teu caderno
-
-1. A tabela de previsões da parte 1, com as correções da parte 8.
-2. Os resultados das partes 3 e 4, incluindo as experiências do `Number` e da categoria em minúsculas, com a explicação.
-3. Os três erros do middleware (partes 6 e 7): a previsão, o que aconteceu e porquê.
-4. A tabela de contratos HTTP da tua API, verificada, e os três pedidos da evidência.
-
-O professor vai pedir-te que justifiques o código de estado de um dos três pedidos da evidência. Também te vai pedir que expliques o efeito de retirar `next()` ao middleware de registo.
-
 ## Desafios
 
 1. Acrescenta uma rota de caminho fixo `/api/artigos/sem-stock` que devolva os artigos com stock zero. Decide a sua posição antes de a experimentar.
-2. Acrescenta a rota ao contrato e confirma que o detalhe do artigo 2 continua a responder.
+2. Acrescenta a rota ao contrato do `respostas-03.md` e confirma que o detalhe do artigo 2 continua a responder.
 
 ## Antes de terminares
 
 - [ ] A API mantém as mensagens combinadas com LP.
-- [ ] Registaste 200, 400 e 404 e consegues justificar a diferença.
+- [ ] Viste um 200, um 400 e um 404 no separador Rede, e consegues justificar a diferença.
 - [ ] Corrigiste todos os erros provocados e repetiste os pedidos anteriores.
-- [ ] Guardaste a pasta `papelaria-api` e a tabela de contratos.
+- [ ] O `server.js` acaba com o teu comentário sobre a categoria em minúsculas.
+- [ ] Guardaste a pasta `papelaria-api` e o `respostas-03.md`, com a tabela de contratos.
 - [ ] Consegues explicar, por palavras tuas, o que muda entre um parâmetro do caminho e um da pesquisa.
 
 ![Rodapé](../../imagens/rodape.png)
