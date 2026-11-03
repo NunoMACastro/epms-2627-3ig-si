@@ -54,7 +54,7 @@ Precisas do catálogo com sessões do laboratório do tema anterior, a funcionar
 
 Arranca o servidor com `node --watch --env-file=.env server.js`, e mantém o terminal à vista: neste laboratório, o terminal é tão importante como o browser.
 
-Na pasta do catálogo, cria também um ficheiro de texto `respostas-07.md`, que escreves no editor. É para lá que vão as duas evidências do tema, nas fases 3 e 6, e a matriz de falhas, na fase 8. Vai também a resposta sobre os scripts e os endereços, na fase 6. As explicações sobre o código ficam em comentários no próprio `server.js`, junto do código de que falam.
+Na pasta do catálogo, cria também um ficheiro de texto `matriz-de-falhas.md`, que escreves no editor. É para lá que vai a matriz de falhas da fase 8, que lhe dá o nome, e, antes dela, as duas evidências do tema, nas fases 3 e 6. Vai também a resposta sobre os scripts e os endereços, na fase 6. As explicações sobre o código ficam em comentários no próprio `server.js`, junto do código de que falam.
 
 ## Fase 1: prever antes de programar
 
@@ -120,7 +120,7 @@ O middleware de erro recebe quatro parâmetros. Fica depois do código que pode 
 
 1. Acrescenta o middleware de erro da referência de código desta fase, com as três partes, no fim do `server.js`, logo antes do `app.listen`.
 2. Abre `/equipamentos/2`. Observa o código, o título da página e o que o terminal mostra.
-3. Abre o código-fonte da página e procura um caminho de uma pasta do teu computador. É uma das evidências deste tema: escreve no `respostas-07.md` que não há nenhum, e como o confirmaste.
+3. Abre o código-fonte da página e procura um caminho de uma pasta do teu computador. É uma das evidências deste tema: escreve no `matriz-de-falhas.md` que não há nenhum, e como o confirmaste.
 4. O primeiro erro de propósito. Tira o `next` dos parâmetros do middleware de erro, para ficar `(erro, req, res)`. Guarda e abre `/equipamentos/2`. Prevê primeiro.
 
 O que deves ver: a página do Express outra vez, com o stack trace. Com três parâmetros, o Express já não o reconhece como um middleware de erro.
@@ -267,14 +267,14 @@ Confirma os resultados descritos antes de continuares. Se houver diferença, esc
 O escaping do HTML depende do contexto. No catálogo, os valores recebidos entram no texto de elementos HTML ou em atributos de texto com aspas. Os casos seguintes mostram porque esta regra não se estende aos scripts nem aos endereços. Faz estas experiências apenas na tua cópia local, com os valores fictícios indicados. No fim, repõe as alterações pedidas.
 
 
-1. A injeção guardada. Faz um pedido e confirma-o com o nome `<script>alert(1)</script>`. Abre a lista das reservas, e depois o código-fonte dela. Observa como o nome aparece no ecrã e como aparece no código-fonte. É a outra evidência deste tema: escreve no `respostas-07.md` que o HTML inserido foi apresentado como texto.
+1. A injeção guardada. Faz um pedido e confirma-o com o nome `<script>alert(1)</script>`. Abre a lista das reservas, e depois o código-fonte dela. Observa como o nome aparece no ecrã e como aparece no código-fonte. É a outra evidência deste tema: escreve no `matriz-de-falhas.md` que o HTML inserido foi apresentado como texto.
 2. Agora o atributo sem aspas. No `views/pedido.ejs`, no campo do nome da confirmação, tira as aspas do `value`, para ficar `value=<%= valorNome %>`, e tira também o `maxlength="40"`. Guarda.
 3. Junta um equipamento ao pedido. Na confirmação, escreve no nome exatamente `x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`, que tem mais de 40 carateres, e envia. Prevê primeiro.
 
 O que deves ver: o pedido volta com a mensagem do nome comprido. E o browser mostra uma janela com "1". No código-fonte, o campo ficou `value=x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`: o espaço acabou o valor. O `autofocus` e o `onfocus` passaram a ser atributos do campo, que correram um script quando o campo ganhou o foco. O `<%=` não mudou nada. Isto acontece porque o valor não tinha nenhum carácter de HTML.
 
 4. Repõe as aspas. E só as aspas. E guarda. Recarrega a página do pedido, escreve outra vez o mesmo nome e envia. Confirma que agora o nome aparece no campo como texto, sem janela nenhuma. Só depois repõe o `maxlength="40"` e guarda. A ordem conta: com o `maxlength` reposto, o browser não te deixa escrever mais de 40 carateres, o nome cortado passa a ser válido. O pedido é confirmado, em vez de voltar ao formulário.
-5. Lê nesta fase as tabelas do `<script>` e do `href`. No `respostas-07.md`, escreve numa frase cada porque é que o escaping também não protege esses dois sítios.
+5. Lê nesta fase as tabelas do `<script>` e do `href`. No `matriz-de-falhas.md`, escreve numa frase cada porque é que o escaping também não protege esses dois sítios.
 
 
 
@@ -540,9 +540,9 @@ A matriz junta casos reproduzíveis e resultados conferidos. Outra pessoa deve c
 Em cada linha, indica o método e o endereço exatos, os dados enviados e o estado inicial necessário. Para isolar uma falha diferente do CSRF num `POST`, usa uma sessão e um token válidos. Sem eles, o pedido pode ser recusado antes de chegar à causa que queres observar.
 
 
-1. Faz a matriz do teu servidor no `respostas-07.md`. Copia para lá a tabela da referência de código desta fase, só com as colunas da falha e de como se provoca. Provoca cada falha no teu servidor e preenche as outras três colunas com o que viste, e não com o que o guia diz. Se alguma linha não der o mesmo que o guia, escreve a diferença: é aí que está o que tens de corrigir.
+1. Faz a matriz do teu servidor no `matriz-de-falhas.md`. Copia para lá a tabela da referência de código desta fase, só com as colunas da falha e de como se provoca. Provoca cada falha no teu servidor e preenche as outras três colunas com o que viste, e não com o que o guia diz. Se alguma linha não der o mesmo que o guia, escreve a diferença: é aí que está o que tens de corrigir.
 2. Acrescenta à matriz uma falha que o guia não tem, do teu servidor, com a forma de a provocar.
-3. **Revisão de um colega.** Troca de computador com um colega. Escolhe três linhas da matriz dele, incluindo a que ele acrescentou, e reproduz cada uma no servidor dele, seguindo só o que ele escreveu na coluna "como se provoca". Para cada linha, escreve no `respostas-07.md` dele, por baixo da matriz, se conseguiste reproduzir a falha e se o resultado foi o que ele escreveu. Uma linha que não se consegue reproduzir com o que lá está escrito não é evidência: devolve-a, com a razão escrita.
+3. **Revisão de um colega.** Troca de computador com um colega. Escolhe três linhas da matriz dele, incluindo a que ele acrescentou, e reproduz cada uma no servidor dele, seguindo só o que ele escreveu na coluna "como se provoca". Para cada linha, escreve no `matriz-de-falhas.md` dele, por baixo da matriz, se conseguiste reproduzir a falha e se o resultado foi o que ele escreveu. Uma linha que não se consegue reproduzir com o que lá está escrito não é evidência: devolve-a, com a razão escrita.
 4. Volta às seis situações da parte 1 e encontra cada uma na tua matriz. Confere se o que previste de cabeça bate com o que viste.
 
 
@@ -1277,9 +1277,9 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 ## Antes de terminares
 
 - [ ] Desfizeste os erros provocados e confirmaste o catálogo a funcionar.
-- [ ] O `respostas-07.md` tem a evidência da página de erro sem stack trace (parte 3) e a do HTML inserido apresentado como texto (parte 6).
-- [ ] O `respostas-07.md` tem a frase sobre o `<script>` e a frase sobre o `href` (parte 6).
-- [ ] O `respostas-07.md` tem a matriz de falhas do teu servidor, com a linha que acrescentaste, e a revisão do colega por baixo dela (parte 8).
+- [ ] O `matriz-de-falhas.md` tem a evidência da página de erro sem stack trace (parte 3) e a do HTML inserido apresentado como texto (parte 6).
+- [ ] O `matriz-de-falhas.md` tem a frase sobre o `<script>` e a frase sobre o `href` (parte 6).
+- [ ] O `matriz-de-falhas.md` tem a matriz de falhas do teu servidor, com a linha que acrescentaste, e a revisão do colega por baixo dela (parte 8).
 - [ ] O `server.js` tem o comentário sobre a troca do segredo, junto da verificação do tamanho (parte 5).
 - [ ] O `server.js` tem o comentário sobre o token, junto do middleware que o verifica (parte 7).
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.

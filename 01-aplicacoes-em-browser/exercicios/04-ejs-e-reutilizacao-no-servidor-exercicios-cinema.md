@@ -26,7 +26,7 @@ Os nomes da ficha são obrigatórios: a pasta `cinema-da-escola`, a base `cinema
 
 No browser, confirma o código de cada resposta no separador Rede das ferramentas de programador. Na maior parte dos browsers, as ferramentas abrem-se com F12, ou com Cmd+Option+I no Mac.
 
-As perguntas marcadas com "No `respostas-04.md`" respondem-se por escrito, num ficheiro de texto com esse nome, na raiz da pasta `cinema-da-escola`. Escreve-o no editor, com o número do exercício antes de cada resposta. Entrega-se com o projeto.
+As perguntas marcadas com "No `respostas-cinema.md`" respondem-se por escrito, num ficheiro de texto com esse nome, na raiz da pasta `cinema-da-escola`. Escreve-o no editor, com o número do exercício antes de cada resposta. Entrega-se com o projeto.
 
 ## O cenário
 
@@ -64,7 +64,7 @@ cinema-da-escola/
     └── cartaz.ejs
 ```
 
-O `respostas-04.md`, com as tuas respostas escritas, fica também na raiz do projeto.
+O `respostas-cinema.md`, com as tuas respostas escritas, fica também na raiz do projeto.
 
 ## Exercício 1: o projeto, de raiz
 
@@ -281,7 +281,7 @@ A última linha fecha a ligação. Uma ligação aberta mantém o programa à es
 
 Antes de a API ir buscar filmes, descobre no Atlas o que ela vai ter de devolver. Neste exercício trabalhas sozinho.
 
-Na barra de consultas da coleção `filmes`, escreve um filtro para cada pergunta. No `respostas-04.md`, regista o filtro e os títulos dos filmes que aparecem.
+Na barra de consultas da coleção `filmes`, escreve um filtro para cada pergunta. No `respostas-cinema.md`, regista o filtro e os títulos dos filmes que aparecem.
 
 1. Que filmes são de animação?
 2. Que filmes pode ver um aluno de 12 anos?
@@ -426,7 +426,7 @@ Agora, um erro de propósito. Apaga as quatro linhas do `if` que verifica a idad
 
 O que deves ver: o código 500 e uma página de erro do Express que fala de `CastError` e de `Cast to Number failed for value "NaN"`. O `Number("doze")` não é um número, e o Mongoose recusou-o ao preparar a consulta. O servidor continua ligado, mas o utilizador recebe uma página com pormenores internos, em vez de uma mensagem clara. Repõe as quatro linhas e grava.
 
-No `respostas-04.md`: compara o filtro que escreveste no Atlas para a pergunta 3 do exercício 3 com o que o servidor passa ao Mongoose no pedido `/api/filmes?genero=Ficção científica&idade=12`. O que é igual, e de onde vem cada valor no servidor?
+No `respostas-cinema.md`: compara o filtro que escreveste no Atlas para a pergunta 3 do exercício 3 com o que o servidor passa ao Mongoose no pedido `/api/filmes?genero=Ficção científica&idade=12`. O que é igual, e de onde vem cada valor no servidor?
 
 ### Passo 3: um filme de cada vez
 
@@ -653,9 +653,9 @@ app.listen(PORTA, (erro) => {
    </ul>
    ```
 
-2. No `respostas-04.md`: que partes do teu modelo não aparecem no código-fonte, e porquê?
+2. No `respostas-cinema.md`: que partes do teu modelo não aparecem no código-fonte, e porquê?
 3. Experimenta `/cartaz` e `/cartaz?genero=Musical`. Com `Musical`, a página mostra só o título, "Cartaz: Musical", porque a lista vazia não tem linhas.
-4. No `respostas-04.md`: no teu código, que linha decide que filmes aparecem no cartaz, e que linha decide como cada filme aparece? Diz, para cada uma, se está na rota ou no modelo.
+4. No `respostas-cinema.md`: no teu código, que linha decide que filmes aparecem no cartaz, e que linha decide como cada filme aparece? Diz, para cada uma, se está na rota ou no modelo.
 
 ## Exercício 6: a duração máxima, sozinho
 
@@ -671,7 +671,7 @@ O clube quer saber que filmes cabem numa tarde curta. Acrescenta à lista da API
 | `/api/filmes?genero=Aventura&duracaoMaxima=110` | 200 | Os filmes de aventura que duram 110 minutos ou menos |
 | `/api/filmes?genero=Ficção científica&idade=12&duracaoMaxima=120` | 200 | Os filmes que cumprem as três condições |
 
-No `respostas-04.md`, escreve que filmes esperas em cada pedido de 200.
+No `respostas-cinema.md`, escreve que filmes esperas em cada pedido de 200.
 
 ## Exercício 7: o cartaz para uma idade, sozinho
 
@@ -712,20 +712,20 @@ Quando o pedido funcionar, confirma que `/api/filmes/3` continua a responder com
 ## Critérios de conclusão
 
 - O seed põe os oito filmes na base `cinema`, e pode correr-se mais de uma vez sem repetir filmes.
-- O `respostas-04.md` tem os três filtros do exercício 3, com os títulos de cada resposta, e as respostas às perguntas dos exercícios 4 e 5.
+- O `respostas-cinema.md` tem os três filtros do exercício 3, com os títulos de cada resposta, e as respostas às perguntas dos exercícios 4 e 5.
 - A API responde a todos os pedidos das tabelas dos exercícios 4 e 6, com os códigos e os textos certos.
 - O cartaz responde a todos os pedidos da tabela do exercício 7, com o título e os filmes certos.
 - A cadeia de ligação está só no `.env`, e o `.env` não sai do teu computador.
 
 ## Entrega
 
-Entregas, pelo meio e no prazo que o professor indicar, a pasta `cinema-da-escola`, com as respostas escritas no `respostas-04.md`. A pasta leva o `src`, com o seed, a pasta `views`, o `respostas-04.md`, o `package.json`, o `package-lock.json`, o `.env.example` e o `.gitignore`.
+Entregas, pelo meio e no prazo que o professor indicar, a pasta `cinema-da-escola`, com as respostas escritas no `respostas-cinema.md`. A pasta leva o `src`, com o seed, a pasta `views`, o `respostas-cinema.md`, o `package.json`, o `package-lock.json`, o `.env.example` e o `.gitignore`.
 
 Não entregues a pasta `node_modules` nem o ficheiro `.env`. O `.env` tem a palavra-passe da tua base de dados, e quem a tiver entra nos teus dados.
 
 ## Autoavaliação
 
-No fim, responde no `respostas-04.md`:
+No fim, responde no `respostas-cinema.md`:
 
 1. Nos exercícios 6 e 7, o que te deu mais trabalho, e o que descobriste para o resolver?
 2. Consegues explicar, sem o código à frente, o caminho do pedido `/cartaz?genero=Aventura`, do browser à rota, da rota ao Atlas, e de volta ao browser?
