@@ -2,7 +2,7 @@
 
 # HTTP, rotas e middleware
 
-Módulo Aplicações baseadas em browsers. Vais ler os dados que um pedido traz e perceber como o servidor escolhe a resposta. Também vais acompanhar a fila de funções do Express. Para praticar, há o [laboratório](03-http-rotas-e-middleware-laboratorio.md) e a [ficha de exercícios](03-http-rotas-e-middleware-exercicios.md).
+Módulo Aplicações baseadas em browsers. Vais ler os dados que um pedido traz e perceber como o servidor escolhe a resposta. Também vais acompanhar a fila de funções do Express. Para praticar, há o [laboratório](laboratorios/03-http-rotas-e-middleware-laboratorio.md) e a [ficha de exercícios](exercicios/03-http-rotas-e-middleware-exercicios.md).
 
 ## Neste guia
 
@@ -39,7 +39,7 @@ No fim deste guia deves conseguir:
 ## O que já sabes e vais usar
 
 - Pedido e resposta HTTP, endereços, métodos e códigos de estado: [Do pedido à resposta](01-do-pedido-a-resposta.md).
-- Separador Rede das ferramentas de programador: [laboratório Do pedido à resposta](01-do-pedido-a-resposta-laboratorio.md).
+- Separador Rede das ferramentas de programador: [laboratório Do pedido à resposta](laboratorios/01-do-pedido-a-resposta-laboratorio.md).
 - Aplicação Express, rotas, `req`, `res`, respostas e arranque: [Primeiro servidor](02-primeiro-servidor.md).
 - Arrays de objetos, funções seta, `Number`, `find`, `filter` e `return`, de JavaScript dos anos anteriores.
 
@@ -542,6 +542,6 @@ No tema 4, EJS e reutilização no servidor, o servidor passa a gerar páginas H
 
 Depois do EJS, o tema dos formulários continua o trabalho com o corpo do pedido. O formulário envia por `POST` e um middleware põe os campos em `req.body`. O servidor valida os dados. Vais também distinguir o código 201 do redirecionamento depois de uma operação bem sucedida. É aí que o catálogo ganha as reservas.
 
-Antes de passares ao tema 4, faz o [laboratório](03-http-rotas-e-middleware-laboratorio.md), em que acrescentas tudo isto ao teu catálogo e provocas os erros de ordem do middleware. E a [ficha](03-http-rotas-e-middleware-exercicios.md), com o servidor da biblioteca.
+Antes de passares ao tema 4, faz o [laboratório](laboratorios/03-http-rotas-e-middleware-laboratorio.md), em que acrescentas tudo isto ao teu catálogo e provocas os erros de ordem do middleware. E a [ficha](exercicios/03-http-rotas-e-middleware-exercicios.md), com o servidor da biblioteca.
 
 ![Rodapé](../imagens/rodape.png)

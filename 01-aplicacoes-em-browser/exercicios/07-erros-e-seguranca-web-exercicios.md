@@ -1,14 +1,14 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: erros e segurança web
 
-Sétimo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](07-erros-e-seguranca-web.md) e de fazeres o [laboratório](07-erros-e-seguranca-web-laboratorio.md). Os exercícios 1, 2, 5 e 6 fazem-se em papel. Os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos e os livros vistos recentemente.
+Sétimo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../07-erros-e-seguranca-web.md) e de fazeres o [laboratório](../laboratorios/07-erros-e-seguranca-web-laboratorio.md). Os exercícios 1, 2, 5 e 6 fazem-se em papel. Os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos e os livros vistos recentemente.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](07-erros-e-seguranca-web.md) e o [laboratório](07-erros-e-seguranca-web-laboratorio.md) deste tema.
+O [guia](../07-erros-e-seguranca-web.md) e o [laboratório](../laboratorios/07-erros-e-seguranca-web-laboratorio.md) deste tema.
 
 ## Objetivo e contexto
 
@@ -196,4 +196,4 @@ No fim, responde por escrito:
 
 As resoluções são trabalhadas na aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

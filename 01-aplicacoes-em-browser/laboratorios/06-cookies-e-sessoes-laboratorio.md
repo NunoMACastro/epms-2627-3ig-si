@@ -1,4 +1,4 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: Cookies e sessões
 
@@ -6,7 +6,7 @@ Laboratório do sexto tema do módulo Aplicações baseadas em browsers. Partes 
 
 As experiências fazem-se no teu servidor local, com dados inventados e apenas com os cookies das sessões que criaste para este trabalho. Na confirmação, usa também um nome fictício. O nome é um texto associado às reservas, não uma verificação de quem está a usar o catálogo.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](06-cookies-e-sessoes.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../06-cookies-e-sessoes.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
 
 ## O que vais construir
 
@@ -55,7 +55,7 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## Preparar o projeto
 
-Precisas do catálogo com formulários do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela. Se usares o apoio sem internet em Docker, segue a instalação preparada pelo professor. Usa o par de `package.json` e `package-lock.json` indicado para este tema, em vez de instalar a partir da internet. O código de partida continua a ser o catálogo com formulários; ter a dependência já instalada não acrescenta as rotas nem as páginas de sessões.
+Precisas do catálogo com formulários do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-formularios](../../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela. Se usares o apoio sem internet em Docker, segue a instalação preparada pelo professor. Usa o par de `package.json` e `package-lock.json` indicado para este tema, em vez de instalar a partir da internet. O código de partida continua a ser o catálogo com formulários; ter a dependência já instalada não acrescenta as rotas nem as páginas de sessões.
 
 Vais precisar de dois "browsers" diferentes no mesmo computador. A forma mais simples é uma janela normal e uma janela anónima do mesmo browser (no Chrome, Ctrl+Shift+N; no Mac, Cmd+Shift+N): têm cookies separados. Duas janelas normais não servem, porque partilham os cookies.
 
@@ -1478,4 +1478,4 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 - [ ] Guardaste as previsões, os resultados e as explicações pedidas.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

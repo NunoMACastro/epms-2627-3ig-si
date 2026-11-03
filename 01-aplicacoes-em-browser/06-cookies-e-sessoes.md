@@ -2,7 +2,7 @@
 
 # Cookies e sessões
 
-Módulo Aplicações baseadas em browsers. Este guia explica como guardar um pedido separado para cada browser numa sessão. Para praticar, tens o [laboratório](06-cookies-e-sessoes-laboratorio.md) e a [ficha de exercícios](06-cookies-e-sessoes-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como guardar um pedido separado para cada browser numa sessão. Para praticar, tens o [laboratório](laboratorios/06-cookies-e-sessoes-laboratorio.md) e a [ficha de exercícios](exercicios/06-cookies-e-sessoes-exercicios.md).
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -1182,7 +1182,7 @@ A página no ecrã foi construída antes da mudança. Recarrega-a: o número vem
 
 ## O que vem a seguir
 
-Faz o [laboratório](06-cookies-e-sessoes-laboratorio.md) e depois a [ficha de exercícios](06-cookies-e-sessoes-exercicios.md).
+Faz o [laboratório](laboratorios/06-cookies-e-sessoes-laboratorio.md) e depois a [ficha de exercícios](exercicios/06-cookies-e-sessoes-exercicios.md).
 
 O próximo tema é Erros e segurança web. As páginas de erro do catálogo dizem pouco, de propósito. Mas a página de erro do próprio Express, a dos erros 500, mostra o caminho dos ficheiros e o código: o tema trata disso. Trata também dos segredos, dos registos no terminal, do escaping em mais sítios do que o conteúdo e os atributos. Do CSRF, a defesa que falta aos formulários que mudam a sessão. É o último tema antes da integração do módulo, em que o catálogo junta tudo o que foi feito até aqui.
 

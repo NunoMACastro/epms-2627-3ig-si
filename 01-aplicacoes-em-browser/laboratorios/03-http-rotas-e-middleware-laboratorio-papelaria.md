@@ -1,8 +1,8 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: HTTP, rotas e middleware na papelaria
 
-Laboratório do tema HTTP, rotas e middleware na API da papelaria, em articulação com Linguagens de Programação. Vais construir a API num só ficheiro e observar os mesmos mecanismos do catálogo. Se o professor indicar este percurso, substitui o laboratório do catálogo. Avança ao teu ritmo. O [guia](03-http-rotas-e-middleware.md) tem a teoria completa.
+Laboratório do tema HTTP, rotas e middleware na API da papelaria, em articulação com Linguagens de Programação. Vais construir a API num só ficheiro e observar os mesmos mecanismos do catálogo. Se o professor indicar este percurso, substitui o laboratório do catálogo. Avança ao teu ritmo. O [guia](../03-http-rotas-e-middleware.md) tem a teoria completa.
 
 
 ## O que vais construir
@@ -59,7 +59,7 @@ Em todo o laboratório, depois de mudares o `server.js`, o servidor tem de ser r
 
 ## Fase 1: prever antes de programar
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secções "Três sítios por onde um pedido traz dados" e "Os códigos de estado que o teu código escolhe".
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secções "Três sítios por onde um pedido traz dados" e "Os códigos de estado que o teu código escolhe".
 
 Copia esta tabela para o caderno e preenche as duas últimas colunas com a tua previsão, antes de escreveres qualquer código. Os artigos estão na parte 2: o artigo 2 é a esferográfica azul, e há oito artigos, com os identificadores de 1 a 8. No fim do laboratório voltas a esta tabela.
 
@@ -81,7 +81,7 @@ Escreveste uma previsão para cada pedido. A fase 8 dá a tabela para a conferir
 
 ## Fase 2: o projeto e a lista dos artigos
 
-Um projeto Node reúne os seus ficheiros e dependências numa pasta. O npm prepara essa pasta e instala o Express, que vai receber pedidos. O `"type": "module"` permite usar `import`. A leitura complementar está no [guia Primeiro servidor](02-primeiro-servidor.md).
+Um projeto Node reúne os seus ficheiros e dependências numa pasta. O npm prepara essa pasta e instala o Express, que vai receber pedidos. O `"type": "module"` permite usar `import`. A leitura complementar está no [guia Primeiro servidor](../02-primeiro-servidor.md).
 
 1. Na tua pasta de trabalho, cria a pasta do projeto e instala o Express:
 
@@ -151,7 +151,7 @@ O que deves ver: a lista dos oito artigos, em JSON. Se o terminal mostrar um err
 
 ## Fase 3: a rota de detalhe
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), exemplo guiado, passo 1.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), exemplo guiado, passo 1.
 
 Uma rota com `:id` lê um valor do caminho. Converte-se para número e valida-se antes de procurar. Um valor inválido recebe 400; um identificador válido sem artigo recebe 404.
 
@@ -193,7 +193,7 @@ O detalhe válido responde 200, o identificador inválido responde 400 e o inexi
 
 ## Fase 4: o filtro por categoria
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), exemplo guiado, passo 2.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), exemplo guiado, passo 2.
 
 A pesquisa depois do `?` afina a lista sem mudar a rota. Guarda-se numa variável própria. Não se escreve de volta em `req.query`.
 
@@ -226,7 +226,7 @@ Registaste a experiência desta fase e explicaste por que o resultado depende do
 
 ## Fase 5: ver os dados do pedido no browser
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "Observar os pedidos no browser".
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "Observar os pedidos no browser".
 
 1. Com o separador Rede aberto, abre `/api/artigos?categoria=Escrita`.
 2. Clica no pedido e abre o separador "Payload" ("Carga", no Chrome em português). Regista o que aparece em "Query String Parameters".
@@ -240,7 +240,7 @@ Consegues indicar o caminho, a pesquisa e o código da resposta observada nesta 
 
 ## Fase 6: o middleware de registo
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "O middleware" e exemplo guiado, passo 3.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "O middleware" e exemplo guiado, passo 3.
 
 O middleware escreve uma mensagem sem responder. Chama `next()` para a rota poder continuar a tratar o pedido.
 
@@ -269,7 +269,7 @@ Depois de repores o `next()`, `/api/artigos` volta a responder com a lista. O pe
 
 ## Fase 7: o middleware final e a ordem da fila
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "O middleware", com as três regras, e exemplo guiado, passo 5.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "O middleware", com as três regras, e exemplo guiado, passo 5.
 
 1. Antes de acrescentares o middleware final, abre `/nao-existe` e regista o código e o que o browser mostra.
 
@@ -302,7 +302,7 @@ O middleware de registo ficou antes das rotas e o final depois delas. Repetiste 
 
 ## Fase 8: a tabela de contratos e a evidência
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "A tabela de contratos HTTP".
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "A tabela de contratos HTTP".
 
 1. Escreve no caderno a tabela de contratos HTTP da tua API, com uma linha por pedido que ela aceita, e mais uma para o que acontece a qualquer outro pedido. Em cada linha, todas as respostas possíveis, incluindo as de erro, com o código e o corpo.
 2. Verifica cada linha no browser, com o separador Rede aberto, e marca-a como verificada.
@@ -446,4 +446,4 @@ O professor vai pedir-te que justifiques o código de estado de um dos três ped
 - [ ] Guardaste a pasta `papelaria-api` e a tabela de contratos.
 - [ ] Consegues explicar, por palavras tuas, o que muda entre um parâmetro do caminho e um da pesquisa.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

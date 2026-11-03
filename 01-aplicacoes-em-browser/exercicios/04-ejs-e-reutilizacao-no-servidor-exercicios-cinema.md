@@ -1,4 +1,4 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: EJS e reutilização no servidor, no cinema da escola
 
@@ -14,7 +14,7 @@ Não precisas de nenhum projeto anterior: começas numa pasta vazia. Precisas de
 - a tua conta no MongoDB Atlas, com um cluster, um utilizador da base de dados com a sua palavra-passe e o endereço IP do teu computador autorizado;
 - internet, porque a base de dados está no Atlas.
 
-Se ainda não tens a conta, o cluster ou o utilizador, a fase 1 do [laboratório do Atlas de LP](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas-laboratorio.md) mostra como os criar. Se quiseres rever a teoria, tens os guias dos temas [03](03-http-rotas-e-middleware.md) e [04](04-ejs-e-reutilizacao-no-servidor.md) de Sistemas de Informação.
+Se ainda não tens a conta, o cluster ou o utilizador, a fase 1 do [laboratório do Atlas de LP](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas-laboratorio.md) mostra como os criar. Se quiseres rever a teoria, tens os guias dos temas [03](../03-http-rotas-e-middleware.md) e [04](../04-ejs-e-reutilizacao-no-servidor.md) de Sistemas de Informação.
 
 ## Como trabalhar
 
@@ -729,4 +729,4 @@ No fim, responde por escrito:
 2. Consegues explicar, sem o código à frente, o caminho do pedido `/cartaz?genero=Aventura`, do browser à rota, da rota ao Atlas, e de volta ao browser?
 3. O que ainda não percebeste bem? Escreve uma dúvida concreta, para levares à aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

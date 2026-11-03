@@ -1,8 +1,8 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: Primeiro servidor
 
-Laboratório do tema Primeiro servidor. Vais construir um catálogo com duas rotas e um registo de arranque. Depois provocas quatro erros, um de cada vez, para aprenderes a lê-los e a corrigir a causa. Avança ao teu ritmo. O [guia](02-primeiro-servidor.md) tem a teoria completa.
+Laboratório do tema Primeiro servidor. Vais construir um catálogo com duas rotas e um registo de arranque. Depois provocas quatro erros, um de cada vez, para aprenderes a lê-los e a corrigir a causa. Avança ao teu ritmo. O [guia](../02-primeiro-servidor.md) tem a teoria completa.
 
 
 ## O que vais construir
@@ -64,7 +64,7 @@ Ao longo do laboratório vais preencher um **registo de arranque**: uma pequena 
 
 ## Fase 1: verificar as ferramentas
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), secção "O Node.js: JavaScript fora do browser".
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "O Node.js: JavaScript fora do browser".
 
 1. No Visual Studio Code, abre o menu "Terminal" e escolhe "Novo Terminal". Também podes abrir o terminal do sistema. Surge uma linha onde podes escrever comandos.
 Os nomes dos menus são os que deves procurar; se a tradução do teu editor diferir, pede ajuda ao professor.
@@ -81,7 +81,7 @@ Registaste duas versões. Se o Node ou o npm não forem encontrados, resolve iss
 
 ## Fase 2: um programa que acaba
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), secção "Primeiro contacto".
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "Primeiro contacto".
 
 1. Cria uma pasta de trabalho para as aulas de Sistemas de Informação, por exemplo `si`, num sítio teu, como os Documentos. Não a cries dentro do repositório dos materiais.
 2. Abre essa pasta no editor. No explorador de ficheiros, cria um ficheiro com o nome `ola.js`. Antes de o correres, prevê: o terminal vai ficar ocupado? Escreve o ficheiro completo:
@@ -105,7 +105,7 @@ O que deves ver: as duas linhas, e o terminal outra vez livre, à espera do coma
 
 ## Fase 3: preparar a pasta do servidor
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), secções "O npm e o ficheiro package.json" e "Módulos ES".
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secções "O npm e o ficheiro package.json" e "Módulos ES".
 
 Se não houver internet, pede ao professor a pasta preparada para os computadores da sala. Contém `package.json`, `package-lock.json` e `node_modules`, ainda sem `server.js`. Copia-a para a tua pasta `si`, com o nome `catalogo-de-equipamentos`, sem substituir trabalho teu. Abre essa pasta no editor e no terminal. Em vez dos passos 1 a 4, confirma o `"type": "module"` e a dependência do Express no `package.json`; depois continua no passo 5. No registo de arranque, escreve que recebeste as dependências preparadas. Os comandos que não executaste ficam por praticar quando houver ligação. Vais escrever o servidor na fase 4.
 
@@ -149,7 +149,7 @@ Pensa antes de continuares: como recrias `node_modules`? A resposta: `npm instal
 
 ## Fase 4: escrever o servidor
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), secção "Exemplo guiado", passos 2 e 3.
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "Exemplo guiado", passos 2 e 3.
 
 Quando chega um pedido, o Express chama a função da rota com dois objetos: `req` e `res`. O `req` contém os dados do pedido, como o método e o caminho. O `res` permite preparar e enviar a resposta ao browser.
 
@@ -208,7 +208,7 @@ Guarda o ficheiro e corre `node server.js`. A mensagem de arranque confirma que 
 
 ## Fase 5: ligar e observar
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), passos 5 a 7 do exemplo guiado.
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), passos 5 a 7 do exemplo guiado.
 
 1. No terminal, na pasta `catalogo-de-equipamentos`, liga o servidor:
 
@@ -233,7 +233,7 @@ A tabela tem 200/HTML, 200/JSON e 404/HTML, por esta ordem.
 
 ## Fase 6: o servidor fala no terminal
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), secção "O que corre onde, agora com código".
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "O que corre onde, agora com código".
 
 1. Dentro da função da rota `/equipamentos`, antes do `res.json`, acrescenta:
 
@@ -259,7 +259,7 @@ Depois do reinício, três pedidos à lista produzem três mensagens no terminal
 
 ## Fase 7: provocar e corrigir erros
 
-Para saber mais: no [guia do tema](02-primeiro-servidor.md), secção "Erros de arranque e como os ler".
+Para saber mais: no [guia do tema](../02-primeiro-servidor.md), secção "Erros de arranque e como os ler".
 
 Esta é a parte que conta como evidência do tema. Em cada erro, faz sempre os mesmos cinco passos, e regista-os no registo de arranque:
 
@@ -381,4 +381,4 @@ O professor vai pedir-te que expliques um dos erros de arranque, dos erros 1 a 3
 - [ ] O registo distingue o arranque de cada pedido.
 - [ ] Consegues explicar, por palavras tuas, por que a função de uma rota não corre no arranque.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

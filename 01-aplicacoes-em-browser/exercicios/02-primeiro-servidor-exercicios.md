@@ -1,12 +1,12 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: Primeiro servidor
 
-Segundo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](02-primeiro-servidor.md) e de fazeres o [laboratório](02-primeiro-servidor-laboratorio.md). Os exercícios 1 e 2 fazem-se em papel; os outros, no computador.
+Segundo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../02-primeiro-servidor.md) e de fazeres o [laboratório](../laboratorios/02-primeiro-servidor-laboratorio.md). Os exercícios 1 e 2 fazem-se em papel; os outros, no computador.
 
 ## O que precisas de saber
 
-O [guia do tema](02-primeiro-servidor.md) e o [laboratório](02-primeiro-servidor-laboratorio.md).
+O [guia do tema](../02-primeiro-servidor.md) e o [laboratório](../laboratorios/02-primeiro-servidor-laboratorio.md).
 
 ## O contexto desta ficha
 
@@ -225,4 +225,4 @@ No fim, responde por escrito:
 
 As resoluções são trabalhadas na aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

@@ -1,10 +1,10 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: Formulários e validação
 
 Laboratório do quinto tema do módulo Aplicações baseadas em browsers. Partes do catálogo com páginas do tema anterior e acrescentas-lhe as reservas. Começas pelo formulário e pelo `POST` que o recebe. Depois, juntas a validação, o formulário com mensagens de erro e o redirecionamento no sucesso. Pelo caminho, vês o que corre mal sem cada uma destas peças. Isto acontece porque as provocas de propósito. No fim verificas o servidor de um colega com uma lista de verificação. O colega verifica o teu servidor.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](05-formularios-e-validacao.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../05-formularios-e-validacao.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
 
 ## O que vais construir
 
@@ -50,7 +50,7 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## Preparar o projeto
 
-Precisas do catálogo com páginas do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-ejs](../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela.
+Precisas do catálogo com páginas do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-ejs](../../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela.
 
 Se usares Docker, executa os comandos Node/npm no terminal do contentor preparado pelo professor, com a tua pasta de trabalho selecionada. Se não houver internet, usa a instalação do apoio fornecido pelo professor em vez de `npm install`; depois continua com os mesmos ficheiros.
 
@@ -1181,4 +1181,4 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 - [ ] Guardaste as previsões, os resultados e as explicações pedidas.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

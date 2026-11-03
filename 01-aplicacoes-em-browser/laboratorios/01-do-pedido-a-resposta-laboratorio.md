@@ -1,8 +1,8 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: Do pedido à resposta
 
-Laboratório do tema Do pedido à resposta. Vais construir um registo dos pedidos que o browser faz e o diagrama de um redirecionamento. Avança ao teu ritmo. Cada passo explica a ideia, o que fazer e o que deves ver. O [guia](01-do-pedido-a-resposta.md) desenvolve a teoria.
+Laboratório do tema Do pedido à resposta. Vais construir um registo dos pedidos que o browser faz e o diagrama de um redirecionamento. Avança ao teu ritmo. Cada passo explica a ideia, o que fazer e o que deves ver. O [guia](../01-do-pedido-a-resposta.md) desenvolve a teoria.
 
 
 ## O que vais construir
@@ -71,7 +71,7 @@ A lista de Rede está aberta. Recarregar uma página acrescenta pedidos.
 
 ## Fase 2: o pedido de uma página
 
-Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "A conversa entre o browser e o servidor".
+Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "A conversa entre o browser e o servidor".
 
 1. Com o separador Rede aberto, escreve na barra de endereço `https://pt.wikipedia.org/wiki/Computador` e carrega em Enter.
 2. A lista enche-se de pedidos. Por cima da lista há botões para filtrar por tipo: All, Doc, CSS, JS, Img e outros (no Firefox: Todos, HTML, CSS, JS, Imagens). Escolhe "Doc" (no Firefox, "HTML"). Fica um só pedido, chamado `Computador`.
@@ -93,7 +93,7 @@ A tabela tem um pedido de documento, com método, estado e tipo de conteúdo.
 
 ## Fase 3: uma página são muitos pedidos
 
-Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Uma página são muitos pedidos".
+Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Uma página são muitos pedidos".
 
 1. Volta a escolher "All" ("Todos") nos filtros. Vês todos os pedidos que o browser fez para mostrar o artigo.
 2. No fundo do painel há uma barra que diz quantos pedidos foram feitos ("requests" ou "pedidos"). Copia o número para o caderno. Não há um número certo: muda com o artigo, com o browser e com o que o browser já tinha guardado. O que importa é a ordem de grandeza.
@@ -111,7 +111,7 @@ Registaste as contagens e comparaste o servidor do documento com o de uma imagem
 
 ## Fase 4: um artigo que não existe
 
-Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Os códigos de estado".
+Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Os códigos de estado".
 
 1. Na barra de endereço, escreve `https://pt.wikipedia.org/wiki/Pagina_que_nao_existe_epms` e carrega em Enter.
 2. A página aparece: tem o logótipo, os menus e uma mensagem a dizer que a Wikipédia não tem nenhum artigo com aquele nome.
@@ -128,7 +128,7 @@ A tabela distingue uma resposta 404 de uma página que abriu com 200.
 
 ## Fase 5: uma pesquisa
 
-Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secções "Ler um endereço" e "Os códigos de estado".
+Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secções "Ler um endereço" e "Os códigos de estado".
 
 1. Confirma que "Preserve log" está ativo. Carrega no botão que limpa a lista, um círculo cortado por uma barra, no canto do separador Rede.
 2. Escreve na barra de endereço `https://pt.wikipedia.org/w/index.php?search=projetor+de+video` e carrega em Enter.
@@ -155,7 +155,7 @@ A tabela tem os dois pedidos do redirecionamento e o cabeçalho que liga um ao o
 
 ## Fase 6: quando não há resposta
 
-Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Quando a conversa falha". Esta parte não precisa de internet.
+Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Quando a conversa falha". Esta parte não precisa de internet.
 
 1. Limpa a lista do separador Rede.
 2. Escreve na barra de endereço `http://localhost:3999/` e carrega em Enter.
@@ -174,7 +174,7 @@ Registaste uma ligação recusada sem código de estado.
 
 ## Fase 7: o diagrama de um pedido
 
-Para saber mais: no [guia do tema](01-do-pedido-a-resposta.md), secção "Exemplo guiado", passo 8.
+Para saber mais: no [guia do tema](../01-do-pedido-a-resposta.md), secção "Exemplo guiado", passo 8.
 
 Escolhe a pesquisa da fase 5 e desenha no caderno o diagrama dos pedidos e respostas. Faz uma coluna para o browser e outra para o servidor da Wikipédia. O tempo corre de cima para baixo. Nas setas dos pedidos escreve o método e o caminho. Nas respostas, escreve o código de estado e o conteúdo do corpo ou o cabeçalho que interessa.
 
@@ -225,7 +225,7 @@ Os passos dão os dois nomes. Se mesmo assim não encontrares uma opção, a pos
 
 ### A internet da escola não está a funcionar
 
-Usa os [registos HTTP para trabalhar sem internet](../laboratorios/aplicacoes-em-browser/do-pedido-a-resposta/README.md). O professor fornece-te uma cópia guardada no computador ou em papel. São pedidos e respostas recolhidos anteriormente; a data e a origem acompanham os registos.
+Usa os [registos HTTP para trabalhar sem internet](01-do-pedido-a-resposta-laboratorio/README.md). O professor fornece-te uma cópia guardada no computador ou em papel. São pedidos e respostas recolhidos anteriormente; a data e a origem acompanham os registos.
 
 1. Abre o apoio e os registos de texto que ele indica. No caderno, escreve que estás a analisar um registo, com a data da recolha.
 2. Para o artigo e para o artigo inexistente, identifica o método, o caminho, o código de estado e o tipo de conteúdo. Preenche as linhas correspondentes da tabela.
@@ -262,4 +262,4 @@ Se fizeste o percurso sem internet, identifica essa opção no registo. As conta
 - [ ] O diagrama mostra quem inicia cada pedido.
 - [ ] Consegues explicar, por palavras tuas, a diferença entre uma resposta 404 e uma ligação recusada.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

@@ -1,8 +1,8 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: HTTP, rotas e middleware
 
-Laboratório do tema HTTP, rotas e middleware. Vais fazer crescer o teu catálogo com detalhe, pesquisa e uma fila de middleware. Cada experiência tem a explicação e a resposta no próprio passo a passo. Avança ao teu ritmo. O [guia](03-http-rotas-e-middleware.md) desenvolve a teoria.
+Laboratório do tema HTTP, rotas e middleware. Vais fazer crescer o teu catálogo com detalhe, pesquisa e uma fila de middleware. Cada experiência tem a explicação e a resposta no próprio passo a passo. Avança ao teu ritmo. O [guia](../03-http-rotas-e-middleware.md) desenvolve a teoria.
 
 
 ## O que vais construir
@@ -34,7 +34,7 @@ Partes do catálogo mínimo e terminas com uma pesquisa na página inicial, resp
 
 ## O que precisas
 
-Precisas do catálogo de equipamentos do laboratório do tema anterior, a funcionar, com as rotas `/` e `/equipamentos`. Se não o tiveres, copia a pasta [catalogo-de-equipamentos](../exemplos/aplicacoes-em-browser/catalogo-de-equipamentos/README.md) para a tua pasta de trabalho e corre `npm install` dentro dela.
+Precisas do catálogo de equipamentos do laboratório do tema anterior, a funcionar, com as rotas `/` e `/equipamentos`. Se não o tiveres, copia a pasta [catalogo-de-equipamentos](../../exemplos/aplicacoes-em-browser/catalogo-de-equipamentos/README.md) para a tua pasta de trabalho e corre `npm install` dentro dela.
 
 Se o teu catálogo já tem a rota de detalhe e o filtro por sala da aula, ótimo: nas partes 2 e 3 só acrescentas o que falta.
 
@@ -50,7 +50,7 @@ Em todo o laboratório, depois de mudares o `server.js`, reinicia o servidor (Ct
 
 ## Fase 1: prever antes de programar
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secções "Três sítios por onde um pedido traz dados" e "Os códigos de estado que o teu código escolhe".
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secções "Três sítios por onde um pedido traz dados" e "Os códigos de estado que o teu código escolhe".
 
 Copia esta tabela para o caderno e preenche as duas últimas colunas com a tua previsão, antes de escreveres qualquer código. No fim do laboratório voltas a ela.
 
@@ -72,7 +72,7 @@ Escreveste uma previsão para cada pedido. A fase 8 dá a tabela para a conferir
 
 ## Fase 2: a rota de detalhe
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), exemplo guiado, passo 1.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), exemplo guiado, passo 1.
 
 Uma rota com `:id` aceita qualquer texto nessa posição do caminho. Converte-o para número, verifica a regra e só depois procura. Um pedido inválido recebe 400; um identificador válido sem equipamento recebe 404.
 
@@ -114,7 +114,7 @@ O detalhe válido responde 200, o identificador inválido responde 400 e o inexi
 
 ## Fase 3: o filtro por sala
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), exemplo guiado, passo 2.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), exemplo guiado, passo 2.
 
 O filtro não muda a rota: a pesquisa vem depois do `?`. Guarda-se numa variável própria, sem alterar `req.query`. Um filtro sem resultados devolve uma lista vazia, não um erro.
 
@@ -146,7 +146,7 @@ Confirma no separador Rede o caminho e a pesquisa, em vez de adivinhar pelos dad
 
 ## Fase 4: ver os dados do pedido no browser
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "Observar os pedidos no browser".
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "Observar os pedidos no browser".
 
 1. Com o separador Rede aberto, abre `/equipamentos?sala=A03`.
 2. Clica no pedido e abre o separador "Payload" ("Carga"). Regista o que aparece em "Query String Parameters".
@@ -158,7 +158,7 @@ Registaste a experiência desta fase e explicaste por que o resultado depende do
 
 ## Fase 5: o middleware de registo
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "O middleware" e exemplo guiado, passo 3.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "O middleware" e exemplo guiado, passo 3.
 
 Há trabalho que deve acontecer em todos os pedidos. Uma função de middleware permite escrevê-lo uma vez. `next()` passa o pedido à seguinte; escrever no terminal não envia uma resposta ao browser.
 
@@ -185,7 +185,7 @@ Cada pedido aparece no terminal com o método e o endereço. Repuseste o `next()
 
 ## Fase 6: a página inicial com uma pesquisa
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "GET e POST, com mais pormenor" e exemplo guiado, passo 4.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "GET e POST, com mais pormenor" e exemplo guiado, passo 4.
 
 Um formulário `GET` põe os seus campos na pesquisa do endereço. O atributo `name` do campo escolhe o nome do parâmetro. Não há dados novos guardados no servidor.
 
@@ -219,7 +219,7 @@ Ao enviares a pesquisa da página inicial, o browser abre `/equipamentos?sala=B1
 
 ## Fase 7: o middleware final e a ordem da fila
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "O middleware", com as três regras, e exemplo guiado, passo 5.
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "O middleware", com as três regras, e exemplo guiado, passo 5.
 
 Depois de todas as rotas, só chegam os pedidos ainda sem resposta. Um middleware final responde-lhes com o teu 404. Não chama `next()`, porque já terminou o pedido.
 
@@ -250,7 +250,7 @@ O middleware de registo ficou antes das rotas e o final depois delas. Repetiste 
 
 ## Fase 8: a tabela de contratos e a evidência
 
-Para saber mais: no [guia do tema](03-http-rotas-e-middleware.md), secção "A tabela de contratos HTTP".
+Para saber mais: no [guia do tema](../03-http-rotas-e-middleware.md), secção "A tabela de contratos HTTP".
 
 1. Escreve no caderno a tabela de contratos HTTP do teu servidor, com uma linha por pedido que ele aceita. Usa as colunas método, caminho, entrada e respostas possíveis, incluindo erros. Se acrescentaste alguma coisa, acrescenta a linha.
 2. Verifica cada linha no browser, com o separador Rede aberto, e marca-a como verificada.
@@ -407,4 +407,4 @@ O professor vai pedir-te que justifiques o código de estado de um dos três ped
 - [ ] O contrato inclui os casos de erro.
 - [ ] Consegues explicar, por palavras tuas, o percurso de um pedido na fila do Express.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

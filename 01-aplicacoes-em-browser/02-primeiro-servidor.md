@@ -2,7 +2,7 @@
 
 # Primeiro servidor
 
-Módulo Aplicações baseadas em browsers. Vais perceber o que é o Node.js e ler um servidor Express com duas rotas, desde o arranque até à resposta. Para construir o teu, segue o [laboratório](02-primeiro-servidor-laboratorio.md). Depois pratica com a [ficha de exercícios](02-primeiro-servidor-exercicios.md).
+Módulo Aplicações baseadas em browsers. Vais perceber o que é o Node.js e ler um servidor Express com duas rotas, desde o arranque até à resposta. Para construir o teu, segue o [laboratório](laboratorios/02-primeiro-servidor-laboratorio.md). Depois pratica com a [ficha de exercícios](exercicios/02-primeiro-servidor-exercicios.md).
 
 ## Neste guia
 
@@ -540,6 +540,6 @@ Os dois sistemas de módulos não se misturam. Se copiares um exemplo com `requi
 
 No tema 3, HTTP, rotas e middleware, o servidor passa a usar o `req`. Vais escrever rotas que leem partes do endereço, como o número do equipamento em `/equipamentos/2` e o filtro em `/equipamentos?sala=B12`. E que escolhem o código de estado da resposta, como um 404 quando o equipamento pedido não existe. Vais também observar estes pedidos no browser, como no primeiro tema. E conhecer o middleware, que é código que corre antes das rotas.
 
-Antes disso, faz o [laboratório](02-primeiro-servidor-laboratorio.md), em que constróis este servidor do zero e provocas, de propósito, os erros da secção 11, e a [ficha](02-primeiro-servidor-exercicios.md), com o servidor da biblioteca.
+Antes disso, faz o [laboratório](laboratorios/02-primeiro-servidor-laboratorio.md), em que constróis este servidor do zero e provocas, de propósito, os erros da secção 11, e a [ficha](exercicios/02-primeiro-servidor-exercicios.md), com o servidor da biblioteca.
 
 ![Rodapé](../imagens/rodape.png)

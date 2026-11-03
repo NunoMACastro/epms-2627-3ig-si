@@ -2,7 +2,7 @@
 
 # Do pedido à resposta
 
-Módulo Aplicações baseadas em browsers. Este guia explica como uma operação da escola se transforma em pedidos, dados e informação. Lê-se sem escrever um servidor. Para praticar, há o [laboratório](01-do-pedido-a-resposta-laboratorio.md) e a [ficha de exercícios](01-do-pedido-a-resposta-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como uma operação da escola se transforma em pedidos, dados e informação. Lê-se sem escrever um servidor. Para praticar, há o [laboratório](laboratorios/01-do-pedido-a-resposta-laboratorio.md) e a [ficha de exercícios](exercicios/01-do-pedido-a-resposta-exercicios.md).
 
 ## Neste guia
 
@@ -561,6 +561,6 @@ Tenta responder sem voltar atrás. Depois confirma no guia.
 
 No tema seguinte vais ligar o teu primeiro servidor, um programa em Node.js com Express. Fica à escuta numa porta e responde a pedidos `GET`. Os dados dos equipamentos ficam guardados em memória. Vais ver do lado do servidor a conversa que este guia descreveu do lado do browser. E vais provocar e corrigir os erros mais comuns de quem liga um servidor pela primeira vez, como a porta ocupada.
 
-Antes disso, faz o [laboratório](01-do-pedido-a-resposta-laboratorio.md), que te põe a observar pedidos e respostas reais no browser, e a [ficha de exercícios](01-do-pedido-a-resposta-exercicios.md), com um processo de outra área da escola.
+Antes disso, faz o [laboratório](laboratorios/01-do-pedido-a-resposta-laboratorio.md), que te põe a observar pedidos e respostas reais no browser, e a [ficha de exercícios](exercicios/01-do-pedido-a-resposta-exercicios.md), com um processo de outra área da escola.
 
 ![Rodapé](../imagens/rodape.png)

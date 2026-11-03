@@ -1,14 +1,14 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: cookies e sessões
 
-Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](06-cookies-e-sessoes.md) e de fazeres o [laboratório](06-cookies-e-sessoes-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos.
+Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../06-cookies-e-sessoes.md) e de fazeres o [laboratório](../laboratorios/06-cookies-e-sessoes-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com os empréstimos.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](06-cookies-e-sessoes.md) e o [laboratório](06-cookies-e-sessoes-laboratorio.md) deste tema.
+O [guia](../06-cookies-e-sessoes.md) e o [laboratório](../laboratorios/06-cookies-e-sessoes-laboratorio.md) deste tema.
 
 ## Objetivo e contexto
 
@@ -172,4 +172,4 @@ No fim, responde por escrito:
 
 As resoluções são trabalhadas na aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

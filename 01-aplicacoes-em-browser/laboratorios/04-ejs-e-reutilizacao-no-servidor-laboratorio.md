@@ -1,10 +1,10 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: EJS e reutilização no servidor
 
 Laboratório do quarto tema do módulo Aplicações baseadas em browsers. Partes do teu catálogo com middleware do tema anterior e transformas as respostas em páginas. Começas pela lista e pela pesquisa com a lista vazia. Acrescentas o detalhe de cada equipamento, o cabeçalho e o rodapé partilhados, e as páginas de erro. Pelo caminho, provocas de propósito os erros que mais vais encontrar com o EJS, vês o escaping a funcionar e a falhar. No fim comparas os teus modelos com o HTML que o browser recebe de facto.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](04-ejs-e-reutilizacao-no-servidor.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../04-ejs-e-reutilizacao-no-servidor.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
 
 ## O que vais construir
 
@@ -50,7 +50,7 @@ Os comandos `node` e `npm` deste laboratório executam-se no ambiente indicado p
 
 ## Preparar o projeto
 
-Precisas do catálogo com middleware do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela. Se fizeste o laboratório da API da papelaria, em vez do do catálogo, faz esta cópia: a pasta da papelaria fica para Linguagens de Programação.
+Precisas do catálogo com middleware do laboratório do tema anterior, a funcionar. Se não o tiveres, copia a pasta [catalogo-com-middleware](../../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md) dos exemplos para a tua pasta de trabalho e corre `npm install` dentro dela. Se fizeste o laboratório da API da papelaria, em vez do do catálogo, faz esta cópia: a pasta da papelaria fica para Linguagens de Programação.
 
 Precisas também de internet para o `npm install ejs@7.0.1` da fase 2. Para trabalhares sem rede, o professor precisa de preparar e testar previamente as dependências nos computadores da escola, incluindo Express e EJS 7.0.1. A cópia de apoio tem de ser compatível com esses postos. Uma pasta trazida de casa, por si só, não confirma essa compatibilidade.
 
@@ -831,4 +831,4 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 - [ ] Guardaste as previsões, os resultados e as explicações pedidas.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

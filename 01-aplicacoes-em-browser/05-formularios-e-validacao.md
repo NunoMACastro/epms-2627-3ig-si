@@ -2,7 +2,7 @@
 
 # Formulários e validação
 
-Módulo Aplicações baseadas em browsers. Este guia explica como receber, validar e responder aos dados de um formulário. Para praticar, tens o [laboratório](05-formularios-e-validacao-laboratorio.md) e a [ficha de exercícios](05-formularios-e-validacao-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como receber, validar e responder aos dados de um formulário. Para praticar, tens o [laboratório](laboratorios/05-formularios-e-validacao-laboratorio.md) e a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -1049,7 +1049,7 @@ A reserva aponta para um equipamento que não existe, e o modelo tenta ler o `eq
 
 ## O que vem a seguir
 
-Faz o [laboratório](05-formularios-e-validacao-laboratorio.md) e depois a [ficha de exercícios](05-formularios-e-validacao-exercicios.md).
+Faz o [laboratório](laboratorios/05-formularios-e-validacao-laboratorio.md) e depois a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
 
 O próximo tema é Cookies e sessões. O servidor conserva as reservas em memória enquanto o processo está a correr. Ainda não associa os pedidos à mesma pessoa: não sabe se quem fez um pedido também fez o anterior. Por isso o formulário de reserva pede o nome todas as vezes. Com as sessões, o servidor passa a associar pedidos da mesma pessoa. A página de reserva pode, por exemplo, mostrar as reservas dessa pessoa. A segurança dos formulários (o CSRF, que a secção anterior refere) volta depois, no tema Erros e segurança web.
 

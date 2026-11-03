@@ -1,14 +1,14 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: EJS e reutilização no servidor
 
-Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](04-ejs-e-reutilizacao-no-servidor.md) e de fazeres o [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
+Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md) e de fazeres o [laboratório](../laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](04-ejs-e-reutilizacao-no-servidor.md) e o [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md) deste tema.
+O [guia](../04-ejs-e-reutilizacao-no-servidor.md) e o [laboratório](../laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md) deste tema.
 
 ## Objetivo e contexto
 
@@ -201,4 +201,4 @@ No fim, responde por escrito:
 
 As resoluções são trabalhadas na aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

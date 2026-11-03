@@ -1,10 +1,10 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Laboratório: Erros e segurança web
 
 Laboratório do sétimo tema do módulo Aplicações baseadas em browsers. Partes do teu catálogo com sessões do tema anterior. Provocas de propósito uma falha que ninguém previu e lês o que o Express mostra a quem a provoca. Substituis essa página por um middleware de erro teu. Olhas para o que o servidor escreve no terminal. Mexes no segredo. Vês o escaping a falhar num atributo sem aspas. Proteges os formulários contra o CSRF. E, no fim, fazes a matriz de falhas do teu servidor e verificas a de um colega.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](07-erros-e-seguranca-web.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
+Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte. Tudo o que precisas está aqui. O [guia](../07-erros-e-seguranca-web.md) tem a teoria completa, para saberes mais. Antes de cada experiência, escreve a previsão no caderno e confere-a com a resposta desta fase.
 
 ## O que vais construir
 
@@ -50,7 +50,7 @@ Vais continuar o catálogo numa pasta de trabalho própria. O destino é o exemp
 
 ## Preparar o projeto
 
-Precisas do catálogo com sessões do laboratório do tema anterior, a funcionar, com o `.env` e o segredo. Se não o tiveres, copia a pasta [catalogo-com-sessoes](../exemplos/aplicacoes-em-browser/catalogo-com-sessoes/README.md) dos exemplos, corre `npm install`, cria o `.env` a partir do `.env.example` e gera um segredo com `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. Copia o resultado só para o teu `.env`.
+Precisas do catálogo com sessões do laboratório do tema anterior, a funcionar, com o `.env` e o segredo. Se não o tiveres, copia a pasta [catalogo-com-sessoes](../../exemplos/aplicacoes-em-browser/catalogo-com-sessoes/README.md) dos exemplos, corre `npm install`, cria o `.env` a partir do `.env.example` e gera um segredo com `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. Copia o resultado só para o teu `.env`.
 
 Arranca o servidor com `node --watch --env-file=.env server.js`, e mantém o terminal à vista: neste laboratório, o terminal é tão importante como o browser.
 
@@ -1291,4 +1291,4 @@ Leitura guiada: o nome do ficheiro indica o seu papel. No servidor, segue primei
 - [ ] Guardaste as previsões, os resultados e as explicações pedidas.
 - [ ] Consegues explicar onde correm o JavaScript e o EJS e que dados chegam ao browser.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

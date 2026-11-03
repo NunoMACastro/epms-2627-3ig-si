@@ -2,7 +2,7 @@
 
 # Registos HTTP para trabalhar sem internet
 
-Estes registos permitem continuar o [laboratório Do pedido à resposta](../../../01-aplicacoes-em-browser/01-do-pedido-a-resposta-laboratorio.md) quando não tens ligação à internet. Abre o [ficheiro de registos HTTP](registos-http.txt) num editor de texto.
+Estes registos permitem continuar o [laboratório Do pedido à resposta](../01-do-pedido-a-resposta-laboratorio.md) quando não tens ligação à internet. Abre o [ficheiro de registos HTTP](registos-http.txt) num editor de texto.
 
 Cada registo identifica um pedido real à Wikipédia e conserva os cabeçalhos necessários para o laboratório. Os cabeçalhos são campos da resposta. O campo `content-type` indica o tipo de conteúdo; `location` indica o endereço para onde o cliente deve ir.
 

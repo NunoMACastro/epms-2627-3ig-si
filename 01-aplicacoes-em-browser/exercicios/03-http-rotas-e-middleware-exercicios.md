@@ -1,12 +1,12 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: HTTP, rotas e middleware
 
-Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](03-http-rotas-e-middleware.md) e de fazeres o [laboratório](03-http-rotas-e-middleware-laboratorio.md). Os exercícios 1, 2 e 5 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
+Terceiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../03-http-rotas-e-middleware.md) e de fazeres o [laboratório](../laboratorios/03-http-rotas-e-middleware-laboratorio.md). Os exercícios 1, 2 e 5 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior.
 
 ## O que precisas de saber
 
-O [guia do tema](03-http-rotas-e-middleware.md) e o [laboratório](03-http-rotas-e-middleware-laboratorio.md).
+O [guia do tema](../03-http-rotas-e-middleware.md) e o [laboratório](../laboratorios/03-http-rotas-e-middleware-laboratorio.md).
 
 ## O contexto desta ficha
 
@@ -164,4 +164,4 @@ No fim, responde por escrito:
 
 As resoluções são trabalhadas na aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

@@ -1,12 +1,12 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: Do pedido à resposta
 
-Primeiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](01-do-pedido-a-resposta.md) e, de preferência, depois do [laboratório](01-do-pedido-a-resposta-laboratorio.md). Não precisas de computador: faz-se em papel ou num ficheiro de texto.
+Primeiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../01-do-pedido-a-resposta.md) e, de preferência, depois do [laboratório](../laboratorios/01-do-pedido-a-resposta-laboratorio.md). Não precisas de computador: faz-se em papel ou num ficheiro de texto.
 
 ## O que precisas de saber
 
-O [guia do tema](01-do-pedido-a-resposta.md) e o [laboratório](01-do-pedido-a-resposta-laboratorio.md).
+O [guia do tema](../01-do-pedido-a-resposta.md) e o [laboratório](../laboratorios/01-do-pedido-a-resposta-laboratorio.md).
 
 ## O contexto desta ficha
 
@@ -198,4 +198,4 @@ No fim, responde por escrito:
 
 As respostas são corrigidas na aula. Não incluas dados pessoais reais: os números de leitor e os nomes desta ficha são inventados.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

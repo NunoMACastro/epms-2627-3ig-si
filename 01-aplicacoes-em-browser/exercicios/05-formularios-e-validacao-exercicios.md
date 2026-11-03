@@ -1,14 +1,14 @@
-![Cabeçalho](../imagens/cabecalho.png)
+![Cabeçalho](../../imagens/cabecalho.png)
 
 # Ficha de exercícios: formulários e validação
 
-Quinto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](05-formularios-e-validacao.md) e de fazeres o [laboratório](05-formularios-e-validacao-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com páginas EJS.
+Quinto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../05-formularios-e-validacao.md) e de fazeres o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md). Os exercícios 1, 2 e 6 fazem-se em papel; os outros, no computador, sobre o servidor da biblioteca da ficha do tema anterior, com páginas EJS.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](05-formularios-e-validacao.md) e o [laboratório](05-formularios-e-validacao-laboratorio.md) deste tema.
+O [guia](../05-formularios-e-validacao.md) e o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md) deste tema.
 
 ## Objetivo e contexto
 
@@ -168,4 +168,4 @@ No fim, responde por escrito:
 
 As resoluções são trabalhadas na aula.
 
-![Rodapé](../imagens/rodape.png)
+![Rodapé](../../imagens/rodape.png)

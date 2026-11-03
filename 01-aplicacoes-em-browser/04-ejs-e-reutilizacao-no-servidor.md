@@ -2,7 +2,7 @@
 
 # EJS e reutilização no servidor
 
-Módulo Aplicações baseadas em browsers. Este guia explica como o servidor constrói páginas EJS e reutiliza partes comuns. Para praticar, tens o [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md) e a [ficha de exercícios](04-ejs-e-reutilizacao-no-servidor-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como o servidor constrói páginas EJS e reutiliza partes comuns. Para praticar, tens o [laboratório](laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md) e a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md).
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -858,7 +858,7 @@ Não tens. O Express volta a ler o modelo a cada pedido, enquanto estás a desen
 
 ## O que vem a seguir
 
-Faz o [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md) e depois a [ficha de exercícios](04-ejs-e-reutilizacao-no-servidor-exercicios.md).
+Faz o [laboratório](laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md) e depois a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md).
 
 O próximo tema é Formulários e validação. A página inicial já tem um formulário. Mas envia por `GET` e só pesquisa. No próximo tema, os formulários enviam por `POST`, para criar coisas, como uma reserva. O servidor lê o corpo do pedido e verifica cada campo. Se houver um erro, volta a mostrar o formulário. Mantém os dados escritos e acrescenta uma mensagem que explica o erro. Esse formulário é um modelo EJS, com tudo o que este tema mostrou: valores com `<%=`, condições para as mensagens de erro. E o cabeçalho e o rodapé partilhados.
 

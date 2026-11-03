@@ -2,7 +2,7 @@
 
 # Erros e segurança web
 
-Módulo Aplicações baseadas em browsers. Este guia explica como tratar falhas e proteger os formulários e os dados. Para praticar, tens o [laboratório](07-erros-e-seguranca-web-laboratorio.md) e a [ficha de exercícios](07-erros-e-seguranca-web-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como tratar falhas e proteger os formulários e os dados. Para praticar, tens o [laboratório](laboratorios/07-erros-e-seguranca-web-laboratorio.md) e a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md).
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -968,7 +968,7 @@ Não é um erro: é o efeito de trocar o segredo, e é o que se quer quando o se
 
 ## O que vem a seguir
 
-Faz o [laboratório](07-erros-e-seguranca-web-laboratorio.md) e depois a [ficha de exercícios](07-erros-e-seguranca-web-exercicios.md).
+Faz o [laboratório](laboratorios/07-erros-e-seguranca-web-laboratorio.md) e depois a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md).
 
 O próximo tema integra o módulo num percurso completo do catálogo. Junta as rotas, as páginas, os formulários, as sessões e a segurança trabalhados desde o primeiro servidor. É ensaiado como um todo, com a matriz de falhas como lista do que verificar. Depois vem a evidência individual do módulo, em que cada um mostra e explica uma alteração ao seu próprio servidor. A matriz de falhas que fazes neste tema é a primeira coisa que vais usar nos dois.
 
