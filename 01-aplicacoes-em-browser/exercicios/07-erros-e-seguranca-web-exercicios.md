@@ -2,13 +2,13 @@
 
 # Ficha de exercícios: erros e segurança web
 
-Sétimo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../07-erros-e-seguranca-web.md) e de fazeres o [laboratório](../laboratorios/07-erros-e-seguranca-web-laboratorio.md). Fazes tudo no computador. Os exercícios 1, 2, 5 e 6 pedem respostas escritas. Os outros mudam o servidor da biblioteca da ficha do tema anterior, com os empréstimos e os livros vistos recentemente.
+Sétimo tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../07-erros-e-seguranca-web.md). Fazes tudo no computador. Os exercícios 1, 2, 5 e 6 pedem respostas escritas. Os outros mudam o servidor da biblioteca da ficha do tema anterior, com os empréstimos e os livros vistos recentemente.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](../07-erros-e-seguranca-web.md) e o [laboratório](../laboratorios/07-erros-e-seguranca-web-laboratorio.md) deste tema.
+O [guia do tema](../07-erros-e-seguranca-web.md). O laboratório deste tema vai ser o passo 9 do jogo Fechado na escola, e ainda não está publicado.
 
 ## Objetivo e contexto
 
@@ -20,7 +20,7 @@ Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois
 
 As respostas escritas vão para um ficheiro de texto `respostas-07.md`, que escreves no editor. Guarda-o na tua pasta de trabalho, ao lado das cópias da biblioteca, e põe o número do exercício antes de cada resposta. As decisões dos exercícios 3 e 4 ficam em comentários no `server.js`, junto do código que decidem.
 
-Antes de experimentares, prevê o resultado de cabeça. Para provocar falhas, usa as formas do laboratório: um erro posto de propósito num modelo, o comando do `fetch` com um corpo grande. O separador "Elements" para mexer no campo escondido.
+Antes de experimentares, prevê o resultado de cabeça. Para provocar falhas, põe de propósito um erro num modelo, ou envia na consola, com o `fetch`, um corpo com mais de 100 kilobytes. Para mexer no campo escondido, usa o separador "Elements" das ferramentas de programador.
 
 Podes começar o exercício 3 com a sessão, a página inicial, o formulário de empréstimo e a lista dos empréstimos. Para completar o exercício 4, precisas também do histórico dos livros vistos e do botão que o apaga, da ficha anterior. A devolução continua opcional.
 

@@ -2,7 +2,7 @@
 
 # Cookies e sessões
 
-Módulo Aplicações baseadas em browsers. Este guia explica como guardar um pedido separado para cada browser numa sessão. Para praticar, tens o [laboratório](laboratorios/06-cookies-e-sessoes-laboratorio.md) e a [ficha de exercícios](exercicios/06-cookies-e-sessoes-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como guardar um pedido separado para cada browser numa sessão. Para praticar, tens a [ficha de exercícios](exercicios/06-cookies-e-sessoes-exercicios.md). O laboratório deste tema vai ser o passo 7 do jogo Fechado na escola, e ainda não está publicado.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -74,7 +74,7 @@ app.post("/pedido/itens", (req, res) => {
 
 Leitura guiada: `POST /pedido/itens` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
 
-Funciona enquanto há uma só pessoa a usar o catálogo. Com duas, deixa de funcionar, e de uma forma traiçoeira: a variável é uma só, para o servidor inteiro, e todos os pedidos de todos os browsers a usam. A professora junta o projetor, e o colega que abre o catálogo noutra sala vê o projetor no pedido dele, sem ter juntado nada. O laboratório mostra-o com duas janelas do browser. O servidor precisa de saber **de que browser** vem cada pedido, para guardar um pedido separado para cada um. É aqui que entram os cookies.
+Funciona enquanto há uma só pessoa a usar o catálogo. Com duas, deixa de funcionar, e de uma forma traiçoeira: a variável é uma só, para o servidor inteiro, e todos os pedidos de todos os browsers a usam. A professora junta o projetor, e o colega que abre o catálogo noutra sala vê o projetor no pedido dele, sem ter juntado nada. Podes vê-lo com duas janelas do browser. O servidor precisa de saber **de que browser** vem cada pedido, para guardar um pedido separado para cada um. É aqui que entram os cookies.
 
 ## Cookies: o browser guarda e devolve
 
@@ -280,7 +280,7 @@ Uma sessão sabe uma coisa: que vários pedidos vieram **do mesmo browser**. Nã
 
 Como a sessão é de quem tem o cookie, há dois ataques que convém conhecer pelo nome.
 
-O **roubo de sessão** (em inglês, session hijacking) é alguém conseguir o identificador de outra pessoa e usá-lo no seu browser. A partir daí, para o servidor, os dois browsers são o mesmo. E o atacante vê e muda o pedido da vítima. No laboratório observas este efeito nas tuas próprias sessões locais, copiando o cookie de uma janela tua para outra, com dados inventados. As defesas são as dos atributos: o `HttpOnly` impede um script de ler o cookie, o `Secure` impede que seja lido a passar pela rede. A expiração encurta o tempo em que um cookie roubado serve.
+O **roubo de sessão** (em inglês, session hijacking) é alguém conseguir o identificador de outra pessoa e usá-lo no seu browser. A partir daí, para o servidor, os dois browsers são o mesmo. E o atacante vê e muda o pedido da vítima. Podes observar este efeito nas tuas próprias sessões locais, copiando o cookie de uma janela tua para outra, com dados inventados. As defesas são as dos atributos: o `HttpOnly` impede um script de ler o cookie, o `Secure` impede que seja lido a passar pela rede. A expiração encurta o tempo em que um cookie roubado serve.
 
 A **fixação de sessão** (session fixation) é o contrário: o atacante não rouba o identificador da vítima, consegue que a vítima use um identificador que ele já conhece. Se depois a vítima fizer alguma coisa importante nessa sessão (numa aplicação com contas, entrar com a palavra-passe), o atacante, que conhece o identificador, fica com acesso. A defesa é dar à sessão um identificador novo no momento importante, com o `req.session.regenerate`, que o `express-session` também tem. Não a usas neste tema, porque o catálogo não tem esse momento; mas, numa aplicação com autenticação, é obrigatória.
 
@@ -1182,7 +1182,7 @@ A página no ecrã foi construída antes da mudança. Recarrega-a: o número vem
 
 ## O que vem a seguir
 
-Faz o [laboratório](laboratorios/06-cookies-e-sessoes-laboratorio.md) e depois a [ficha de exercícios](exercicios/06-cookies-e-sessoes-exercicios.md).
+Faz a [ficha de exercícios](exercicios/06-cookies-e-sessoes-exercicios.md). O laboratório deste tema vai ser o passo 7 do jogo Fechado na escola, e ainda não está publicado.
 
 O próximo tema é Erros e segurança web. As páginas de erro do catálogo dizem pouco, de propósito. Mas a página de erro do próprio Express, a dos erros 500, mostra o caminho dos ficheiros e o código: o tema trata disso. Trata também dos segredos, dos registos no terminal, do escaping em mais sítios do que o conteúdo e os atributos. Do CSRF, a defesa que falta aos formulários que mudam a sessão. É o último tema antes da integração do módulo, em que o catálogo junta tudo o que foi feito até aqui.
 

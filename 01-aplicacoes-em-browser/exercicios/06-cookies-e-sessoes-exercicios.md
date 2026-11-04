@@ -2,13 +2,13 @@
 
 # Ficha de exercícios: cookies e sessões
 
-Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../06-cookies-e-sessoes.md) e de fazeres o [laboratório](../laboratorios/06-cookies-e-sessoes-laboratorio.md). Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto; os outros fazem-se no servidor da biblioteca da ficha do tema anterior, com os empréstimos.
+Sexto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../06-cookies-e-sessoes.md). Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto; os outros fazem-se no servidor da biblioteca da ficha do tema anterior, com os empréstimos.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](../06-cookies-e-sessoes.md) e o [laboratório](../laboratorios/06-cookies-e-sessoes-laboratorio.md) deste tema.
+O [guia do tema](../06-cookies-e-sessoes.md). O laboratório deste tema vai ser o passo 7 do jogo Fechado na escola, e ainda não está publicado.
 
 ## Objetivo e contexto
 

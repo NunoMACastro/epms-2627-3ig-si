@@ -2,7 +2,7 @@
 
 # Formulários e validação
 
-Módulo Aplicações baseadas em browsers. Este guia explica como receber, validar e responder aos dados de um formulário. Para praticar, tens o [laboratório](laboratorios/05-formularios-e-validacao-laboratorio.md) e a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como receber, validar e responder aos dados de um formulário. Para praticar, tens a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md). O laboratório deste tema vai ser o passo 5 do jogo Fechado na escola, e ainda não está publicado.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -522,7 +522,7 @@ Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia. 
 
 - **Recarrega a página "Reserva 1".** O browser pergunta se queres reenviar os dados. Diz que sim, e abre `/reservas`: há duas reservas iguais. É o problema da secção "Quando corre bem", e o passo 4 resolve-o.
 - **Envia com o nome só com espaços.** A reserva fica com um nome invisível.
-- **Envia o formulário vazio, sem a ajuda do browser.** Acrescenta temporariamente `novalidate` ao `<form>`, guarda, recarrega `/reservas/nova` e envia sem preencher nada. O equipamento chega como texto vazio, que `Number` converte em 0. Não há equipamento 0. A reserva fica guardada, mas a página dá 500 ao tentar ler `equipamento.id`. A lista das reservas também dá 500. Uma reserva mal feita estragou uma página para toda a gente. É esta a experiência da fase 4 do laboratório.
+- **Envia o formulário vazio, sem a ajuda do browser.** Acrescenta temporariamente `novalidate` ao `<form>`, guarda, recarrega `/reservas/nova` e envia sem preencher nada. O equipamento chega como texto vazio, que `Number` converte em 0. Não há equipamento 0. A reserva fica guardada, mas a página dá 500 ao tentar ler `equipamento.id`. A lista das reservas também dá 500. Uma reserva mal feita estragou uma página para toda a gente.
 
 Depois de registares o que aconteceu, retira o `novalidate` e guarda o modelo. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. As reservas estão em memória: o novo arranque limpa-as e repõe o contador em 1. Confirma em `/reservas` que a lista está vazia antes de continuar. Guardar um ficheiro sem alterações não garante que o `--watch` reinicie o processo.
 
@@ -1049,7 +1049,7 @@ A reserva aponta para um equipamento que não existe, e o modelo tenta ler o `eq
 
 ## O que vem a seguir
 
-Faz o [laboratório](laboratorios/05-formularios-e-validacao-laboratorio.md) e depois a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
+Faz a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md). O laboratório deste tema vai ser o passo 5 do jogo Fechado na escola, e ainda não está publicado.
 
 O próximo tema é Cookies e sessões. O servidor conserva as reservas em memória enquanto o processo está a correr. Ainda não associa os pedidos à mesma pessoa: não sabe se quem fez um pedido também fez o anterior. Por isso o formulário de reserva pede o nome todas as vezes. Com as sessões, o servidor passa a associar pedidos da mesma pessoa. A página de reserva pode, por exemplo, mostrar as reservas dessa pessoa. A segurança dos formulários (o CSRF, que a secção anterior refere) volta depois, no tema Erros e segurança web.
 

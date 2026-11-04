@@ -2,7 +2,7 @@
 
 # EJS e reutilização no servidor
 
-Módulo Aplicações baseadas em browsers. Este guia explica como o servidor constrói páginas EJS e reutiliza partes comuns. Para praticar, tens o [laboratório](laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md) e a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como o servidor constrói páginas EJS e reutiliza partes comuns. Para praticar, tens a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md). O laboratório deste tema vai ser o passo 3 do jogo Fechado na escola, e ainda não está publicado.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -474,7 +474,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 
 Leitura guiada: o ciclo percorre a lista pela ordem dos elementos. Segue uma volta, identifica o valor atual e vê o que essa volta escreve.
 
-A primeira condição mostra a sala pesquisada, só quando há uma. A segunda escolhe entre a mensagem e a lista. `/equipamentos?sala=Z99` mostra agora "Pesquisa pela sala Z99." e "Não há equipamentos nesta sala.", com o código 200. A sala pesquisada vem do pedido e entra com `<%=`: a secção do escaping explica porquê, e o laboratório mostra o que acontece se não entrar.
+A primeira condição mostra a sala pesquisada, só quando há uma. A segunda escolhe entre a mensagem e a lista. `/equipamentos?sala=Z99` mostra agora "Pesquisa pela sala Z99." e "Não há equipamentos nesta sala.", com o código 200. A sala pesquisada vem do pedido e entra com `<%=`: a secção do escaping explica porquê.
 
 ### Passo 4: a página de um equipamento
 
@@ -858,7 +858,7 @@ Não tens. O Express volta a ler o modelo a cada pedido, enquanto estás a desen
 
 ## O que vem a seguir
 
-Faz o [laboratório](laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md) e depois a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md).
+Faz a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md). O laboratório deste tema vai ser o passo 3 do jogo Fechado na escola, e ainda não está publicado.
 
 O próximo tema é Formulários e validação. A página inicial já tem um formulário. Mas envia por `GET` e só pesquisa. No próximo tema, os formulários enviam por `POST`, para criar coisas, como uma reserva. O servidor lê o corpo do pedido e verifica cada campo. Se houver um erro, volta a mostrar o formulário. Mantém os dados escritos e acrescenta uma mensagem que explica o erro. Esse formulário é um modelo EJS, com tudo o que este tema mostrou: valores com `<%=`, condições para as mensagens de erro. E o cabeçalho e o rodapé partilhados.
 

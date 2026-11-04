@@ -2,13 +2,13 @@
 
 # Ficha de exercícios: EJS e reutilização no servidor
 
-Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md) e de fazeres o [laboratório](../laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Os exercícios 1, 2 e 6 respondem-se sem correr código; os outros fazem-se no servidor da biblioteca da ficha do tema anterior.
+Quarto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md). Os exercícios 1, 2 e 6 respondem-se sem correr código; os outros fazem-se no servidor da biblioteca da ficha do tema anterior.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](../04-ejs-e-reutilizacao-no-servidor.md) e o [laboratório](../laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md) deste tema.
+O [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md). O laboratório deste tema vai ser o passo 3 do jogo Fechado na escola, e ainda não está publicado.
 
 ## Objetivo e contexto
 

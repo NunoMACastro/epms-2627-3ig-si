@@ -11,9 +11,9 @@ Um laboratório não é uma ficha de exercícios. No laboratório, aprendes a fa
 | 01 Do pedido à resposta | [laboratório](01-do-pedido-a-resposta-laboratorio.md) |
 | 02 Primeiro servidor | [laboratório](02-primeiro-servidor-laboratorio.md) |
 | 03 HTTP, rotas e middleware | [laboratório](03-http-rotas-e-middleware-laboratorio.md); [papelaria](03-http-rotas-e-middleware-laboratorio-papelaria.md) |
-| 04 EJS e reutilização no servidor | [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md) |
-| 05 Formulários e validação | [laboratório](05-formularios-e-validacao-laboratorio.md) |
-| 06 Cookies e sessões | [laboratório](06-cookies-e-sessoes-laboratorio.md) |
-| 07 Erros e segurança web | [laboratório](07-erros-e-seguranca-web-laboratorio.md) |
+| 04 EJS e reutilização no servidor | O laboratório deste tema vai ser o passo 3 do jogo Fechado na escola, e ainda não está publicado. |
+| 05 Formulários e validação | O laboratório deste tema vai ser o passo 5 do jogo Fechado na escola, e ainda não está publicado. |
+| 06 Cookies e sessões | O laboratório deste tema vai ser o passo 7 do jogo Fechado na escola, e ainda não está publicado. |
+| 07 Erros e segurança web | O laboratório deste tema vai ser o passo 9 do jogo Fechado na escola, e ainda não está publicado. |
 
 ![Rodapé](../../imagens/rodape.png)

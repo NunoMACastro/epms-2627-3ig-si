@@ -2,7 +2,7 @@
 
 # Erros e segurança web
 
-Módulo Aplicações baseadas em browsers. Este guia explica como tratar falhas e proteger os formulários e os dados. Para praticar, tens o [laboratório](laboratorios/07-erros-e-seguranca-web-laboratorio.md) e a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md).
+Módulo Aplicações baseadas em browsers. Este guia explica como tratar falhas e proteger os formulários e os dados. Para praticar, tens a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md). O laboratório deste tema vai ser o passo 9 do jogo Fechado na escola, e ainda não está publicado.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
@@ -325,7 +325,7 @@ O exemplo parte do catálogo com sessões do tema anterior. As páginas e as rot
 
 ### Passo 1: provocar um 500 e ler a página do Express
 
-Para ver a página de erro do Express, é preciso uma falha ainda sem tratamento próprio. No laboratório, provocas uma no modelo da página de um equipamento, com o `equipamento.fabricante.nome` da secção "O erro que ninguém previu". Abre `/equipamentos/2`: o browser mostra a página do Express, com o código 500, o `TypeError` e o stack trace, com os caminhos do teu computador. Repara também no terminal: o Express escreve lá o mesmo erro.
+Para ver a página de erro do Express, é preciso uma falha ainda sem tratamento próprio. Podes provocar uma no modelo da página de um equipamento, com o `equipamento.fabricante.nome` da secção "O erro que ninguém previu". Abre `/equipamentos/2`: o browser mostra a página do Express, com o código 500, o `TypeError` e o stack trace, com os caminhos do teu computador. Repara também no terminal: o Express escreve lá o mesmo erro.
 
 ### Passo 2: o middleware de erro
 
@@ -968,7 +968,7 @@ Não é um erro: é o efeito de trocar o segredo, e é o que se quer quando o se
 
 ## O que vem a seguir
 
-Faz o [laboratório](laboratorios/07-erros-e-seguranca-web-laboratorio.md) e depois a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md).
+Faz a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md). O laboratório deste tema vai ser o passo 9 do jogo Fechado na escola, e ainda não está publicado.
 
 O próximo tema integra o módulo num percurso completo do catálogo. Junta as rotas, as páginas, os formulários, as sessões e a segurança trabalhados desde o primeiro servidor. É ensaiado como um todo, com a matriz de falhas como lista do que verificar. Depois vem a evidência individual do módulo, em que cada um mostra e explica uma alteração ao seu próprio servidor. A matriz de falhas que fazes neste tema é a primeira coisa que vais usar nos dois.
 

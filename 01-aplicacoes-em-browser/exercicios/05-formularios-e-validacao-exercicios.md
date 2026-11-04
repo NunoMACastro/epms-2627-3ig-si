@@ -2,13 +2,13 @@
 
 # Ficha de exercícios: formulários e validação
 
-Quinto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../05-formularios-e-validacao.md) e de fazeres o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md). Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto; os outros fazem-se no servidor da biblioteca da ficha do tema anterior, com páginas EJS.
+Quinto tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../05-formularios-e-validacao.md). Os exercícios 1, 2 e 6 respondem-se num ficheiro de texto; os outros fazem-se no servidor da biblioteca da ficha do tema anterior, com páginas EJS.
 
 Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
 
 ## O que precisas de saber
 
-O [guia](../05-formularios-e-validacao.md) e o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md) deste tema.
+O [guia do tema](../05-formularios-e-validacao.md). O laboratório deste tema vai ser o passo 5 do jogo Fechado na escola, e ainda não está publicado.
 
 ## Objetivo e contexto
 
@@ -20,7 +20,7 @@ Tens de tomar decisões que a reserva do guia não tomou. Que livros ofereces na
 
 Os exercícios 1 a 6 são o percurso obrigatório. Faz o desafio opcional depois. Guarda cada exercício numa cópia da tua pasta `biblioteca`, para poderes voltar à versão anterior.
 
-Os exercícios 1, 2 e 6 respondem-se sem correr código, num ficheiro de texto que escreves no editor, o `respostas-05.md`. Antes de cada resposta, põe o número do exercício e da alínea. Guarda-o na tua pasta de trabalho de Sistemas de Informação, fora da `biblioteca`. Nos exercícios 3 a 5 e no desafio, cada decisão que a ficha pede justificada fica num comentário no código, junto do que decidiste. Usa o separador Rede para confirmar os códigos, e o Payload para confirmar os campos enviados. Para veres a validação do servidor, usa o `novalidate`, como no laboratório, e tira-o no fim.
+Os exercícios 1, 2 e 6 respondem-se sem correr código, num ficheiro de texto que escreves no editor, o `respostas-05.md`. Antes de cada resposta, põe o número do exercício e da alínea. Guarda-o na tua pasta de trabalho de Sistemas de Informação, fora da `biblioteca`. Nos exercícios 3 a 5 e no desafio, cada decisão que a ficha pede justificada fica num comentário no código, junto do que decidiste. Usa o separador Rede para confirmar os códigos, e o Payload para confirmar os campos enviados. Para veres a validação do servidor, usa o `novalidate`, como no guia, e tira-o no fim.
 
 Podes continuar mesmo sem ter tudo o que a ficha anterior pedia. Os exercícios 3 a 5 só precisam do array `livros`, da página de erro `erro.ejs` e dos partials. O array é o da ficha anterior: "Os Maias" (1) e "Mensagem" (2) disponíveis. E "Memorial do Convento" (3) emprestado.
 
