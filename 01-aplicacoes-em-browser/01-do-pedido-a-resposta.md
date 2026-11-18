@@ -2,86 +2,35 @@
 
 # Do pedido à resposta
 
-Módulo Aplicações baseadas em browsers. Este guia explica como uma operação da escola se transforma em pedidos, dados e informação. Lê-se sem escrever um servidor. Para praticar, há o [laboratório](laboratorios/01-do-pedido-a-resposta-laboratorio.md) e a [ficha de exercícios](exercicios/01-do-pedido-a-resposta-exercicios.md).
+Neste guia vês como a reserva de equipamentos de uma escola produz dados e informação, e que três programas trabalham numa aplicação web. Vês também como o browser e o servidor conversam em HTTP e como descobrir onde a conversa falhou quando uma página não abre. Não escreves nenhum servidor: segues uma reserva do clique até à base de dados.
+
+Usa as tabelas e o SQL que aprendeste com o MariaDB, como o `SELECT`, o `JOIN` e o `GROUP BY`, e os formulários de HTML do 11.º ano. Rever: [Formulários HTML: anatomia de um formulário moderno](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/HTML%20e%20CSS/05-formularios-html.md#1-anatomia-de-um-formulário-moderno). Para praticar: [laboratório](laboratorios/01-do-pedido-a-resposta-laboratorio.md) e [ficha de exercícios](exercicios/01-do-pedido-a-resposta-exercicios.md).
 
 ## Neste guia
 
-1. O que vais aprender
-2. O que já sabes e vais usar
-3. Um sistema de informação começa numa organização
-4. Três programas, três papéis
-5. A conversa entre o browser e o servidor
-6. Ler um endereço
-7. Os métodos: ver ou mudar
-8. Os códigos de estado
-9. Uma página são muitos pedidos
-10. O servidor não se lembra de ti
-11. Exemplo guiado: uma reserva do princípio ao fim
-12. Quando a conversa falha
-13. Erros frequentes
-14. Palavras novas deste guia
-15. Verificar o que aprendeste
-16. O que vem a seguir
+1. [Parte 1: Um sistema de informação começa numa organização](#parte-1-um-sistema-de-informação-começa-numa-organização)
+2. [Parte 2: Três programas, três papéis](#parte-2-três-programas-três-papéis)
+3. [Parte 3: A conversa entre o browser e o servidor](#parte-3-a-conversa-entre-o-browser-e-o-servidor)
+4. [Parte 4: O endereço, o método e o código de estado](#parte-4-o-endereço-o-método-e-o-código-de-estado)
+5. [Exemplo guiado: uma reserva do princípio ao fim](#exemplo-guiado-uma-reserva-do-princípio-ao-fim)
 
-## O que vais aprender
+## Parte 1: Um sistema de informação começa numa organização
 
-Neste módulo vais construir uma aplicação web em que o servidor gera as páginas que o browser mostra. Antes de escreveres a primeira linha desse servidor, precisas de um desenho claro de quem faz o quê. Esse desenho mostra o que acontece no teu computador e no servidor. Também mostra onde ficam os dados e como estas partes conversam umas com as outras. Sem esse desenho, cada erro que aparecer vai parecer um mistério. Isto acontece porque não vais saber em que parte procurar.
+Numa escola há equipamentos que ficam guardados numa sala, mas que qualquer professor pode levar para uma aula, como computadores portáteis, projetores e monitores. Quem precisa de um tem de o reservar. Durante anos, isto fez-se numa folha afixada na sala dos professores, onde cada professor escrevia o nome, o equipamento, o dia e o tempo letivo.
 
-Este guia constrói esse desenho, sem escrever um servidor. Parte de uma situação real de uma escola, a reserva de equipamentos. E segue-a desde a necessidade de quem a faz até à informação que fica guardada e que alguém vai consultar mais tarde.
+A folha funciona enquanto há poucos equipamentos e pouca gente. Depois, dois professores escrevem o mesmo projetor para o mesmo tempo, porque um não viu a linha do outro. Ninguém sabe dizer, sem contar à mão, que equipamentos são os mais reservados, e a escola não sabe o que comprar a seguir. E a folha só se consulta na sala dos professores.
 
-No fim deste guia deves conseguir:
+Uma aplicação web resolve estes problemas. Qualquer professor faz a reserva a partir de qualquer computador, e a aplicação recusa uma reserva de um equipamento que já está ocupado nesse tempo. A direção pode perguntar, a qualquer momento, que equipamentos foram mais reservados no período. Esta aplicação de reservas é o exemplo de todo o guia.
 
-- distinguir dados de informação, e explicar como um processo de uma organização produz informação;
-- dizer o que corre no browser, o que corre no servidor de aplicação e o que corre no servidor de dados. E onde tem de ficar a palavra-passe da base de dados;
-- descrever um pedido e uma resposta HTTP: o método, o endereço, o código de estado e o conteúdo;
-- ler um endereço e separar as suas partes;
-- seguir uma operação, como fazer uma reserva, do clique no browser até à base de dados e de volta, e desenhá-la num diagrama;
-- perante uma página que não carrega, dar uma hipótese de falha de rede e outra de falha da aplicação.
+### Um processo deixa dados registados
 
-## O que já sabes e vais usar
+A escola é uma organização: pessoas com papéis diferentes que trabalham para o mesmo fim. Há professores que reservam equipamentos, um funcionário que os entrega e recebe, e uma direção que decide as compras.
 
-Este guia usa estas bases dos anos anteriores. O diagnóstico inicial ajuda o professor a identificar o que precisas de rever:
+Um **processo** é uma sequência de passos que a organização repete para chegar a um fim. A reserva de um equipamento é um processo. O professor escolhe o equipamento e o tempo, alguém verifica se está livre, e a reserva fica registada. No dia, o professor levanta o equipamento e, no fim, devolve-o. Cada passo tem alguém que o faz, e muitos deixam alguma coisa registada.
 
-- **Tabelas relacionais.** Uma tabela tem linhas e colunas; a chave primária identifica cada linha; a chave estrangeira liga uma linha a uma linha de outra tabela. No diagnóstico, cada reserva apontava para um equipamento pelo `equipamento_id`.
-- **SQL.** `SELECT` com `WHERE` e `ORDER BY`, o `JOIN` entre duas tabelas e o `GROUP BY` com `COUNT`. Neste guia aparecem algumas consultas, só para leres e perceberes o que pedem.
-- **HTML.** Uma página é texto com etiquetas, como `<h1>` ou `<p>`, e um formulário (`<form>`) junta campos que o utilizador preenche e envia.
-- **JavaScript.** Variáveis, funções, arrays e objetos. Neste guia não escreves JavaScript, mas é a linguagem do servidor que vais construir a seguir.
+Os **dados** são os factos que ficam registados nos passos do processo, um a um: o equipamento 2, o dia 20 de outubro, o quinto tempo, o estado "confirmada". Na aplicação de reservas, ficam em duas tabelas.
 
-Também já ouviste falar de servidores e de rotas. Este guia arruma essas ideias e dá-lhes nome. Se o diagnóstico mostrou que alguma das partes acima está fraca, não é motivo para parar: o professor indica-te o que rever. E o guia volta a explicar o que usa.
-
-## Um sistema de informação começa numa organização
-
-### O problema da escola
-
-Numa escola há equipamentos que não pertencem a uma sala nem a um professor: projetores portáteis, portáteis, câmaras, colunas de som. Quem precisa de um para uma aula tem de o reservar. Durante anos isto fez-se numa folha afixada na sala dos professores: cada professor escrevia o nome, o equipamento, o dia e o tempo letivo.
-
-A folha funciona enquanto há poucos equipamentos e pouca gente. Depois começam os problemas. Dois professores escrevem o mesmo projetor para o mesmo tempo, porque um não viu a linha do outro. Ninguém sabe dizer, sem contar à mão, quais são os equipamentos mais pedidos, e por isso a escola não sabe o que comprar a seguir. Quando um equipamento não é devolvido, não há forma rápida de saber quem o levou por último. E a folha só se consulta na sala dos professores.
-
-Uma aplicação web resolve estes problemas: qualquer professor faz a reserva a partir de qualquer computador, a aplicação recusa uma reserva para um equipamento que já está ocupado nesse tempo. E a direção pode perguntar, a qualquer momento, que equipamentos foram mais reservados no período. É esta aplicação que vai servir de exemplo ao longo do módulo.
-
-### Organização, processo, dados e informação
-
-Antes de pensar em servidores, vale a pena dar nome às peças do problema, porque são estas peças que distinguem Sistemas de Informação de simplesmente programar.
-
-A **organização** é a escola. Tem pessoas com papéis diferentes: professores que pedem equipamentos, um funcionário que os entrega e recebe, uma direção que decide compras.
-
-Um **processo** é uma sequência de passos que a organização repete para atingir um fim. A reserva de um equipamento é um processo. O professor escolhe o equipamento e o tempo. Alguém verifica se está livre e a reserva fica registada. No dia, o professor levanta o equipamento e no fim devolve-o. Cada passo tem alguém que o faz e deixa alguma coisa registada.
-
-Os **dados** são os factos registados em cada passo, um a um: o equipamento 2, o dia 20 de outubro, o terceiro tempo, o estado "confirmada". Um dado sozinho diz pouco. "Projetor, 20 de outubro, terceiro tempo" é um facto registado. Por si só, não diz a que pergunta de alguém se pretende responder.
-
-A **informação** é o resultado de interpretar e organizar dados para responder a uma pergunta de alguém. "O projetor está livre no terceiro tempo de amanhã?" é uma pergunta de um professor, e a resposta é informação. "Quais foram os cinco equipamentos mais reservados neste período?" é uma pergunta da direção, e a resposta é informação que ajuda a decidir uma compra. Os mesmos dados, organizados de formas diferentes, respondem a perguntas diferentes.
-
-Um mesmo registo pode ser um dado guardado e ser usado como informação numa pergunta concreta. Para justificares a distinção, indica a pergunta e explica como os dados permitem responder-lhe.
-
-Um **sistema de informação** é o conjunto de pessoas, processos, dados e tecnologia que recolhe dados quando o processo acontece e os transforma em informação quando alguém precisa dela. A aplicação web é a parte tecnológica do sistema. Mas não é o sistema inteiro: se os professores continuarem a usar a folha, a aplicação não tem dados. E não há informação nenhuma para tirar dela.
-
-Esta distinção tem uma consequência prática na tua aplicação. Antes de desenhares tabelas ou rotas, perguntas que informação a organização precisa. Depois identificas os passos do processo que produzem os dados para a obter. Uma tabela que ninguém preenche, ou uma pergunta para a qual não se guardou o dado necessário, são erros de sistema de informação. E nenhum código os corrige.
-
-### Os dados da reserva
-
-Para a aplicação de reservas, bastam duas tabelas. São parecidas com as do diagnóstico, com mais duas colunas na reserva: o dia e o tempo letivo.
-
-**equipamentos**
+A tabela `equipamentos`:
 
 | id | nome | sala |
 | ---: | --- | --- |
@@ -90,7 +39,7 @@ Para a aplicação de reservas, bastam duas tabelas. São parecidas com as do di
 | 3 | Impressora | Secretaria |
 | 4 | Monitor | B12 |
 
-**reservas**
+A tabela `reservas`:
 
 | id | equipamento_id | data | tempo | estado |
 | ---: | ---: | --- | ---: | --- |
@@ -98,51 +47,54 @@ Para a aplicação de reservas, bastam duas tabelas. São parecidas com as do di
 | 26 | 2 | 2026-10-20 | 5 | confirmada |
 | 27 | 2 | 2026-10-21 | 3 | cancelada |
 
-A coluna `sala` diz onde o equipamento fica guardado. A coluna `tempo` é o número do tempo letivo no dia. O `equipamento_id` de cada reserva é uma chave estrangeira para a tabela de equipamentos: a reserva 26 é do equipamento 2, que é o projetor. Os dados são fictícios, como todos os deste módulo.
+A coluna `sala` diz onde o equipamento fica guardado, e a coluna `tempo` é o número do tempo letivo no dia.
 
-### Para confirmar
+Como no diagnóstico, o `equipamento_id` de cada reserva é uma chave estrangeira para a tabela de equipamentos: a reserva 26 é do equipamento 2, o projetor. A linha 26 nasceu no passo em que a reserva ficou registada.
 
-1. "Monitor, sala B12" é um dado ou informação? E "na sala B12 há dois equipamentos disponíveis para reserva"?
-2. Que passo do processo de reserva produz a linha 26 da tabela de reservas?
-3. A direção quer saber quantas reservas foram canceladas em cada mês. Os dados acima chegam para responder? Que coluna faz falta, se alguma faltar?
+### A informação responde a uma pergunta
 
-## Três programas, três papéis
+Um dado sozinho diz pouco. "Projetor, 20 de outubro, quinto tempo" é um facto registado, mas não diz a que pergunta de alguém responde.
 
-### O browser, o servidor de aplicação e o servidor de dados
+A **informação** é o resultado de organizar dados para responder a uma pergunta de alguém. "O projetor está livre no terceiro tempo de amanhã?" é uma pergunta de um professor, e a resposta é informação. "Que equipamentos foram mais reservados neste período?" é uma pergunta da direção, e a resposta é informação que ajuda a decidir uma compra. Os mesmos dados, organizados de formas diferentes, respondem a perguntas diferentes.
 
-Quando um professor faz uma reserva, há três programas envolvidos, e cada um tem um papel que os outros não podem fazer.
+O que decide se um registo é um dado ou informação é o uso que se lhe dá. A linha 26, guardada na tabela, é um dado. Quando um professor pergunta "o projetor está ocupado no quinto tempo de 20 de outubro?", a mesma linha é a resposta, e serve-lhe de informação. Por isso, para dizeres se um registo é dado ou informação, diz qual é a pergunta e como os dados lhe respondem.
 
-O **browser** (Chrome, Edge, Firefox, Safari) corre no computador do professor. Sabe pedir páginas, mostrá-las e enviar o que o professor escreve num formulário. Não sabe nada sobre reservas: não conhece as regras da escola nem vê a base de dados. Mostra o que lhe mandam e envia o que o utilizador preenche.
+Um **sistema de informação** é o conjunto de pessoas, processos, dados e tecnologia que recolhe os dados quando o processo acontece e os transforma em informação quando alguém precisa dela.
 
-O **servidor de aplicação** é um programa que corre noutro computador, ou no mesmo, à espera de pedidos. É aqui que vive a lógica do sistema. Recebe o pedido do browser e verifica as regras: "este equipamento existe?" e "já está reservado nesse tempo?". Pergunta à base de dados o que precisa. Depois constrói a resposta, a página HTML que o browser vai mostrar. Neste módulo, o servidor de aplicação é um programa em JavaScript que corre em Node.js. E é ele que vais escrever.
-
-O **servidor de dados** é o sistema de gestão de base de dados, no teu caso o MariaDB, o mesmo com que aprendeste SQL nos anos anteriores. Guarda as tabelas e responde a consultas SQL. Não sabe o que é uma página web nem fala com o browser: só recebe SQL do servidor de aplicação e devolve linhas.
-
-```text
- computador do professor          servidor de aplicação           servidor de dados
-┌──────────────────────┐        ┌──────────────────────┐        ┌──────────────────┐
-│       browser        │ pedido │  Node.js e Express   │  SQL   │     MariaDB      │
-│                      │ ─────→ │                      │ ─────→ │                  │
-│ mostra e envia       │        │ regras e páginas     │        │ tabelas          │
-│                      │ ←───── │                      │ ←───── │                  │
-└──────────────────────┘resposta└──────────────────────┘ linhas └──────────────────┘
+```mermaid
+flowchart LR
+    P["Processo:<br/>um professor reserva"] -->|regista| D[("Dados:<br/>as linhas da tabela reservas")]
+    D -->|organizados para uma pergunta| I["Informação:<br/>os equipamentos mais reservados"]
+    I -->|ajuda a decidir| C["Decisão:<br/>o que comprar"]
 ```
 
-Repara que há duas conversas diferentes, e não uma. O browser conversa com o servidor de aplicação, em HTTP. O servidor de aplicação conversa com o servidor de dados, em SQL. O browser nunca conversa com o servidor de dados.
+O processo regista dados, os dados organizam-se para responder a uma pergunta, e a resposta ajuda alguém a decidir. A aplicação web é a parte tecnológica do sistema, mas não é o sistema inteiro. Se os professores continuarem a usar a folha, a aplicação não tem dados, e não há informação nenhuma para tirar dela.
 
-Os três programas podem estar em três computadores diferentes, e numa escola ou numa empresa é o mais comum. Nas aulas, enquanto desenvolves, vão estar muitas vezes os três no teu computador. Isso não muda os papéis: continuam a ser três programas, cada um à espera do seu tipo de conversa.
+Isto muda a forma de desenhar a tua aplicação. Antes de desenhares tabelas ou páginas, pergunta de que informação a organização precisa, e depois que passos do processo produzem os dados para a obter. Uma tabela que ninguém preenche, ou uma pergunta para a qual não se guardou o dado necessário, são erros de sistema de informação, e nenhum código os corrige.
 
-### O browser não fala com a base de dados
+## Parte 2: Três programas, três papéis
 
-Parece mais simples o browser perguntar diretamente ao MariaDB. Não se faz por duas razões, e as duas são de segurança.
+### O servidor de aplicação fica entre o browser e os dados
 
-A primeira é a palavra-passe. Para falar com o MariaDB é preciso um utilizador e uma palavra-passe da base de dados. Tudo o que o browser recebe, o utilizador pode ler: basta abrir as ferramentas de programador, como vais fazer no laboratório. Uma palavra-passe que chegue ao browser deixou de ser secreta. Por isso a palavra-passe da base de dados fica só no servidor de aplicação. E nunca vai em nenhuma página, em nenhum ficheiro que o browser descarregue nem em nenhum repositório público.
+Quando um professor faz uma reserva, trabalham três programas, e cada um faz o que os outros não podem fazer.
 
-A segunda são as regras. Se o browser pudesse escrever na tabela de reservas, quem quisesse escreveria lá o que lhe apetecesse. Podia reservar um equipamento que não existe ou um projetor já ocupado. As regras têm de ser verificadas num sítio que o utilizador não controla. E esse sítio é o servidor. O browser pode ajudar, por exemplo avisando que falta preencher um campo. Mas essa ajuda é só conforto: a decisão é sempre do servidor. Isto acontece porque o browser está nas mãos do utilizador.
+O browser, como o Chrome, o Edge ou o Firefox, corre no computador do professor. Sabe pedir páginas, mostrá-las e enviar o que o professor escreve num formulário. Não sabe nada sobre reservas: não conhece as regras da escola nem vê a base de dados.
 
-### O que corre onde
+O **servidor de aplicação** é um programa que corre noutro computador, ou no mesmo, à espera de pedidos. É nele que vivem as regras do sistema. Recebe o pedido do browser, verifica as regras, como "este equipamento existe?" e "já está reservado nesse tempo?", e pede à base de dados aquilo de que precisa. Depois constrói a resposta, a página HTML que o browser vai mostrar. Neste módulo, o servidor de aplicação é um programa em JavaScript que corre no Node.js, o programa que corre JavaScript fora do browser. É esse servidor que vais escrever.
 
-Uma forma de testar se o desenho ficou claro é pegar numa ação e perguntar onde corre.
+O **servidor de dados** é o sistema de gestão de base de dados, aqui o MariaDB, o mesmo com que aprendeste SQL. Guarda as tabelas e responde a consultas SQL. Não sabe o que é uma página web nem fala com o browser: recebe SQL do servidor de aplicação e devolve linhas.
+
+```mermaid
+flowchart LR
+    B["browser:<br/>no computador do professor,<br/>mostra e envia"] <-->|"HTTP: pedidos e respostas"| A["servidor de aplicação:<br/>JavaScript no Node.js,<br/>regras e páginas"]
+    A <-->|"SQL: consultas e linhas"| D[("servidor de dados:<br/>MariaDB,<br/>tabelas")]
+```
+
+São duas conversas, e não uma. O browser conversa com o servidor de aplicação em HTTP, a língua dos pedidos e das respostas da web. O servidor de aplicação conversa com o servidor de dados em SQL. Entre o browser e o servidor de dados não há seta, porque nunca conversam.
+
+Os três programas podem estar em três computadores diferentes, e numa escola ou numa empresa é frequente. Nas aulas, enquanto desenvolves, vão estar muitas vezes os três no teu computador. Os papéis não mudam: continuam a ser três programas, cada um à espera do seu tipo de conversa.
+
+Para confirmar que o desenho ficou claro, pega numa ação e pergunta onde corre:
 
 | Ação | Onde corre |
 | --- | --- |
@@ -153,41 +105,39 @@ Uma forma de testar se o desenho ficou claro é pegar numa ação e perguntar on
 | Guardar a nova linha na tabela de reservas | servidor de dados |
 | Avisar que o campo do dia está vazio, antes de enviar | browser, só como ajuda; o servidor volta a verificar |
 
-### Para confirmar
+### O browser não fala com a base de dados
 
-1. Um colega propõe pôr a palavra-passe da base de dados num ficheiro JavaScript que o browser descarrega, "porque assim é mais rápido". O que lhe respondes?
-2. Se o MariaDB mudar para outro computador, qual dos três programas tem de saber o novo endereço? O browser tem de mudar alguma coisa?
+Parece mais simples o browser perguntar diretamente ao MariaDB. Não se faz, por duas razões, e as duas são de segurança.
 
-## A conversa entre o browser e o servidor
+A primeira é a palavra-passe. Para falar com o MariaDB, um programa precisa de um utilizador e de uma palavra-passe da base de dados. Tudo o que o browser recebe, quem o usa pode ler: basta abrir as ferramentas de programador, um painel do browser que mostra tudo o que chegou. Uma palavra-passe que chegue ao browser deixou de ser secreta. Por isso, a palavra-passe da base de dados fica só no servidor de aplicação, e nunca vai numa página, num ficheiro que o browser descarregue nem num repositório público.
 
-### Cliente e servidor
+A segunda são as regras. Se o browser pudesse escrever na tabela de reservas, quem quisesse escrevia lá o que lhe apetecesse. Podia reservar um equipamento que não existe, ou um projetor já ocupado. As regras têm de ser verificadas num sítio que quem usa o browser não controla, e esse sítio é o servidor. O browser pode ajudar, por exemplo a avisar que falta preencher um campo, mas essa ajuda é só conforto. Qualquer pessoa pode enviar um pedido sem passar pelo formulário, e por isso quem decide é sempre o servidor.
 
-Na conversa entre o browser e o servidor de aplicação, os papéis são sempre os mesmos. O browser é o **cliente**: é ele que começa a conversa, com um pedido. O servidor de aplicação é o **servidor**: está à espera, recebe o pedido e devolve uma resposta. O servidor nunca fala primeiro. Se ninguém lhe pedir nada, não manda nada a ninguém.
+Há ainda uma consequência prática. Se o MariaDB passar para outro computador, só o servidor de aplicação tem de saber o endereço novo. O browser não muda nada, porque nunca falou com o MariaDB.
 
-Pensa no balcão da reprografia da escola. O funcionário está do lado de dentro, à espera. Tu chegas e pedes "vinte cópias desta ficha". Ele faz o trabalho e entrega-te as cópias, ou diz-te que a máquina está avariada. Cada pedido tem uma resposta. O funcionário não vai à tua sala perguntar se precisas de cópias. E se fores lá três vezes, são três pedidos e três respostas.
+## Parte 3: A conversa entre o browser e o servidor
 
-Um servidor web funciona da mesma forma, e a regra mais importante é esta: um pedido, uma resposta. Cada vez que clicas numa ligação, escreves um endereço ou envias um formulário, o browser faz um pedido e espera uma resposta.
+### O browser pede e o servidor responde
 
-Para estar à espera, o servidor tem de estar a correr: é um programa que se liga e fica ligado, a escutar. Fica a escutar numa **porta**, um número que distingue os vários programas que podem estar à escuta no mesmo computador. Quando o browser faz um pedido, diz a que computador e a que porta o quer entregar. Vais ver isto na prática no tema seguinte, quando ligares o teu primeiro servidor.
+Pensa no balcão da reprografia da escola. O funcionário está do lado de dentro, à espera. Tu chegas e pedes "vinte cópias desta ficha". Ele faz o trabalho e entrega-te as cópias, ou diz-te que a máquina está avariada. O funcionário não vai à tua sala perguntar se precisas de cópias, e se fores lá três vezes, são três pedidos e três respostas.
 
-### HTTP, a língua da conversa
+Entre o browser e o servidor de aplicação, os papéis são sempre os mesmos. O browser é o **cliente**: é ele que começa a conversa, com um pedido. O servidor está à espera, recebe o pedido e devolve uma resposta. O servidor nunca fala primeiro, e se ninguém lhe pedir nada, não manda nada a ninguém. A regra é esta: um pedido, uma resposta. Cada vez que clicas numa ligação, escreves um endereço ou envias um formulário, o browser faz um pedido e espera pela resposta.
 
-Para o browser e o servidor se perceberem, precisam de uma língua comum, com regras sobre o que se diz e por que ordem. Essa língua chama-se **HTTP** (HyperText Transfer Protocol, protocolo de transferência de hipertexto). Um protocolo é isso mesmo: um conjunto de regras para uma conversa. Quando o endereço começa por `https`, a conversa é a mesma, mas cifrada pelo caminho, para que ninguém a meio a consiga ler ou alterar.
+Para se perceberem, o browser e o servidor precisam de uma língua comum, com regras sobre o que se diz e por que ordem. Essa língua chama-se **HTTP** (HyperText Transfer Protocol, protocolo de transferência de hipertexto). Um protocolo é um conjunto de regras para uma conversa. Quando o endereço começa por `https`, a conversa é a mesma, mas vai cifrada pelo caminho, para que ninguém a meio do caminho a consiga ler ou alterar.
 
-Um **pedido HTTP** tem sempre:
+### Um pedido e uma resposta têm partes
 
-- um **método**, que diz o que o cliente quer fazer: `GET` para pedir para ver alguma coisa, `POST` para enviar dados que mudam alguma coisa;
-- um **endereço**, que diz o que o cliente quer: a página dos equipamentos, a reserva 26;
-- **cabeçalhos**, linhas com informação sobre o pedido, como o nome do servidor a que se destina ou o tipo de conteúdo que o browser aceita;
-- às vezes, um **corpo**, com os dados enviados, como os campos de um formulário.
+Quando uma página não abre, tens de saber onde procurar. Um pedido e uma resposta HTTP têm sempre as mesmas partes, e é por elas que se procura:
 
-Uma **resposta HTTP** tem sempre:
+| Parte | Onde aparece | O que diz |
+| --- | --- | --- |
+| Método | no pedido | O que o cliente quer fazer: `GET` para ver alguma coisa, `POST` para enviar dados que mudam alguma coisa |
+| Endereço | no pedido | O que o cliente quer: a página dos equipamentos, a reserva 26 |
+| Cabeçalhos | no pedido e na resposta | Linhas que descrevem a mensagem, como o servidor a que se destina ou o tipo do conteúdo |
+| Corpo | às vezes no pedido, quase sempre na resposta | O conteúdo propriamente dito: os campos de um formulário, o HTML de uma página, os bytes de uma imagem |
+| Código de estado | na resposta | Um número de três algarismos que diz como correu: `200` quer dizer que correu bem, `404` que o que se pediu não existe |
 
-- um **código de estado**, um número de três algarismos que diz como correu: `200` quer dizer que correu bem, `404` que o que se pediu não existe;
-- **cabeçalhos**, entre eles o tipo do conteúdo que vem a seguir, como HTML, uma imagem ou texto;
-- quase sempre, um **corpo**, que é o conteúdo propriamente dito: o HTML da página, os bytes da imagem.
-
-As ferramentas do browser mostram uma forma legível dos pedidos e das respostas. Os exemplos seguintes usam a escrita do HTTP/1.1. É assim que fica, por escrito, o pedido que o browser faz quando um professor abre a lista de equipamentos da sala B12:
+É assim que fica, por escrito, o pedido que o browser faz quando um professor abre a lista de equipamentos da sala B12:
 
 ```text
 GET /equipamentos?sala=B12 HTTP/1.1
@@ -195,7 +145,7 @@ Host: localhost:3000
 Accept: text/html
 ```
 
-A primeira linha tem o método, o endereço dentro do servidor e a versão do protocolo. As outras são cabeçalhos: `Host` diz a que servidor se destina, `Accept` diz que o browser prefere receber HTML. Este pedido `GET` não leva corpo, e por isso termina aqui.
+A primeira linha tem o método, o endereço dentro do servidor e a versão do protocolo. As outras são cabeçalhos: `Host` diz a que servidor se destina, e `Accept` diz que o browser prefere receber HTML. Este pedido `GET` não leva corpo, e por isso termina aqui.
 
 E esta é a resposta, encurtada:
 
@@ -216,21 +166,78 @@ Content-Type: text/html; charset=utf-8
 </html>
 ```
 
-A primeira linha tem a versão e o código de estado, `200`, seguido de uma palavra que o explica. A linha `Content-Type` diz ao browser que o corpo é HTML, e é por isso que o browser o desenha como página em vez de o mostrar como texto. Depois de uma linha em branco começa o corpo. O browser lê este HTML e desenha a página que o professor vê.
+A primeira linha tem a versão e o código de estado, `200`, seguido de uma palavra que o explica. A linha `Content-Type` diz ao browser que o corpo é HTML, e é por isso que o browser o desenha como página em vez de o mostrar como texto. Depois de uma linha em branco começa o corpo, o HTML que o browser lê para desenhar a página que o professor vê.
 
-Repara numa coisa que vai ser central neste módulo: o HTML que o browser recebe foi construído pelo servidor para este pedido. Não estava guardado num ficheiro com a lista da B12. O servidor perguntou à base de dados que equipamentos estavam na B12, recebeu duas linhas e escreveu um `<li>` para cada uma. Se amanhã chegar um projetor à B12, o mesmo pedido recebe outro HTML, sem ninguém mexer em nenhum ficheiro. É isto que quer dizer uma página dinâmica gerada no servidor.
+Não tens de decorar este formato. Tens de saber que partes existem e para que serve cada uma. Nas ferramentas do browser, estas partes aparecem arrumadas numa lista, e alguns sites escrevem os nomes dos cabeçalhos em minúsculas, como `content-type`.
 
-Não tens de decorar o formato do pedido e da resposta. Tens de saber que partes existem e para que serve cada uma, porque é por elas que vais procurar quando alguma coisa correr mal.
+### O diagrama de um pedido mostra a conversa no tempo
 
-### Para confirmar
+Descrever uma conversa por palavras fica comprido depressa. Um diagrama mostra-a de uma vez: quem fala, com quem e por que ordem. Este é o diagrama do pedido da lista da B12:
 
-1. Quem começa a conversa, o browser ou o servidor? O servidor pode mandar uma página a um browser que não lha pediu?
-2. Na resposta acima, que linha faz o browser mostrar uma página em vez de texto simples?
-3. Se a direção acrescentar um equipamento à sala B12 na base de dados, alguém tem de alterar um ficheiro HTML para ele aparecer na lista? Porquê?
+```mermaid
+sequenceDiagram
+    participant B as browser
+    participant A as servidor de aplicação
+    B->>A: GET /equipamentos?sala=B12
+    A-->>B: 200, HTML com os equipamentos da B12
+```
 
-## Ler um endereço
+Cada programa tem uma coluna, com o nome no topo, e o tempo corre de cima para baixo. Cada seta é uma mensagem, com o que leva escrito por cima. Nos pedidos escreve-se o método e o endereço, e nas respostas o código de estado e o que vem no corpo ou no cabeçalho que interessa. Aqui, os pedidos têm a seta cheia e as respostas a seta tracejada, para se distinguirem à primeira vista.
 
-O endereço que escreves na barra do browser chama-se **URL** (Uniform Resource Locator, localizador uniforme de recursos). Tem partes, e cada parte responde a uma pergunta diferente. Este é o endereço do pedido da secção anterior, completo:
+Este diagrama mostra só a conversa entre o browser e o servidor de aplicação.
+
+### O servidor constrói a página para cada pedido
+
+O HTML da resposta da B12 não estava guardado num ficheiro com a lista da sala. O servidor perguntou à base de dados que equipamentos estavam na B12, recebeu duas linhas e escreveu um `<li>` para cada uma. Se amanhã chegar um projetor à B12, o mesmo pedido recebe outro HTML, sem ninguém mexer em nenhum ficheiro.
+
+A uma página que o servidor constrói no momento do pedido, a partir dos dados desse momento, chama-se **página dinâmica**.
+
+### O separador Rede mostra cada pedido e cada resposta
+
+A conversa entre o browser e o servidor não aparece na página: só se vê o resultado. Para veres os pedidos e as respostas, abres as **ferramentas de programador**, um painel que todos os browsers de computador trazem para quem faz páginas. Abrem-se com a tecla F12 ou com Ctrl+Shift+I, no Windows, e com Cmd+Option+I, no Mac.
+
+Nas ferramentas há vários separadores. O separador Rede (em inglês, Network) lista os pedidos que o browser faz, um por linha, pela ordem em que os fez. Cada linha mostra o código de estado e o tipo da resposta. Quando clicas num pedido, vês as partes da mensagem. Em Cabeçalhos (em inglês, Headers) estão o endereço, o método, o código de estado e os cabeçalhos do pedido e da resposta. Em Resposta (Response) está o corpo da resposta.
+
+O separador Rede só regista os pedidos feitos depois de estar aberto. Por isso, abre-o primeiro e só depois carrega a página.
+
+### Uma página são muitos pedidos
+
+Quando abres uma página, o browser não faz um pedido, faz vários. O primeiro pede o HTML. O browser lê o HTML e encontra lá referências a outros ficheiros: uma folha de estilos (`<link rel="stylesheet" href="estilos.css">`), imagens (`<img src="logotipo.png">`) ou código JavaScript (`<script src="menu.js">`). Para cada um, faz um pedido novo, e cada pedido tem a sua resposta e o seu código de estado.
+
+```mermaid
+sequenceDiagram
+    participant B as browser
+    participant A as servidor
+    B->>A: GET /equipamentos
+    A-->>B: 200, HTML da página
+    B->>A: GET /estilos.css
+    A-->>B: 200, folha de estilos
+    B->>A: GET /logotipo.png
+    A-->>B: 200, imagem
+```
+
+O HTML vem sempre primeiro, porque o browser só sabe que outros ficheiros tem de pedir depois de o ler. É também por isso que às vezes a página aparece sem cores ou sem imagens: o HTML chegou, mas um dos pedidos seguintes falhou.
+
+Numa página de um jornal online, é normal haver mais de cem pedidos. Muitos vão a outros servidores, porque o HTML pode mandar o browser buscar ficheiros a outros sítios.
+
+### O servidor não se lembra de ti
+
+Imagina que uma professora abre a página do projetor e, a seguir, envia o formulário da reserva. São dois pedidos, e o servidor não sabe, só pelo HTTP, que vieram da mesma pessoa. Recebe um pedido, responde e esquece.
+
+Diz-se que o HTTP é **sem estado**: cada pedido é independente dos anteriores. Por isso, cada pedido tem de levar tudo aquilo de que o servidor precisa para responder, como o endereço completo e os dados do formulário. No caso da professora, o formulário da reserva envia outra vez qual é o equipamento, apesar de a página anterior já ser a do projetor.
+
+<details>
+<summary>Para ires mais longe: como é que um site se lembra de ti</summary>
+
+Os sites que se lembram de quem os usa, como uma loja online que guarda o carrinho, juntam ao HTTP os cookies. Um cookie é um pequeno texto que o servidor pede ao browser para guardar, e que o browser envia de volta em cada pedido seguinte a esse servidor. É assim que o servidor reconhece que dois pedidos vêm do mesmo browser.
+
+</details>
+
+## Parte 4: O endereço, o método e o código de estado
+
+### Cada parte do endereço responde a uma pergunta
+
+O endereço que escreves na barra do browser chama-se **URL** (Uniform Resource Locator, localizador uniforme de recursos). Tem partes, e cada parte responde a uma pergunta diferente. Este é o endereço completo do pedido da lista da B12:
 
 ```text
 http://localhost:3000/equipamentos?sala=B12
@@ -238,90 +245,107 @@ http://localhost:3000/equipamentos?sala=B12
 
 | Parte | Neste endereço | Responde a |
 | --- | --- | --- |
-| Protocolo | `http` | Que língua se fala: HTTP, ou HTTPS se for cifrado |
-| Servidor | `localhost` | A que computador se envia o pedido |
+| Protocolo | `http` | Que língua se fala: `http`, ou `https` se a conversa for cifrada |
+| Computador | `localhost` | A que computador se envia o pedido |
 | Porta | `3000` | A que programa, dentro desse computador |
 | Caminho | `/equipamentos` | O que se pede a esse programa |
 | Parâmetros de pesquisa | `?sala=B12` | Pormenores do pedido, como um filtro |
 
 `localhost` é um nome especial que quer dizer "este computador". Quando o servidor corre no teu computador, é por `localhost` que o browser lhe chega.
 
-A **porta** nem sempre aparece no endereço. Quando não aparece, o browser usa a porta habitual do protocolo: 80 para `http` e 443 para `https`. Por isso escreves `https://pt.wikipedia.org` sem porta nenhuma, e o browser vai à porta 443. Nas aulas, os servidores que vais escrever escutam numa porta como a 3000, que tem de aparecer no endereço.
+Um computador pode ter vários programas à espera de pedidos ao mesmo tempo. Cada um escuta numa **porta**, um número que o distingue dos outros, e o endereço diz a que porta vai o pedido. Por isso, `http://localhost:3000/equipamentos` e `http://localhost:3001/equipamentos` chegam a dois programas diferentes, no mesmo computador.
 
-O **caminho** é a parte que identifica o que se pede. No servidor, há código à espera de cada caminho: o código que responde a `GET /equipamentos` é diferente do que responde a `GET /reservas`. A esse par, um método e um caminho, mais o código que o trata, chama-se **rota**. Vais escrever as tuas primeiras rotas no tema seguinte.
+A porta nem sempre aparece no endereço. Quando não aparece, o browser usa a porta habitual do protocolo: 80 para `http` e 443 para `https`. Por isso escreves `https://pt.wikipedia.org` sem porta nenhuma, e o browser vai à porta 443. Os servidores que vais escrever escutam numa porta como a 3000, que tem de aparecer no endereço.
 
-Os **parâmetros de pesquisa** (em inglês, query string) começam no ponto de interrogação. Cada parâmetro é um nome e um valor, ligados por `=`. Quando há mais do que um, separam-se com `&`: `?sala=B12&ordem=nome`. Servem para afinar o pedido sem mudar o que se pede: continuas a pedir a lista de equipamentos, mas só os da B12. Quando pesquisas na Wikipédia ou num site de compras, repara na barra de endereço: o que escreveste aparece lá, depois de um `?`.
+O caminho identifica o que se pede: a lista dos equipamentos, a página de um equipamento, as reservas. Os parâmetros de pesquisa (em inglês, query string) começam no ponto de interrogação. Cada parâmetro é um nome e um valor, ligados por `=`, e quando há mais do que um separam-se com `&`, como em `?sala=B12&ordem=nome`. Servem para afinar o pedido sem mudar o que se pede: continuas a pedir a lista de equipamentos, mas só os da B12. Quando pesquisas numa loja online, o que escreveste aparece na barra de endereço, depois de um `?`.
 
-Alguns caracteres não podem ir tal como estão num endereço, como os espaços e os acentos. O browser substitui-os por códigos que começam por `%`. Se pesquisares "projetor de vídeo", o endereço fica com `projetor+de+v%C3%ADdeo`: o `+` está no lugar dos espaços e `%C3%AD` é o `í`. Não tens de saber estes códigos; tens de saber que existem, para não estranhares quando os vires.
+<details>
+<summary>Para ires mais longe: os espaços e os acentos num endereço</summary>
 
-### Para confirmar
+Alguns caracteres não podem ir tal como estão num endereço, como os espaços e as letras com acento. O browser troca-os por códigos. Se pesquisares "projetor de vídeo" na caixa de pesquisa de um site, o endereço que segue no pedido leva `projetor+de+v%C3%ADdeo`. O `+` está no lugar de cada espaço, e `%C3%AD` é o `í`. Na barra, o browser pode mostrar o `í`, mas vês os códigos quando copias o endereço ou no separador Rede. Não precisas de saber estes códigos, só de os reconhecer quando os vires.
 
-1. No endereço `https://reservas.escola.pt/reservas?estado=cancelada`, qual é o servidor, o caminho e o parâmetro de pesquisa? A que porta vai o pedido?
-2. Os endereços `http://localhost:3000/equipamentos` e `http://localhost:3001/equipamentos` chegam ao mesmo programa? Porquê?
+</details>
 
-## Os métodos: ver ou mudar
+### GET serve para ver e POST para mudar
 
-Por agora interessam dois métodos, e a diferença entre eles é simples de dizer.
+Dos métodos do HTTP, interessam aqui dois.
 
-`GET` pede para ver alguma coisa. Abrir uma página, seguir uma ligação, escrever um endereço na barra: tudo isto são pedidos `GET`. Um pedido `GET` não deve mudar nada no servidor. Podes repeti-lo cem vezes e o resultado no servidor é o mesmo: continuas só a ver.
+`GET` pede para ver alguma coisa. Abrir uma página, seguir uma ligação, escrever um endereço na barra: tudo isto são pedidos `GET`. Um pedido `GET` não deve mudar nada no servidor. Podes repeti-lo cem vezes, e o resultado no servidor é o mesmo, porque continuas só a ver.
 
-`POST` envia dados para o servidor fazer alguma coisa com eles, e normalmente essa coisa muda o estado do sistema: criar uma reserva, cancelar uma reserva, registar uma devolução. Os dados vão no corpo do pedido, e não no endereço.
+`POST` envia dados para o servidor fazer alguma coisa com eles, e normalmente essa coisa muda os dados guardados: criar uma reserva, cancelar uma reserva, registar uma devolução. Os dados vão no corpo do pedido, e não no endereço.
 
-Esta divisão tem consequências práticas. Isto acontece porque o browser, os motores de pesquisa e outros programas partem do princípio de que um `GET` é seguro de repetir. Um browser pode voltar a pedir uma página quando carregas em "recuar". Um programa que indexa a web segue todas as ligações que encontra. Imagina que confirmar uma reserva era um `GET` a `/reservas/confirmar?equipamento=2&data=2026-10-20&tempo=3`. Bastava alguém seguir essa ligação, ou o browser voltar a carregá-la, para criar uma reserva que ninguém quis fazer. Por isso, tudo o que muda dados vai por `POST`.
+Esta divisão tem consequências práticas, porque o browser, os motores de pesquisa e outros programas partem do princípio de que um `GET` é seguro de repetir. Um browser pode voltar a pedir uma página quando carregas em "recuar", e um motor de pesquisa segue todas as ligações que encontra. Imagina que confirmar uma reserva era um `GET` a `/reservas/confirmar?equipamento=2&data=2026-10-20&tempo=3`. Bastava alguém seguir essa ligação, ou o browser voltar a carregá-la, para criar uma reserva que ninguém quis fazer. Por isso, tudo o que muda dados vai por `POST`.
 
-O tema 3 deste módulo volta aos métodos com mais pormenor, e o dos formulários mostra como um formulário HTML escolhe entre `GET` e `POST`.
+### Uma rota junta um método e um caminho
 
-### Para confirmar
+No servidor de aplicação há código à espera de cada pedido que a aplicação aceita. O código que responde a `GET /equipamentos` não é o mesmo que responde a `GET /reservas`. A esse par, um método e um caminho, juntamente com o código que o trata, chama-se **rota**.
 
-1. Pesquisar equipamentos por nome: `GET` ou `POST`? E devolver um equipamento?
-2. Porque é que um pedido que cancela uma reserva não deve ser `GET`?
+O método conta tanto como o caminho. `GET /reservas` e `POST /reservas` têm o mesmo caminho, mas são duas rotas: a primeira mostra as reservas, e a segunda cria uma reserva nova. Os parâmetros de pesquisa não fazem parte da rota. `GET /equipamentos?sala=B12` e `GET /equipamentos?sala=A03` chegam à mesma rota, `GET /equipamentos`, e é o código dela que lê o parâmetro para escolher os equipamentos.
 
-## Os códigos de estado
+### O código de estado diz como correu o pedido
 
-Todas as respostas trazem um código de estado. O primeiro algarismo diz a família, e as famílias são só cinco:
+Uma página bem desenhada não quer dizer que o pedido correu bem. Para isso, olha-se para o código de estado. Todas as respostas trazem um, e o primeiro algarismo diz a família. As famílias são só cinco:
 
 | Família | Quer dizer | Exemplos que vais encontrar |
 | --- | --- | --- |
-| 1xx | Informação intermédia | Raramente os vês |
+| 1xx | Resposta intermédia, antes da final | Raramente os vês |
 | 2xx | Correu bem | `200 OK`: aqui está o que pediste |
 | 3xx | Vai a outro sítio | `302 Found`: o que pediste está noutro endereço, e o browser vai lá sozinho |
 | 4xx | O problema está no pedido | `404 Not Found`: não existe nada neste endereço |
 | 5xx | O problema está no servidor | `500 Internal Server Error`: o servidor falhou ao tratar um pedido que até estava certo |
 
-A distinção entre 4xx e 5xx é a mais útil para quem programa. Um 4xx diz que o cliente pediu mal: um endereço que não existe, dados inválidos. Um 5xx diz que o servidor falhou: um erro no código, uma base de dados que não respondeu. Quando uma página tua der erro, o código diz-te logo de que lado procurar.
+A distinção entre 4xx e 5xx é a mais útil para quem programa. Um 4xx diz que o cliente pediu mal, como um endereço que não existe ou dados inválidos. Um 5xx diz que o servidor falhou, por um erro no código ou uma base de dados que não respondeu. Quando uma página tua der erro, o código de estado diz-te logo de que lado procurar.
 
-Um pormenor que costuma surpreender: uma resposta `404` também tem corpo. Quando abres um artigo da Wikipédia que não existe, vês uma página bem desenhada a dizer que o artigo não existe. Essa página veio com o código 404. O código é para o browser e para os programas. O corpo é para a pessoa. Uma página bonita pode trazer um código de erro. E é por isso que, para saber como correu um pedido, se olha para o código e não para o aspeto da página. No laboratório vais ver isto acontecer.
+Uma resposta `404` também tem corpo. Quando abres um artigo da Wikipédia que não existe, vês uma página bem desenhada a dizer que o artigo não existe, e essa página veio com o código 404. O código de estado é para o browser e para os programas, e o corpo é para a pessoa que lê.
 
-### Para confirmar
+### Um redirecionamento são dois pedidos
 
-1. Um professor pede a reserva 999, que não existe. Que família de código deve ter a resposta?
-2. O servidor tem um erro no código que o faz falhar sempre que alguém abre a lista de reservas. Que família de código deve ter a resposta? De quem é a culpa: do pedido ou do servidor?
+Se escreveres na barra o endereço `https://pt.wikipedia.org/w/index.php?search=computador`, que é uma pesquisa, aparece o artigo Computador, e a barra passa a mostrar o endereço do artigo. Escreveste um só endereço, mas houve dois pedidos.
 
-## Uma página são muitos pedidos
+O primeiro pedido, o da pesquisa, recebeu o código 302 e um cabeçalho `location`, com o endereço do artigo. O browser leu esse cabeçalho e fez sozinho um segundo pedido `GET` a esse endereço, que recebeu 200 e o HTML do artigo. A uma resposta 3xx que manda o browser pedir outro endereço chama-se **redirecionamento**.
 
-Quando abres uma página, o browser não faz um pedido: faz vários. O primeiro pede o HTML. O browser lê o HTML e encontra lá referências a outros ficheiros: uma folha de estilos (`<link rel="stylesheet" href="estilos.css">`), imagens (`<img src="logotipo.png">`), código JavaScript (`<script src="menu.js">`). Para cada um, faz um novo pedido, e cada pedido tem a sua resposta e o seu código de estado.
+```mermaid
+sequenceDiagram
+    participant B as browser
+    participant W as servidor da Wikipédia
+    B->>W: GET /w/index.php?search=computador
+    W-->>B: 302<br/>location: https://pt.wikipedia.org/wiki/Computador
+    B->>W: GET /wiki/Computador
+    W-->>B: 200, HTML do artigo
+```
 
-É por isso que o HTML vem sempre primeiro: o browser só sabe que mais ficheiros tem de pedir depois de ler o HTML. E é por isso que às vezes a página aparece sem cores ou sem imagens: o HTML chegou, mas um dos pedidos seguintes falhou.
+Os dois pedidos saem do browser. O servidor escolhe o destino e escreve-o no `location`, mas não envia o artigo por iniciativa própria: é o browser que o pede.
 
-Numa página de um jornal online, é normal haver mais de cem pedidos. No laboratório vais contar os pedidos de uma página da Wikipédia e ver de que tipos são.
+### Sem código de estado, não houve resposta
 
-Nas páginas que o teu servidor vai gerar neste módulo, o primeiro pedido, o do HTML, é o que interessa: é o que chega à tua rota. E é a resposta a esse pedido que o teu código constrói. Os ficheiros de estilos e as imagens são ficheiros que o servidor entrega tal como estão.
+Quando uma página não carrega, a primeira pergunta é em que parte da conversa falhou. Há três respostas possíveis, e o código de estado ajuda a separá-las:
 
-## O servidor não se lembra de ti
+```mermaid
+flowchart TD
+    P["A página não carrega"] --> Q{"No separador Rede,<br/>o pedido tem código de estado?"}
+    Q -->|não| R["Falha de rede ou servidor desligado:<br/>ninguém respondeu"]
+    Q -->|sim| T{"O terminal do servidor diz<br/>que não ligou à base de dados?"}
+    T -->|não| S["Falha da aplicação:<br/>o servidor respondeu com um erro,<br/>4xx no pedido ou 5xx no servidor"]
+    T -->|sim| D["Falha do servidor de dados:<br/>chega ao browser como 500"]
+```
 
-Há uma propriedade do HTTP que vai ter muita importância mais à frente no módulo: cada pedido é independente dos anteriores. O servidor recebe um pedido, responde e esquece. Quando chega o pedido seguinte, do mesmo browser, o servidor não sabe, só pelo HTTP, que é a mesma pessoa. Diz-se que o HTTP é um protocolo **sem estado**.
+São duas perguntas, por esta ordem: se o pedido teve código de estado e, se teve, se o terminal do servidor fala da base de dados. As respostas separam as três falhas: de rede ou servidor desligado, da aplicação e do servidor de dados.
 
-Para já, isto explica porque é que cada pedido tem de trazer tudo o que o servidor precisa para responder: o endereço completo, os parâmetros, os dados do formulário. Mais à frente, a aplicação vai precisar de se lembrar de alguém entre pedidos, como de quem está a fazer reservas. Os cookies e as sessões resolvem esse problema. Fica para o tema das sessões.
+Sem código de estado, o pedido não chegou a nenhum computador, ou chegou a um onde nenhum programa escuta naquela porta. Não houve resposta. O browser mostra uma página de erro dele, e não do servidor, com uma mensagem como "Não é possível aceder a este site". O Chrome e o Edge mostram também um código, como `ERR_CONNECTION_REFUSED`, que quer dizer ligação recusada. As causas possíveis são a rede ter caído, o endereço ou a porta estarem errados, ou o servidor não estar ligado. Confirma se outros sites abrem, se o servidor está a correr e se a porta do endereço é a porta onde ele escuta.
+
+Com um código de estado 4xx ou 5xx, o pedido chegou e o servidor respondeu, e por isso está vivo. Um 404 diz que não há rota para aquele caminho, ou que o que se pediu não existe. Um 500 diz que o código do servidor falhou ao tratar o pedido. O servidor costuma deixar uma mensagem no terminal onde está a correr, e é aí que se procura a causa.
+
+Uma falha do servidor de dados chega disfarçada, porque o browser só fala com o servidor de aplicação. O servidor de aplicação tentou fazer uma consulta, não conseguiu e respondeu 500. Para a reconhecer, lê a mensagem no terminal do servidor de aplicação, que costuma dizer que não conseguiu ligar-se à base de dados.
 
 ## Exemplo guiado: uma reserva do princípio ao fim
 
-Este exemplo junta tudo o que viste. Segue uma operação real, uma professora a reservar o projetor para uma aula, e regista cada pedido, o que o servidor faz e o que responde. A aplicação de reservas é o exemplo que acompanha os guias deste módulo e do seguinte, e é isto que vai fazer quando estiver construída. A tua aplicação pode ter o tema que escolheres, mas as suas operações fazem o mesmo caminho, do clique no browser até à base de dados e de volta. Para já não precisas de saber escrever nenhuma destas partes: precisas de perceber a ordem e quem faz cada coisa.
+Este exemplo junta tudo o que viste. Segue uma operação, uma professora a reservar o projetor para uma aula, e regista cada pedido, o que o servidor faz e o que responde. As operações de qualquer aplicação web, incluindo a tua, fazem o mesmo caminho, do clique no browser até à base de dados e de volta. Não precisas de saber escrever nenhuma destas partes: precisas de perceber a ordem e quem faz cada coisa.
 
 ### Passo 1: o que a professora quer
 
-A professora de Português quer o projetor no terceiro tempo de 20 de outubro. Em termos do processo, ela vai escolher o equipamento e o tempo, a aplicação vai verificar se está livre e, se estiver, a reserva fica registada. No fim, deve ver uma confirmação.
+A professora de Português quer o projetor no terceiro tempo de 20 de outubro. Em termos do processo, ela escolhe o equipamento e o tempo, a aplicação verifica se está livre e, se estiver, a reserva fica registada. No fim, a professora deve ver uma confirmação.
 
-Antes de olhar para pedidos, escreve-se o que se espera: se o projetor estiver livre, a reserva fica guardada com o estado "confirmada" e a professora vê a confirmação. Se não estiver, nada fica guardado e a professora vê porquê. Escrever o resultado esperado antes de testar é um hábito que vais usar em todos os laboratórios do módulo. Isto acontece porque é a única forma de saber se o que aconteceu está certo.
+Antes de olhar para pedidos, escreve-se o que se espera. Se o projetor estiver livre, a reserva fica guardada com o estado "confirmada" e a professora vê a confirmação. Se não estiver, nada fica guardado e a professora vê porquê. Com o resultado esperado escrito antes, sabes depois se o que aconteceu está certo.
 
 ### Passo 2: ver a lista de equipamentos
 
@@ -330,17 +354,13 @@ A professora escreve o endereço da aplicação e abre a lista de equipamentos.
 1. O browser faz `GET /equipamentos`.
 2. A rota que trata `GET /equipamentos` pede ao servidor de dados a lista:
 
-   Antes de leres a consulta, prevê: a lista deve vir pela ordem dos identificadores ou dos nomes?
-
    ```sql
    SELECT id, nome, sala
    FROM equipamentos
    ORDER BY nome;
    ```
 
-   Leitura guiada: começa pelas colunas de `SELECT`. `FROM` escolhe a tabela e `ORDER BY` coloca os nomes por ordem. O resultado tem Impressora, Monitor, Portátil e Projetor.
-
-3. O MariaDB devolve as quatro linhas da tabela, ordenadas pelo nome.
+3. O MariaDB devolve as quatro linhas da tabela pela ordem dos nomes: Impressora, Monitor, Portátil e Projetor. É o `ORDER BY nome` que as ordena pelo nome, e não pelo `id`.
 4. O servidor constrói o HTML da página, com uma linha por equipamento e uma ligação para cada um, e responde `200` com esse HTML.
 5. O browser desenha a página. A seguir pede a folha de estilos e o logótipo da escola, em pedidos separados.
 
@@ -351,20 +371,16 @@ A professora clica no projetor. A ligação aponta para `/equipamentos/2`, porqu
 1. O browser faz `GET /equipamentos/2`.
 2. O servidor percebe, pelo caminho, que se pede o equipamento 2, e pergunta por ele:
 
-   Antes de leres a consulta, prevê: quantas linhas deve devolver o identificador 2?
-
    ```sql
    SELECT id, nome, sala
    FROM equipamentos
    WHERE id = 2;
    ```
 
-   Leitura guiada: `SELECT` escolhe as três colunas e `WHERE id = 2` deixa passar só a linha do projetor. O resultado é uma linha, com a sala A03.
+3. O MariaDB devolve uma só linha, a do projetor, na sala A03, porque o `WHERE id = 2` só deixa passar a linha com o `id` 2.
+4. O servidor responde `200` com a página do projetor, que inclui um formulário de reserva com dois campos, o dia e o tempo, e um botão "Reservar". O formulário envia também o número do equipamento, sem o mostrar.
 
-3. O MariaDB devolve uma linha.
-4. O servidor responde `200` com a página do projetor, que inclui um formulário de reserva com dois campos, o dia e o tempo, e um botão "Reservar".
-
-Se a professora tivesse escrito `/equipamentos/9` à mão, a consulta não devolvia nenhuma linha, e o servidor respondia `404` com uma página a dizer que esse equipamento não existe.
+A mesma rota trata os caminhos de todos os equipamentos, e o número no fim diz qual se pede. Se a professora tivesse escrito `/equipamentos/9` à mão, a consulta não devolvia nenhuma linha, e o servidor respondia `404` com uma página a dizer que esse equipamento não existe.
 
 ### Passo 4: enviar a reserva
 
@@ -378,7 +394,7 @@ Content-Type: application/x-www-form-urlencoded
 equipamento_id=2&data=2026-10-20&tempo=3
 ```
 
-O corpo tem os campos do formulário no mesmo formato dos parâmetros de pesquisa: nome, `=`, valor, separados por `&`. O cabeçalho `Content-Type` diz ao servidor em que formato vem o corpo.
+O corpo tem os campos do formulário no mesmo formato dos parâmetros de pesquisa: nome, `=`, valor, separados por `&`. O cabeçalho `Content-Type` diz ao servidor em que formato vem o corpo. O `equipamento_id` vai no corpo porque o servidor não se lembra de que a professora acabou de ver o projetor.
 
 ### Passo 5: o servidor verifica as regras
 
@@ -388,7 +404,7 @@ Antes de guardar o que quer que seja, o servidor verifica. Há três perguntas, 
 2. O equipamento existe? Uma consulta como a do passo 3 responde.
 3. O equipamento está livre nesse dia e nesse tempo?
 
-   Antes de leres a consulta, prevê: alguma das reservas 26 e 27 cumpre as quatro condições?
+   Antes de leres a consulta, prevê: alguma das reservas do projetor, a 26 ou a 27, o ocupa no terceiro tempo de 20 de outubro?
 
    ```sql
    SELECT id
@@ -399,168 +415,126 @@ Antes de guardar o que quer que seja, o servidor verifica. Há três perguntas, 
      AND estado = 'confirmada';
    ```
 
-   Leitura guiada: segue cada condição de `WHERE` e junta-as com `AND`. A reserva tem de coincidir no equipamento, no dia, no tempo e no estado. O resultado é zero linhas.
-
-   Se a consulta não devolver nenhuma linha, ninguém tem o projetor nesse tempo. Repara nas duas reservas do projetor que já estão na tabela. A 26 é do mesmo dia, mas do quinto tempo, e por isso não ocupa o terceiro. A 27 é do terceiro tempo, mas de outro dia, e além disso está cancelada. Nenhuma das duas cumpre as quatro condições, e a consulta não devolve nenhuma linha.
+   A consulta não devolve nenhuma linha, e por isso ninguém tem o projetor nesse tempo. As duas reservas do projetor que já estão na tabela não contam. A 26 é do mesmo dia, mas do quinto tempo, e não ocupa o terceiro. A 27 é do terceiro tempo, mas de outro dia, e além disso está cancelada.
 
 ### Passo 6: guardar e responder
 
 O projetor está livre, por isso o servidor guarda a reserva:
-
-Antes de leres a instrução, prevê: vai criar uma reserva nova ou alterar a reserva 26?
 
 ```sql
 INSERT INTO reservas (equipamento_id, data, tempo, estado)
 VALUES (2, '2026-10-20', 3, 'confirmada');
 ```
 
-Leitura guiada: `INSERT INTO` escolhe a tabela e as colunas da linha nova. `VALUES` dá os valores pela mesma ordem. O resultado neste cenário é a reserva 28.
+O MariaDB cria uma linha nova, com o `id` seguinte, o 28. O servidor responde `200` com uma página de confirmação: "Reserva 28: Projetor, 20 de outubro, terceiro tempo". O browser mostra-a, e a professora sabe que a reserva ficou feita.
 
-O MariaDB cria a linha, com o `id` seguinte, o 28. O servidor responde `200` com uma página de confirmação: "Reserva 28: Projetor, 20 de outubro, terceiro tempo". O browser mostra-a, e a professora sabe que a reserva ficou feita.
-
-Uma nota sobre o SQL deste exemplo. Os valores aparecem escritos no meio das consultas para as leres com facilidade. No código do servidor, os valores que chegam de um pedido nunca se colam ao texto do SQL, porque quem envia o pedido podia escrever lá SQL seu. Vais ver porquê e como se faz no segundo módulo, quando ligares o servidor ao MariaDB.
+Neste exemplo, os valores aparecem escritos no meio das consultas, para as leres com facilidade. No código do servidor, os valores que chegam de um pedido nunca se colam ao texto do SQL, porque quem envia o pedido podia escrever lá SQL seu.
 
 ### Passo 7: e se o projetor estivesse ocupado
 
-Se a consulta do passo 5 tivesse devolvido uma linha, o servidor não guardava nada. Respondia com a página do projetor outra vez, com o formulário preenchido e uma mensagem: "O projetor já está reservado no terceiro tempo de 20 de outubro." A professora podia escolher outro tempo sem voltar a escrever tudo. O código de estado certo para esta resposta, e a melhor forma de a construir, ficam para o tema dos formulários.
+Se a consulta do passo 5 tivesse devolvido uma linha, o servidor não guardava nada. Respondia com a página do projetor outra vez, com o formulário preenchido e uma mensagem: "O projetor já está reservado no terceiro tempo de 20 de outubro." A professora podia escolher outro tempo sem voltar a escrever tudo.
 
-Quando os pedidos são tratados um depois do outro, esta verificação evita a segunda reserva: o segundo pedido encontra a primeira. Era o problema principal da folha da sala dos professores. Há um caso mais difícil, dois pedidos a chegar exatamente ao mesmo tempo, que se resolve no segundo módulo, com transações.
+Esta verificação impede a segunda reserva, porque o segundo pedido encontra a primeira. Era o problema principal da folha da sala dos professores.
+
+<details>
+<summary>Para ires mais longe: dois pedidos ao mesmo tempo</summary>
+
+Imagina dois pedidos para o projetor no terceiro tempo, a chegar exatamente ao mesmo tempo. Os dois podem fazer a consulta do passo 5 antes de qualquer um guardar a reserva. Os dois encontram o projetor livre, e os dois guardam. Este caso resolve-se com a ajuda da própria base de dados, e não só com esta consulta.
+
+</details>
 
 ### Passo 8: o diagrama do pedido
 
-O pedido do passo 4 até à resposta do passo 6 desenha-se assim. É este o desenho que vais fazer para as operações da ficha e do laboratório:
+O pedido do passo 4 até à resposta do passo 6 desenha-se assim:
 
-```text
-browser                     servidor de aplicação               servidor de dados
-   │                                  │                                  │
-   │ POST /reservas                   │                                  │
-   │ equipamento_id=2, data, tempo=3  │                                  │
-   │─────────────────────────────────→│                                  │
-   │                                  │ verifica os dados                │
-   │                                  │ SELECT reservas desse tempo      │
-   │                                  │─────────────────────────────────→│
-   │                                  │←─────────────────────────────────│
-   │                                  │ 0 linhas: está livre             │
-   │                                  │ INSERT INTO reservas             │
-   │                                  │─────────────────────────────────→│
-   │                                  │←─────────────────────────────────│
-   │                                  │ linha 28 criada                  │
-   │ 200, HTML da confirmação         │                                  │
-   │←─────────────────────────────────│                                  │
-   │ mostra a confirmação             │                                  │
+```mermaid
+sequenceDiagram
+    participant B as browser
+    participant A as servidor de aplicação
+    participant D as servidor de dados
+    B->>A: POST /reservas<br/>equipamento_id=2, data=2026-10-20, tempo=3
+    Note over A: verifica os dados
+    A->>D: SELECT do equipamento 2
+    D-->>A: 1 linha, o projetor
+    A->>D: SELECT das reservas desse tempo
+    D-->>A: 0 linhas
+    Note over A: está livre
+    A->>D: INSERT INTO reservas
+    D-->>A: linha 28 criada
+    A-->>B: 200, HTML da confirmação
+    Note over B: mostra a confirmação
 ```
 
-O tempo corre de cima para baixo. Cada seta horizontal é uma mensagem, com o que leva escrito por cima. As setas entre o browser e o servidor de aplicação são HTTP; as setas entre o servidor de aplicação e o servidor de dados são SQL. O browser só aparece no princípio e no fim: tudo o que está no meio aconteceu sem ele ver.
+As setas entre o browser e o servidor de aplicação são HTTP, e as setas entre o servidor de aplicação e o servidor de dados são SQL. As notas, nas caixas, dizem o que um programa faz sozinho, sem mandar mensagem a ninguém. O browser só aparece no princípio e no fim: tudo o que está no meio aconteceu sem ele ver.
 
 ### Passo 9: da reserva à informação
 
-A reserva 28 é um registo guardado. Pode responder à professora que pergunta se a sua reserva ficou confirmada. Junta-se também às outras, e daqui a umas semanas a direção quer saber que equipamentos foram mais reservados, para decidir o que comprar. A pergunta responde-se com uma consulta que já conheces do diagnóstico:
-
-Antes de leres a consulta, prevê: a reserva cancelada entra na contagem?
+A reserva 28 é um registo guardado. Responde à professora, que quer saber se a sua reserva ficou confirmada. E junta-se às outras: daqui a umas semanas, a direção quer saber que equipamentos foram mais reservados, para decidir o que comprar. A pergunta responde-se com uma consulta do género das do diagnóstico:
 
 ```sql
-SELECT e.nome, COUNT(*) AS reservas
+SELECT e.nome, COUNT(*) AS total
 FROM reservas AS r
 JOIN equipamentos AS e ON e.id = r.equipamento_id
 WHERE r.estado = 'confirmada'
 GROUP BY e.nome
-ORDER BY reservas DESC;
+ORDER BY total DESC;
 ```
-
-Leitura guiada: o `JOIN` junta o nome de cada equipamento à reserva. O `WHERE` exclui as canceladas. O `GROUP BY` forma um grupo por nome e o `COUNT` conta as reservas de cada grupo. O quadro abaixo mostra o resultado.
 
 Com as linhas da tabela mais a reserva 28, o resultado é:
 
-| nome | reservas |
+| nome | total |
 | --- | ---: |
 | Projetor | 2 |
 | Portátil | 1 |
 
-A reserva 27 não conta, porque está cancelada. Este quadro é informação: responde a uma pergunta de alguém da organização e ajuda a tomar uma decisão. Só existe porque cada reserva ficou registada com o equipamento certo e o estado certo. É este o caminho completo de um sistema de informação: um processo produz dados, o sistema guarda-os com regras, e mais tarde transforma-os em informação.
-
-## Quando a conversa falha
-
-Quando uma página não carrega, a primeira pergunta é: em que parte da conversa é que falhou? Há três respostas possíveis, e cada uma tem sinais diferentes.
-
-**Falha de rede, ou servidor desligado.** O pedido não chegou a nenhum servidor, ou chegou a um computador onde nenhum programa escuta naquela porta. Não há resposta nenhuma, e por isso não há código de estado. O browser mostra uma página de erro dele, e não do servidor, com mensagens como "Não é possível aceder a este site" ou "ligação recusada". Hipóteses: o cabo ou o Wi-Fi caiu, o endereço ou a porta estão errados, ou o servidor não está ligado. Para confirmar: outros sites abrem? O servidor está a correr? A porta do endereço é a porta onde o servidor escuta?
-
-**Falha da aplicação.** O pedido chegou ao servidor, e o servidor respondeu, mas com um código de erro. Um `404` diz que não há rota para aquele caminho, ou que o recurso pedido não existe. Um `500` diz que o código do servidor falhou ao tratar o pedido. Aqui há resposta e há código de estado, e o servidor costuma deixar uma mensagem no terminal onde está a correr. Para confirmar: que código veio? O que diz o terminal do servidor?
-
-**Falha do servidor de dados.** O browser só fala com o servidor de aplicação. Por isso uma falha do MariaDB chega-lhe disfarçada: o servidor de aplicação tentou fazer uma consulta, não conseguiu. E respondeu `500`. Para confirmar, olha para a mensagem no terminal do servidor de aplicação, que costuma dizer que não conseguiu ligar-se à base de dados.
-
-A diferença entre a primeira e as outras duas é o código de estado: se há código, houve resposta, e o servidor está vivo. É a primeira coisa a ver, e no laboratório vais aprender a vê-la.
+O Projetor tem as reservas 26 e 28, e o Portátil tem a 25. A 27 não conta, porque o `WHERE` deixa de fora as canceladas. Este quadro é informação: responde a uma pergunta de alguém da organização e ajuda a tomar uma decisão. Só existe porque cada reserva ficou registada com o equipamento certo e o estado certo.
 
 ## Erros frequentes
 
-### Achar que o browser fala com a base de dados
+### Desenhar uma seta do browser para a base de dados
 
-O erro mais comum é desenhar uma seta do browser para o MariaDB. A seta não existe. Se o browser precisa de dados, pede-os ao servidor de aplicação, que os pede à base de dados. Se te apanhares a pensar "o browser vai buscar à base de dados", corrige para "o browser pede ao servidor, que vai buscar à base de dados".
+Num diagrama aparece uma seta do browser direta ao MariaDB, ou, numa resposta, a frase "o browser vai buscar os dados à base de dados". Acontece sobretudo a quem fez pedidos com `fetch` no React, onde o pedido parte do browser e parece ir direto aos dados. Para corrigir, escreve em cada seta a língua da conversa, HTTP ou SQL, e pergunta quem tem a palavra-passe. O browser pede ao servidor de aplicação, e é este que pede à base de dados.
 
 ### Achar que a página já estava feita
 
-Muitos alunos imaginam que o servidor tem um ficheiro HTML para cada página e o devolve. Nas páginas dinâmicas não é assim: o servidor constrói o HTML no momento, a partir dos dados. Se dois professores abrirem a lista de reservas com um minuto de diferença e alguém reservar alguma coisa entretanto, recebem HTML diferente pelo mesmo endereço.
+Numa explicação aparece "o servidor devolve o ficheiro da página". Acontece porque as páginas que fizeste nas aulas de HTML eram ficheiros, e um site de ficheiros fixos funciona assim. Numa página dinâmica, o servidor constrói o HTML no momento, a partir dos dados, e o mesmo endereço pode dar HTML diferente de um minuto para o outro.
 
-### Confiar no que o browser verifica
+### Achar que o POST é mais seguro do que o GET
 
-Um formulário pode ter `required` num campo, e o browser não deixa enviar sem o preencher. Isso ajuda quem usa a aplicação, mas não protege nada: qualquer pessoa pode fazer um pedido sem passar pelo formulário. Cada regra tem de ser verificada no servidor, mesmo que o browser já a tenha verificado.
-
-### Confundir o endereço com a página
-
-O endereço identifica o que se pede, e não o que se recebe. O mesmo endereço pode dar respostas diferentes em momentos diferentes, e um endereço que não existe pode dar uma página bonita com o código 404. Para saber o que aconteceu, olha para o código de estado.
-
-### Usar GET para mudar dados
-
-Um endereço que cria, altera ou apaga dados quando é aberto é um perigo, porque os endereços são abertos sem querer: pelo histórico, ao recuar, por programas que seguem ligações. O que muda dados vai por `POST`.
-
-### Pôr a palavra-passe da base de dados onde o browser a vê
-
-Num ficheiro JavaScript que o browser descarrega, no HTML, num comentário da página, num repositório público. Tudo o que chega ao browser, ou a um repositório público, deve ser considerado lido por toda a gente.
+Como os dados de um `POST` não aparecem no endereço, parece que vão escondidos. Não vão: o `POST` não cifra nada, e o corpo do pedido vê-se nas ferramentas de programador. O que protege a conversa pelo caminho é o `https`. O que separa o `GET` do `POST` é mudar ou não mudar dados.
 
 ## Palavras novas deste guia
 
-- **Organização**: pessoas com papéis diferentes que trabalham para um fim, como a escola.
-- **Processo**: sequência de passos que uma organização repete para atingir um fim.
-- **Dados**: factos registados em cada passo de um processo.
-- **Informação**: dados organizados para responder a uma pergunta de alguém.
-- **Sistema de informação**: pessoas, processos, dados e tecnologia que recolhem dados e produzem informação.
-- **Browser**: programa que pede páginas, as mostra e envia os campos preenchidos.
-- **Servidor de aplicação**: programa que recebe os pedidos, verifica regras e constrói as respostas.
-- **Servidor de dados**: programa que guarda tabelas e responde a consultas SQL.
-- **Cliente**: programa que começa uma conversa com um pedido.
-- **HTTP**: regras da conversa de pedidos e respostas entre um cliente e um servidor web.
-- **HTTPS**: HTTP com a conversa cifrada durante o transporte.
-- **Pedido**: mensagem que o cliente envia para pedir uma operação.
-- **Resposta**: mensagem que o servidor devolve ao pedido.
-- **Método**: parte do pedido que indica a operação, como `GET` ou `POST`.
-- **Cabeçalho**: linha de informação sobre um pedido ou uma resposta, como o tipo de conteúdo.
-- **Corpo**: conteúdo enviado num pedido ou numa resposta.
-- **Código de estado**: número que indica como o servidor tratou o pedido.
-- **URL**: endereço que identifica o que se pede e a que servidor.
-- **Porta**: número que distingue um programa à escuta dentro de um computador.
-- **Caminho**: parte do endereço que identifica o que se pede ao servidor.
-- **Rota**: método e caminho reconhecidos pelo servidor, com o código que trata esse pedido.
-- **Parâmetro de pesquisa**: nome e valor depois de `?`, usados para afinar o pedido.
-- **Sem estado**: cada pedido HTTP é independente; o protocolo, por si, não identifica uma pessoa entre pedidos.
-
-## Verificar o que aprendeste
-
-Tenta responder sem voltar atrás. Depois confirma no guia.
-
-1. Explica, com o exemplo das reservas, a diferença entre um dado e informação.
-2. Desenha os três programas que participam numa reserva e escreve, em cada seta, a língua em que conversam.
-3. Onde fica a palavra-passe da base de dados? Dá duas razões para não ficar no browser.
-4. Que partes tem um pedido HTTP? E uma resposta?
-5. No endereço `http://localhost:3000/reservas?data=2026-10-20`, identifica o protocolo, o servidor, a porta, o caminho e o parâmetro de pesquisa.
-6. Porque é que confirmar uma reserva tem de ser um `POST`?
-7. Um pedido recebeu `404` e outro recebeu `500`. Em qual dos dois procuras o erro no código do servidor?
-8. Uma página não carrega e o browser mostra "ligação recusada", sem código de estado. O pedido chegou a algum servidor? Que verificarias primeiro?
-9. Porque é que o HTML é sempre o primeiro pedido de uma página?
-10. No exemplo guiado, porque é que as reservas 26 e 27, que também são do projetor, não impediram a reserva 28?
+- Processo: sequência de passos que uma organização repete para chegar a um fim.
+- Dados: factos registados nos passos de um processo.
+- Informação: dados organizados para responder a uma pergunta de alguém.
+- Sistema de informação: pessoas, processos, dados e tecnologia que recolhem dados e os transformam em informação.
+- Servidor de aplicação: programa que recebe os pedidos, verifica as regras e constrói as respostas.
+- Servidor de dados: programa que guarda as tabelas e responde a consultas SQL.
+- Cliente: programa que começa a conversa, com um pedido.
+- HTTP: regras da conversa de pedidos e respostas entre o browser e o servidor.
+- HTTPS: o HTTP com a conversa cifrada pelo caminho.
+- Método: parte do pedido que diz o que o cliente quer fazer, como `GET` ou `POST`.
+- Cabeçalho: linha que descreve um pedido ou uma resposta, como o tipo do conteúdo.
+- Corpo: conteúdo de um pedido ou de uma resposta, como os campos de um formulário ou o HTML de uma página.
+- Código de estado: número de três algarismos que diz como correu o pedido.
+- Página dinâmica: página que o servidor constrói no momento do pedido, a partir dos dados.
+- Ferramentas de programador: painel do browser que mostra, entre outras coisas, os pedidos e as respostas, no separador Rede.
+- Sem estado: cada pedido HTTP é independente dos anteriores, e o servidor não sabe, só pelo HTTP, quem fez os pedidos anteriores.
+- URL: o endereço que identifica o que se pede e a que computador.
+- Porta: número que distingue os programas à escuta no mesmo computador.
+- Caminho: parte do endereço que diz o que se pede ao servidor.
+- Parâmetro de pesquisa: nome e valor depois do `?`, que afina o pedido.
+- Rota: um método e um caminho que o servidor reconhece, com o código que trata esse pedido.
+- Redirecionamento: resposta 3xx que manda o browser pedir outro endereço, escrito no cabeçalho `location`.
 
 ## O que vem a seguir
 
-No tema seguinte vais ligar o teu primeiro servidor, um programa em Node.js com Express. Fica à escuta numa porta e responde a pedidos `GET`. Os dados dos equipamentos ficam guardados em memória. Vais ver do lado do servidor a conversa que este guia descreveu do lado do browser. E vais provocar e corrigir os erros mais comuns de quem liga um servidor pela primeira vez, como a porta ocupada.
+No tema seguinte, Primeiro servidor, escreves um servidor em Node.js com o Express e vês do lado dele a conversa que este guia descreveu do lado do browser.
 
-Antes disso, faz o [laboratório](laboratorios/01-do-pedido-a-resposta-laboratorio.md), que te põe a observar pedidos e respostas reais no browser, e a [ficha de exercícios](exercicios/01-do-pedido-a-resposta-exercicios.md), com um processo de outra área da escola.
+## Para saber mais
+
+- [An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview), na MDN, em inglês: o pedido, a resposta e as suas partes, com mais pormenor.
+- [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status), na MDN, em inglês: a lista dos códigos de estado, com o que quer dizer cada um.
 
 ![Rodapé](../imagens/rodape.png)

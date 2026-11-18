@@ -2,36 +2,17 @@
 
 # Ficha de exercícios: Do pedido à resposta
 
-Primeiro tema do módulo Aplicações baseadas em browsers. Esta ficha é para fazeres sozinho, depois de leres o [guia do tema](../01-do-pedido-a-resposta.md) e, de preferência, depois do [laboratório](../laboratorios/01-do-pedido-a-resposta-laboratorio.md). Não precisas de computador: faz-se em papel ou num ficheiro de texto.
+Praticas as ideias do guia noutro processo da escola, o empréstimo de livros da biblioteca, e desenhas uma operação que o guia não mostrou: a devolução de um livro. Os exercícios 1 a 8 são obrigatórios, por esta ordem. Escreve as respostas no `respostas-01.md`, o ficheiro de texto onde puseste a tabela do laboratório, ou numa folha, se não tens computador. Se ainda não tens o ficheiro, cria-o na tua pasta de Sistemas de Informação. Antes de cada resposta, põe o exercício e a alínea ou o item, como 3.2 ou 8 b). Entrega as respostas e o diagrama do exercício 8, desenhado à mão, em papel ou fotografado. Para rever: o [guia do tema](../01-do-pedido-a-resposta.md) e o [laboratório](../laboratorios/01-do-pedido-a-resposta-laboratorio.md).
 
-## O que precisas de saber
+## O cenário
 
-O [guia do tema](../01-do-pedido-a-resposta.md) e o [laboratório](../laboratorios/01-do-pedido-a-resposta-laboratorio.md).
-
-## O contexto desta ficha
-
-O guia seguiu um processo da escola, a reserva de equipamentos, do clique no browser até à base de dados. Esta ficha pede-te o mesmo raciocínio noutro processo, o empréstimo de livros na biblioteca, e acrescenta uma operação que o guia não mostrou: registar uma devolução.
-
-Cada exercício treina uma ideia do guia, e o título diz qual. Os exercícios 1 a 7 são curtos. O 8 junta tudo e é o mais importante: é o diagrama de uma operação completa. O desafio no fim é opcional.
-
-## Como trabalhar
-
-Avança ao teu ritmo. O que não acabares na aula pode ficar para casa ou para a aula seguinte. Faz os exercícios pela ordem indicada; os desafios são opcionais.
-
-Se a fizeres no computador, escreve as respostas no editor, no `respostas-01.md`, o ficheiro de texto onde ficou a tabela do laboratório. Se ainda não o tens, cria-o numa pasta tua de Sistemas de Informação. Antes de cada resposta, põe o número do exercício e a letra da alínea. O diagrama do exercício 8 desenha-se à mão.
-
-Tenta responder sem abrir o guia. Quando não souberes, escreve o que achas e porquê, e só depois confirma no guia: uma resposta errada com o raciocínio escrito ensina-te mais do que uma resposta certa copiada. Em cada exercício que peça uma justificação, uma ou duas frases chegam.
-
-
-## O cenário: a biblioteca da escola
-
-A biblioteca da escola empresta livros aos alunos. Até agora, cada empréstimo era anotado num caderno: o título, o número de leitor do aluno e a data. A escola quer passar para uma aplicação web, com o mesmo desenho do guia: browser, servidor de aplicação em Node.js e base de dados MariaDB.
+A biblioteca da escola empresta livros aos alunos. Até agora, cada empréstimo era anotado num caderno: o título, o número de leitor do aluno e a data. A escola quer passar para uma aplicação web, com o mesmo desenho do guia: browser, servidor de aplicação em Node.js e servidor de dados MariaDB.
 
 O processo é este. Um aluno escolhe um livro na estante ou pesquisa-o na aplicação. No balcão, a funcionária confirma que há um exemplar disponível e regista o empréstimo, com a data de hoje e a data limite de devolução, quinze dias depois. Quando o aluno devolve o livro, a funcionária regista a devolução, com a data em que aconteceu. A coordenadora da biblioteca quer saber, todas as semanas, que empréstimos estão em atraso e que livros são mais requisitados, para decidir o que comprar.
 
-A base de dados tem estas duas tabelas. Os dados são fictícios.
+A base de dados tem duas tabelas.
 
-**livros**
+A tabela `livros`:
 
 | id | titulo | autor | exemplares |
 | ---: | --- | --- | ---: |
@@ -39,7 +20,7 @@ A base de dados tem estas duas tabelas. Os dados são fictícios.
 | 2 | Mensagem | Fernando Pessoa | 2 |
 | 3 | Memorial do Convento | José Saramago | 1 |
 
-**emprestimos**
+A tabela `emprestimos`:
 
 | id | livro_id | leitor | data_emprestimo | data_limite | data_devolucao |
 | ---: | ---: | ---: | --- | --- | --- |
@@ -47,17 +28,15 @@ A base de dados tem estas duas tabelas. Os dados são fictícios.
 | 41 | 3 | 1007 | 2026-09-30 | 2026-10-15 | |
 | 42 | 1 | 1033 | 2026-10-01 | 2026-10-16 | |
 
-O `leitor` é o número de leitor do aluno no cartão da biblioteca. Uma `data_devolucao` vazia quer dizer que o livro ainda não foi devolvido.
+A coluna `exemplares` diz quantos exemplares desse livro a biblioteca tem, emprestados ou não. O `leitor` é o número de leitor do aluno no cartão da biblioteca. Uma `data_devolucao` vazia quer dizer que o livro ainda não foi devolvido.
 
 ## Exercício 1: dados ou informação
-
-Guia: secção "Organização, processo, dados e informação".
 
 Classifica cada item como dado ou informação. O primeiro está feito como exemplo.
 
 | Item | Dado ou informação |
 | --- | --- |
-| O empréstimo 41 é do livro 3 | dado: é um facto registado, um a um |
+| O empréstimo 41 é do livro 3 | dado: é um facto registado, tal como está na linha 41 |
 | A data limite do empréstimo 42 é 16 de outubro | |
 | Há dois exemplares de "Os Maias" na biblioteca neste momento | |
 | O leitor 1021 devolveu o livro a 6 de outubro | |
@@ -66,11 +45,18 @@ Classifica cada item como dado ou informação. O primeiro está feito como exem
 
 Para os itens que classificaste como informação, escreve a pergunta de alguém da biblioteca a que cada um responde.
 
-Explica também como os dados permitem obter essa resposta. Justifica qualquer classificação alternativa que proponhas, relacionando-a com a pergunta e com o uso dos dados.
+Explica também como os dados permitem obter essa resposta. Se achas que um item que classificaste como dado também pode servir de informação, escreve quem faz a pergunta e qual é, e explica como esse dado lhe responde.
+
+Rever: [A informação responde a uma pergunta](../01-do-pedido-a-resposta.md#a-informação-responde-a-uma-pergunta).
+
+<details>
+<summary>Pista</summary>
+
+Para cada item, procura nas tabelas do cenário as linhas de onde ele sai. Depois pensa em quem, na biblioteca, quereria saber isso, e para quê.
+
+</details>
 
 ## Exercício 2: o processo do empréstimo
-
-Guia: secção "Um sistema de informação começa numa organização".
 
 Os passos do processo do empréstimo estão aqui fora de ordem:
 
@@ -86,19 +72,33 @@ b) Para cada passo, indica quem o faz e que dados ficam registados nesse passo, 
 
 c) Que passo produz a linha 42 da tabela de empréstimos? E que passo vai preencher a `data_devolucao` dessa linha?
 
+Rever: [Um processo deixa dados registados](../01-do-pedido-a-resposta.md#um-processo-deixa-dados-registados).
+
+<details>
+<summary>Pista</summary>
+
+Na alínea b), olha para as colunas da tabela `emprestimos`. Em cada passo, que colunas recebem um valor novo?
+
+</details>
+
 ## Exercício 3: ler endereços
 
-Guia: secção "Ler um endereço".
-
-Para cada endereço, indica o protocolo, o servidor, a porta, o caminho e os parâmetros de pesquisa. Se uma parte não aparecer no endereço, escreve "não aparece" e, no caso da porta, diz qual é a usada.
+Para cada endereço, indica o protocolo, o computador, a porta, o caminho e os parâmetros de pesquisa. Se uma parte não aparecer no endereço, escreve "não aparece" e, no caso da porta, diz qual é a usada.
 
 1. `http://localhost:3000/livros`
 2. `http://localhost:3000/livros?autor=Pessoa`
 3. `https://biblioteca.escola.pt/emprestimos?estado=atraso&ordem=data`
 
-## Exercício 4: onde corre
+Rever: [Cada parte do endereço responde a uma pergunta](../01-do-pedido-a-resposta.md#cada-parte-do-endereço-responde-a-uma-pergunta).
 
-Guia: secção "Três programas, três papéis".
+<details>
+<summary>Pista</summary>
+
+As partes aparecem no endereço pela ordem da tabela do guia. Procura os sinais que as separam: o `://`, o `:` antes da porta, a primeira `/` depois do nome do computador e o `?`.
+
+</details>
+
+## Exercício 4: onde corre
 
 Para cada ação, indica se corre no browser, no servidor de aplicação ou no servidor de dados.
 
@@ -108,28 +108,28 @@ Para cada ação, indica se corre no browser, no servidor de aplicação ou no s
 | Decidir se ainda há um exemplar de "Memorial do Convento" para emprestar | |
 | Mostrar a lista de livros com o tipo de letra da escola | |
 | Construir o HTML da lista de empréstimos em atraso | |
-| Guardar a palavra-passe de acesso ao MariaDB | |
+| Guardar a palavra-passe usada para abrir a ligação ao MariaDB | |
 | Mostrar um aviso quando a funcionária deixa o número de leitor vazio, antes de enviar | |
 
-Na última linha, explica numa frase porque é que o servidor tem de voltar a verificar o número de leitor.
+Sobre a última ação, explica numa frase porque é que o servidor tem de voltar a verificar o número de leitor.
+
+Rever: [O servidor de aplicação fica entre o browser e os dados](../01-do-pedido-a-resposta.md#o-servidor-de-aplicação-fica-entre-o-browser-e-os-dados) e [O browser não fala com a base de dados](../01-do-pedido-a-resposta.md#o-browser-não-fala-com-a-base-de-dados).
 
 ## Exercício 5: ver ou mudar
-
-Guia: secção "Os métodos: ver ou mudar".
 
 Indica o método, `GET` ou `POST`, para cada pedido.
 
 1. Ver a lista de livros.
-2. Enviar um formulário com o número de leitor apenas para consultar os empréstimos desse leitor, sem registar alterações.
+2. Enviar um formulário com o número de leitor, para saber que livros esse leitor tem emprestados.
 3. Registar um empréstimo.
 4. Ver os empréstimos em atraso.
 5. Registar a devolução de um livro.
 
 Escolhe um dos pedidos a que respondeste `POST` e explica o que poderia correr mal se ele fosse um `GET`.
 
-## Exercício 6: códigos de estado
+Rever: [GET serve para ver e POST para mudar](../01-do-pedido-a-resposta.md#get-serve-para-ver-e-post-para-mudar).
 
-Guia: secção "Os códigos de estado".
+## Exercício 6: códigos de estado
 
 Para cada situação, indica a família do código de estado (2xx, 3xx, 4xx ou 5xx) e, se souberes, o código.
 
@@ -138,9 +138,9 @@ Para cada situação, indica a família do código de estado (2xx, 3xx, 4xx ou 5
 3. O código do servidor tem um erro que o faz falhar sempre que alguém abre a lista de empréstimos.
 4. Depois de registar um empréstimo, o servidor manda o browser ir sozinho para a página desse empréstimo.
 
-## Exercício 7: quando a conversa falha
+Rever: [O código de estado diz como correu o pedido](../01-do-pedido-a-resposta.md#o-código-de-estado-diz-como-correu-o-pedido) e [Um redirecionamento são dois pedidos](../01-do-pedido-a-resposta.md#um-redirecionamento-são-dois-pedidos).
 
-Guia: secção "Quando a conversa falha".
+## Exercício 7: quando a conversa falha
 
 Para cada sintoma, diz se a falha é de rede ou servidor desligado, da aplicação, ou do servidor de dados, e indica a primeira coisa que verificarias.
 
@@ -148,13 +148,13 @@ Para cada sintoma, diz se a falha é de rede ou servidor desligado, da aplicaç�
 2. A página da lista de livros abre, mas a de um livro em particular responde 404.
 3. Todas as páginas que mostram dados respondem 500, e no terminal do servidor aparece uma mensagem a dizer que não conseguiu ligar-se à base de dados.
 
-## Exercício 8: o diagrama de uma devolução
+Rever: [Sem código de estado, não houve resposta](../01-do-pedido-a-resposta.md#sem-código-de-estado-não-houve-resposta).
 
-Guia: secção "Exemplo guiado", sobretudo os passos 5 a 8.
+## Exercício 8: o diagrama de uma devolução
 
 O aluno com o número de leitor 1007 devolve hoje, 7 de outubro, o "Memorial do Convento". Na aplicação, a funcionária abre o empréstimo 41 e carrega no botão "Registar devolução". O browser envia um pedido ao endereço `/emprestimos/41/devolucao`.
 
-O guia mostrou uma operação que cria uma linha nova. Esta não cria: altera uma linha que já existe. E tem as suas próprias regras.
+O guia mostrou uma operação que cria uma linha nova. Esta não cria: altera uma linha que já existe.
 
 a) Que método usa o pedido? Porquê?
 
@@ -164,40 +164,31 @@ c) Desenha o diagrama do pedido, como o do passo 8 do guia, com as três colunas
 
 d) No fim da operação, o que mudou na tabela de empréstimos? Escreve a linha 41 como fica.
 
-## Apoio
+Rever: [Passo 5: o servidor verifica as regras](../01-do-pedido-a-resposta.md#passo-5-o-servidor-verifica-as-regras), [Passo 7: e se o projetor estivesse ocupado](../01-do-pedido-a-resposta.md#passo-7-e-se-o-projetor-estivesse-ocupado) e [Passo 8: o diagrama do pedido](../01-do-pedido-a-resposta.md#passo-8-o-diagrama-do-pedido).
 
-- Exercício 1: distingue um facto de uma resposta a uma pergunta de alguém.
-- Exercício 2: separa a ação física de devolver do registo dessa devolução.
-- Exercício 3: começa por separar o que está antes e depois do `?`.
-- Exercício 4: pergunta que programa tem a responsabilidade por cada ação.
-- Exercício 5: decide se a operação só consulta ou altera dados.
-- Exercício 6: escolhe a família antes do código exato.
-- Exercício 7: procura primeiro se houve uma resposta HTTP.
-- Exercício 8: verifica o estado atual antes de decidir que alteração faz sentido.
+<details>
+<summary>Pista</summary>
 
-## Desafio opcional
+Na alínea c), começa pelas três colunas, com o nome de cada programa no topo, e pela seta do pedido, que sai do browser. Depois segue o servidor de aplicação. Cada vez que ele precisa de ler ou de mudar uma linha, há uma seta para o servidor de dados e outra com a resposta.
+
+</details>
+
+## Desafios
 
 ### Informação para a coordenadora
 
-A coordenadora da biblioteca quer, todas as segundas-feiras, a lista dos empréstimos em atraso.
+A coordenadora da biblioteca quer, todas as semanas, a lista dos empréstimos em atraso.
 
 a) Explica por palavras quando é que um empréstimo está em atraso, usando as colunas da tabela.
 
-b) Com a tabela acima e o dia de hoje, 7 de outubro, há algum empréstimo em atraso? E se hoje fosse 16 de outubro? Cuidado com o empréstimo cuja data limite é o próprio dia.
+b) Com a tabela `emprestimos` do cenário, sem a devolução do exercício 8, e o dia de hoje, 7 de outubro, há algum empréstimo em atraso? E se hoje fosse 16 de outubro? Cuidado com o empréstimo cuja data limite é o próprio dia.
 
-c) Se já te sentes à vontade com o SQL do 11.º ano, escreve a consulta que devolve os empréstimos em atraso num dia à tua escolha. Usa a data escrita diretamente na consulta, como no guia.
+c) Se já te sentes à vontade com o SQL que aprendeste com o MariaDB, escreve a consulta que devolve os empréstimos em atraso num dia à tua escolha. Usa a data escrita diretamente na consulta, como no guia.
 
 ## Critérios de conclusão
 
-Entrega o `respostas-01.md`, ou as folhas, com os exercícios 1 a 8 respondidos, e o diagrama do exercício 8, desenhado ou fotografado.
-
-## Autoavaliação
-
-No fim, responde no `respostas-01.md` ou na folha:
-
-- O que consigo explicar sem ajuda: escolhe uma das ideias da ficha e explica-a em duas frases, para alguém que faltou à aula.
-- O que ainda não percebi bem: uma dúvida concreta, para levar à aula.
-
-As respostas são corrigidas na aula. Não incluas dados pessoais reais: os números de leitor e os nomes desta ficha são inventados.
+- O `respostas-01.md`, ou as folhas, tem os exercícios 1 a 8 respondidos, cada resposta com o exercício e a alínea ou o item.
+- O diagrama do exercício 8 tem as três colunas e todas as mensagens, do pedido do browser até à resposta, com o que cada seta leva escrito.
+- Cada resposta que pede uma justificação tem uma ou duas frases a explicá-la.
 
 ![Rodapé](../../imagens/rodape.png)
