@@ -2,61 +2,36 @@
 
 # Formulários e validação
 
-Módulo Aplicações baseadas em browsers. Este guia explica como receber, validar e responder aos dados de um formulário. Para praticar, tens a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md). O laboratório deste tema vai ser o passo 5 do jogo Fechado na escola, e ainda não está publicado.
+Neste guia, o catálogo de equipamentos do tema 04 ganha um formulário de reserva. Escolhes um equipamento, um dia e um tempo letivo, escreves o teu nome e carregas em "Reservar". Vês porque é que este formulário envia por `POST`, como o servidor lê e verifica cada campo, e o que responde quando há erros e quando corre bem.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
+Usa a fila do Express do tema 03, o escaping do tema 04 e os formulários de HTML do 11.º ano. Rever: [Uma fila, pela ordem do ficheiro](03-http-rotas-e-middleware.md#uma-fila-pela-ordem-do-ficheiro), [Escaping: o que vem de fora nunca vira HTML](04-ejs-e-reutilizacao-no-servidor.md#escaping-o-que-vem-de-fora-nunca-vira-html) e [Anatomia de um formulário moderno](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/HTML%20e%20CSS/05-formularios-html.md#1-anatomia-de-um-formulário-moderno). Para praticar: [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
 
 ## Neste guia
 
-1. O que vais aprender
-2. O que já sabes e vais usar
-3. Um formulário que muda alguma coisa
-4. O formulário em HTML
-5. O corpo do pedido e o middleware que o lê
-6. Validar no servidor
-7. Quando há erros: o formulário outra vez
-8. Quando corre bem: redirecionar
-9. Exemplo guiado: as reservas do catálogo
-10. Observar os pedidos no browser
-11. Erros frequentes
-12. Segurança: o que este tema já pede
-13. Verificar o que aprendeste
-14. O que vem a seguir
+1. [Parte 1: Os campos do formulário vão no corpo do pedido](#parte-1-os-campos-do-formulário-vão-no-corpo-do-pedido)
+2. [Parte 2: O servidor verifica cada campo](#parte-2-o-servidor-verifica-cada-campo)
+3. [Parte 3: O que o servidor responde ao formulário](#parte-3-o-que-o-servidor-responde-ao-formulário)
+4. [Exemplo guiado: as reservas do catálogo](#exemplo-guiado-as-reservas-do-catálogo)
 
-## O que vais aprender
+## Parte 1: Os campos do formulário vão no corpo do pedido
 
-Até aqui, o catálogo só mostrava dados: a lista dos equipamentos, um equipamento, as salas. O único formulário, o da pesquisa por sala, enviava por `GET` e não mudava nada no servidor. Neste tema, o catálogo passa a receber dados que mudam alguma coisa: uma pessoa escolhe um equipamento, um dia e um tempo letivo, escreve o nome, carrega em "Reservar". E o servidor guarda a reserva.
+Até aqui, o catálogo só mostra dados: a lista dos equipamentos, um equipamento, a pesquisa por sala. Nesta parte, ganha um formulário que muda alguma coisa no servidor, e o servidor passa a ler o que esse formulário envia.
 
-Receber dados de uma pessoa é a parte mais delicada de um servidor. A pessoa pode esquecer-se de um campo, escrever um número fora do que faz sentido, ou escrever coisas que nunca te passariam pela cabeça. E nem sempre é uma pessoa a preencher o formulário com boa vontade: qualquer programa pode enviar um pedido com os dados que quiser, sem passar pelo teu formulário. Por isso o servidor verifica tudo o que recebe, e responde de forma a que quem se enganou perceba o que corrigir.
+### Um formulário que muda alguma coisa
 
-No fim deste guia deves conseguir:
+A pesquisa por sala envia por `GET`, e o campo vai no endereço: `/equipamentos?sala=B12`. Está certo, porque a pesquisa só pede para ver: não muda nada no servidor, e pode repetir-se as vezes que se quiser.
 
-- explicar porque é que um formulário que muda dados envia por `POST`, e onde vão os dados nesse caso;
-- escrever um formulário acessível, com cada campo ligado à sua etiqueta, e os atributos que ajudam quem o preenche;
-- ler o corpo de um pedido com o `express.urlencoded` e o `req.body`, e explicar porque é que esse middleware fica antes das rotas;
-- validar no servidor cada campo: obrigatório, do tipo certo, dentro dos limites, e com um valor que esteja na lista dos permitidos;
-- responder a um formulário com erros com o código 400 e o próprio formulário, com os valores que a pessoa escreveu e uma mensagem junto de cada campo errado;
-- responder a um formulário certo com um redirecionamento 303 para uma página `GET`, e explicar o problema que isso evita;
-- demonstrar que o servidor recusa um valor vazio e um valor fora do intervalo, mesmo que o browser os deixe passar.
+Uma reserva é outra coisa. Fazê-la muda o servidor, porque passa a haver mais uma reserva, e fazê-la duas vezes faz duas reservas. Imagina que o formulário de reserva enviava por `GET`. O browser ia a um endereço como `/reservas?equipamento_id=2&data=2026-10-20&tempo=3&nome=Ana`, e esse endereço ficava no histórico. Cada visita a esse endereço fazia mais uma reserva. E há muitas maneiras de lá voltar: o browser sugere-o quando começas a escrever na barra, alguém guarda-o nos favoritos ou envia-o numa mensagem. Além disso, o teu nome ficava à vista no endereço.
 
-## O que já sabes e vais usar
+A regra é esta: `GET` para ver, `POST` para mudar. O formulário de reserva tem `method="post"`, e o browser põe os campos no corpo do pedido. O endereço fica só `/reservas`. Rever: [GET serve para ver e POST para mudar](01-do-pedido-a-resposta.md#get-serve-para-ver-e-post-para-mudar) e [O formulário escolhe o sítio dos campos pelo method](03-http-rotas-e-middleware.md#o-formulário-escolhe-o-sítio-dos-campos-pelo-method).
 
-- Caminho, pesquisa e corpo do pedido, este último ainda só como ideia: [tema 03](03-http-rotas-e-middleware.md).
-- `GET`, `POST`, códigos 200/400/404 e `return` depois de uma resposta: [tema 03](03-http-rotas-e-middleware.md).
-- Middleware, ordem e caminhos fixos antes dos parametrizados: [tema 03](03-http-rotas-e-middleware.md).
-- Valores recebidos como texto e verificação no servidor: [tema 03](03-http-rotas-e-middleware.md).
-- `res.render`, marcas EJS, ciclos, condições, partials, páginas de erro e escaping: [tema 04](04-ejs-e-reutilizacao-no-servidor.md).
-- Formulários com `<form>`, `<label>`, `<input>`, `<select>`, `<option>` e `<button>`, de HTML dos anos anteriores.
-- `trim()` para tirar espaços das pontas e `typeof` para conhecer o tipo, de JavaScript dos anos anteriores.
-- Objetos com propriedades acrescentadas depois, como `erros.nome = "..."`, de JavaScript dos anos anteriores.
-
-O exemplo parte do catálogo com páginas. Se não o tiveres a funcionar, copia [catalogo-com-ejs](../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md).
-
-## Um formulário que muda alguma coisa
-
-A pesquisa por sala envia por `GET`, e os dados vão no endereço: `/equipamentos?sala=B12`. Está certo, porque uma pesquisa só pede: não muda nada no servidor, pode repetir-se as vezes que se quiser. O endereço pode guardar-se nos favoritos ou enviar-se a alguém.
-
-Uma reserva é outra coisa. Fazê-la muda o servidor: passa a haver mais uma reserva. Fazê-la duas vezes faz duas reservas. Os dados de uma reserva não devem ir no endereço. Assim, evitas que sejam guardados nos favoritos, apareçam no histórico ou sejam partilhados numa mensagem. Por isso um formulário que muda alguma coisa envia por `POST`. E com `POST` os dados não vão no endereço: vão no **corpo** do pedido.
+| | Pesquisa por sala | Reserva |
+| --- | --- | --- |
+| Muda alguma coisa no servidor? | Não | Sim, cria uma reserva |
+| `method` do formulário | `get` | `post` |
+| Onde vão os campos | No endereço: `/equipamentos?sala=B12` | No corpo do pedido |
+| O que fica no histórico e nos favoritos | O endereço com a pesquisa | Só `/reservas`, sem os campos |
+| Repetir o pedido | Mostra outra vez a mesma lista | Cria outra reserva |
 
 O pedido que o browser envia quando carregas em "Reservar" tem este aspeto:
 
@@ -67,15 +42,11 @@ Content-Type: application/x-www-form-urlencoded
 equipamento_id=2&data=2026-10-20&tempo=3&nome=Ana
 ```
 
-A primeira linha tem o método e o caminho, como sempre. O cabeçalho `Content-Type` diz em que formato vem o corpo. E o corpo, depois da linha em branco, tem os campos do formulário, no mesmo formato da pesquisa: o nome do campo, um `=`, o valor. Os campos separam-se com `&`. Este formato chama-se `urlencoded`, ou "codificado como num endereço". Os espaços, os acentos e os carateres especiais vão em códigos. Por exemplo, `%20` representa um espaço, como num endereço.
+É o pedido do exemplo guiado do tema 01, agora com o nome de quem reserva. Rever: [Passo 4: enviar a reserva](01-do-pedido-a-resposta.md#passo-4-enviar-a-reserva). Depois da linha em branco vem o corpo, com os campos no mesmo formato dos parâmetros de pesquisa: o nome do campo, um `=` e o valor, separados por `&`. Os espaços e os acentos vão em códigos, como num endereço: o nome "Ana Rita" vai como `Ana+Rita`. A este formato chama-se **urlencoded** (codificado como num endereço), e o cabeçalho `Content-Type` di-lo ao servidor.
 
-Fica a regra que já conhecias, agora com a razão completa: `GET` para pedir, `POST` para mudar. Os dados de um `GET` vão no endereço; os de um `POST`, no corpo.
+### O formulário em HTML
 
-## O formulário em HTML
-
-O formulário de reserva tem quatro campos: o equipamento, escolhido de uma lista; o dia; o tempo letivo, de 1 a 9; e o nome de quem reserva.
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O formulário de reserva tem quatro campos: o equipamento, escolhido de uma lista; o dia; o tempo letivo, de 1 a 9; e o nome de quem reserva. A lista dos equipamentos vem do servidor, num ciclo do EJS, como as listas do tema 04:
 
 ```ejs
 <form method="post" action="/reservas">
@@ -104,27 +75,34 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 </form>
 ```
 
-Leitura guiada: lê o `method` e o `action`, depois segue o `name` de cada campo. Os valores escolhidos vão com esses nomes no pedido.
+Lê-o de fora para dentro. O `<form>` diz para onde e como vão os dados: o `action="/reservas"` é o caminho do pedido, e o `method="post"` é o método. Dentro, cada `<p>` junta uma etiqueta e um campo, e o botão `type="submit"` envia o formulário.
 
-Os dois atributos do `<form>` dizem para onde e como vão os dados: `action="/reservas"` é o caminho do pedido, e `method="post"` é o método. O botão `type="submit"` envia o formulário.
+Há três atributos que se confundem com facilidade, porque neste formulário têm os três o mesmo valor. Dois são do campo, e um é da etiqueta:
 
-Cada campo tem três atributos que convém não confundir:
+- o `name` é o nome com que o valor segue no corpo do pedido, e é o nome que o servidor lê. Um campo sem `name` não é enviado;
+- o `id` identifica o campo dentro da página;
+- o `for` da etiqueta (`<label>`) aponta para o `id` do campo.
 
-- o **`name`** é o nome com que o valor viaja no corpo do pedido, e é o nome que o servidor vai ler. Um campo sem `name` não é enviado. É o atributo que liga o formulário à rota;
-- o **`id`** identifica o campo dentro da página, e serve para lhe ligar a etiqueta;
-- o **`for`** da etiqueta (`<label>`) aponta para o `id` do campo.
+```mermaid
+flowchart LR
+    L["etiqueta<br/>label for=#quot;nome#quot;"] -->|"o for aponta<br/>para o id"| C["campo<br/>input id=#quot;nome#quot; name=#quot;nome#quot;"]
+    C -->|"o name dá o nome<br/>no corpo do pedido"| B["corpo do pedido<br/>nome=Ana"]
+    B -->|"a rota lê<br/>pelo mesmo nome"| R["req.body.nome"]
+```
 
-A ligação entre a etiqueta e o campo é a primeira regra de um formulário **acessível**, ou seja, que toda a gente consegue usar. Quem não vê bem pode usar um leitor de ecrã. Esse programa lê em voz alta o texto da etiqueta quando a pessoa chega ao campo. Sem a ligação ouve só "campo de texto", sem saber o que lá escrever. Para todos, carregar na etiqueta põe o cursor no campo, o que dá jeito sobretudo no telemóvel. Neste formulário, o `name` e o `id` têm o mesmo valor, o que é habitual e evita enganos. Mas são duas coisas diferentes.
+O diagrama mostra as duas ligações de um campo. O `for` e o `id` ligam a etiqueta ao campo, dentro da página. O `name` liga o campo ao servidor: o valor escrito segue no corpo com esse nome, e a rota lê-o com o mesmo nome.
 
-Na lista do equipamento, o valor de cada opção é o número do equipamento, e o texto é o que a pessoa lê. É o valor, e não o texto, que vai no corpo: escolher "Projetor, sala A03" envia `equipamento_id=2`. A primeira opção tem o valor vazio, para a lista não começar já com um equipamento escolhido sem a pessoa dar por isso.
+A ligação da etiqueta ao campo serve quem usa um leitor de ecrã, um programa que lê a página em voz alta a quem não vê bem. Quando a pessoa chega ao campo, ouve o texto da etiqueta; sem a ligação, ouve só "campo de texto". E serve toda a gente, porque carregar na etiqueta põe o cursor no campo, o que dá jeito sobretudo no telemóvel. É a primeira regra de um formulário acessível, que toda a gente consegue usar.
 
-Os outros atributos ajudam quem preenche. O `required` impede o envio com um campo vazio. O `type="date"` mostra um calendário. O `type="number"`, com `min` e `max`, só aceita números de 1 a 9. O `maxlength="40"` não deixa escrever mais de 40 carateres. Quando um destes não é cumprido, o browser não envia o formulário e mostra um aviso junto do campo. Isto chama-se **validação no browser**. E é útil. Isto acontece porque a pessoa vê o erro antes de perder tempo com um pedido. Mas não protege o servidor de nada. E a secção "Validar no servidor" explica porquê.
+Na lista do equipamento, cada opção tem um valor e um texto. A pessoa lê o texto, mas é o valor que segue no corpo: escolher "Projetor, sala A03" envia `equipamento_id=2`. A primeira opção tem o valor vazio, para a lista não começar com um equipamento escolhido sem a pessoa dar por isso.
 
-## O corpo do pedido e o middleware que o lê
+Os outros atributos são a validação do browser, a que no 11.º ano chamaste validação nativa. O `required` não deixa enviar um campo vazio, e o `type="date"` mostra um calendário. O `type="number"`, com o `min` e o `max`, só aceita números de 1 a 9, e o `maxlength="40"` não deixa escrever mais de 40 carateres. Quando um destes falha, o browser não envia o pedido e mostra um aviso junto do campo, e a pessoa vê o erro sem esperar pela resposta do servidor. Rever: [Validação nativa](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/HTML%20e%20CSS/05-formularios-html.md#5-validação-nativa-atributos-obrigatórios-de-dominar).
 
-O Express não lê o corpo de um pedido sozinho. Para o ler é preciso um middleware, e o Express traz um feito para este formato:
+### O corpo do pedido e o middleware que o lê
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A rota do `POST /reservas` vai ler os campos em `req.body`, cada um pelo seu nome: `req.body.nome`, `req.body.tempo`. Mas o Express não lê o corpo de um pedido sozinho. Sem mais nada, o `req.body` é `undefined`, e ler `req.body.equipamento_id` faz a rota falhar, como mostra o erro [TypeError: Cannot read properties of undefined (reading 'equipamento_id')](#typeerror-cannot-read-properties-of-undefined-reading-equipamento_id).
+
+Quem lê o corpo é um middleware que o Express já traz, feito para este formato:
 
 ```js fragment
 // Middleware que lê o corpo dos formulários enviados por POST e o põe em
@@ -132,47 +110,73 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 app.use(express.urlencoded({ extended: false }));
 ```
 
-Leitura guiada: este middleware corre antes do elemento seguinte da fila. Identifica o que prepara e se chama `next()` ou termina com uma resposta.
-
-Este middleware lê cada corpo neste formato e separa os campos. Desfaz os códigos: o `%20` volta a ser um espaço. Guarda o resultado num objeto, o `req.body`. Depois chama o `next()`, como os middlewares que escreveste no tema 3: é exatamente a mesma coisa, só que escrita por outros. Para o pedido da secção anterior, o `req.body` fica assim:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O `express.urlencoded` lê o corpo de cada pedido urlencoded, separa os campos, desfaz os códigos (o `+` volta a ser um espaço) e guarda o resultado num objeto, o `req.body`. Depois chama `next()`, como o middleware de registo do tema 03. Para o pedido da secção anterior, o `req.body` fica assim:
 
 ```js fragment
 { equipamento_id: "2", data: "2026-10-20", tempo: "3", nome: "Ana" }
 ```
 
-Leitura guiada: cada propriedade do objeto corresponde ao `name` de um campo. Os valores são textos, incluindo o número do equipamento e o tempo letivo.
+Os quatro valores são texto, também o 2 e o 3. O corpo de um pedido é texto, como o caminho e a pesquisa, e é o servidor que decide que um campo é um número e o converte. Rever: [Tudo chega como texto](03-http-rotas-e-middleware.md#tudo-chega-como-texto). O `extended: false` é a opção que chega para os campos de um formulário.
 
-Repara nas aspas: os quatro valores são texto, incluindo o 2 e o 3. É a regra do tema 3 outra vez. O corpo de um pedido é texto, e é o servidor que decide que um campo é um número e o converte. O `extended: false` escolhe a forma simples de ler este formato, que chega para formulários.
+O `express.urlencoded` prepara o `req.body` para as rotas, e por isso fica antes delas, pela segunda regra da fila do tema 03. A ordem do `server.js` passa a ser esta: o middleware de registo, o `express.urlencoded`, as rotas e o middleware final.
 
-A segunda regra do middleware, do tema 3, aplica-se aqui por inteiro. Um middleware que prepara alguma coisa para as rotas tem de estar antes delas. Se o `express.urlencoded` estiver abaixo da rota do `POST`, ou se não estiver de todo, quando a rota corre o corpo ainda não foi lido. E o `req.body` não existe: é `undefined`. Um acesso direto a `req.body.equipamento_id`, sem verificar se existe corpo, falha com `TypeError: Cannot read properties of undefined (reading 'equipamento_id')`. Nesse caso, o browser recebe um 500. A ordem certa do ficheiro fica: o middleware de registo, o `express.urlencoded`, as rotas e o middleware final.
+Prevê: com o `express.urlencoded` logo antes do middleware final, depois de todas as rotas, o que acontece quando se envia o formulário?
 
-Mesmo com o middleware no sítio certo, um pedido sem corpo pode deixar `req.body` como `undefined`. O mesmo acontece se o corpo usar um formato que o `express.urlencoded` não lê. A função de validação abaixo trata esses casos como campos em falta e a rota responde 400 com o formulário e os erros. A guarda evita a falha de execução, mas não substitui o middleware: sem ele, nem os campos de um formulário válido são lidos.
+A rota do `POST` corre primeiro, porque está mais acima na fila. Quando ela lê o `req.body`, ainda ninguém leu o corpo, e dá o mesmo erro de não haver middleware nenhum. O `express.urlencoded` nunca chega a correr para este pedido.
 
-O middleware tem também um limite. Por omissão, não aceita um corpo com mais de 100 kilobytes. Um pedido maior é recusado antes da rota, com o código 413. Esse código significa que o pedido é grande demais. Para um formulário de reserva, 100 kilobytes são mais de cem mil letras. E nunca vais lá chegar por engano. O limite existe para alguém não conseguir encher a memória do servidor com um único pedido gigante. É o primeiro dos **limites** deste tema: o servidor decide quanto aceita. E não deixa essa decisão a quem envia.
+<details>
+<summary>Para ires mais longe: o tamanho máximo do corpo</summary>
 
-## Validar no servidor
+O `express.urlencoded` não aceita um corpo com mais de 100 kilobytes, que são mais de cem mil letras. Um pedido maior é recusado antes de chegar à rota, com o código 413, que quer dizer que o pedido é grande demais, e o terminal mostra `PayloadTooLargeError: request entity too large`. Um formulário de reserva nunca lá chega por engano. O limite existe para ninguém conseguir encher a memória do servidor com um só pedido gigante: é o servidor que decide quanto aceita, e não quem envia.
 
-**Validar** é verificar que os dados recebidos servem, antes de os usar. O browser já valida o formulário, com o `required`, o `min` e o `max`. Então porque é que o servidor tem de o fazer outra vez?
+</details>
 
-Porque a validação no browser só acontece quando o pedido vem do teu formulário, num browser que a respeite. Qualquer pessoa pode abrir as ferramentas de programador e apagar o `required` de um campo. Qualquer pessoa pode guardar a página e mudar o formulário. E qualquer programa pode enviar um `POST /reservas` com os dados que quiser, sem formulário nenhum. O servidor não tem forma de saber se o pedido veio do teu formulário. A regra é por isso a mesma do tema 3, com a rota de detalhe: **o browser ajuda, o servidor decide**. A validação no browser é para a pessoa não perder tempo; a validação no servidor é a que conta.
+### O separador Rede mostra os campos enviados
 
-Validar cada campo é responder a um pequeno número de perguntas, sempre as mesmas:
+No separador Rede, um envio do formulário aparece como um pedido `POST` a `reservas`. Clica nele e abre o separador Payload ("Carga", no Chrome em português; no Firefox, "Pedido"). Em vez dos parâmetros de pesquisa, aparece "Form Data", com cada campo e o valor que o browser enviou. Rever: [O separador Rede mostra os dados que o pedido levou](03-http-rotas-e-middleware.md#o-separador-rede-mostra-os-dados-que-o-pedido-levou). Nos cabeçalhos do pedido está o `Content-Type: application/x-www-form-urlencoded`.
 
-| Pergunta | Exemplo na reserva | Se falhar |
+É aqui que se confirma o nome de um campo. Se a rota lê `req.body.nome` e o Payload mostra `nome_completo`, o problema está no `name` do formulário, e não na rota.
+
+## Parte 2: O servidor verifica cada campo
+
+Com o `req.body` preenchido, a rota já podia guardar a reserva. Mas os valores que lá estão podem não servir: um nome só com espaços, o tempo 12, o equipamento 9, que não existe. Nesta parte, o servidor verifica cada campo antes de o usar.
+
+### Validar no servidor
+
+O formulário já tem o `required`, o `min` e o `max`, e parece que isso chega. Mas a validação do browser só acontece quando o pedido sai do teu formulário, num browser que a cumpra. Qualquer pessoa pode abrir as ferramentas de programador e apagar o `required` de um campo, ou acrescentar ao `<form>` o atributo `novalidate`, que desliga a validação do browser. E qualquer programa pode enviar um `POST /reservas` com os campos que quiser, sem formulário nenhum.
+
+```mermaid
+flowchart LR
+    F["o teu formulário,<br/>com a validação do browser"] --> S["POST /reservas"]
+    N["o formulário com novalidate,<br/>ou sem o required"] --> S
+    P["um programa,<br/>sem formulário nenhum"] --> S
+    S --> V["o servidor só vê o pedido<br/>e verifica todos os campos"]
+```
+
+O diagrama mostra três caminhos até à mesma rota. Ao servidor chega só o pedido, e o pedido não diz de onde veio. Por isso, a verificação que conta é a do servidor: o browser ajuda quem preenche, e o servidor decide o que aceita. É a validação do tema 03, agora para cada campo de um formulário. Rever: [Os três códigos deste tema](03-http-rotas-e-middleware.md#os-três-códigos-deste-tema).
+
+O `novalidate` também te serve para testar. Com ele, o browser envia o formulário como estiver, e vês o que o servidor faz com um campo vazio ou com um valor fora dos limites.
+
+Verificar um campo é responder a umas poucas perguntas, sempre as mesmas:
+
+| Pergunta | Na reserva | Se falhar |
 | --- | --- | --- |
 | O campo veio, e é texto? | O `nome` pode não vir, ou vir repetido | Conta como vazio |
 | Está preenchido? | O `nome` não pode ser só espaços | "Escreve o teu nome." |
-| É do tipo certo? | O `tempo` é um número inteiro; o `data` é um dia que existe | "O tempo letivo é um número inteiro de 1 a 9." |
+| É do tipo certo? | O `tempo` é um número inteiro; o campo `data` é um dia que existe | "O tempo letivo é um número inteiro de 1 a 9." |
 | Está dentro dos limites? | O `tempo` vai de 1 a 9; o `nome` tem até 40 carateres | A mensagem do limite |
-| É um dos valores permitidos? | O `equipamento_id` tem de ser um equipamento que existe | "Escolhe um equipamento da lista." |
+| É um dos valores permitidos? | O `equipamento_id` é o de um equipamento que existe | "Escolhe um equipamento da lista." |
 
-### O campo veio, e é texto?
+<details>
+<summary>Para ires mais longe: um formulário noutro site</summary>
 
-Em `req.body`, um campo que o formulário não enviou é `undefined`. E um campo enviado duas vezes, como em `nome=Ana&nome=Rita`, não chega como texto: chega como um array, `["Ana", "Rita"]`. Os dois casos aparecem quando o pedido não vem do teu formulário. Os dois fariam o servidor falhar se tentasses chamar o `trim()` sobre eles. Isto acontece porque o `trim()` só existe nos textos. Por isso, antes de mais nada, cada campo passa por uma pequena função:
+O servidor também não sabe em que site estava o formulário. Uma página de outro site pode ter um formulário que envia para o teu `POST /reservas`, e o browser de quem a visitar envia-o como se viesse do teu. A este ataque chama-se CSRF (do inglês cross-site request forgery, pedido forjado a partir de outro site). Verificar os campos não o trava, porque os campos podem vir todos certos.
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+</details>
+
+### Cada campo passa a texto antes de tudo
+
+Em `req.body`, um campo que o formulário não enviou é `undefined`, e um campo enviado duas vezes, como em `nome=Ana&nome=Rita`, chega como uma lista: `["Ana", "Rita"]`. Com o teu formulário, nenhum dos dois acontece, mas acontece num pedido feito à mão. E nenhum dos dois é um texto, por isso não tem o `trim()`: chamá-lo faz a rota falhar. Antes de qualquer outra verificação, cada campo passa por esta função:
 
 ```js fragment
 /**
@@ -190,23 +194,45 @@ function textoDoCampo(valor) {
 }
 ```
 
-Leitura guiada: em `textoDoCampo`, começa pelo parâmetro. Segue as verificações pela ordem escrita e identifica o valor de cada `return`.
+O `typeof` dá o nome do tipo de um valor: `"string"` para um texto, `"undefined"` para um campo que não veio e `"object"` para uma lista. Só um texto passa a primeira verificação. Tudo o resto devolve o texto vazio. Um texto perde os espaços das pontas, com o `trim()`:
 
-Primeiro confirma-se o tipo, com o `typeof`, e só depois se usa o `trim()`. Um valor que não é texto passa a ser o texto vazio, e vai falhar na pergunta seguinte, a do campo preenchido, com uma mensagem que faz sentido.
+| Chega em `req.body` | A `textoDoCampo` devolve |
+| --- | --- |
+| `"Ana"` | `"Ana"` |
+| `"  Ana "` | `"Ana"` |
+| `"   "` | `""` |
+| `undefined`, de um campo que não veio | `""` |
+| `["Ana", "Rita"]`, de um campo repetido | `""` |
 
-### Está preenchido?
+Depois disto, um campo em falta, um campo vazio, um campo só com espaços e um campo repetido são todos o texto vazio. A pergunta "está preenchido?" fica numa só comparação, como `valores.nome === ""`, com a mensagem certa. Sem o `trim()`, um nome com três espaços passava como preenchido, e a reserva ficava com um nome invisível.
 
-Depois do `trim()`, um campo vazio e um campo só com espaços são o mesmo: o texto vazio, `""`. A verificação fica simples, `if (valores.nome === "")`. Sem o `trim()`, um nome com três espaços passava como preenchido, e a reserva ficava com um nome invisível.
+### Um número só se verifica depois do vazio
 
-### É do tipo certo?
+O `tempo` chega como texto, e tem de ser um número inteiro. A conversão é a do tema 03, com o `Number` e o `Number.isInteger`, mas há um caso que engana: o `Number("")` dá 0, e não `NaN`. Um tempo vazio passava a 0, e a mensagem falava de um número fora dos limites, quando a pessoa só se esqueceu de o escrever. Rever, em Linguagens de Programação: [O `Number` transforma um texto vazio em 0](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/04-api-express-e-contratos.md#o-number-transforma-um-texto-vazio-em-0).
 
-O `tempo` chega como texto, e é preciso confirmar que é um número inteiro. Faz-se como no tema 3, com o `Number` e o `Number.isInteger`, mas com um cuidado: o `Number("")` dá 0, e não um erro. Por isso a verificação do campo vazio vem primeiro, com a sua mensagem, e só depois a do número.
+Por isso, o vazio verifica-se primeiro, com a sua mensagem, e só depois o número:
 
-O `data` é mais traiçoeiro. O campo `type="date"` envia o dia no formato `AAAA-MM-DD`, como `2026-10-20`, mas quem não usar o formulário pode enviar qualquer texto. Para o JavaScript, um dia é um objeto `Date`, e o `new Date("2026-10-20")` cria o dia 20 de outubro. Um texto que não é um dia, como `"abc"`, dá uma data inválida, e isso confirma-se com o `getTime()`, que nesse caso devolve `NaN`. O problema é o meio-termo: o `new Date("2026-02-30")` não dá uma data inválida. Dá 2 de março, porque o JavaScript acerta os dias a mais e passa para o mês seguinte, sem avisar. Um texto com o formato certo e um dia que não existe passava a verificação.
+```js fragment
+  // O tempo letivo é obrigatório, e é um número inteiro de 1 a 9.
+  const tempo = Number(valores.tempo);
+  if (valores.tempo === "") {
+    erros.tempo = "Indica o tempo letivo.";
+  } else if (!Number.isInteger(tempo) || tempo < 1 || tempo > 9) {
+    erros.tempo = "O tempo letivo é um número inteiro de 1 a 9.";
+  }
+```
 
-A solução é confirmar que o dia que sai é o mesmo que entrou. A função `diaValido` é um apoio fornecido para esta verificação. Deves compreender o que recebe, aplicá-la na validação e explicar porque aceita ou recusa os casos apresentados. Não tens de a escrever de raiz:
+Só um dos ramos corre. Com o tempo vazio, a mensagem é "Indica o tempo letivo."; com `abc`, `2.5` ou `12`, é a segunda. A mesma condição verifica o limite: um número inteiro ainda não é um tempo letivo, e a parte `tempo < 1 || tempo > 9` apanha o 0, o 12 ou o -3. Cada mensagem fica num objeto, `erros`, numa propriedade com o nome do campo.
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+### Um dia com o formato certo pode não existir
+
+O campo `type="date"` envia o dia no formato `AAAA-MM-DD`, como `2026-10-20`, mas quem não usar o formulário pode enviar qualquer texto. Em JavaScript, `new Date("2026-10-20")` cria um objeto com esse dia. O `getTime()` dá o momento dessa data, em milissegundos, e numa data inválida dá `NaN`, como com o texto `"abc"`.
+
+Prevê: o que dá o `new Date("2026-02-30")`, um 30 de fevereiro?
+
+Não dá uma data inválida: dá 2 de março. O Node, como o Chrome, passa os dias a mais para o mês seguinte, sem avisar. Um texto com o formato certo e um dia que não existe passava a verificação do `getTime()`.
+
+A solução é confirmar que o dia que sai é o mesmo que entrou. Faz isso a função `diaValido`, que te é dada pronta: tens de perceber o que faz e de a usar, e não de a escrever de raiz.
 
 ```js fragment
 /**
@@ -225,31 +251,41 @@ function diaValido(texto) {
 }
 ```
 
-Leitura guiada: em `diaValido`, começa pelo parâmetro. Segue as verificações pela ordem escrita e identifica o valor de cada `return`.
+O `toISOString()` escreve a data no formato `2026-03-02T00:00:00.000Z`, e o `slice(0, 10)` fica com os dez primeiros carateres, que são o dia:
 
-O `toISOString()` escreve a data no formato `2026-03-02T00:00:00.000Z`, e o `slice(0, 10)` fica com os dez primeiros carateres, o dia. Para `"2026-10-20"`, sai `"2026-10-20"`, igual ao que entrou. Para `"2026-02-30"`, sai `"2026-03-02"`, diferente, e a função devolve `false`. Para `"abc"`, a primeira verificação já devolveu `false`. Esta ideia, a de que um valor pode parecer do tipo certo e não servir, vale para muito mais do que datas.
+| Texto | O `new Date` dá | O dia que sai | A `diaValido` devolve |
+| --- | --- | --- | --- |
+| `"2026-10-20"` | 20 de outubro | `"2026-10-20"` | `true` |
+| `"2026-02-30"` | 2 de março | `"2026-03-02"` | `false` |
+| `"abc"` | uma data inválida | nenhum: o `getTime()` dá `NaN` antes | `false` |
 
-### Está dentro dos limites?
+Na validação, o dia vazio tem a sua mensagem, "Escolhe o dia da reserva.", e só um dia preenchido passa pela `diaValido`.
 
-Um número inteiro não é ainda um tempo letivo: o tempo vai de 1 a 9, e `tempo < 1 || tempo > 9` apanha os outros. Um nome com o tamanho certo também é um limite: até 40 carateres, verificado com o `length`. O `maxlength` do formulário já impede o browser de escrever mais, mas um pedido feito à mão não tem `maxlength`.
+### O equipamento tem de ser um dos da lista
 
-### É um dos valores permitidos?
+O `equipamento_id` não é um número qualquer: tem de ser o de um equipamento que existe. A lista do formulário só oferece esses, mas um pedido feito à mão pode trazer o 9, ou `abc`. A verificação procura o equipamento, com o `find` da rota de detalhe:
 
-O `equipamento_id` não é um número qualquer: tem de ser o número de um equipamento que existe. A lista do formulário só oferece esses, mas, outra vez, um pedido feito à mão pode trazer o 9 ou o `abc`. A verificação é procurar o equipamento, com o `find` que já usaste na rota de detalhe. Se não existir, o valor não é permitido.
+```js fragment
+  // O equipamento tem de ser um dos da lista.
+  const equipamento = equipamentos.find((equipamento) => equipamento.id === Number(valores.equipamento_id));
+  if (!equipamento) {
+    erros.equipamento_id = "Escolhe um equipamento da lista.";
+  }
+```
 
-Repara que aqui um equipamento inexistente é um 400, e não um 404 como na rota de detalhe. Na rota de detalhe, pedia-se o equipamento 9, e ele não existe: 404. Aqui pede-se para criar uma reserva, e os dados enviados não servem: o pedido está mal feito, e é um 400. O equipamento inexistente é parte de um pedido mal feito.
+Se o `find` não encontra nada, o valor não é um dos permitidos. Esta verificação apanha ao mesmo tempo o vazio, o `abc` e o 9: o `Number` dá 0, `NaN` e 9, e nenhum deles é o `id` de um equipamento.
 
-### Só os campos previstos
+Aqui, um equipamento que não existe dá 400, e não 404 como em `/equipamentos/9`. Na rota de detalhe, pede-se um equipamento, e ele não existe. Aqui, pede-se para criar uma reserva, e um dos campos não serve: o pedido está mal feito.
 
-Há uma quinta pergunta, que não é sobre nenhum campo: e os campos que não deviam lá estar? Um pedido pode trazer, além dos quatro campos, um `id=999` ou um `confirmada=sim`. A resposta é ler só os campos previstos, um a um, pelo nome. E construir a reserva campo a campo, com os valores já verificados. Nunca se guarda o `req.body` inteiro. Se a rota fizesse `reservas.push(req.body)`, qualquer campo inventado por quem envia o pedido ia parar à reserva guardada. Um `id` enviado de fora podia até tomar o lugar do que o servidor devia dar.
+### Só se leem os campos previstos
+
+Um pedido pode trazer, além dos quatro campos, outros que ninguém pediu, como `id=999` ou `confirmada=sim`. Se a rota guardasse o `req.body` inteiro, com `reservas.push(req.body)`, esses campos iam parar à reserva guardada. E um `id` enviado de fora tomava o lugar do que o servidor devia dar.
+
+Por isso, a validação lê só os campos previstos, um a um, pelo nome, e a reserva constrói-se campo a campo, com os valores já verificados. Um campo a mais é ignorado: não dá erro, nem entra em lado nenhum. O `id` da reserva dá-o o servidor, com o seu contador.
 
 ### A função que valida a reserva
 
-Antes de ler os campos, a função verifica se recebeu um corpo. O `if (!corpo)` reconhece a ausência e põe um objeto vazio, `{}`, no parâmetro local `corpo`. Não altera o `req.body`. Ler uma propriedade desse objeto dá `undefined`, que a `textoDoCampo` já converte em texto vazio. Assim, as verificações habituais encontram todos os campos em falta, sem tentar ler propriedades de um corpo inexistente.
-
-As cinco perguntas, juntas numa função:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+As verificações juntam-se numa função, a `validarReserva`, que recebe o `req.body` e devolve os valores limpos e os erros:
 
 ```js fragment
 /**
@@ -305,19 +341,34 @@ function validarReserva(corpo) {
 }
 ```
 
-Leitura guiada: em `validarReserva`, começa pelo parâmetro. Segue as verificações pela ordem escrita e identifica o valor de cada `return`.
+Lê-a de cima para baixo. O primeiro `if` trata o pedido sem corpo. O objeto `valores` lê os quatro campos previstos, cada um pela `textoDoCampo`, e os quatro blocos seguintes são as verificações das secções anteriores, um por campo. O último verifica o limite do nome, de 40 carateres, com o `length`, depois de se saber que o nome não está vazio. No fim, a função devolve um objeto com duas propriedades: os `valores`, para voltar a preencher o formulário, e os `erros`, com uma mensagem por campo errado. Sem erros, o objeto `erros` fica vazio, `{}`.
 
-A função devolve duas coisas, num objeto. Os `valores` são os quatro campos já limpos, como texto: vão servir para voltar a preencher o formulário, se houver erros. Os `erros` são um objeto com uma propriedade por campo errado. E o valor de cada propriedade é a mensagem. Um formulário sem erros dá um objeto vazio, `{}`. Repara que a função não pára no primeiro erro: verifica os quatro campos, para a pessoa ver tudo o que tem de corrigir de uma vez. E não um erro de cada vez.
+O primeiro `if` existe porque, mesmo com o `express.urlencoded` no sítio, um pedido pode chegar sem corpo, ou com o corpo noutro formato, como JSON, que este middleware não lê. Nesses casos, o `req.body` é `undefined`. A função põe um objeto vazio no seu parâmetro `corpo`, sem mexer no `req.body`, e cada campo dá `undefined`, que a `textoDoCampo` transforma em texto vazio. O pedido recebe as quatro mensagens dos campos em falta, e a rota não falha.
 
-Cada mensagem diz o que fazer, e não só o que está mal: "Escolhe o dia da reserva." ajuda mais do que "Dia inválido.". Quem se enganou não está a ler o código: está a olhar para o formulário e quer saber o que mudar.
+A função não para no primeiro erro: verifica os quatro campos, para a pessoa ver de uma vez tudo o que tem de corrigir. E cada mensagem diz o que fazer, e não só o que está mal. "Escolhe o dia da reserva." ajuda mais do que "Dia inválido.", porque quem a lê está a olhar para o formulário e quer saber o que mudar.
 
-## Quando há erros: o formulário outra vez
+## Parte 3: O que o servidor responde ao formulário
 
-Quando a validação encontra erros, o pedido está mal feito, e o código é 400. Mas a resposta, numa aplicação com páginas, não é uma página de erro solta: é **o próprio formulário**, outra vez, com três diferenças em relação à primeira vez. Tem os valores que a pessoa escreveu, para não ter de os escrever de novo. Tem, junto de cada campo errado, a mensagem desse campo. E tem, no topo, uma frase a dizer que a reserva não foi feita.
+Depois da validação, a rota do `POST` responde de uma de duas maneiras:
 
-Na rota, sabe-se se houve erros contando as propriedades do objeto `erros`. O `Object.keys(erros)` dá a lista dos nomes das propriedades de um objeto, como `["data", "nome"]`; se a lista estiver vazia, não houve erros:
+```mermaid
+flowchart TD
+    P["POST /reservas,<br/>com os campos no corpo"] --> V["validarReserva(req.body)"]
+    V --> E{"há erros?"}
+    E -->|sim| F["400: o formulário outra vez,<br/>com os valores e as mensagens"]
+    E -->|não| G["guarda a reserva"]
+    G --> R["303, com Location: /reservas/1"]
+    R --> B["o browser faz GET /reservas/1"]
+    B --> O["200: a página da reserva"]
+```
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Com erros, o servidor responde com o formulário outra vez, e nada fica guardado. Sem erros, guarda a reserva e responde com um redirecionamento, e é o browser que pede a seguir a página da reserva.
+
+### Quando há erros: o formulário outra vez
+
+Com erros, o pedido está mal feito, e o código é 400. A resposta podia ser a página de erro do tema 04. Mas aí a pessoa ficava sem o formulário e, ao voltar atrás, não via junto de cada campo o que tinha de corrigir. Num formulário, a resposta a um erro é o próprio formulário, com três diferenças. Os campos trazem o que a pessoa escreveu, cada campo errado tem a sua mensagem, e uma frase no topo diz que a reserva não foi feita.
+
+Para saber se houve erros, a rota conta as propriedades do objeto `erros`. O `Object.keys(erros)` dá a lista dos nomes das propriedades, como `["data", "nome"]`, e uma lista vazia quer dizer que não houve erros:
 
 ```js fragment
 const resultado = validarReserva(req.body);
@@ -334,13 +385,13 @@ if (Object.keys(resultado.erros).length > 0) {
 }
 ```
 
-Leitura guiada: avalia a condição com os dados do exemplo. Só o ramo escolhido produz o resultado; o outro ramo não é executado.
+A página é a do formulário, `reserva-nova`, com o código 400 e mais dois dados: os `valores` e os `erros` que a validação devolveu.
 
-O `return` é obrigatório. E aqui ainda mais do que nos temas anteriores. Sem ele, a rota continuava, guardava a reserva com os dados errados e respondia ao browser como se tivesse corrido bem. O servidor ia abaixo logo a seguir, quando a página do formulário ficasse pronta e já não houvesse a quem a enviar.
+O `return` a seguir é obrigatório. Sem ele, a rota continuava: guardava a reserva com os dados errados e respondia outra vez. O servidor ia abaixo, como mostra o erro [Depois de um envio com erros, o servidor vai abaixo](#depois-de-um-envio-com-erros-o-servidor-vai-abaixo).
 
-O modelo do formulário passa a receber os `valores` e os `erros`. Para cada campo, o valor vai no atributo `value`, e a mensagem, se houver, vai dentro da etiqueta:
+### O formulário volta com os valores e as mensagens
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O modelo do formulário passa a receber os `valores` e os `erros`. Em cada campo, o valor vai no atributo `value`, e a mensagem, se houver, vai dentro da etiqueta:
 
 ```ejs
 <p>
@@ -351,37 +402,27 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 </p>
 ```
 
-Leitura guiada: avalia a condição com os dados do exemplo. Só o ramo escolhido produz o resultado; o outro ramo não é executado.
+A mensagem fica dentro do `<label>` por causa do leitor de ecrã. Quando chega ao campo, ele lê a etiqueta inteira, e por isso lê também o erro desse campo. Com a mensagem noutro sítio da página, sem nada que a ligue ao campo, quem não vê o ecrã não saberia a que campo ela pertence.
 
-A mensagem fica dentro do `<label>` por uma razão de acessibilidade: o leitor de ecrã lê a etiqueta inteira quando chega ao campo. Por isso lê também o erro desse campo. Numa página onde o erro estivesse noutro sítio qualquer, quem não vê o ecrã não saberia a que campo pertence.
+O valor entra com `<%=`, como todos os valores do tema 04, e aqui há uma razão a mais. Os valores que voltam ao formulário vieram do pedido, e qualquer pessoa pode lá escrever o que quiser. Se alguém escrever no nome `"><b>x</b>`, o browser recebe `value="&#34;&gt;&lt;b&gt;x&lt;/b&gt;"`, e o campo mostra o texto tal como foi escrito. Com `<%-`, as aspas fechavam o atributo antes do tempo, e o resto entrava na página como HTML.
 
-O valor no `value` entra com `<%=`, e isto é a regra do escaping do tema 4 a proteger um sítio novo, o atributo. Se alguém escrever no nome `"><b>x</b>`, com `<%=` o browser recebe `value="&#34;&gt;&lt;b&gt;x&lt;/b&gt;"`, e o campo mostra o texto tal como foi escrito. Com `<%-`, as aspas fechavam o atributo antes do tempo, e o resto entrava na página como HTML. Os valores que voltam ao formulário são, por definição, valores que vieram do pedido.
-
-Na lista do equipamento não há `value` para preencher: é preciso marcar como escolhida a opção que a pessoa tinha escolhido. Faz-se com o atributo `selected`, só na opção certa:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Na lista do equipamento não há `value` para preencher. Marca-se como escolhida a opção que a pessoa tinha escolhido, com o atributo `selected`, só nessa opção:
 
 ```ejs
 <option value="<%= equipamento.id %>" <% if (String(equipamento.id) === valores.equipamento_id) { %>selected<% } %>><%= equipamento.nome %>, sala <%= equipamento.sala %></option>
 ```
 
-Leitura guiada: avalia a condição com os dados do exemplo. Só o ramo escolhido produz o resultado; o outro ramo não é executado.
+O `equipamento.id` é um número, e o `valores.equipamento_id` é texto, porque veio do pedido. O `String(...)` converte o número em texto, para os dois se poderem comparar com `===`. Sem ele, `2 === "2"` dá sempre `false`, nenhuma opção fica com o `selected`, e a lista volta a "Escolhe um equipamento" depois de cada erro.
 
-O `equipamento.id` é um número, e o `valores.equipamento_id` é texto, porque veio do pedido. O `String(...)` converte o número em texto para os dois se poderem comparar com `===`. Sem ele, `2 === "2"` dava sempre `false`, e a lista voltava sempre ao início.
+Da primeira vez que o formulário aparece, na rota `GET /reservas/nova`, ainda não há valores nem erros. O modelo é o mesmo, e a rota passa-lhe quatro valores vazios e um objeto de erros vazio. Sem eles, a página dava 500, com `erros is not defined`, o erro do tema 04 de uma variável que a rota não passou ao modelo.
 
-Da primeira vez que o formulário aparece, na rota `GET /reservas/nova`, ainda não há valores nem erros. O modelo é o mesmo, e a rota passa-lhe os quatro valores vazios e um objeto de erros vazio, para o modelo poder usar as variáveis sem erro.
+### Quando corre bem: redirecionar
 
-## Quando corre bem: redirecionar
+Sem erros, a rota constrói a reserva campo a campo e guarda-a. Falta responder. A primeira ideia é responder logo com a página da reserva, com o `res.render` e o código 200. Funciona, mas tem um defeito, que se vê ao recarregar a página.
 
-Quando a validação passa, a rota constrói a reserva campo a campo, com os valores verificados, e guarda-a. Falta escolher a resposta, e um `POST` que criou alguma coisa tem mais do que uma resposta certa.
+A página no ecrã é a resposta a um `POST`. Se a pessoa a recarregar, o browser não pede a página outra vez: repete o pedido que a trouxe, o `POST`, com o mesmo corpo. Os browsers avisam antes, numa janela que pergunta se queres enviar outra vez os dados do formulário, mas muita gente carrega em continuar sem ler. O servidor recebe um segundo `POST` igual ao primeiro e guarda uma segunda reserva igual. A este problema chama-se reenvio do formulário, e numa aplicação de reservas ocupa um equipamento que ninguém pediu.
 
-Se a resposta fosse para outro programa, como acontece numa API, o habitual era o código 201, que quer dizer "criado", com os dados da reserva no corpo, em JSON. É o que vais fazer em Linguagens de Programação. Mas aqui a resposta é para uma pessoa, num browser, e o que ela precisa de ver é uma página a confirmar a reserva. Há duas formas de lha dar.
-
-A primeira é responder logo com a página da reserva, com o código 200. Funciona, e tem um defeito que se vê com uma tecla. A página que o browser mostra é a resposta a um `POST`. Se a pessoa a recarregar, o browser não pede a página outra vez: repete o pedido que a trouxe, o `POST`, com o mesmo corpo. Os browsers avisam antes de o fazer, com uma janela a perguntar se queres reenviar os dados do formulário. Mas a maior parte das pessoas carrega em "Continuar" sem ler. O servidor recebe um segundo `POST`, igual ao primeiro, e cria uma segunda reserva igual. O mesmo acontece com o botão "Voltar" seguido de "Avançar". Numa aplicação de reservas, uma reserva repetida ocupa um equipamento sem ninguém o ter pedido.
-
-A segunda forma resolve isto. E é a que se usa. Em vez de responder com a página, o servidor responde com um **redirecionamento**: o código 303, "See Other" (vê outro), sem página nenhuma. Mas com um cabeçalho `Location`, que diz o endereço para onde o browser deve ir. O browser faz sozinho um `GET` a esse endereço, que é a página da reserva. E mostra-a. Agora, a página que está no ecrã é a resposta a um `GET`. Recarregá-la só volta a pedir a página: não cria nada.
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A solução é não responder com a página. O servidor responde com um redirecionamento, como o da pesquisa da Wikipédia do tema 01. O código é o **303** (See Other, vê outro), que manda o browser pedir outro endereço com um `GET`. Rever: [Um redirecionamento são dois pedidos](01-do-pedido-a-resposta.md#um-redirecionamento-são-dois-pedidos). O endereço vai no cabeçalho `Location`, e é o da página da reserva:
 
 ```js fragment
 // Redirecionamento 303: o browser faz um GET à página da reserva.
@@ -389,34 +430,56 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 res.redirect(303, `/reservas/${reserva.id}`);
 ```
 
-Leitura guiada: o código 303 não envia a página de confirmação. O browser lê o destino e faz um novo pedido `GET` a esse endereço.
+O `res.redirect` responde logo, sem a página da reserva: só com o 303 e o `Location: /reservas/1`. O browser faz sozinho o `GET /reservas/1` e mostra a página que vem nessa resposta.
 
-A este padrão chama-se **PRG**, das iniciais de Post, Redirect, Get: o formulário envia por `POST`, o servidor responde com um redirecionamento. O browser mostra o resultado com um `GET`. O 303 é da família do 302 que viste no laboratório do primeiro tema, na pesquisa da Wikipédia. A diferença é que o 303 diz expressamente que o pedido seguinte é um `GET`, que é o que se quer depois de um `POST`.
+```mermaid
+sequenceDiagram
+    participant B as browser
+    participant S as servidor
+    B->>S: POST /reservas, com os campos no corpo
+    S-->>B: 303, Location: /reservas/1
+    B->>S: GET /reservas/1
+    S-->>B: 200, a página da reserva
+    Note over B,S: a pessoa recarrega a página
+    B->>S: GET /reservas/1
+    S-->>B: 200, a mesma página
+```
 
-O redirecionamento só se faz quando corre bem. Quando há erros, a resposta é o formulário com o 400, como na secção anterior. Não há redirecionamento: os valores e as mensagens só existem durante aquele pedido. E um `GET` novo já não os teria.
+O diagrama mostra o envio e, depois, um recarregamento. O formulário envia um `POST`, o servidor guarda a reserva e responde 303, e o browser faz o `GET`. A página no ecrã passa a ser a resposta a um `GET`, e recarregá-la repete o `GET`: mostra outra vez a mesma reserva, e não cria nenhuma.
 
-O endereço para onde se redireciona, `/reservas/1`, tem de ter uma rota `GET`. Essa rota tem um parâmetro, o número da reserva, e fica abaixo da rota do formulário, `/reservas/nova`, pela regra do tema 3: o caminho fixo antes do caminho com parâmetro. Ao contrário, o pedido a `/reservas/nova` ia parar à rota de uma reserva, com `"nova"` como número, e respondia 400.
+A este padrão chama-se **PRG**, das iniciais, em inglês, de `POST`, redirecionamento e `GET`. Usa-se o 303, e não o 302 da Wikipédia, porque o 303 diz expressamente que o pedido seguinte é um `GET`. É o que se quer depois de um `POST`.
+
+O redirecionamento só se faz quando corre bem. Com erros, a resposta é o formulário com o 400: os valores e as mensagens só existem durante aquele pedido, e um `GET` novo já não os teria.
+
+O endereço para onde se redireciona, `/reservas/1`, precisa de uma rota `GET /reservas/:id`. Fica abaixo de `GET /reservas/nova`, porque o caminho fixo vem antes do caminho com parâmetro. Ao contrário, `/reservas/nova` encaixava em `/reservas/:id`, com `"nova"` no lugar do número, e respondia 400, como mostra o erro [O formulário de reserva responde "Pedido inválido"](#o-formulário-de-reserva-responde-pedido-inválido). Rever: [O caminho fixo vem antes do caminho com parâmetro](03-http-rotas-e-middleware.md#o-caminho-fixo-vem-antes-do-caminho-com-parâmetro).
+
+No separador Rede, o envio aparece como dois pedidos: o `POST /reservas`, com o 303 e o cabeçalho `Location` na resposta, e logo a seguir o `GET /reservas/1`, com o 200. Em alguns browsers, a lista limpa-se quando a página muda. Se não vires o `POST`, liga a opção que mantém o registo ("Preserve log", ou "Manter registo"), no topo do separador, e envia outra vez.
+
+<details>
+<summary>Para ires mais longe: a resposta de uma API</summary>
+
+Numa API, como as de Linguagens de Programação, quem recebe a resposta é um programa, e não uma pessoa a olhar para uma página. A resposta habitual a um `POST` que cria alguma coisa é o código 201 (Created, criado), com os dados criados em JSON. O exemplo [catalogo-com-reservas](../exemplos/aplicacoes-em-browser/catalogo-com-reservas/README.md) responde assim à reserva, com uma só mensagem de erro para todos os campos. Compara-o com o deste guia: o código, o tipo da resposta e o endereço que fica no browser.
+
+</details>
 
 ## Exemplo guiado: as reservas do catálogo
 
-O exemplo acrescenta reservas ao catálogo com páginas do tema anterior. Começas pelo formulário e por um `POST` sem verificação, para observar o que corre mal. Acrescentas a validação e o formulário com mensagens de erro. Por fim, acrescentas o redirecionamento. O resultado final está pronto a correr na pasta [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md) dos exemplos.
+O exemplo acrescenta as reservas ao catálogo com páginas do tema 04. Primeiro fazes o formulário e um `POST` que guarda tudo sem verificar, para veres o que corre mal. Depois acrescentas a validação, com o formulário outra vez quando há erros, e por fim o redirecionamento.
+
+O ponto de partida é o catálogo do fim do tema 04, o do exemplo [catalogo-com-ejs](../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md), com a pasta `views`. O resultado final está pronto a correr no exemplo [catalogo-com-formularios](../exemplos/aplicacoes-em-browser/catalogo-com-formularios/README.md). Sempre que mudares o `server.js`, para o servidor com Ctrl+C e liga-o outra vez com `node server.js`. As reservas ficam num array, e por isso cada arranque começa sem nenhuma. Uma mudança num modelo vê-se só com recarregar a página.
 
 ### Passo 1: o formulário
 
-No `server.js`, ao lado dos equipamentos, o array das reservas e o número da próxima reserva:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+No `server.js`, a seguir ao array dos equipamentos, acrescenta o array das reservas e o número da próxima reserva:
 
 ```js fragment
 const reservas = [];
 let proximoIdReserva = 1;
 ```
 
-Leitura guiada: `reservas` começa como um array vazio. `proximoIdReserva` começa em 1 e pode mudar, porque dará um número novo a cada reserva criada.
+O `proximoIdReserva` é um `let`, porque passa ao número seguinte a cada reserva criada.
 
-A rota do formulário, que só mostra a página:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A seguir à rota `/equipamentos/:id`, antes do middleware final, acrescenta a rota do formulário, que só mostra a página:
 
 ```js fragment
 // O formulário de reserva.
@@ -425,17 +488,68 @@ app.get("/reservas/nova", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /reservas/nova` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+Cria o modelo `views/reserva-nova.ejs`, com o formulário da secção [O formulário em HTML](#o-formulário-em-html) entre o cabeçalho e o rodapé:
 
-O modelo `views/reserva-nova.ejs` é o formulário da secção "O formulário em HTML", entre o `include` do cabeçalho e o do rodapé, com um comentário a dizer o que recebe. O cabeçalho ganha duas ligações no menu, `<a href="/reservas">Reservas</a>` e `<a href="/reservas/nova">Fazer uma reserva</a>`, e a página inicial uma ligação para o formulário.
+```ejs
+<%# O formulário de reserva. Recebe o titulo e os equipamentos para a lista. %>
+<%- include("partials/cabecalho") %>
+    <form method="post" action="/reservas">
+      <p>
+        <label for="equipamento_id">Equipamento</label>
+        <select id="equipamento_id" name="equipamento_id" required>
+          <option value="">Escolhe um equipamento</option>
+          <% for (const equipamento of equipamentos) { %>
+            <option value="<%= equipamento.id %>"><%= equipamento.nome %>, sala <%= equipamento.sala %></option>
+          <% } %>
+        </select>
+      </p>
+      <p>
+        <label for="data">Dia</label>
+        <input id="data" name="data" type="date" required>
+      </p>
+      <p>
+        <label for="tempo">Tempo letivo, de 1 a 9</label>
+        <input id="tempo" name="tempo" type="number" min="1" max="9" required>
+      </p>
+      <p>
+        <label for="nome">O teu nome</label>
+        <input id="nome" name="nome" maxlength="40" required>
+      </p>
+      <button type="submit">Reservar</button>
+    </form>
+<%- include("partials/rodape") %>
+```
 
-`/reservas/nova` mostra o formulário. Se o enviares, o browser faz `POST /reservas`, e a resposta é a página "Página não encontrada", com 404: ainda não há rota para o `POST`, e o middleware final responde. Repara que o browser não te deixa enviar com um campo vazio, nem com o tempo 12: é a validação no browser a funcionar.
+No cabeçalho, `views/partials/cabecalho.ejs`, o menu ganha as ligações para as reservas. Troca o `<nav>` por este:
+
+```ejs
+    <nav>
+      <a href="/">Início</a> |
+      <a href="/equipamentos">Todos os equipamentos</a> |
+      <a href="/reservas">Reservas</a> |
+      <a href="/reservas/nova">Fazer uma reserva</a>
+    </nav>
+```
+
+Na página inicial, `views/inicio.ejs`, acrescenta a seguir ao formulário da pesquisa a ligação para reservar:
+
+```ejs
+    <p><a href="/reservas/nova">Fazer uma reserva</a></p>
+```
+
+Liga o servidor e abre `/reservas/nova`: aparece o formulário, com os quatro equipamentos na lista. O browser não te deixa enviar com um campo vazio, nem com o tempo 12, porque é a validação do browser a funcionar. Preenche tudo e envia. O browser faz `POST /reservas`, e a resposta é a página "Página não encontrada", com o 404: ainda não há rota para o `POST`, e responde o middleware final.
 
 ### Passo 2: ler o corpo, ainda sem verificar
 
-A seguir ao middleware de registo, o `express.urlencoded`, da secção "O corpo do pedido e o middleware que o lê". E a rota do `POST`, numa primeira versão que guarda o que vier e responde com a página da reserva:
+A seguir ao middleware de registo, acrescenta o `express.urlencoded`:
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+```js fragment
+// Middleware que lê o corpo dos formulários enviados por POST e o põe em
+// req.body. Tem de estar antes das rotas que usam o req.body.
+app.use(express.urlencoded({ extended: false }));
+```
+
+A seguir à rota do formulário, acrescenta a rota do `POST`, numa primeira versão que guarda o que vier e responde com a página da reserva:
 
 ```js fragment
 // Criar uma reserva: POST /reservas, com os campos no corpo do pedido.
@@ -455,13 +569,9 @@ app.post("/reservas", (req, res) => {
 });
 ```
 
-Leitura guiada: `POST /reservas` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+O `app.post` regista uma rota para o método `POST`. A reserva recebe o número do contador, e o contador passa ao seguinte. O caminho `/reservas` vai servir também a lista das reservas, com o método `GET`, e são duas rotas diferentes, porque o método faz parte da rota.
 
-O `app.post` regista uma rota para o método `POST`. O caminho `/reservas` é o mesmo de uma rota `GET /reservas`, mas o método é outro, e por isso são duas rotas diferentes: o método faz parte da rota. A reserva tem um `id` dado pelo servidor, e o contador passa ao seguinte.
-
-O modelo da página da reserva, `views/reserva.ejs`:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Cria o modelo da página de uma reserva, `views/reserva.ejs`:
 
 ```ejs
 <%# A página de uma reserva, para onde o browser vai depois de reservar.
@@ -474,11 +584,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
-E a lista das reservas, com a rota e o modelo `views/reservas.ejs`:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A seguir à rota do `POST`, acrescenta a lista das reservas:
 
 ```js fragment
 // A lista das reservas feitas desde que o servidor arrancou.
@@ -493,9 +599,7 @@ app.get("/reservas", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /reservas` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+E o seu modelo, `views/reservas.ejs`:
 
 ```ejs
 <%# A lista das reservas. Recebe o titulo e as linhas, cada uma com a
@@ -514,23 +618,21 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
+A rota junta cada reserva ao seu equipamento, numa lista de linhas, e o modelo só tem de a mostrar. Como no tema 04, a decisão sobre os dados fica na rota.
 
-A rota junta cada reserva ao seu equipamento, numa lista de linhas. O modelo só tem de mostrar essa lista. Como no tema anterior, a decisão sobre os dados fica na rota.
+Liga outra vez o servidor. Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia: aparece a página "Reserva 1", e `/reservas` mostra-a na lista. Parece tudo bem, mas esta versão guarda tudo o que recebe. Antes de acrescentares a validação, experimenta três envios:
 
-Preenche o formulário com o projetor, um dia, o tempo 3 e o teu nome, e envia. Aparece a página "Reserva 1", e `/reservas` mostra-a na lista. Até aqui, parece tudo bem. Numa cópia de estudo, prevê e observa estas falhas antes de acrescentares a validação:
+1. Recarrega a página "Reserva 1". O browser pergunta se queres enviar outra vez os dados do formulário; diz que sim. Em `/reservas` há agora duas reservas iguais: é o reenvio do formulário, que o passo 4 resolve.
+2. Envia o formulário com o nome só com espaços. O `required` deixa passar, porque o campo não está vazio, e a reserva fica com um nome invisível.
+3. Acrescenta `novalidate` ao `<form>` do `views/reserva-nova.ejs`, recarrega `/reservas/nova` e envia o formulário sem preencher nada. O equipamento chega como texto vazio, que o `Number` transforma em 0, e não há equipamento 0. A reserva fica guardada, mas a página dela dá 500, com `Cannot read properties of undefined (reading 'id')`: o modelo tenta ler o `equipamento.id` de um equipamento que não existe. A lista das reservas também passa a dar 500: uma reserva mal feita estragou uma página para toda a gente.
 
-- **Recarrega a página "Reserva 1".** O browser pergunta se queres reenviar os dados. Diz que sim, e abre `/reservas`: há duas reservas iguais. É o problema da secção "Quando corre bem", e o passo 4 resolve-o.
-- **Envia com o nome só com espaços.** A reserva fica com um nome invisível.
-- **Envia o formulário vazio, sem a ajuda do browser.** Acrescenta temporariamente `novalidate` ao `<form>`, guarda, recarrega `/reservas/nova` e envia sem preencher nada. O equipamento chega como texto vazio, que `Number` converte em 0. Não há equipamento 0. A reserva fica guardada, mas a página dá 500 ao tentar ler `equipamento.id`. A lista das reservas também dá 500. Uma reserva mal feita estragou uma página para toda a gente.
-
-Depois de registares o que aconteceu, retira o `novalidate` e guarda o modelo. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`. As reservas estão em memória: o novo arranque limpa-as e repõe o contador em 1. Confirma em `/reservas` que a lista está vazia antes de continuar. Guardar um ficheiro sem alterações não garante que o `--watch` reinicie o processo.
+No fim, tira o `novalidate` do modelo e liga outra vez o servidor, que volta a começar sem reservas.
 
 ### Passo 3: validar, e o formulário outra vez
 
-As três funções da secção "Validar no servidor" (`textoDoCampo`, `diaValido` e `validarReserva`) ficam no `server.js`, a seguir aos arrays e antes do middleware de registo. A rota do `POST` passa a validar primeiro, a responder com o formulário quando há erros, e só depois a guardar:
+No `server.js`, a seguir aos arrays e antes do middleware de registo, acrescenta as três funções da Parte 2: a `textoDoCampo`, a `diaValido` e a `validarReserva`. Copia-as tal como estão nas secções [Cada campo passa a texto antes de tudo](#cada-campo-passa-a-texto-antes-de-tudo), [Um dia com o formato certo pode não existir](#um-dia-com-o-formato-certo-pode-não-existir) e [A função que valida a reserva](#a-função-que-valida-a-reserva).
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Troca a rota do `POST` por esta, que valida primeiro, responde com o formulário quando há erros, e só depois guarda:
 
 ```js fragment
 // Criar uma reserva: POST /reservas, com os campos no corpo do pedido.
@@ -564,11 +666,7 @@ app.post("/reservas", (req, res) => {
 });
 ```
 
-Leitura guiada: `POST /reservas` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
-
-A reserva já não lê o `req.body`: lê os `valores` que a validação devolveu, limpos e verificados. O formulário passa a receber sempre os valores e os erros, também na rota do `GET`:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A reserva já não lê o `req.body`: lê os `valores` que a validação devolveu, limpos e verificados. A rota do formulário passa a dar ao modelo os valores vazios e os erros vazios. Troca-a por esta:
 
 ```js fragment
 // O formulário de reserva, vazio e sem erros.
@@ -583,11 +681,7 @@ app.get("/reservas/nova", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /reservas/nova` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
-
-O modelo `views/reserva-nova.ejs` fica com a frase do topo, os valores e as mensagens, como na secção "Quando há erros":
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O modelo `views/reserva-nova.ejs` ganha a frase do topo, os valores e as mensagens, como na secção [O formulário volta com os valores e as mensagens](#o-formulário-volta-com-os-valores-e-as-mensagens). Troca-o todo por este:
 
 ```ejs
 <%# O formulário de reserva. Recebe o titulo, os equipamentos para a lista,
@@ -633,34 +727,27 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
+O modelo lê-se como o do passo 1, campo a campo. A diferença está em cada campo, que tem o `value` com o valor que a rota passou e, dentro da etiqueta, a mensagem, só quando há um erro nesse campo.
 
-Para veres a validação do servidor, vais alterar temporariamente `views/reserva-nova.ejs`. O atributo `novalidate` deixa passar campos vazios e valores fora dos limites. Não muda o tipo dos campos nem acrescenta opções à lista.
+Liga outra vez o servidor. Para veres a validação do servidor, o browser tem de deixar passar o que normalmente recusa, e isso pede mudanças temporárias no modelo:
 
-1. Acrescenta `novalidate` ao formulário: `<form method="post" action="/reservas" novalidate>`. Guarda, recarrega `/reservas/nova` e envia primeiro vazio. Depois preenche os outros campos corretamente e envia com o tempo 12.
-2. Para o dia impossível, muda só o campo do dia de `type="date"` para `type="text"`. Guarda, recarrega, preenche os outros campos corretamente e escreve `2026-02-30`. Envia e repõe `type="date"` no modelo.
-3. Para o equipamento inexistente, acrescenta temporariamente, dentro do `select` do equipamento, `<option value="9">Equipamento de ensaio 9</option>`. Guarda, recarrega, escolhe essa opção, preenche os outros campos corretamente e envia. Depois retira essa opção do modelo.
-4. No fim, confirma que o dia voltou a `type="date"`, que a opção 9 saiu e que retiraste `novalidate`. Guarda e recarrega: o formulário voltou à versão normal.
+1. Acrescenta `novalidate` ao `<form>`, recarrega `/reservas/nova` e envia o formulário vazio. Depois, preenche os campos e põe o tempo 12.
+2. Para o 30 de fevereiro, muda o campo do dia de `type="date"` para `type="text"`, recarrega e escreve `2026-02-30`. O `novalidate` não chega para este caso, porque o calendário não deixa escolher um dia que não existe.
+3. Para o equipamento 9, acrescenta dentro do `<select>` a opção `<option value="9">Equipamento de ensaio 9</option>`, recarrega e escolhe-a.
 
-Cada envio inválido responde 400 com a mensagem do campo respetivo e não guarda reserva nenhuma. Os outros valores continuam preenchidos. Depois de cada experiência, recarrega o formulário a partir de `/reservas/nova` para preparar o teste seguinte.
+Cada envio responde 400, com a mensagem do campo errado, e os outros campos continuam preenchidos. Nenhum guarda uma reserva: `/reservas` continua vazia. No fim, tira as três mudanças do modelo.
 
 ### Passo 4: o redirecionamento
 
-Na rota do `POST`, as duas últimas linhas (o `find` do equipamento e o `res.render` da reserva) dão lugar ao redirecionamento:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Na rota do `POST`, troca as duas últimas linhas, o `find` do equipamento e o `res.render` da reserva, pelo redirecionamento:
 
 ```js fragment
-// Redirecionamento 303: o browser faz um GET à página da reserva.
-// Recarregar essa página já não volta a enviar o formulário.
-res.redirect(303, `/reservas/${reserva.id}`);
+  // Redirecionamento 303: o browser faz um GET à página da reserva.
+  // Recarregar essa página já não volta a enviar o formulário.
+  res.redirect(303, `/reservas/${reserva.id}`);
 ```
 
-Leitura guiada: o código 303 não envia a página de confirmação. O browser lê o destino e faz um novo pedido `GET` a esse endereço.
-
-E a página da reserva passa a ter uma rota `GET` própria, abaixo da do formulário e da lista. As verificações são as da rota de detalhe dos equipamentos:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A seguir à lista das reservas, antes do middleware final, acrescenta a rota da página de uma reserva. As verificações são as da rota de detalhe dos equipamentos, com o 400 antes do 404:
 
 ```js fragment
 // Uma reserva: a página para onde o browser vai depois de reservar.
@@ -686,15 +773,11 @@ app.get("/reservas/:id", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /reservas/:id` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
-
-Guarda o `server.js`. No terminal deste servidor, faz Ctrl+C e volta a correr `node --watch server.js`, para começar com as reservas vazias. Faz uma reserva e repara na barra de endereço: depois de carregares em "Reservar", o browser mostra `/reservas/1`, e não `/reservas`. Recarrega a página: aparece a mesma reserva, e `/reservas` continua a ter só uma. No separador Rede, o envio aparece como dois pedidos: o `POST /reservas`, com o 303, e o `GET /reservas/1`, com o 200.
+Liga outra vez o servidor e faz uma reserva. Depois de carregares em "Reservar", a barra de endereço mostra `/reservas/1`, e não `/reservas`. Recarrega a página: aparece a mesma reserva, sem janela de aviso nenhuma, e `/reservas` continua a ter só uma. No separador Rede, o envio são dois pedidos: o `POST /reservas`, com o 303, e o `GET /reservas/1`, com o 200.
 
 ### Passo 5: o servidor completo
 
 O `server.js` no fim do exemplo:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js
 // server.js: o catálogo de equipamentos da escola, agora com reservas feitas
@@ -942,9 +1025,9 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-Leitura guiada: lê os dados iniciais, depois os middlewares pela ordem do ficheiro. Escolhe um pedido da tabela de resultados e segue só a rota que o recebe.
+Compara-o com o teu. As linhas de código devem ser as mesmas, e só alguns comentários mudam, como os do topo e o da página inicial, que agora fala da ligação para reservar.
 
-Os modelos são o `reserva-nova.ejs` do passo 3, o `reserva.ejs` e o `reservas.ejs` do passo 2. Os do tema anterior, com as duas ligações novas no menu do cabeçalho e na página inicial.
+O ficheiro lê-se pela ordem da fila. Primeiro vêm os dados e as três funções da validação. Seguem-se o middleware de registo, o `express.urlencoded`, as rotas dos equipamentos e das reservas, o middleware final e o `listen`. Nas reservas, a rota do formulário vem antes da rota com o `:id`, e o `POST` e o `GET` de `/reservas` são duas rotas diferentes. Os modelos são o `reserva-nova.ejs` do passo 3, o `reserva.ejs` e o `reservas.ejs` do passo 2, e o cabeçalho e a página inicial do passo 1.
 
 ### Passo 6: os resultados
 
@@ -963,94 +1046,53 @@ Os modelos são o `reserva-nova.ejs` do passo 3, o `reserva.ejs` e o `reservas.e
 | `GET /reservas/abc` | 400 | "Pedido inválido" |
 | `GET /reservas/99` | 404 | "Reserva não encontrada" |
 
-Usa as alterações temporárias do passo 3 para enviares o formulário vazio, o tempo 12, o dia impossível e o equipamento 9. Para testar `id=999`, acrescenta dentro do formulário `<input type="hidden" name="id" value="999">`, guarda e recarrega. Faz uma reserva válida e confirma que recebe o número do contador, e não 999. Retira o campo escondido no fim.
-
-## Observar os pedidos no browser
-
-Com o separador Rede aberto, envia o formulário e clica no pedido `POST` a `reservas`.
-
-- No separador **Payload** ("Carga", no Chrome em português; no Firefox, "Pedido"), aparece "Form Data", com cada campo e o seu valor, tal como o browser os enviou. É o sítio para confirmar os nomes dos campos: se a rota lê `req.body.nome` e o Payload mostra `nomes`, está encontrado o problema.
-- Nos cabeçalhos do pedido, o `Content-Type: application/x-www-form-urlencoded`.
-- Na resposta de um envio certo, o código 303 e o cabeçalho `Location: /reservas/1`. Logo a seguir, na lista, o `GET /reservas/1`, que o browser fez sozinho. Na resposta de um envio com erros, o código 400 e, no separador da resposta, o HTML do formulário com as mensagens.
-
-Uma nota sobre o separador Rede: em alguns browsers, a lista é limpa quando a página muda. Se não vires o `POST` antes do `GET` do redirecionamento, liga a opção que mantém o registo ("Preserve log", ou "Manter registo"), no topo do separador, e envia outra vez.
+O formulário vazio, o tempo 12, o dia impossível e o equipamento 9 enviam-se com as mudanças temporárias do passo 3. Para o `id=999`, acrescenta dentro do `<form>` um campo escondido, `<input type="hidden" name="id" value="999">`, recarrega e faz uma reserva certa: fica com o número do contador, e não com o 999. No fim, tira o campo escondido.
 
 ## Erros frequentes
 
 ### TypeError: Cannot read properties of undefined (reading 'equipamento_id')
 
-Algum código tentou ler `req.body.equipamento_id` diretamente, quando o `req.body` não existia. Isso pode acontecer na primeira versão, ainda sem validação. Confirma que o `express.urlencoded` está registado a seguir ao middleware de registo e antes de todas as rotas. Confirma também que o pedido tem corpo no formato `application/x-www-form-urlencoded`.
-
-Na versão com `validarReserva`, a guarda transforma a ausência de corpo num objeto vazio. O resultado esperado é 400 com o formulário e os erros dos campos. Se ainda recebes este `TypeError`, compara a tua função e a rota com a versão completa: falta a guarda ou ficou uma leitura direta.
+O browser recebe um 500, e o terminal mostra este erro, com a linha do `server.js` onde a rota lê o `req.body.equipamento_id`. O `req.body` não existe: falta o `express.urlencoded`, ou está abaixo da rota do `POST`. Põe-no a seguir ao middleware de registo, antes de todas as rotas. Na versão com a `validarReserva`, este erro já não aparece, e o sintoma passa a ser outro: o do erro seguinte.
 
 ### O campo chega vazio, mesmo preenchido
 
-O atributo `name` do campo, no formulário, não é o nome que a validação lê no `req.body`. A rota lê `corpo.nome`, e o formulário tem `name="nome_completo"`: os dois nunca se encontram, e a validação acha sempre que o nome está vazio. Confirma no Payload o nome que o browser enviou. Um campo sem `name` nem sequer é enviado.
+Depois de enviares, o formulário volta com a mensagem de campo vazio num campo que preencheste. O `name` desse campo, no formulário, não é o nome que a validação lê: o formulário tem `name="nome_completo"`, e a função lê `corpo.nome`. Confirma no Payload o nome que o browser enviou. Se são os quatro campos ao mesmo tempo, e o formulário volta todo vazio, a causa é outra. Falta o `express.urlencoded`, ou está abaixo das rotas, e a validação recebe um corpo que não existe.
 
 ### O formulário de reserva responde "Pedido inválido"
 
-A rota `GET /reservas/:id` está acima da rota `GET /reservas/nova`, e o pedido a `/reservas/nova` vai parar à rota de uma reserva, que recebe `"nova"` como número e responde 400. O caminho fixo vem antes do caminho com parâmetro.
+A rota `GET /reservas/:id` está acima da rota `GET /reservas/nova`. O pedido a `/reservas/nova` vai parar à rota de uma reserva, que recebe `"nova"` como número e responde 400. Põe a rota do formulário acima da rota com o `:id`.
 
-### Depois de um envio com erros, a reserva fica guardada e o servidor vai abaixo
+### Depois de um envio com erros, o servidor vai abaixo
 
-Falta o `return` depois do `res.status(400).render(...)`. A rota continua: guarda a reserva com os dados errados e responde com o redirecionamento, que sai logo, como se tivesse corrido bem. Um instante depois, a página do formulário fica pronta, já não há a quem a enviar. O erro `Cannot set headers after they are sent to the client` deita o servidor abaixo, antes de o browser conseguir pedir a página para onde foi redirecionado. O browser mostra que não consegue ligar-se ao servidor. Com o `node --watch`, o terminal acaba em `Failed running 'server.js'. Waiting for file changes before restarting...`. Depois de cada resposta de erro, o `return`.
+Envias o formulário com o tempo 12, com o `novalidate` no formulário, e o browser vai para `/reservas/1`, mas mostra que não consegue ligar ao servidor. O terminal mostra `Cannot set headers after they are sent to the client`, e o servidor parou. Se usas o `node --watch`, a última linha é `Failed running 'server.js'. Waiting for file changes before restarting...`.
 
-### O browser não deixa enviar o formulário
+Falta o `return` depois do `res.status(400).render(...)`. É o erro do tema 04, com o redirecionamento pelo meio. Rever: [A página de erro certa, com o código errado, e o servidor em baixo](04-ejs-e-reutilizacao-no-servidor.md#a-página-de-erro-certa-com-o-código-errado-e-o-servidor-em-baixo). Por ordem:
 
-É a validação do browser: um campo com `required` está vazio, ou o tempo está fora do `min` e do `max`. Não é um erro. Para experimentares a validação do servidor, usa o `novalidate` do passo 3, e tira-o no fim.
+1. O `res.status(400).render(...)` pede o formulário, que o Express só envia um instante depois, quando a função da rota já acabou.
+2. Sem o `return`, a função continua: guarda a reserva com o tempo 12 e chega ao `res.redirect`, que responde logo, com o 303.
+3. O browser recebe o 303 e vai pedir `/reservas/1`.
+4. O formulário fica pronto, mas a resposta já foi enviada. O servidor vai abaixo, antes de o pedido do browser chegar.
 
-### Depois de um erro, a lista do equipamento volta ao início
-
-A comparação do `selected` está a comparar um número com um texto: `equipamento.id === valores.equipamento_id` dá sempre `false`. Usa `String(equipamento.id) === valores.equipamento_id`.
+Antes do passo 4, a rota ainda responde com a página da reserva. Aí, o browser até recebe o formulário com as mensagens, mas o servidor vai abaixo logo a seguir, e o pedido seguinte já não tem resposta. Depois de cada resposta de erro, sai da função com o `return`.
 
 ### Depois de um erro, os campos aparecem vazios
 
-A rota do `POST`, quando há erros, não está a passar os `valores` ao modelo, ou o modelo não os põe no `value` de cada campo. Confirma os dois lados: o `render` com `valores: resultado.valores`, e o `value="<%= valores.nome %>"` no campo.
-
-### A página de uma reserva dá 500, com "Cannot read properties of undefined (reading 'id')"
-
-A reserva aponta para um equipamento que não existe, e o modelo tenta ler o `equipamento.id`. Acontece com a primeira versão do `POST`, sem validação. A correção não é no modelo: é não deixar entrar a reserva, validando o `equipamento_id` antes de a guardar.
-
-## Segurança: o que este tema já pede
-
-- **O servidor valida tudo.** A validação do browser ajuda quem preenche e não protege nada: um pedido pode chegar sem passar pelo formulário. Cada regra está na validação do servidor, mesmo que o formulário já a tenha.
-- **Só os campos previstos.** A reserva constrói-se campo a campo, a partir dos valores validados. O `req.body` inteiro nunca é guardado nem passado a outro sítio.
-- **O tipo antes do resto.** Um campo pode não vir, ou vir como um array. O `typeof` vem antes do `trim()` e de qualquer outra operação de texto.
-- **Os valores voltam ao formulário com `<%=`.** No `value` e em qualquer outro sítio: são, sem exceção, valores que vieram do pedido.
-- **Limites.** O servidor decide o tamanho máximo de cada campo e do pedido inteiro. O `express.urlencoded` recusa por omissão um corpo com mais de 100 kilobytes, com o 413.
-- **Um `POST` responde com um redirecionamento.** O redirecionamento evita reservas repetidas ao recarregar. A página no ecrã é o resultado de um `GET`, que podes recarregar, guardar e partilhar sem criar outra reserva.
-- **O que este tema ainda não trata.** Uma página de outro site pode ter um formulário que envia para o teu `POST /reservas`. O browser de quem a visitar envia-o. Chama-se CSRF, e trata-se no tema Erros e segurança web, depois das sessões.
-
+Há duas causas possíveis. A rota do `POST`, quando há erros, pode passar ao modelo outros valores, como os vazios da rota do formulário. Ou o modelo não os põe no `value` de cada campo. Confirma os dois lados: o `render` com `valores: resultado.valores`, e o `value="<%= valores.nome %>"` no campo.
 
 ## Palavras novas deste guia
 
-- Corpo do pedido: parte do pedido HTTP que transporta os campos enviados por `POST`.
-- `urlencoded`: formato `nome=valor&nome=valor`, usado por estes formulários.
-- `name`: atributo que dá o nome com que um campo é enviado ao servidor.
-- `id` e `for`: identificador do campo e referência da etiqueta que a liga a esse campo.
-- Validação: verificação de que os dados recebidos servem antes de os usar.
-- Lista de valores permitidos: conjunto fechado de opções que o servidor aceita.
-- Redirecionamento: resposta que diz ao browser para fazer um pedido a outro endereço.
-- PRG: sequência `POST`, redirecionamento e `GET`, que evita repetir uma criação ao recarregar.
-- Campo escondido: campo de formulário que é enviado sem estar visível na página.
-
-## Verificar o que aprendeste
-
-1. Porque é que a pesquisa por sala envia por `GET` e o formulário de reserva por `POST`? Onde vão os dados em cada caso?
-2. O que liga o atributo `for` de uma etiqueta ao campo? E o que liga o campo à rota que o lê?
-3. O `express.urlencoded` está no fim do ficheiro, logo antes do `app.listen`. O que acontece quando se envia o formulário? Porquê?
-4. Se o formulário tem `required` e `min="1" max="9"`, porque é que o servidor tem de verificar o tempo outra vez?
-5. Porque é que a validação usa o `typeof` antes do `trim()`? Dá um pedido em que isso faça diferença.
-6. O `new Date("2026-02-30")` não dá erro. O que dá, e como é que a `diaValido` o apanha?
-7. Uma reserva com o equipamento 9: porque é que o código é 400, e não 404 como em `/equipamentos/9`?
-8. Depois de um envio com erros, o formulário volta com os valores preenchidos. Porque é que o `value` usa `<%=`, e não `<%-`?
-9. O que acontece se recarregares a página de confirmação de uma reserva, numa versão que responde ao `POST` com a página e o 200? E numa que responde com o 303?
-10. Porque é que, depois de um envio com erros, a resposta não é um redirecionamento?
+- `urlencoded`: o formato `nome=valor&nome=valor` em que um formulário envia os campos no corpo de um `POST`, com o cabeçalho `Content-Type: application/x-www-form-urlencoded`.
+- `303` (See Other): o código de um redirecionamento que manda o browser pedir outro endereço com um `GET`.
+- PRG: o padrão `POST`, redirecionamento e `GET`, em que o servidor responde a um formulário certo com um 303, para recarregar a página não repetir o `POST`.
 
 ## O que vem a seguir
 
-Faz a [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md). O laboratório deste tema vai ser o passo 5 do jogo Fechado na escola, e ainda não está publicado.
+No tema 06, Cookies e sessões, o servidor passa a reconhecer os pedidos que vêm do mesmo browser.
 
-O próximo tema é Cookies e sessões. O servidor conserva as reservas em memória enquanto o processo está a correr. Ainda não associa os pedidos à mesma pessoa: não sabe se quem fez um pedido também fez o anterior. Por isso o formulário de reserva pede o nome todas as vezes. Com as sessões, o servidor passa a associar pedidos da mesma pessoa. A página de reserva pode, por exemplo, mostrar as reservas dessa pessoa. A segurança dos formulários (o CSRF, que a secção anterior refere) volta depois, no tema Erros e segurança web.
+## Para saber mais
+
+- [Sending form data](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data), na MDN, em inglês: o `action`, o `method` e o que o browser envia com cada um.
+- [express.urlencoded](https://expressjs.com/en/5x/api/express/#expressurlencoded), na documentação do Express 5, em inglês: as opções do middleware, como o `extended` e o `limit`.
+- [303 See Other](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/303), na MDN, em inglês: o código do redirecionamento depois de um `POST`.
 
 ![Rodapé](../imagens/rodape.png)
