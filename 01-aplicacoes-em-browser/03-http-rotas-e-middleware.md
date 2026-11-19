@@ -2,56 +2,27 @@
 
 # HTTP, rotas e middleware
 
-Módulo Aplicações baseadas em browsers. Vais ler os dados que um pedido traz e perceber como o servidor escolhe a resposta. Também vais acompanhar a fila de funções do Express. Para praticar, há o [laboratório](laboratorios/03-http-rotas-e-middleware-laboratorio.md) e a [ficha de exercícios](exercicios/03-http-rotas-e-middleware-exercicios.md).
+Neste guia, o catálogo de equipamentos do tema 02 passa a responder ao que lhe pedem: o equipamento 2, ou só os equipamentos da sala B12. Vês por onde um pedido traz esses dados e como o servidor escolhe o código de estado quando o pedido está mal feito ou pede o que não existe. Vês também o middleware, as funções por onde os pedidos passam no Express.
+
+Usa as partes do endereço e os códigos de estado do tema 01, as rotas do tema 02 e, do 11.º ano, o `filter` e o `find`. Rever: [Cada parte do endereço responde a uma pergunta](01-do-pedido-a-resposta.md#cada-parte-do-endereço-responde-a-uma-pergunta), [O código de estado diz como correu o pedido](01-do-pedido-a-resposta.md#o-código-de-estado-diz-como-correu-o-pedido) e [O Express liga cada rota a uma função](02-primeiro-servidor.md#o-express-liga-cada-rota-a-uma-função). Do 11.º ano: [`filter` - selecionar](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/JavaScript/11-Arrays-HighOrder.md#2-filter---selecionar) e [`find` e `findIndex` - primeiro que passa](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/JavaScript/11-Arrays-HighOrder.md#4-find-e-findindex---primeiro-que-passa). Para praticar: [laboratório](laboratorios/03-http-rotas-e-middleware-laboratorio-papelaria.md) e [ficha de exercícios](exercicios/03-http-rotas-e-middleware-exercicios.md).
 
 ## Neste guia
 
-1. O que vais aprender
-2. O que já sabes e vais usar
-3. Três sítios por onde um pedido traz dados
-4. GET e POST, com mais pormenor
-5. Os códigos de estado que o teu código escolhe
-6. O middleware
-7. Exemplo guiado: o catálogo cresce
-8. Observar os pedidos no browser
-9. A tabela de contratos HTTP
-10. Erros frequentes
-11. Segurança: o que este tema já pede
-12. Palavras novas deste guia
-13. Verificar o que aprendeste
-14. O que vem a seguir
+1. [Parte 1: Os dados que um pedido traz](#parte-1-os-dados-que-um-pedido-traz)
+2. [Parte 2: O código de estado que a rota escolhe](#parte-2-o-código-de-estado-que-a-rota-escolhe)
+3. [Parte 3: O middleware e a fila do Express](#parte-3-o-middleware-e-a-fila-do-express)
+4. [Parte 4: Ver e descrever o que o servidor faz](#parte-4-ver-e-descrever-o-que-o-servidor-faz)
+5. [Exemplo guiado: o catálogo cresce](#exemplo-guiado-o-catálogo-cresce)
 
-## O que vais aprender
+## Parte 1: Os dados que um pedido traz
 
-No tema anterior, o servidor respondia sempre a mesma coisa ao mesmo endereço: a lista toda dos equipamentos. Um servidor útil responde ao que lhe pedem: este equipamento e não outro, só os desta sala. Para isso, o pedido tem de trazer dados. E o servidor tem de os ler, de os verificar e de responder com o código certo, incluindo quando o pedido está mal feito. É isso que este tema trata. E é o coração do HTTP visto do lado do servidor.
-
-Há pedidos que não se limitam a pedir: mudam alguma coisa, como fazer uma reserva com estes dados. Esses pedidos levam os dados de outra forma, no corpo do pedido. Este tema explica o que é o corpo e quando se usa. Ler o corpo no servidor, validar o que lá vem e responder a um formulário é o assunto do tema dos formulários.
-
-No fim deste guia deves conseguir:
-
-- dizer, para um pedido, se os dados vêm no caminho, nos parâmetros de pesquisa ou no corpo, e ler os dois primeiros com `req.params` e `req.query`;
-- escolher entre `GET` e `POST` para uma operação, e explicar a escolha;
-- escolher o código de estado de uma resposta (200, 400 ou 404) e distinguir um parâmetro inválido de um recurso inexistente;
-- explicar o que é o middleware, escrever um, e prever o que acontece quando a ordem do `app.use` muda, ou quando duas rotas começam pelo mesmo caminho;
-- observar, nas ferramentas de programador do browser, os dados que cada pedido levou e a resposta que recebeu;
-- descrever o servidor numa tabela de contratos HTTP: para cada pedido, o que entra e que respostas pode ter.
-
-## O que já sabes e vais usar
-
-- Pedido e resposta HTTP, endereços, métodos e códigos de estado: [Do pedido à resposta](01-do-pedido-a-resposta.md).
-- Separador Rede das ferramentas de programador: [laboratório Do pedido à resposta](laboratorios/01-do-pedido-a-resposta-laboratorio.md).
-- Aplicação Express, rotas, `req`, `res`, respostas e arranque: [Primeiro servidor](02-primeiro-servidor.md).
-- Arrays de objetos, funções seta, `Number`, `find`, `filter` e `return`, de JavaScript dos anos anteriores.
-
-O exemplo parte do catálogo mínimo do tema anterior. Explica a rota de detalhe e o filtro antes de acrescentar o middleware. Não precisas de já ter escrito essas partes.
-
-## Três sítios por onde um pedido traz dados
-
-Um pedido HTTP pode trazer dados em três sítios. E cada um serve uma coisa diferente. Escolhes o sítio pelo papel dos dados no pedido. Podem identificar o que se pede, afinar uma lista ou descrever uma operação que muda alguma coisa.
+O servidor do tema 02 responde sempre o mesmo ao mesmo endereço: `/equipamentos` dá a lista toda. Para responder ao que lhe pedem, precisa de dados no pedido. Um pedido pode trazê-los em três sítios, e cada um serve para uma coisa diferente.
 
 ### No caminho: parâmetros de rota
 
-No endereço `/equipamentos/2`, o `2` faz parte do caminho e identifica um equipamento. Do lado do servidor, a rota escreve-se com dois pontos antes do nome do parâmetro:
+A professora quer ver só o projetor, que tem o `id` 2. O endereço natural é `/equipamentos/2`, em que o `2` faz parte do caminho e diz que equipamento se pede. Com as rotas do tema 02, era preciso uma rota para cada equipamento, `/equipamentos/1`, `/equipamentos/2` e assim por diante, e mais uma sempre que chegasse um equipamento novo.
+
+O Express deixa escrever uma só rota, com uma parte do caminho que muda de pedido para pedido. Essa parte escreve-se com dois pontos antes do nome:
 
 ```js fragment
 app.get("/equipamentos/:id", (req, res) => {
@@ -60,123 +31,158 @@ app.get("/equipamentos/:id", (req, res) => {
 });
 ```
 
-O `:id` quer dizer "aqui vem um valor, e chama-lhe `id`". O Express compara o caminho do pedido com o da rota, parte a parte, e guarda o que estava no lugar do `:id` em `req.params.id`. Esta rota responde a `/equipamentos/2`, a `/equipamentos/99` e também a `/equipamentos/abc`: o Express não sabe que o `id` devia ser um número. Verificá-lo é trabalho teu.
+O `:id` quer dizer "aqui vem um valor, e chama-lhe `id`". O Express compara o caminho do pedido com o da rota, parte a parte, e guarda o que estava no lugar do `:id` em `req.params.id`. Num pedido a `/equipamentos/2`, o `req.params.id` é `"2"`.
 
-Usa-se um **parâmetro de rota** para identificar o recurso que se pede: este equipamento, esta reserva. É a parte do endereço que diz "qual".
+Ao que um endereço identifica, como um equipamento, uma reserva ou a lista dos equipamentos, chama-se **recurso**. O valor que vem numa posição do caminho e diz qual é o recurso chama-se **parâmetro de rota**.
+
+Esta rota responde a `/equipamentos/2`, a `/equipamentos/99` e também a `/equipamentos/abc`, porque o Express não sabe que o `id` devia ser um número. Verificá-lo é trabalho da rota.
 
 ### Depois do ponto de interrogação: parâmetros de pesquisa
 
-No endereço `/equipamentos?sala=B12`, o `sala=B12` vem depois do `?` e não muda o que se pede (continua a ser a lista de equipamentos), mas afina-o: só os da sala B12. O Express guarda cada parâmetro de pesquisa em `req.query`, pelo nome:
+Os parâmetros de pesquisa, como o `?sala=B12`, já os conheces do tema 01, e sabes que não fazem parte da rota: `/equipamentos` e `/equipamentos?sala=B12` chegam à mesma rota. Rever: [Uma rota junta um método e um caminho](01-do-pedido-a-resposta.md#uma-rota-junta-um-método-e-um-caminho).
+
+No servidor, o Express guarda cada parâmetro de pesquisa em `req.query`, pelo nome:
 
 ```js fragment
 const sala = req.query.sala; // "B12", ou undefined se não vier nenhum ?sala=
 ```
 
-Usa-se um **parâmetro de pesquisa** para filtrar, ordenar, escolher uma página de resultados ou passar uma opção. São normalmente opcionais: sem `?sala=`, a rota devolve a lista toda. A rota não muda por haver ou não parâmetros de pesquisa: `/equipamentos` e `/equipamentos?sala=B12` chegam à mesma rota.
+Os parâmetros de pesquisa servem para filtrar, ordenar ou escolher uma opção, e são quase sempre opcionais.
+
+<details>
+<summary>Para ires mais longe: porque é que a rota não escreve no req.query</summary>
+
+A rota guarda o valor numa variável sua, `sala`, e trabalha com ela. No Express 5, o da disciplina, o `req.query` volta a ser lido do endereço sempre que o usas. Se escreveres `req.query.sala = "A03"`, a linha seguinte volta a ler `"B12"`, e a mudança perde-se sem aviso. Se escreveres `req.query = { sala: "A03" }`, a rota falha com um `TypeError`, e o browser recebe um 500. Muitos exemplos da internet são do Express 4, em que isto funcionava.
+
+</details>
 
 ### No corpo do pedido
 
-Quando um formulário envia dados com `method="post"`, os dados não vão no endereço: vão no **corpo** do pedido, como viste no exemplo guiado do primeiro tema:
+O terceiro sítio já o viste no exemplo guiado do tema 01. Quando a professora envia o formulário da reserva, os dados vão no corpo do pedido, depois dos cabeçalhos, e não aparecem no endereço. Rever: [Passo 4: enviar a reserva](01-do-pedido-a-resposta.md#passo-4-enviar-a-reserva).
 
-```text
-POST /reservas HTTP/1.1
-Content-Type: application/x-www-form-urlencoded
+O corpo serve para os dados de uma operação que cria ou muda alguma coisa, como os campos de uma reserva. Neste tema, nenhum pedido ao catálogo traz corpo, e o servidor não o lê. A tabela junta os três sítios:
 
-equipamento_id=2&data=2026-10-20&tempo=3
-```
+| Sítio | Exemplo | No servidor | Serve para |
+| --- | --- | --- | --- |
+| Caminho | `/equipamentos/2` | `req.params.id` | Dizer qual é o recurso |
+| Pesquisa | `/equipamentos?sala=B12` | `req.query.sala` | Filtrar, ordenar, escolher uma opção |
+| Corpo | `equipamento_id=2&data=2026-10-20&tempo=3`, num `POST` | não se lê neste tema | Os dados de uma operação que cria ou muda alguma coisa |
 
-O formato é o mesmo dos parâmetros de pesquisa (nome, `=`, valor, separados por `&`), mas o sítio é outro: os dados não aparecem no endereço.
+### O formulário escolhe o sítio dos campos pelo method
 
-Usa-se o **corpo** para enviar os dados de uma operação que cria ou altera alguma coisa: os campos da reserva, os dados de um novo equipamento. É assim que um formulário com `method="post"` envia o que se escreveu nele.
+Um formulário HTML pode enviar os seus campos pelo endereço ou pelo corpo. Quem escolhe é o atributo `method` do `<form>`:
 
-Neste tema, o corpo fica como ideia: precisas de saber que existe, para que serve e como o distinguir dos outros dois sítios. Isto acontece porque é isso que te deixa escolher entre `GET` e `POST`. O servidor do catálogo deste tema não recebe nada no corpo. Ler o corpo no servidor é do tema dos formulários: o Express não o lê sozinho, precisa de um middleware que o leia e ponha os campos em `req.body`. E é aí que o catálogo ganha o formulário de reserva.
+| Formulário | Para onde vão os campos | O pedido |
+| --- | --- | --- |
+| `<form method="get" action="/equipamentos">`, com o campo `sala` | Para os parâmetros de pesquisa, no endereço | `GET /equipamentos?sala=B12` |
+| `<form method="post" action="/reservas">`, com os campos da reserva | Para o corpo do pedido | `POST /reservas`, com os campos no corpo |
+
+O `action` dá o caminho do pedido. O `name` de cada campo passa a ser o nome do parâmetro, ou do campo no corpo. Um formulário sem `method` envia por `GET`.
+
+Por isso, "os dados de um formulário vão no corpo" só é verdade num formulário com `method="post"`. Uma pesquisa, que não muda nada no servidor, é um formulário `GET`, e o resultado fica com um endereço que se pode guardar ou enviar a alguém.
 
 ### Tudo chega como texto
 
-Os parâmetros do caminho e os campos de formulário deste exemplo chegam como texto. Uma pesquisa pode também repetir o mesmo nome e produzir uma lista de valores. Por isso o servidor verifica o que recebeu antes de o usar. Em `/equipamentos/2`, `req.params.id` é `"2"`, entre aspas, e não o número 2. E `"2" === 2` é `false`. Por isso, antes de comparar com o `id` de um equipamento, converte-se com `Number(...)`. É a causa de muitos "não encontrado" que deviam ter encontrado.
+Num pedido a `/equipamentos/2`, o `req.params.id` é `"2"`, entre aspas, e não o número 2. O pedido HTTP é texto, e o Express entrega-te texto. Os parâmetros de pesquisa também: em `?sala=B12`, o `req.query.sala` é o texto `"B12"`.
 
-| Sítio | Exemplo | Lê-se em | Serve para |
-| --- | --- | --- | --- |
-| Caminho | `/equipamentos/2` | `req.params.id` | Identificar o recurso |
-| Pesquisa | `/equipamentos?sala=B12` | `req.query.sala` | Filtrar, ordenar, opções |
-| Corpo | `equipamento_id=2&...` num `POST` | `req.body.equipamento_id`, depois de um middleware o ler (tema dos formulários) | Dados de uma operação que muda alguma coisa |
+Para a sala não há problema, porque as salas do array também são texto. Para o `id`, há: os `id` do array são números, e `"2" === 2` é `false`. Uma procura como `equipamentos.find((equipamento) => equipamento.id === req.params.id)` nunca encontra nada, nem o equipamento que existe.
 
-### Para confirmar
+A regra é a do `prompt` do 11.º ano, que também devolvia sempre texto. Antes de comparar com um número, converte-se com `Number(...)`. Rever: [Truthy/falsy e coerção](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/JavaScript/01-Variaveis-Tipos.md#4-truthyfalsy-e-coerção-quando-js-faz-magia).
 
-1. Em `/reservas/5?formato=curto`, o que está em `req.params` e o que está em `req.query`?
-2. Porque é que `equipamentos.find((e) => e.id === req.params.id)` nunca encontra nada?
-3. Um pedido para criar um equipamento novo: os dados vão no caminho, na pesquisa ou no corpo?
+| O que chega | `Number(...)` dá |
+| --- | --- |
+| `"2"` | `2` |
+| `"abc"` | `NaN`, que quer dizer "não é um número" |
+| `"2.5"` | `2.5` |
+| `"0"` | `0` |
 
-## GET e POST, com mais pormenor
+A conversão não diz se o valor serve como `id`. `NaN`, `2.5` e `0` saem dela sem erro, mas nenhum é o `id` de um equipamento.
 
-No primeiro tema ficou a regra: `GET` para ver, `POST` para mudar. Há mais três diferenças práticas, que decorrem dessa.
+<details>
+<summary>Para ires mais longe: quando a pesquisa chega como lista</summary>
 
-**Onde vão os dados.** Num `GET`, os dados vão no endereço, nos parâmetros de pesquisa: ficam no histórico do browser, podem ser guardados nos favoritos e enviados a alguém. E ficam escritos nos registos dos servidores por onde o pedido passa. Num `POST`, vão no corpo: não aparecem na barra de endereço. Isto não quer dizer que um `POST` seja secreto (sem HTTPS, o corpo também viaja à vista). Mas uma palavra-passe nunca vai num `GET`. Isto acontece porque ficaria registada em todo o lado.
+Num endereço como `/equipamentos?sala=B12&sala=A03`, o nome `sala` aparece duas vezes. O Express não escolhe um dos valores: entrega uma lista, `["B12", "A03"]`. Uma lista nunca é igual ao texto da sala de um equipamento, e por isso o filtro do catálogo responde `[]`, com 200.
 
-**Repetir.** Um `GET` pode repetir-se as vezes que se quiser. Se recarregares uma página que resultou de um `POST`, o browser avisa que vai reenviar o formulário. Isto acontece porque sabe que isso pode repetir a operação: uma segunda reserva igual à primeira. O tema dos formulários mostra como evitar esse problema.
+</details>
 
-**Os formulários escolhem.** Um formulário HTML diz o método no atributo `method`:
+## Parte 2: O código de estado que a rota escolhe
 
-```text
-<form method="get" action="/equipamentos">   os campos vão para o endereço: /equipamentos?sala=B12
-<form method="post" action="/reservas">      os campos vão para o corpo do pedido
-```
+Uma rota de detalhe que só converte o `id` e procura o equipamento responde 404 a `/equipamentos/9` e também a `/equipamentos/abc`, com a mensagem `Não existe o equipamento abc`. A resposta não é falsa, mas esconde o problema: `abc` nunca podia ser o número de um equipamento. Nesta parte, a rota passa a escolher o código que diz o que correu mal.
 
-Uma pesquisa é um formulário `GET`: não muda nada, e o resultado pode ser guardado ou partilhado pelo endereço. Uma reserva é um formulário `POST`. Sem `method`, o formulário usa `GET`.
+### A rota escolhe o código com res.status
 
-Neste tema escreves um formulário de pesquisa, no passo 4 do exemplo guiado, e vês os campos a passar para o endereço. O formulário de reserva, enviado por `POST`, e o que o servidor faz com ele ficam para o tema dos formulários.
+Até agora, o código de estado foi sempre o Express a escolhê-lo: 200 quando a rota responde com `res.send` ou `res.json`, e 404 quando não há rota para o pedido. Rever: [A resposta leva texto, com res.send, ou dados, com res.json](02-primeiro-servidor.md#a-resposta-leva-texto-com-ressend-ou-dados-com-resjson).
 
-## Os códigos de estado que o teu código escolhe
-
-### O 200 por omissão e o res.status
-
-Até agora, o Express pôs sempre o código 200 nas respostas das tuas rotas, e o 404 nos pedidos para os quais não havia rota. Quando a resposta não correu bem, ou correu bem de uma forma especial, és tu que escolhes o código, com `res.status(...)` antes do `send` ou do `json`:
+Para dar outro código, a rota escreve `res.status(...)` antes do `json`:
 
 ```js fragment
-res.status(404).json({ erro: "Não existe o equipamento 9" });
+res.status(404).json({ erro: `Não existe o equipamento ${id}` });
 ```
 
-O `res.status` não envia nada: só marca o código. Quem envia é o `json` a seguir. Por isso escrevem-se juntos, numa linha.
+O `res.status(404)` não envia nada: só marca o código da resposta. Quem envia é o `json` a seguir, com a mensagem.
+
+As mensagens de erro da rota de detalhe vão em JSON, numa chave `erro`, porque as outras respostas dela também são JSON. Quem recebe a resposta sabe sempre onde procurar a mensagem.
 
 ### Os três códigos deste tema
 
-**200 OK.** O pedido correu bem e a resposta tem o que se pediu. É o que o Express põe se não disseres nada.
+Três códigos chegam para as rotas deste tema:
 
-**400 Bad Request.** O pedido está mal feito, e o servidor recusa-se a tratá-lo: um identificador que não é um número, um campo obrigatório em falta, um tempo letivo negativo. A culpa é de quem fez o pedido, e repetir o mesmo pedido dá sempre o mesmo erro.
+- 200 (OK): o pedido correu bem, e a resposta tem o que se pediu.
+- **400** (Bad Request, pedido mal feito): o pedido não faz sentido, e o servidor recusa-se a tratá-lo. É o caso de um identificador que não é um número, ou de um zero, quando os números começam no 1.
+- 404 (Not Found): o pedido faz sentido, mas o que se pediu não existe, como o equipamento 9, quando só há quatro.
 
-**404 Not Found.** O pedido está bem feito, mas o que se pediu não existe: o equipamento 9, quando só há quatro.
+`abc` nunca pode ser o número de um equipamento, e por isso `/equipamentos/abc` é um pedido mal feito, 400. O 9 podia ser o número de um equipamento, só que não existe, e por isso `/equipamentos/9` é 404. Daí a ordem da rota de detalhe: primeiro verifica se o pedido faz sentido, e só depois procura.
 
-A diferença entre 400 e 404 é a que mais se confunde. Pensa assim: `abc` nunca pode ser o número de um equipamento, por isso `/equipamentos/abc` é um pedido mal feito, 400. O 9 podia ser o número de um equipamento; acontece que não existe, por isso `/equipamentos/9` é 404. Primeiro verifica-se se o pedido faz sentido; só depois se procura.
+```mermaid
+flowchart TD
+    P["GET /equipamentos/:id"] --> N["converte o id com Number"]
+    N --> V{"é um número inteiro,<br/>de 1 para cima?"}
+    V -->|não| R4["400: o pedido está mal feito"]
+    V -->|sim| F{"há um equipamento<br/>com este id?"}
+    F -->|não| R0["404: não existe"]
+    F -->|sim| R2["200: o equipamento"]
+```
 
-E há um caso que não é erro nenhum: `/equipamentos?sala=Z99`, uma sala sem equipamentos. A lista existe, só que está vazia. A resposta é 200 com `[]`. Um filtro que não encontra nada não é um recurso inexistente.
+O diagrama mostra as duas perguntas da rota de detalhe, por esta ordem. Um pedido só chega à segunda pergunta se passar a primeira.
 
-Falta o 500, que já conheces do tema anterior: o servidor falhou ao tratar um pedido que até podia estar certo. Não é um código que escolhas: é o que o Express responde quando o teu código rebenta. O tema dos erros e da segurança trata de como responder a isso de forma controlada.
+A esta verificação, feita antes de usar os dados do pedido, chama-se **validação**. Na rota de detalhe, é este `if`:
 
-Mais tarde, o servidor vai receber pedidos que mudam alguma coisa e escolher outros códigos. O 201 indica que um pedido criou um recurso novo. E os redirecionamentos da família 3xx, como o 302 que viste na pesquisa da Wikipédia, no laboratório do primeiro tema. São do tema dos formulários, que é onde o catálogo passa a criar reservas.
+```js fragment
+  if (!Number.isInteger(id) || id < 1) {
+    res.status(400).json({ erro: "O identificador tem de ser um número inteiro positivo" });
+    return;
+  }
+```
+
+O `Number.isInteger(id)` só dá `true` para um número inteiro, e dá `false` para `NaN` e para `2.5`. O `!` inverte o resultado, e o `||` quer dizer "ou", como no 11.º ano. A condição apanha um `id` que não é inteiro, ou que é menor do que 1, e a rota responde 400.
+
+A validação faz-se no servidor, mesmo que nenhuma página do catálogo tenha uma ligação para `/equipamentos/abc`. Qualquer pessoa pode escrever o endereço à mão, e o servidor não sabe de onde veio o pedido.
+
+Prevê: um filtro por uma sala sem equipamentos, `/equipamentos?sala=Z99`, deve dar 404?
+
+Não. A lista existe, só está vazia. A resposta é 200, com `[]`. Um filtro que não encontra nada não é um recurso que não existe.
+
+Falta o 500, que viste no tema 02 com o `res.sendd`. Esse não o escolhes: é o Express que o põe quando o código da rota falha.
 
 ### Responder uma vez, e sair
 
-Cada pedido tem uma resposta, e uma só. Depois de um `res.status(400).json(...)`, a função tem de acabar, e é para isso que serve o `return` a seguir. Sem ele, a função continua, chega ao `res.json(equipamento)` mais abaixo, e tenta responder outra vez ao mesmo pedido. O browser recebe a primeira resposta, e o terminal mostra:
+Cada pedido tem uma resposta, e uma só. No `if` da validação, depois do `res.status(400).json(...)`, a função tem de acabar, e é para isso que serve o `return`.
+
+Sem o `return`, a função continua. Procura o equipamento, não o encontra e chega ao `res.status(404).json(...)`, que tenta responder outra vez ao mesmo pedido. O browser já recebeu o 400 e fica com ele. O terminal mostra um erro, que começa assim:
 
 ```text
 Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
 ```
 
-"Não é possível definir os cabeçalhos depois de terem sido enviados": já houve resposta. Quando vires esta mensagem, procura uma resposta de erro sem `return` a seguir.
+Quer dizer "não é possível definir os cabeçalhos depois de terem sido enviados ao cliente", ou seja, já houve resposta. Nas linhas `at` por baixo, a que tem o nome do teu `server.js` aponta para a segunda resposta. Rever: [Uma mensagem de erro lê-se pelo tipo e pela linha](02-primeiro-servidor.md#uma-mensagem-de-erro-lê-se-pelo-tipo-e-pela-linha). O servidor continua a correr. Quando vires esta mensagem, procura uma resposta de erro sem `return` a seguir.
 
-### Para confirmar
+## Parte 3: O middleware e a fila do Express
 
-1. `/equipamentos/0`: 400 ou 404? E `/equipamentos/5`?
-2. Uma pesquisa de equipamentos por nome que não encontra nenhum: que código?
-3. Um pedido a `/equipamentos/abc` recebe o 400 certo, mas o terminal mostra `ERR_HTTP_HEADERS_SENT`. O que falta na função da rota, e onde?
+### Um middleware é uma função por onde passam os pedidos
 
-## O middleware
+Imagina que queres ver no terminal cada pedido que chega ao servidor, com o método e o endereço. Podias escrever um `console.log` em cada rota, mas repetias a mesma linha em todas. E os pedidos a que nenhuma rota responde, como um endereço mal escrito, nunca apareciam.
 
-### O que é
-
-Até agora, cada pedido ia direto para a rota que lhe correspondia. Há trabalho que se quer fazer em muitos pedidos antes de chegar à rota. Por exemplo, escrever no terminal que pedido chegou. No tema dos formulários será ler o corpo; mais tarde será verificar quem faz o pedido. Escrever esse código dentro de cada rota seria repeti-lo dezenas de vezes.
-
-Um **middleware** é uma função que participa no percurso de um pedido no Express. Pode ficar antes das rotas ou depois delas, conforme o seu papel. Recebe os mesmos `req` e `res` que as rotas, e mais um terceiro parâmetro, `next`, uma função que quer dizer "passa ao seguinte". Regista-se com `app.use`:
+Um **middleware** é uma função por onde o pedido passa no Express, antes das rotas ou depois delas. Recebe o `req` e o `res`, como as rotas, e um terceiro parâmetro, `next`, uma função que quer dizer "passa ao seguinte". Regista-se com `app.use`:
 
 ```js fragment
 app.use((req, res, next) => {
@@ -185,44 +191,13 @@ app.use((req, res, next) => {
 });
 ```
 
-Este middleware escreve no terminal o método e o endereço de cada pedido (por exemplo, `GET /equipamentos?sala=B12`) e chama `next()`, para o pedido continuar o caminho. Corre para todos os pedidos, seja qual for o caminho, porque o `app.use` não lhe deu nenhum.
+Este é o middleware de registo. Escreve no terminal o método e o endereço do pedido, como `GET /equipamentos?sala=B12`, e chama `next()`, para o pedido seguir caminho. O `req.url` é o endereço sem o computador e a porta, ou seja, o caminho e os parâmetros de pesquisa. Como o `app.use` não recebeu nenhum caminho, este middleware corre em todos os pedidos.
 
-### Uma fila, pela ordem do ficheiro
-
-O Express guarda os middlewares e as rotas pela ordem em que aparecem no ficheiro, e cada pedido percorre essa fila de cima para baixo. Em cada passo, a função que está na vez faz uma de duas coisas: ou responde, e o pedido acaba ali; ou chama `next()`, e o pedido passa à seguinte. Uma rota é, na prática, uma paragem que só aceita pedidos de um método e de um caminho, e que responde.
-
-```text
-pedido GET /equipamentos/2
-   │
-   ↓
-middleware de registo         escreve "GET /equipamentos/2" e chama next()
-   │
-   ↓
-rota GET /                    não é este caminho; o Express passa à seguinte
-   │
-   ↓
-rota GET /equipamentos        também não: tem uma parte a menos; passa à seguinte
-   │
-   ↓
-rota GET /equipamentos/:id    é este: responde 200 com o equipamento
-                              (o pedido acaba aqui)
-
-middleware final (404)        só chega aqui um pedido a que ninguém respondeu
-```
-
-Daqui saem as três regras do middleware, e cada uma corresponde a um erro que vais provocar no laboratório:
-
-1. **Um middleware que não responde tem de chamar `next()`.** Se não chamar, o pedido fica parado: o browser fica à espera, com o indicador de carregamento a rodar. E a resposta nunca chega. Isto acontece porque o servidor não a manda nem fecha a ligação. Não aparece nenhuma mensagem de erro, o que torna este engano difícil de encontrar.
-2. **O middleware que prepara as rotas fica antes delas.** Isto inclui o que observa pedidos e o que prepara dados para as funções das rotas. O middleware de registo só escreve no terminal os pedidos que lhe chegam. Se estiver abaixo das rotas, um pedido a que uma rota respondeu já acabou e nunca lá chega. E o terminal só mostra os pedidos a que nenhuma rota respondeu, como o de um endereço que não existe. O mesmo vale para o middleware que lê o corpo, que vais conhecer no tema dos formulários. Se estiver abaixo da rota, os dados ainda não estão preparados quando ela corre.
-3. **Um middleware que responde a tudo tem de vir depois de tudo.** O que responde "não encontrado" tem de ser o último. Se estiver em primeiro, responde 404 a todos os pedidos, e as rotas nunca chegam a correr.
-
-A mesma fila decide entre duas rotas que servem o mesmo pedido. O Express fica com a primeira rota que encaixa no pedido, mesmo que haja mais abaixo outra que encaixe melhor. Imagina que acrescentas ao catálogo a rota `GET /equipamentos/salas`, para mostrar a lista das salas. E que a escreves abaixo da rota `GET /equipamentos/:id`, a de detalhe. Um pedido a `/equipamentos/salas` chega primeiro à rota com o parâmetro. E encaixa nela: o `:id` aceita qualquer valor naquele lugar do caminho. Por isso o Express põe o texto `"salas"` em `req.params.id` e chama essa função. A rota de detalhe verifica o identificador, como no passo 1 do exemplo guiado. E responde 400. Isto acontece porque `salas` não é um número. A rota das salas nunca chega a correr. No terminal não aparece nenhuma mensagem de erro. Isto acontece porque para o Express correu tudo bem: encontrou uma rota e ela respondeu.
-
-Daqui sai a regra das rotas: quando duas rotas começam pelo mesmo caminho, a que tem o caminho fixo vem antes da que tem um parâmetro. `/equipamentos/salas` fica acima de `/equipamentos/:id`. A biblioteca da ficha pode ter o mesmo conflito. A rota `/livros/disponiveis`, da ficha anterior, fica acima da rota `/livros/:id` que vais acrescentar. Nem todas as rotas parecidas entram em conflito. `GET /equipamentos`, sem mais nada, não encaixa em `/equipamentos/:id`. Isto acontece porque o Express compara o caminho parte a parte e `/equipamentos` tem uma parte a menos. E uma rota com o mesmo caminho e outro método também não. Isto acontece porque o método faz parte da rota: uma rota `app.get` nunca responde a um `POST`.
+Como o `app.get`, o `app.use` só guarda a função no arranque, sem a correr. O Express chama-a depois, uma vez por cada pedido que chega. Rever: [O arranque corre uma vez, e a função de uma rota a cada pedido](02-primeiro-servidor.md#o-arranque-corre-uma-vez-e-a-função-de-uma-rota-a-cada-pedido).
 
 ### O middleware final
 
-O último `app.use` do servidor, sem caminho e sem `next`, apanha os pedidos a que nenhuma rota respondeu:
+Um middleware também pode responder. Sem nada no fim do ficheiro, um pedido a que nenhuma rota responde recebe a resposta do Express, uma pequena página com `Cannot GET` e o caminho. O último `app.use` do ficheiro, sem caminho e sem `next`, troca-a por uma resposta tua:
 
 ```js fragment
 app.use((req, res) => {
@@ -230,32 +205,145 @@ app.use((req, res) => {
 });
 ```
 
-Substitui o `Cannot GET /...` do Express por uma resposta tua. Não precisa do parâmetro `next`, porque responde sempre.
+Chama-se **middleware final**. Fica depois de todas as rotas, logo antes do `app.listen`, e só lhe chegam os pedidos a que nenhuma rota respondeu, de qualquer método e para qualquer caminho. Responde a todos com 404. Não tem o parâmetro `next` porque responde sempre, e nunca passa o pedido a ninguém.
 
-### Para confirmar
+### Uma fila, pela ordem do ficheiro
 
-1. Num middleware, o que acontece se não chamares `next()` nem responderes?
-2. Se o middleware de registo estiver abaixo das rotas, que pedidos aparecem no terminal?
-3. Se o middleware final estiver logo a seguir ao middleware de registo, que resposta tem um pedido a `/equipamentos`?
-4. Acrescentaste a rota `GET /equipamentos/salas` logo abaixo da rota de detalhe, e um pedido a `/equipamentos/salas` responde 400. Porquê, e o que mudas?
+O Express guarda os middlewares e as rotas pela ordem em que aparecem no ficheiro, e cada pedido percorre essa fila de cima para baixo. A função que está na vez faz uma de duas coisas. Ou responde, e o pedido acaba ali, ou chama `next()`, e o pedido passa à seguinte. Uma rota é uma paragem da fila que só trata os pedidos com o seu método e o seu caminho. Os outros pedidos, o Express passa-os à seguinte.
+
+Com os dois middlewares e as três rotas do catálogo, a fila é esta:
+
+```mermaid
+flowchart TD
+    P(["um pedido chega"]) --> M["middleware de registo<br/>escreve o pedido e chama next()"]
+    M --> R1{"método GET<br/>e caminho /"}
+    R1 -->|sim| A1["a página inicial responde"]
+    R1 -->|não| R2{"método GET<br/>e caminho /equipamentos"}
+    R2 -->|sim| A2["a lista responde"]
+    R2 -->|não| R3{"método GET e caminho<br/>/equipamentos/ e mais uma parte,<br/>como /equipamentos/2"}
+    R3 -->|sim| A3["o detalhe responde<br/>200, 400 ou 404"]
+    R3 -->|não| F["middleware final<br/>responde 404"]
+```
+
+O diagrama segue um pedido pela fila. Todos passam pelo middleware de registo. Depois, cada rota olha para o método e para o caminho, e só responde se forem os seus. Ao middleware final só chega o pedido a que nenhuma rota respondeu, como `GET /nao-existe`.
+
+Daqui saem as três regras do middleware:
+
+1. Um middleware que não responde tem de chamar `next()`. Se não o chamar, o pedido fica parado. O browser fica à espera, com o indicador de carregamento a rodar, e a resposta não chega. O terminal mostra a linha do registo e mais nada, sem mensagem de erro, o que torna este engano difícil de encontrar.
+2. Um middleware que tem de ver os pedidos, ou de lhes preparar alguma coisa, fica antes das rotas. O de registo só vê os pedidos que lhe chegam, e um pedido a que uma rota respondeu acaba nela. Com o registo entre as rotas e o middleware final, o terminal só mostra os pedidos que nenhuma rota tratou, como o de um endereço que não existe. O mesmo vale para um middleware que prepare dados para as rotas, como um que leia o corpo de um pedido.
+3. Um middleware que responde a tudo fica depois de tudo. O middleware final responde a qualquer pedido que lhe chegue. Se estiver antes das rotas, responde 404 a todos os pedidos, e as rotas nunca chegam a correr.
+
+### O caminho fixo vem antes do caminho com parâmetro
+
+A mesma fila decide entre duas rotas que servem o mesmo pedido. O Express fica com a primeira que encaixa, mesmo que mais abaixo haja outra que encaixe melhor.
+
+Imagina que acrescentas ao catálogo a rota `GET /equipamentos/salas`, com a lista das salas, e que a escreves abaixo da rota de detalhe. Prevê: o que recebe um pedido a `/equipamentos/salas`?
+
+Recebe 400, com a mensagem do identificador. O pedido chega primeiro à rota de detalhe e encaixa nela, porque o `:id` aceita qualquer valor naquela posição. O Express põe o texto `"salas"` em `req.params.id` e chama a função do detalhe. `Number("salas")` dá `NaN`, e a validação responde 400. A rota das salas nunca corre, e o terminal não mostra erro nenhum. Para o Express, correu tudo bem, porque uma rota respondeu.
+
+A regra das rotas é esta: quando um caminho fixo e um caminho com parâmetro podem servir o mesmo pedido, o fixo vem primeiro. `/equipamentos/salas` fica acima de `/equipamentos/:id`.
+
+Nem todas as rotas parecidas entram em conflito. `GET /equipamentos` não encaixa em `/equipamentos/:id`, porque tem uma parte a menos. Uma rota com o mesmo caminho e outro método também não, porque o método faz parte da rota: um `app.get` nunca responde a um `POST`.
+
+## Parte 4: Ver e descrever o que o servidor faz
+
+### O separador Rede mostra os dados que o pedido levou
+
+No separador Rede das ferramentas de programador, que usaste no tema 01, cada pedido ao teu servidor mostra também os dados que levou. Rever: [O separador Rede mostra cada pedido e cada resposta](01-do-pedido-a-resposta.md#o-separador-rede-mostra-cada-pedido-e-cada-resposta). Clica no pedido e procura o separador "Payload" (no Chrome em português, "Carga"; no Firefox, "Pedido"):
+
+- num pedido com parâmetros de pesquisa, aparece "Query String Parameters" (parâmetros de pesquisa), com cada nome e o seu valor;
+- num pedido só com um parâmetro de rota, não há parâmetros para mostrar, e o separador pode nem aparecer. O valor faz parte do caminho, e vê-se em "Headers" ("Cabeçalhos"), no "Request URL" (endereço do pedido).
+
+Em "Headers", o "Status Code" mostra o código que a tua rota escolheu. Num pedido a `/equipamentos?sala=B12`, o "Status Code" é 200, e o Payload mostra o parâmetro `sala` com o valor `B12`.
+
+Quando um pedido não faz o que esperavas, a primeira pergunta é esta: os dados chegaram ao servidor, com o nome que a rota espera? Se a pesquisa devolver a lista toda, o Payload mostra se o parâmetro se chamava mesmo `sala`.
+
+### A tabela de contratos HTTP
+
+Imagina que um colega vai fazer uma página que usa o teu catálogo. Precisa de saber que pedidos o servidor aceita, com que dados, e o que pode receber de volta, incluindo os erros. Não devia ter de ler o teu código para isso.
+
+Um **contrato HTTP** é essa descrição: uma tabela com uma linha por pedido que o servidor aceita. Cada linha diz o método, o caminho, o que o pedido traz e as respostas que pode ter. Chama-se contrato porque é uma promessa: quem fizer este pedido, assim, recebe uma destas respostas. O do catálogo completo é este:
+
+| Método | Caminho | Entrada | Respostas |
+| --- | --- | --- | --- |
+| `GET` | `/` | nenhuma | 200, página HTML com a pesquisa |
+| `GET` | `/equipamentos` | pesquisa: `sala`, opcional | 200, lista em JSON, vazia se não houver nenhum |
+| `GET` | `/equipamentos/:id` | caminho: `id`, inteiro positivo | 200, o equipamento; 400 se o `id` não for válido; 404 se não existir |
+| qualquer | qualquer outro | nenhuma | 404, `Página não encontrada.` |
+
+Uma linha só com a resposta que corre bem está incompleta: "`GET /equipamentos/:id`, devolve o equipamento" esquece o 400 e o 404. E cada linha verifica-se no browser, com o separador Rede aberto, com um pedido por cada resposta possível.
 
 ## Exemplo guiado: o catálogo cresce
 
-O catálogo do tema anterior tinha duas rotas. Neste exemplo ganha a rota de detalhe e o filtro por sala, que já viste nas aulas, com a verificação que faltava. Depois ganha o middleware de registo, que escreve no terminal cada pedido que chega. Acrescenta uma página inicial com pesquisa. Por fim, o middleware final responde aos endereços que não existem.
+O catálogo do tema 02 tem duas rotas: `GET /`, com um texto, e `GET /equipamentos`, com a lista. Neste exemplo, ganha primeiro a rota de detalhe e o filtro por sala, e depois a validação do 400. Seguem-se o middleware de registo, uma página inicial com uma pesquisa e, por fim, o middleware final.
 
 O resultado esperado, escrito antes de testar:
 
-- `/equipamentos/2` responde 200 com o projetor; `/equipamentos/abc` responde 400; `/equipamentos/9` responde 404;
-- `/equipamentos?sala=B12` responde com o portátil e o monitor; `?sala=Z99` responde 200 com uma lista vazia;
+- `/equipamentos/2` responde 200 com o projetor, `/equipamentos/abc` responde 400 e `/equipamentos/9` responde 404;
+- `/equipamentos?sala=B12` responde com o portátil e o monitor, e `?sala=Z99` responde 200 com uma lista vazia;
 - a pesquisa da página inicial, com `B12` escrito no campo, leva o browser a `/equipamentos?sala=B12`;
 - cada pedido aparece escrito no terminal;
-- um endereço que não existe responde 404 com "Página não encontrada.".
+- um endereço que não existe responde 404 com `Página não encontrada.`.
 
-### Passo 1: a rota de detalhe, com as duas verificações
+O ponto de partida é o `server.js` do tema 02, o do exemplo [catalogo-de-equipamentos](../exemplos/aplicacoes-em-browser/catalogo-de-equipamentos/README.md). Depois de cada passo, para o servidor com Ctrl+C e volta a ligá-lo com `node server.js`.
 
-Antes de leres, prevê: o `abc` e o 9 devem chegar à mesma resposta? Este bloco é a rota completa, para acrescentar depois da lista.
+### Passo 1: a rota de detalhe e o filtro
+
+No `server.js`, troca a rota de `/equipamentos` por esta, que lê a pesquisa:
 
 ```js fragment
+// Rota 2: GET /equipamentos recebe a lista em JSON.
+// Com ?sala=B12 no fim do endereço, recebe só os equipamentos dessa sala.
+app.get("/equipamentos", (req, res) => {
+  const sala = req.query.sala;
+  if (sala) {
+    const daSala = equipamentos.filter((equipamento) => equipamento.sala === sala);
+    res.json(daSala);
+    return;
+  }
+  res.json(equipamentos);
+});
+```
+
+Sem `?sala=`, o `req.query.sala` é `undefined`, o `if` não entra, e a resposta é a lista toda. Com `?sala=B12`, o `filter` cria uma lista nova, só com os equipamentos dessa sala, e o `return` acaba a função, para não responder também com a lista toda. Um `?sala=` sem valor também dá a lista toda, porque o texto vazio, como o `undefined`, não entra no `if`.
+
+Logo a seguir, acrescenta a rota de detalhe:
+
+```js fragment
+// Rota 3: GET /equipamentos/2 recebe só o equipamento com o id 2.
+// O :id é um parâmetro de rota: o Express guarda o valor em req.params.id.
+app.get("/equipamentos/:id", (req, res) => {
+  const id = Number(req.params.id); // chega como texto, "2", e passa a número
+  const equipamento = equipamentos.find((equipamento) => equipamento.id === id);
+  if (!equipamento) {
+    res.status(404).json({ erro: `Não existe o equipamento ${req.params.id}` });
+    return;
+  }
+  res.json(equipamento);
+});
+```
+
+A rota converte o `id`, procura o equipamento e, se não o encontra, responde 404. O `find` devolve `undefined` quando nenhum equipamento serve, e o `!equipamento` apanha esse caso.
+
+Com esta versão, os pedidos dão:
+
+| Pedido | Código | Resposta |
+| --- | --- | --- |
+| `GET /equipamentos?sala=B12` | 200 | o portátil e o monitor |
+| `GET /equipamentos?sala=Z99` | 200 | `[]` |
+| `GET /equipamentos/2` | 200 | `{"id":2,"nome":"Projetor","sala":"A03"}` |
+| `GET /equipamentos/9` | 404 | `{"erro":"Não existe o equipamento 9"}` |
+
+Prevê: e `/equipamentos/abc`, que código recebe?
+
+Recebe 404, com `{"erro":"Não existe o equipamento abc"}`. `Number("abc")` dá `NaN`, o `find` não encontra nenhum equipamento com esse `id`, e a rota responde como responde ao 9. É isto que o passo 2 corrige. Esta versão está no exemplo [catalogo-com-detalhe-e-filtro](../exemplos/aplicacoes-em-browser/catalogo-com-detalhe-e-filtro/README.md).
+
+### Passo 2: o 400 antes do 404
+
+Troca a rota de detalhe por esta versão, com a validação antes da procura:
+
+```js fragment
+// Um equipamento: GET /equipamentos/2. O :id é um parâmetro de rota.
 app.get("/equipamentos/:id", (req, res) => {
   const id = Number(req.params.id); // chega como texto, "2", e passa a número
   if (!Number.isInteger(id) || id < 1) {
@@ -271,52 +359,43 @@ app.get("/equipamentos/:id", (req, res) => {
 });
 ```
 
-Leitura guiada: a rota converte o identificador, valida-o, procura o equipamento e responde. Cada saída de erro termina a função antes da resposta de sucesso.
+O que é novo é o `if` da validação. Rever: [Os três códigos deste tema](#os-três-códigos-deste-tema). A tabela segue cinco pedidos pela rota:
 
-A primeira verificação é nova. `Number("abc")` dá `NaN` (Not a Number, não é um número), `Number("2.5")` dá 2,5 e `Number("0")` dá 0. `Number.isInteger(id)` só é verdadeiro para números inteiros, e o `id < 1` recusa o zero e os negativos. Se a verificação falha, o pedido está mal feito: 400, e `return`. Só depois de o identificador fazer sentido é que se procura, e se a procura não encontra, é 404.
+| Pedido | `id` depois do `Number` | `Number.isInteger(id)` | `id < 1` | Resposta |
+| --- | --- | --- | --- | --- |
+| `/equipamentos/2` | `2` | `true` | `false` | 200, o projetor |
+| `/equipamentos/abc` | `NaN` | `false` | não se calcula | 400 |
+| `/equipamentos/2.5` | `2.5` | `false` | não se calcula | 400 |
+| `/equipamentos/0` | `0` | `true` | `true` | 400 |
+| `/equipamentos/9` | `9` | `true` | `false` | 404, depois do `find` |
 
-As mensagens de erro vão em JSON, com uma chave `erro`, porque as outras respostas desta rota também são JSON. Quem recebe a resposta sabe sempre onde procurar a mensagem.
+Quando a primeira metade do `||`, o `!Number.isInteger(id)`, já é verdadeira, o JavaScript não calcula a segunda, porque a condição já está decidida. É por isso que o `id < 1` não se calcula para `abc` nem para `2.5`.
 
-### Passo 2: o filtro por sala
-
-Antes de leres, prevê: o que deve sair com `?sala=Z99`? Este bloco substitui a rota da lista.
-
-```js fragment
-app.get("/equipamentos", (req, res) => {
-  const sala = req.query.sala;
-  if (sala) {
-    const daSala = equipamentos.filter((equipamento) => equipamento.sala === sala);
-    res.json(daSala);
-    return;
-  }
-  res.json(equipamentos);
-});
-```
-
-Leitura guiada: a rota lê a pesquisa para uma variável própria. Se houver uma sala, cria uma lista filtrada e responde; caso contrário, envia a lista completa. Nunca reatribui `req.query`.
-
-Sem `?sala=`, `req.query.sala` é `undefined`, o `if` não entra e a resposta é a lista toda. Com `?sala=B12`, o `filter` cria uma lista nova só com os equipamentos dessa sala. Se não houver nenhum, a lista nova está vazia, e a resposta é 200 com `[]`: como viste na secção 5, um filtro sem resultados não é um erro.
+A mensagem do 404 passa a usar o `id` convertido, que depois da validação é sempre um número inteiro.
 
 ### Passo 3: o middleware de registo
 
-Logo a seguir à criação da `app` e aos dados, antes de todas as rotas:
+Logo a seguir aos dados, antes de todas as rotas, acrescenta o middleware de registo:
 
 ```js fragment
+// Middleware de registo: escreve no terminal cada pedido que chega,
+// e passa-o à frente. Está antes das rotas, para ver todos os pedidos.
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 ```
 
-A partir daqui, cada pedido deixa uma linha no terminal. `req.url` é o endereço do pedido sem o servidor e a porta: o caminho e os parâmetros de pesquisa, como `/equipamentos?sala=B12`.
+A partir daqui, cada pedido deixa uma linha no terminal, por baixo de `Servidor a correr em http://localhost:3000`, como `GET /equipamentos/2`.
 
-Se fizeres os pedidos no browser, vais ver também linhas `GET /favicon.ico`, um endereço que não escreveste em lado nenhum. É o browser a pedir sozinho o ícone que mostra no separador, ao lado do título. O catálogo não tem ícone. E quem responde a esse pedido é o middleware final do passo 5, com 404. Não é um erro do teu código: é a prova de que um pedido que o browser faz por iniciativa própria também passa pela fila. E o middleware de registo vê-o como vê os outros.
+Se fizeres os pedidos no browser, aparecem também linhas `GET /favicon.ico`, um endereço que não escreveste. É o browser a pedir sozinho o ícone que mostra no separador, ao lado do título da página. O catálogo não tem ícone, e o pedido acaba com 404. Não é um erro do teu código: mostra que um pedido que o browser faz por iniciativa própria também passa pela fila.
 
 ### Passo 4: a página inicial, com uma pesquisa por GET
 
-A rota `/` deixa de responder com uma frase e passa a responder com uma pequena página HTML, com um formulário de pesquisa. O HTML está escrito dentro de um texto com crases, que permite várias linhas:
+A rota de `/` deixa de responder com uma frase e passa a responder com uma pequena página HTML, com um formulário de pesquisa. Troca-a por esta:
 
 ```js fragment
+// Página inicial, com um formulário de pesquisa que envia por GET.
 app.get("/", (req, res) => {
   res.send(`<!doctype html>
 <html lang="pt">
@@ -332,15 +411,26 @@ app.get("/", (req, res) => {
 });
 ```
 
-Quando escreves `B12` e carregas em "Pesquisar", o browser faz `GET /equipamentos?sala=B12`: o nome do campo, `sala`, passa a ser o nome do parâmetro de pesquisa. É a mesma rota do passo 2, agora usada a partir de um formulário. Escrever HTML assim, dentro de um texto, é desconfortável e fácil de errar; no próximo tema, o EJS resolve isso.
+O HTML vai dentro de um texto com crases, que pode ter várias linhas, e o `res.send` envia-o como página. Escrever HTML assim é desconfortável e fácil de errar, mas funciona.
+
+Quando escreves `B12` e carregas em "Pesquisar", o browser faz `GET /equipamentos?sala=B12`, e responde a rota da lista do passo 1. Rever: [Formulários HTML: anatomia de um formulário moderno](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/HTML%20e%20CSS/05-formularios-html.md#1-anatomia-de-um-formulário-moderno).
 
 ### Passo 5: o middleware final
 
-Depois de todas as rotas, e antes do `app.listen`, o middleware da secção 6 que responde "Página não encontrada.". A partir daqui, o `Cannot GET /...` do Express deixa de aparecer: é a tua resposta que aparece, a qualquer método e a qualquer caminho que nenhuma rota tratou.
+Depois de todas as rotas, e antes do `app.listen`, acrescenta o middleware final:
 
-### Passo 6: o servidor completo
+```js fragment
+// Middleware final: só chega aqui um pedido a que nenhuma rota respondeu.
+app.use((req, res) => {
+  res.status(404).send("Página não encontrada.");
+});
+```
 
-Antes de leres o conjunto, prevê: que funções percorre `GET /equipamentos/2`? E `GET /nao-existe`? O ficheiro completo é este.
+O `Cannot GET` do Express deixa de aparecer. O pedido `GET /favicon.ico` também acaba aqui.
+
+### Passo 6: o ficheiro completo
+
+O `server.js` completo fica assim. Confere o teu: o código deve ser igual, e só os comentários podem ser diferentes.
 
 ```js
 // server.js: o catálogo de equipamentos da escola, agora com middleware.
@@ -421,127 +511,56 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-Leitura guiada: depois dos dados vem o registo. Seguem-se a página inicial, a lista e o detalhe. O middleware final só responde ao que ficou sem resposta, e o `listen` inicia a escuta. No pedido ao equipamento 2, o registo escreve uma linha e a rota de detalhe responde 200. No pedido desconhecido, o registo escreve e o middleware final responde 404.
+O ficheiro lê-se pela ordem da fila: os dados, o middleware de registo, as três rotas, o middleware final e, no fim, o `listen`, que põe o servidor à escuta. Um pedido percorre os blocos do meio de cima para baixo, até um deles responder. O mesmo código, com o `package.json` e o `package-lock.json`, está no exemplo [catalogo-com-middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md).
 
-Este servidor, com o `package.json` e o `package-lock.json`, está na pasta de exemplos: [catalogo-com-middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md). A versão do tema anterior, com as duas primeiras rotas, continua em [catalogo-de-equipamentos](../exemplos/aplicacoes-em-browser/catalogo-de-equipamentos/README.md). Na mesma pasta encontras também o [catalogo-com-reservas](../exemplos/aplicacoes-em-browser/catalogo-com-reservas/README.md), que acrescenta a este servidor um formulário de reserva enviado por `POST`. É do tema dos formulários e usa matéria que este tema ainda não deu; podes lê-lo à frente, se quiseres.
+### Passo 7: os pedidos, um a um
 
-### Passo 7: os resultados
+Com o servidor ligado, cada pedido dá:
 
-Com o servidor ligado, cada endereço dá:
-
-| Pedido | Código | Resposta |
-| --- | --- | --- |
-| `GET /equipamentos/2` | 200 | `{"id":2,"nome":"Projetor","sala":"A03"}` |
-| `GET /equipamentos/abc` | 400 | `{"erro":"O identificador tem de ser um número inteiro positivo"}` |
-| `GET /equipamentos/9` | 404 | `{"erro":"Não existe o equipamento 9"}` |
-| `GET /equipamentos?sala=B12` | 200 | o portátil e o monitor |
-| `GET /equipamentos?sala=Z99` | 200 | `[]` |
-| `GET /nao-existe` | 404 | `Página não encontrada.` |
-
-E o terminal tem uma linha por pedido, escrita pelo middleware de registo: `GET /equipamentos/2`, `GET /equipamentos/abc`, `GET /equipamentos/9`, e assim por diante. Se os pedidos vierem do browser, aparecem também as linhas `GET /favicon.ico` de que fala o passo 3.
-
-## Observar os pedidos no browser
-
-Com o separador Rede das ferramentas de programador aberto, cada pedido ao teu servidor mostra o que levou. Clica no pedido e procura o separador "Payload" (em português, "Carga"; no Firefox, "Pedido"):
-
-- num `GET` com parâmetros de pesquisa, aparece "Query String Parameters", com cada parâmetro e o seu valor;
-- num parâmetro de rota não aparece nada no Payload: o valor faz parte do caminho, e vê-se no Request URL;
-- num pedido com corpo, como o `POST` de um formulário, aparece "Form Data", com cada campo e o seu valor. O catálogo deste tema não recebe pedidos destes; vais vê-los no tema dos formulários.
-
-No separador "Headers", o Status Code mostra o código que o teu código escolheu. Depois de usares a pesquisa da página inicial com `B12`, o separador Rede mostra o pedido `GET /equipamentos?sala=B12`, com o 200. E o Payload mostra o parâmetro `sala` com o valor `B12`.
-
-É esta a forma de confirmar, sem adivinhar, o que o browser enviou e o que o servidor respondeu. Quando um pedido não faz o que esperavas, a primeira pergunta é: os dados chegaram ao servidor, com o nome que a rota espera? Se a pesquisa devolver a lista toda, por exemplo, o Payload mostra se o parâmetro se chamava mesmo `sala`.
-
-## A tabela de contratos HTTP
-
-Um servidor descreve-se, para quem o usa, numa tabela com uma linha por pedido que aceita: o método, o caminho, o que o pedido traz e que respostas pode ter. Chama-se-lhe contrato porque é uma promessa: quem fizer este pedido, assim, recebe uma destas respostas. A do catálogo é esta:
-
-| Método | Caminho | Entrada | Respostas |
+| Pedido | Quem responde | Código | Resposta |
 | --- | --- | --- | --- |
-| `GET` | `/` | nenhuma | 200, página HTML com a pesquisa |
-| `GET` | `/equipamentos` | pesquisa: `sala`, opcional | 200, lista em JSON, vazia se não houver nenhum |
-| `GET` | `/equipamentos/:id` | caminho: `id`, inteiro positivo | 200, o equipamento; 400 se o `id` não for válido; 404 se não existir |
-| qualquer | qualquer outro | | 404, `Página não encontrada.` |
+| `GET /equipamentos/2` | a rota de detalhe | 200 | `{"id":2,"nome":"Projetor","sala":"A03"}` |
+| `GET /equipamentos/abc` | a rota de detalhe, na validação | 400 | `{"erro":"O identificador tem de ser um número inteiro positivo"}` |
+| `GET /equipamentos/9` | a rota de detalhe, depois do `find` | 404 | `{"erro":"Não existe o equipamento 9"}` |
+| `GET /equipamentos?sala=B12` | a rota da lista | 200 | o portátil e o monitor |
+| `GET /equipamentos?sala=Z99` | a rota da lista | 200 | `[]` |
+| `GET /nao-existe` | o middleware final | 404 | `Página não encontrada.` |
 
-Esta tabela é o artefacto deste tema: no laboratório, escreves a do teu servidor e verificas cada linha no browser. Um contrato que não se verificou é só uma intenção.
+Em todos, o middleware de registo escreveu primeiro uma linha no terminal, com o método e o endereço, tal como estão na primeira coluna. Se os pedidos vierem do browser, aparecem também as linhas `GET /favicon.ico` do passo 3.
 
 ## Erros frequentes
 
-### O pedido fica a carregar e nunca acaba
+### A rota de detalhe responde 400 a um equipamento que existe
 
-Um middleware não chamou `next()` nem respondeu. No terminal, a linha do middleware de registo aparece (se ele estiver antes do culpado), e mais nada. Procura o middleware que não chama `next()`.
+`/equipamentos/2` responde com a mensagem do identificador, como se o 2 não fosse um número. Falta o `Number(...)` na primeira linha da rota: o `id` ficou com o texto `"2"`, e `Number.isInteger("2")` é `false`. Sem a validação, como na versão do passo 1, o sintoma é outro, um 404, porque `"2" === 2` também é `false`. Converte primeiro, e só depois valida e procura.
 
-### Todos os pedidos dão "Página não encontrada."
+### O filtro devolve a lista toda
 
-O middleware final está antes das rotas. Tem de ser o último `app.use` do ficheiro, logo antes do `app.listen`.
+O nome do parâmetro no endereço não é o que a rota lê, como em `?Sala=B12`, com maiúscula, ou num formulário com `name="Sala"`. O `req.query.sala` fica `undefined`, e a rota responde com a lista toda. Confirma o nome no Payload do separador Rede.
 
-### O terminal só mostra os pedidos a endereços que não existem
+### O filtro devolve uma lista vazia para uma sala que existe
 
-O middleware de registo está abaixo das rotas. Um pedido a que uma rota respondeu acaba antes de lá chegar, e só passam por ele os pedidos que vão acabar no middleware final, incluindo o `GET /favicon.ico` do browser. Põe-no logo a seguir aos dados, antes de todas as rotas.
-
-### Cannot set headers after they are sent to the client
-
-```text
-Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-```
-
-A função de uma rota respondeu duas vezes ao mesmo pedido: falta um `return` depois de uma resposta de erro.
-
-### A rota de detalhe não aceita um equipamento que existe
-
-O `req.params.id` não foi convertido com `Number(...)`. Com a verificação do passo 1, a resposta é 400, porque um texto não é um número inteiro: `Number.isInteger("2")` é falso. Sem essa verificação, a resposta é 404, porque `"2" === 2` também é falso. Converte primeiro, e só depois verifica e compara.
-
-### Uma rota de caminho fixo responde com o erro do identificador
-
-Está abaixo de uma rota com parâmetro que começa pelo mesmo caminho, como `/equipamentos/salas` abaixo de `/equipamentos/:id`, ou `/livros/disponiveis` abaixo de `/livros/:id`. O pedido encaixa primeiro na rota com o parâmetro, que recebe o texto `"salas"` ou `"disponiveis"` como identificador e responde 400. Põe a rota de caminho fixo acima da que tem o parâmetro; a secção "Uma fila, pela ordem do ficheiro" explica porquê.
-
-### O filtro devolve tudo
-
-O nome do parâmetro de pesquisa no endereço não é o que a rota lê: `?Sala=B12` com maiúscula, ou `?sala =B12` com um espaço. `req.query.sala` fica `undefined` e a rota devolve a lista toda.
-
-## Segurança: o que este tema já pede
-
-**O servidor verifica sempre.** Quem faz o pedido pode escolher os valores. Basta escrever o endereço à mão, como fazes no laboratório com `/equipamentos/abc` e `/equipamentos/0`. É por isso que a rota de detalhe verifica o identificador antes de o usar, mesmo que nenhuma página do catálogo tenha uma ligação para `/equipamentos/abc`. Cada regra verifica-se no servidor. No tema dos formulários vais ver que o mesmo vale para os atributos `required` e `min` de um formulário: ajudam quem o preenche. Mas um pedido pode chegar ao servidor sem passar pelo formulário.
-
-**O texto do utilizador não se cola em HTML.** As respostas do catálogo são JSON. E a única página HTML, a da pesquisa, não escreve nada do que veio no pedido. A mensagem do 404 escreve o número do equipamento. Mas só depois de a verificação do passo 1 garantir que é um número inteiro. E vai em JSON. Juntar texto escrito por alguém a um HTML, sem o tratar, permite a esse alguém meter HTML e JavaScript seus na página que outros vão ver. No próximo tema, o EJS trata disso por ti. E o tema dos erros e da segurança explica o ataque com mais pormenor.
-
-**Nada de segredos no endereço.** Os parâmetros de pesquisa ficam no histórico e nos registos. Uma palavra-passe, ou qualquer dado pessoal sensível, nunca vai num `GET`.
+`?sala=b12` responde `[]`, com 200. As maiúsculas contam numa comparação com `===`, e `"b12" === "B12"` é `false`. Escreve a sala como está nos dados, `B12`.
 
 ## Palavras novas deste guia
 
-- **Recurso**: coisa que um endereço identifica, como um equipamento ou uma lista.
-- **Parâmetro de rota**: valor numa posição do caminho, como o `2` em `/equipamentos/2`.
-- **Parâmetro de pesquisa**: nome e valor depois de `?`, como `sala=B12`.
-- **Corpo**: parte da mensagem que transporta conteúdo, como os campos enviados por um formulário `POST`.
-- **`NaN`**: valor que indica que uma conversão ou conta não produziu um número.
-- **Validação**: verificação de que os dados cumprem as regras aceites antes de serem usados.
-- **Middleware**: função que participa no percurso de um pedido no Express e pode responder ou passá-lo à seguinte.
-- **`next()`**: chamada que entrega o pedido à função seguinte da fila do Express.
-- **Middleware de registo**: função que escreve no terminal os pedidos que lhe chegam.
-- **Middleware final**: função depois das rotas que responde aos pedidos ainda sem resposta.
-- **Payload**: nome do separador que mostra dados enviados no pedido, como os parâmetros de pesquisa.
-- **Contrato HTTP**: descrição do que um pedido aceita e das respostas que pode produzir.
-- **Escapar HTML**: tratar os caracteres de um texto para que sejam mostrados como texto, sem serem interpretados como etiquetas. O EJS do tema seguinte faz esse tratamento.
-
-## Verificar o que aprendeste
-
-1. Para cada pedido, diz onde vêm os dados: `/equipamentos/3`; `/equipamentos?sala=A03`; um formulário de reserva enviado por `POST`. Nos dois primeiros, diz também como se leem no servidor.
-2. Porque é que o parâmetro de rota `id` e os parâmetros de pesquisa simples usados nos exemplos chegam como texto, mesmo quando contêm só algarismos?
-3. Pesquisar equipamentos por sala: `GET` ou `POST`? Fazer uma reserva? Justifica.
-4. Explica a diferença entre um 400 e um 404, com um exemplo de cada no catálogo.
-5. Porque é que um filtro sem resultados responde 200?
-6. O que é um middleware? O que faz o `next()`?
-7. Por que ordem ficam, no ficheiro, o middleware de registo, as rotas e o middleware final? Porquê?
-8. No servidor da biblioteca, um pedido a `/livros/disponiveis` responde 400 com a mensagem do identificador. O que está mal na ordem das rotas, e como se corrige?
-9. Onde vês, no browser, os parâmetros de pesquisa que um pedido levou? E onde vês um parâmetro de rota?
-10. Escreve a linha da tabela de contratos HTTP para `GET /reservas/:id`, uma rota que mostra uma reserva.
+- Recurso: o que um endereço identifica, como um equipamento, uma reserva ou a lista dos equipamentos.
+- Parâmetro de rota: o valor numa posição do caminho que diz qual é o recurso, como o `2` em `/equipamentos/2`; lê-se em `req.params`.
+- `400` (Bad Request): o código de estado de um pedido mal feito, que não faz sentido tratar.
+- Validação: a verificação, no servidor, de que os dados do pedido servem, antes de os usar.
+- Middleware: uma função por onde o pedido passa no Express, que lhe responde ou o passa à seguinte.
+- `next()`: a chamada que passa o pedido à função seguinte da fila.
+- Middleware final: o último middleware do ficheiro, depois das rotas, que responde 404 aos pedidos a que nenhuma rota respondeu.
+- Contrato HTTP: a tabela com os pedidos que um servidor aceita, o que cada um traz e as respostas que pode ter.
 
 ## O que vem a seguir
 
-No tema 4, EJS e reutilização no servidor, o servidor passa a gerar páginas HTML a partir de modelos. Mostra os equipamentos numa lista. Um cabeçalho e um rodapé são comuns a todas as páginas. O catálogo passa a ter páginas que uma pessoa pode usar diretamente no browser.
+No tema 04, EJS e reutilização no servidor, o catálogo passa a gerar as páginas HTML a partir de modelos, em vez de as escrever em textos com crases.
 
-Depois do EJS, o tema dos formulários continua o trabalho com o corpo do pedido. O formulário envia por `POST` e um middleware põe os campos em `req.body`. O servidor valida os dados. Vais também distinguir o código 201 do redirecionamento depois de uma operação bem sucedida. É aí que o catálogo ganha as reservas.
+## Para saber mais
 
-Antes de passares ao tema 4, faz o [laboratório](laboratorios/03-http-rotas-e-middleware-laboratorio.md), em que acrescentas tudo isto ao teu catálogo e provocas os erros de ordem do middleware. E a [ficha](exercicios/03-http-rotas-e-middleware-exercicios.md), com o servidor da biblioteca.
+- [Encaminhamento no Express](https://expressjs.com/en/guide/routing.html), em inglês: as rotas com parâmetros, como `/equipamentos/:id`, e o `req.params`.
+- [Escrever middleware para o Express](https://expressjs.com/en/guide/writing-middleware.html), em inglês: o `next()` e a ordem dos middlewares, com outros exemplos.
+- [400 Bad Request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400), na MDN, em inglês: quando um servidor responde 400.
 
 ![Rodapé](../imagens/rodape.png)
