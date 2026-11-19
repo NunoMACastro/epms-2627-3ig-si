@@ -2,74 +2,27 @@
 
 # EJS e reutilização no servidor
 
-Módulo Aplicações baseadas em browsers. Este guia explica como o servidor constrói páginas EJS e reutiliza partes comuns. Para praticar, tens a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md). O laboratório deste tema vai ser o passo 3 do jogo Fechado na escola, e ainda não está publicado.
+Neste guia, o catálogo de equipamentos do tema 03 passa a responder com páginas, em vez de JSON: a lista, a página de cada equipamento e as páginas de erro. O servidor constrói cada página a partir de um modelo, um ficheiro de HTML com marcas onde entram os dados. Todas as páginas partilham o mesmo cabeçalho e o mesmo rodapé. Vês também porque é que um valor que vem do pedido nunca pode entrar na página como HTML.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
+Usa os códigos de estado e o `return` do tema 03, a instalação de pacotes do tema 02 e, do 11.º ano, o `for...of`. Rever: [Os três códigos deste tema](03-http-rotas-e-middleware.md#os-três-códigos-deste-tema), [Responder uma vez, e sair](03-http-rotas-e-middleware.md#responder-uma-vez-e-sair), [Instalar o Express cria a pasta node_modules](02-primeiro-servidor.md#instalar-o-express-cria-a-pasta-node_modules) e [`for...of` para percorrer valores](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/JavaScript/06-Ciclos.md#3-forof-para-percorrer-valores). Para praticar: [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md) e [ficha do cinema da escola](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios-cinema.md).
 
 ## Neste guia
 
-1. O que vais aprender
-2. O que já sabes e vais usar
-3. O problema do HTML dentro de textos com crases
-4. Um modelo de página, preenchido no servidor
-5. Preparar o Express para o EJS
-6. As marcas do EJS
-7. Ciclos e condições dentro do modelo
-8. Partes partilhadas: o cabeçalho e o rodapé
-9. Escaping: o que vem de fora nunca vira HTML
-10. Exemplo guiado: o catálogo passa a ter páginas
-11. O que o browser recebe
-12. Erros frequentes
-13. Segurança: o que este tema já pede
-14. Verificar o que aprendeste
-15. O que vem a seguir
+1. [Um modelo de página, preenchido no servidor](#um-modelo-de-página-preenchido-no-servidor)
+2. [O browser recebe só o HTML](#o-browser-recebe-só-o-html)
+3. [O Express procura os modelos na pasta views](#o-express-procura-os-modelos-na-pasta-views)
+4. [O res.render responde com uma página](#o-resrender-responde-com-uma-página)
+5. [As marcas do EJS](#as-marcas-do-ejs)
+6. [Ciclos e condições dentro do modelo](#ciclos-e-condições-dentro-do-modelo)
+7. [A rota escolhe os dados, e o modelo mostra-os](#a-rota-escolhe-os-dados-e-o-modelo-mostra-os)
+8. [Partes partilhadas: o cabeçalho e o rodapé](#partes-partilhadas-o-cabeçalho-e-o-rodapé)
+9. [Um erro também se responde com uma página](#um-erro-também-se-responde-com-uma-página)
+10. [Escaping: o que vem de fora nunca vira HTML](#escaping-o-que-vem-de-fora-nunca-vira-html)
+11. [Exemplo guiado: o catálogo passa a ter páginas](#exemplo-guiado-o-catálogo-passa-a-ter-páginas)
 
-## O que vais aprender
+## Um modelo de página, preenchido no servidor
 
-Até aqui, o catálogo de equipamentos respondia quase sempre com dados em JSON. Para quem usa o catálogo no browser, isso não é uma aplicação: é uma lista de chavetas e aspas. A única página a sério era a página inicial, com a pesquisa. E estava escrita dentro de um texto com crases, no meio do código JavaScript. Neste tema, o catálogo passa a responder com páginas: a lista dos equipamentos, a página de cada equipamento e as páginas de erro. Todas partilham o cabeçalho e o rodapé. O servidor constrói-as a partir de ficheiros próprios, os modelos.
-
-A ferramenta que faz isto chama-se EJS. O nome vem de Embedded JavaScript, JavaScript embutido. Um ficheiro EJS é HTML normal, com marcas onde entra JavaScript. Essas marcas permitem escrever um valor, repetir uma linha por equipamento ou mostrar uma mensagem só em certos casos.
-
-No fim deste guia deves conseguir:
-
-- explicar onde corre um modelo EJS e o que o browser recebe, e porque é que o browser nunca executa o modelo;
-- preparar o Express para usar o EJS e responder com `res.render`, passando ao modelo os dados de que a página precisa;
-- escrever um modelo com valores, ciclos e condições;
-- tirar o HTML repetido para partials, o cabeçalho e o rodapé, e incluí-los em todas as páginas;
-- escolher entre `<%=` e `<%-`, e explicar porque é que um valor que vem do pedido nunca vai num `<%-`;
-- responder a um pedido errado com uma página de erro e com o código de estado certo;
-- comparar o código de um modelo com o HTML que chega ao browser.
-
-## O que já sabes e vais usar
-
-- Filtro por sala com `req.query.sala`: [tema 03](03-http-rotas-e-middleware.md).
-- Detalhe com `req.params.id`, códigos 400 e 404, `res.status` e `return`: [tema 03](03-http-rotas-e-middleware.md).
-- Pesquisa por `GET`, middleware de registo e middleware final: [tema 03](03-http-rotas-e-middleware.md).
-- Instalação de pacotes, `package.json` e `node_modules`: [tema 02](02-primeiro-servidor.md).
-- Estrutura HTML (`<!doctype html>`, `<html>`, `<head>` e `<body>`), dos anos anteriores.
-- Títulos, parágrafos, listas com `<ul>`/`<li>` e ligações com `<a href="...">`, dos anos anteriores.
-- Formulários com `<form>`, `<label>` e `<input>`, dos anos anteriores.
-- `if`, `else`, `.length` e `for...of`, de JavaScript dos anos anteriores.
-
-O exemplo parte do catálogo com middleware a funcionar. Se não o tiveres, copia [catalogo-com-middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md).
-
-O `for...of` percorre um array elemento a elemento. Estas três linhas escrevem o nome de cada equipamento, um por linha. A cada volta, `equipamento` recebe o elemento seguinte. O ciclo termina quando não há mais elementos.
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
-
-```js fragment
-for (const equipamento of equipamentos) {
-  console.log(equipamento.nome);
-}
-```
-
-Leitura guiada: o ciclo percorre a lista pela ordem dos elementos. Segue uma volta, identifica o valor atual e vê o que essa volta escreve.
-
-## O problema do HTML dentro de textos com crases
-
-No tema anterior, a página inicial do catálogo estava escrita assim, dentro da rota:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+No tema 03, a página inicial do catálogo ficou escrita assim, dentro da rota, num texto com crases:
 
 ```js fragment
 app.get("/", (req, res) => {
@@ -87,65 +40,58 @@ app.get("/", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+Funciona, mas o editor não te ajuda. Para o JavaScript, tudo o que está entre as crases é só um texto: não há cores no HTML, nem aviso de uma etiqueta (em inglês, tag) mal fechada. Uma crase escrita no meio do HTML acaba o texto antes do tempo, e o resto passa a ser código sem sentido. E o catálogo vai ter várias páginas com dados, todas com o mesmo início e o mesmo fim.
 
-Funciona, e para uma página pequena e fixa até chega. O guia desse tema avisava que era desconfortável de propósito. Quando o catálogo tiver várias páginas, e páginas com dados, este desconforto passa a ser um problema, por quatro razões.
+A solução é tirar o HTML do código. Cada página passa a ter um ficheiro seu, um **modelo**: um ficheiro de HTML com marcas nos sítios onde entram os dados. É como um impresso da secretaria da escola, com o texto fixo já escrito e espaços em branco para o nome, o número e o ano. Para cada pedido, a secretaria preenche os espaços e entrega a folha pronta.
 
-A primeira é que o editor não te ajuda. Para o JavaScript, tudo o que está entre as crases é só um texto: não há cores no HTML, não há aviso de uma etiqueta mal fechada. Um erro no HTML só se descobre no browser.
+No servidor passa-se o mesmo. A rota escolhe os dados e entrega-os ao EJS, com o nome do modelo. O EJS (de Embedded JavaScript, JavaScript embutido) é o pacote que preenche o modelo e devolve o HTML final, que o servidor envia ao browser. A esta operação chama-se **renderizar** o modelo: construir a página a partir do modelo e dos dados. Em Express, faz-se com `res.render`.
 
-A segunda é que uma crase dentro do HTML acaba o texto antes do tempo. Viste isto no laboratório do tema anterior, no problema "SyntaxError a apontar para uma linha do HTML": o JavaScript lê a crase como o fim do texto. O resto do HTML passa a ser código sem sentido.
+O diagrama segue o pedido da lista dos equipamentos da sala B12:
 
-A terceira aparece quando a página tem dados. Para mostrar os equipamentos numa lista HTML, era preciso construir o texto peça a peça. O `map` transforma cada equipamento num `<li>`. O `join` cola esses textos:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
-
-```js fragment
-const itens = equipamentos.map((equipamento) => `<li>${equipamento.nome}, na sala ${equipamento.sala}</li>`).join("");
-res.send(`<!doctype html><html lang="pt"><head><meta charset="utf-8"><title>Equipamentos</title></head><body><h1>Equipamentos</h1><ul>${itens}</ul></body></html>`);
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as browser
+    box servidor
+    participant R as rota, no server.js
+    participant E as EJS
+    end
+    B->>R: GET /equipamentos?sala=B12
+    R->>R: escolhe os equipamentos da sala B12
+    R->>E: res.render("equipamentos", dados)
+    E->>E: preenche views/equipamentos.ejs com os dados
+    E-->>R: o HTML da página
+    R-->>B: 200, text/html, só o HTML
 ```
 
-Leitura guiada: compara esta alteração com a instrução que substitui. Segue o valor de entrada até à resposta descrita no parágrafo seguinte.
+Tudo o que está dentro da caixa do servidor acontece antes de a resposta sair. O EJS lê o modelo, um ficheiro da pasta `views`, junta-lhe os dados que a rota escolheu e devolve o HTML. No fim, o browser recebe só esse HTML, com o código 200 e o tipo `text/html`.
 
-Lê-se mal, escreve-se mal e corrige-se pior. E cada página nova repete o mesmo `<!doctype html>`, o mesmo `<head>` e, mais à frente, o mesmo menu de navegação e o mesmo rodapé. Uma mudança no rodapé obriga a procurá-lo em todas as rotas.
+## O browser recebe só o HTML
 
-A quarta razão é a mais séria, e tem uma secção própria mais à frente. O `${equipamento.nome}` entra na página tal como está. Se um valor tiver etiquetas HTML, o browser interpreta-as como HTML. Num valor que vem do pedido, como a sala pesquisada, isso quer dizer que quem escreve o endereço pode meter HTML, e até JavaScript, na tua página.
+Um modelo tem JavaScript lá dentro, como um `for` que escreve um `<li>` por cada equipamento. Esse JavaScript nunca chega ao browser: já correu no servidor, quando o EJS preencheu o modelo, antes de a resposta sair. O browser não recebe o ficheiro `.ejs`, nem as marcas, nem os dados soltos. Recebe o HTML que daí resultou, e mostra-o como mostraria uma página escrita à mão. É a página dinâmica do tema 01, que o servidor constrói no momento do pedido. Rever: [O servidor constrói a página para cada pedido](01-do-pedido-a-resposta.md#o-servidor-constrói-a-página-para-cada-pedido).
 
-A solução para as quatro é a mesma: separar o HTML do código. O HTML de cada página passa para um ficheiro seu, onde o editor o reconhece como HTML. A rota deixa de escrever HTML: escolhe os dados e o código de estado, e pede a página. E os valores entram na página por um caminho que trata das etiquetas sozinho.
+Para veres o que o browser recebeu, abres o **código-fonte da página**. Com a página aberta, carrega em Ctrl+U (no Mac, Cmd+Option+U), ou carrega com o botão direito e escolhe a opção de ver o código-fonte. O browser mostra o HTML exatamente como o recebeu, e lá não há nenhuma marca do EJS.
 
-## Um modelo de página, preenchido no servidor
+Daqui vem uma consequência. O modelo usa os dados que a rota lhe passou, mas não sabe nada do que se passa no browser. Não sabe em que botão o utilizador carregou, nem pode reagir a um clique. Neste catálogo, para a lista mudar, o browser tem de fazer um pedido novo, e o servidor constrói outra página.
 
-Um **modelo** (em inglês, template) é um ficheiro de HTML com marcas nos sítios onde entram os dados. Pensa numa declaração da secretaria da escola: há uma minuta, com o texto fixo e espaços em branco para o nome, o número e o ano. Para cada pedido, a secretaria preenche os espaços e entrega a folha preenchida. Quem pede a declaração recebe a folha pronta, e nunca vê a minuta com os espaços em branco.
+<details>
+<summary>Para ires mais longe: o React constrói a página no browser</summary>
 
-No servidor passa-se o mesmo. A cada pedido, a rota escolhe os dados e entrega-os, com o nome do modelo, ao EJS. O EJS preenche o modelo e devolve o HTML final, que o servidor envia ao browser. A esta operação chama-se **renderizar** o modelo: construir a página a partir do modelo e dos dados. Em Express faz-se com `res.render`.
+Em Linguagens de Programação, a API envia só os dados, em JSON. Com o React, que conheces do 11.º ano, é o browser que constrói a página com esses dados. No React também se diz renderizar, mas aí quem constrói a página é o browser. As duas formas juntam dados e HTML, mas em sítios diferentes. Uma página feita com EJS também pode trazer JavaScript seu, numa etiqueta `<script>`, que corre no browser e muda o que lá está. Esse código é outro, e não tem nada a ver com o JavaScript das marcas, que corre só no servidor.
 
-Passo a passo, para o pedido da lista dos equipamentos da sala B12, e com o sítio onde cada passo acontece:
+</details>
 
-| Passo | Onde | O que acontece |
-| --- | --- | --- |
-| 1 | Browser | O utilizador pede `/equipamentos?sala=B12`, e o browser envia o pedido `GET` |
-| 2 | Servidor | A rota lê `req.query.sala` e escolhe os equipamentos dessa sala |
-| 3 | Servidor | A rota chama `res.render("equipamentos", { ... })`, com o nome do modelo e os dados |
-| 4 | Servidor | O EJS lê o ficheiro `views/equipamentos.ejs`, corre as marcas com os dados e produz o HTML |
-| 5 | Servidor | O Express envia o HTML, com o código 200 e o tipo `text/html` |
-| 6 | Browser | O browser mostra a página, como mostraria um ficheiro HTML qualquer |
+## O Express procura os modelos na pasta views
 
-Repara em que sítio aparece o EJS: só no servidor, nos passos 3 e 4. O browser recebe só HTML. Não recebe o ficheiro `.ejs`, as marcas nem os dados soltos. Também não executa o JavaScript do modelo. Esse código já correu no servidor, antes de a resposta sair. Por isso se diz que estas páginas são construídas **do lado do servidor**. Para o browser, uma página feita com EJS é igual a uma página escrita à mão.
-
-Isto tem uma consequência prática. O modelo pode usar os dados que a rota lhe passou. Mas não sabe nada do que se passa no browser: não sabe em que botão o utilizador carregou, nem pode reagir a um clique sem um pedido novo. Neste catálogo, sem JavaScript a correr no browser, mudar a lista apresentada exige um pedido novo. O servidor constrói então outra página com os dados escolhidos. Uma página também pode ter JavaScript próprio a correr no browser e a alterar o seu conteúdo. Esse código seria diferente do JavaScript do modelo EJS, que continua a executar-se só no servidor.
-
-Em Linguagens de Programação, a mesma turma constrói aplicações de outra maneira: o servidor envia só os dados, em JSON. É o React, a correr no browser, que constrói a página. As duas formas resolvem o mesmo problema, juntar dados e HTML, em sítios diferentes. Nesta disciplina, o servidor é que faz a página.
-
-## Preparar o Express para o EJS
-
-O EJS é um pacote do npm, como o Express. Instala-se dentro da pasta do projeto:
+O EJS é um pacote do npm, como o Express, e instala-se da mesma maneira, dentro da pasta do projeto:
 
 ```bash
 npm install ejs@7.0.1
 ```
 
-O `package.json` ganha uma linha `"ejs"` nas dependências, ao lado do `"express"`. E a pasta `node_modules` ganha a pasta do EJS. Não precisas de um `import` do EJS no `server.js`. O Express vai buscá-lo quando for preciso. Para isso, tens de indicar o EJS como motor de modelos. Diz-se com uma linha, logo a seguir a criar a aplicação:
+O `@7.0.1` escolhe a versão, a mesma dos exemplos da disciplina. O `package.json` ganha a linha `"ejs"` nas dependências, ao lado do `"express"`, e a pasta `node_modules` ganha a pasta do EJS.
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O `server.js` não tem nenhum `import` do EJS: é o Express que o vai buscar quando uma rota pede uma página. Para isso, tem de saber que os modelos são do EJS. Diz-se com uma linha, logo a seguir a criar a aplicação:
 
 ```js fragment
 // O motor de modelos: o res.render vai procurar os ficheiros .ejs
@@ -153,9 +99,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 app.set("view engine", "ejs");
 ```
 
-Leitura guiada: `app.set` recebe o nome da definição, `"view engine"`, e o valor, `"ejs"`. Configura a aplicação; não escolhe uma página nem envia uma resposta.
-
-O `app.set` muda uma definição da aplicação. A definição `"view engine"` escolhe o motor de vistas. Quando uma rota pede uma página pelo nome, o Express procura o ficheiro `.ejs` correspondente e passa-o ao EJS. Os modelos chamam-se também **vistas** (em inglês, views). E o Express procura-os numa pasta chamada `views`, ao lado do `server.js`:
+O `app.set` muda uma definição da aplicação. A definição `"view engine"` (em português, motor de modelos) diz que pacote preenche os modelos, e com ela o Express passa a procurar ficheiros `.ejs`. Procura-os numa pasta chamada `views`, o nome que o Express dá à pasta dos modelos, ao lado do `server.js`:
 
 ```text
 catalogo/
@@ -165,42 +109,41 @@ catalogo/
     └── equipamentos.ejs
 ```
 
-Para responder com uma página, a rota usa `res.render`, em vez do `res.json` ou do `res.send`:
+Sem o `app.set`, a primeira rota que pede uma página falha com `Error: No default engine was specified and no extension was provided.`, porque o Express não sabe que tipo de ficheiro procurar. O browser recebe uma página de erro com o código 500, e o servidor continua ligado.
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O Express procura a pasta `views` na pasta onde o terminal está quando escreves `node server.js`. Por isso, arranca sempre o servidor dentro da pasta do projeto. Se escreveres `node catalogo/server.js` a partir da pasta de cima, o Express procura lá uma pasta `views` que não existe.
+
+O Express volta a ler o modelo a cada pedido. Depois de mudares um ficheiro `.ejs`, basta recarregar a página no browser, sem reiniciar o servidor. Uma mudança no `server.js` continua a precisar de reinício.
+
+## O res.render responde com uma página
+
+Até aqui, as rotas do catálogo respondiam com `res.json` ou com `res.send`. Para responder com uma página feita a partir de um modelo, a rota usa `res.render`:
 
 ```js fragment
 res.render("equipamentos", { titulo: "Equipamentos", equipamentos: lista });
 ```
 
-Leitura guiada: o primeiro argumento escolhe o ficheiro da vista. As propriedades do segundo argumento tornam-se as variáveis que o modelo pode usar.
+O primeiro argumento é o nome do modelo, sem a extensão e sem a pasta: `"equipamentos"` quer dizer `views/equipamentos.ejs`. O segundo é um objeto com os dados de que a página precisa. Cada propriedade deste objeto passa a ser uma variável dentro do modelo, com o mesmo nome. Dentro de `equipamentos.ejs` há uma variável `titulo`, com o texto `"Equipamentos"`, e uma variável `equipamentos`, com o array que estava em `lista`.
 
-O primeiro argumento é o nome do modelo, sem a extensão e sem a pasta: `"equipamentos"` quer dizer `views/equipamentos.ejs`. O segundo é um objeto com os dados que a página vai usar. Cada propriedade deste objeto passa a ser uma variável dentro do modelo, com o mesmo nome: dentro de `equipamentos.ejs` há uma variável `titulo`, com o texto `"Equipamentos"`. E uma variável `equipamentos`, com o array. O modelo só conhece o que a rota lhe passar. Se usar um nome que não está neste objeto, dá erro.
+O modelo só conhece o que a rota lhe passa. Um nome que não está no objeto dá erro, como mostra o erro [ReferenceError: ... sala is not defined](#referenceerror--sala-is-not-defined).
 
-O `res.render` é uma resposta, como o `res.json`: um pedido tem uma só resposta, e as regras do tema anterior continuam. Escolhe-se o código com `res.status` antes, como em `res.status(404).render(...)`, e depois de uma resposta de erro vem o `return`. O tipo da resposta passa a ser `text/html`, porque o que sai é uma página.
-
-Uma última nota sobre a pasta. O Express procura a pasta `views` a partir da pasta onde o servidor arrancou. Arranca sempre o servidor dentro da pasta do projeto, com `node server.js` ou `node --watch server.js`: arrancado de outra pasta, não encontra os modelos.
+O `res.render` é uma resposta, como o `res.json`, e as regras do tema 03 continuam. Um pedido tem uma só resposta. O código escolhe-se com `res.status` antes, como em `res.status(404).render(...)`, e depois de uma resposta de erro vem o `return`. O tipo da resposta passa a ser `text/html`, porque o que sai é uma página.
 
 ## As marcas do EJS
 
-Um ficheiro `.ejs` é HTML com marcas. Todas as marcas começam por `<%` e acabam em `%>`, e o carácter logo a seguir ao `<%` diz o que a marca faz. Neste tema usas quatro:
+Um modelo é HTML com marcas. Uma **marca** é o sítio do modelo onde entra JavaScript. Começa por `<%` e acaba em `%>`, e o carácter logo a seguir ao `<%` diz o que a marca faz. Para já, chegam três:
 
 | Marca | O que faz | O que chega ao browser |
 | --- | --- | --- |
-| `<%= valor %>` | Escreve o valor na página, com escaping | O valor, como texto |
-| `<% código %>` | Corre código JavaScript, sem escrever nada | Nada da marca; só o HTML que o código deixar passar |
+| `<%= valor %>` | Escreve o valor na página, como texto | O valor |
+| `<% código %>` | Corre código JavaScript, sem escrever nada | Nada da marca |
 | `<%# comentário %>` | Um comentário para quem lê o modelo | Nada |
-| `<%- valor %>` | Escreve o valor sem escaping, tal como está | O valor, como HTML |
 
 A marca que mais vais escrever é a `<%= %>`. Com os dados `{ titulo: "Equipamentos" }`, esta linha do modelo:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <h1><%= titulo %></h1>
 ```
-
-Leitura guiada: o EJS calcula a expressão entre as marcas. Com `<%=`, o valor entra como texto e os carateres de HTML são escapados.
 
 chega ao browser assim:
 
@@ -208,21 +151,26 @@ chega ao browser assim:
 <h1>Equipamentos</h1>
 ```
 
-Entre `<%=` e `%>` pode estar qualquer expressão de JavaScript que dê um valor: uma variável, uma propriedade, como `equipamento.nome`, ou uma conta, como `equipamentos.length`. O que se escreve na página é o resultado.
+Entre `<%=` e `%>` pode estar qualquer expressão de JavaScript que dê um valor: uma variável, uma propriedade, como `equipamento.nome`, ou o tamanho de uma lista, como `equipamentos.length`. Na página fica o resultado.
 
-A marca `<% %>`, sem nada a seguir ao `%`, corre código e não escreve nada. Serve para os ciclos e as condições, na secção seguinte. É também a fonte de um engano frequente: quem escreve `<% equipamento.nome %>` em vez de `<%= equipamento.nome %>` não recebe erro nenhum. A página fica com um espaço vazio onde devia estar o nome. O código correu, calculou o nome e não o escreveu. Isto acontece porque não lhe pediram.
+A marca `<% %>`, sem nada a seguir ao `%`, corre código e não escreve nada. Serve para os ciclos e as condições.
 
-A marca `<%# %>` é um comentário. Ao contrário de um comentário de HTML (`<!-- ... -->`), que vai na página e qualquer pessoa pode ler no código-fonte, um comentário de EJS fica no servidor. É o sítio certo para explicar o modelo a quem o vai ler a seguir, como os comentários num ficheiro JavaScript.
+Prevê: com os mesmos dados, o que chega ao browser com `<h1><% titulo %></h1>`?
 
-A marca `<%- %>`, com um hífen, escreve o valor tal como está, sem escaping. Tem um uso certo neste tema, os partials, e um uso errado, que é perigoso. A secção do escaping explica a diferença.
+Chega `<h1></h1>`, um título vazio, e não há erro nenhum. O código correu, calculou o título e não o escreveu, porque a marca não escreve. Falta o `=`.
 
-Uma regra que poupa trabalho: nas marcas que escrevem um valor, o `<%=` e o `<%-`, o espaço entre a marca e o valor é opcional. Mas torna o modelo mais fácil de ler. Escreve `<%= titulo %>`, com os dois espaços.
+A marca `<%# %>` é um comentário. Um comentário de HTML (`<!-- ... -->`) vai na página, e qualquer pessoa o lê no código-fonte. Um comentário de EJS fica no servidor. É o sítio certo para explicar o modelo a quem o vai ler a seguir, como os comentários num ficheiro JavaScript.
 
 ## Ciclos e condições dentro do modelo
 
-Uma lista de equipamentos é a mesma linha de HTML repetida, uma vez para cada equipamento. Num modelo, escreve-se com um `for...of`, partido em duas marcas `<% %>`: uma abre o ciclo, com a chaveta de abertura, e a outra fecha-o, com a chaveta de fecho. O HTML que fica entre as duas marcas é repetido a cada volta:
+Para mostrar os equipamentos numa lista HTML, num texto com crases, era preciso construir o texto peça a peça. O `map` transforma cada equipamento num `<li>`, e o `join` cola esses textos:
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+```js fragment
+const itens = equipamentos.map((equipamento) => `<li>${equipamento.nome}, na sala ${equipamento.sala}</li>`).join("");
+res.send(`<!doctype html><html lang="pt"><head><meta charset="utf-8"><title>Equipamentos</title></head><body><h1>Equipamentos</h1><ul>${itens}</ul></body></html>`);
+```
+
+Lê-se mal, escreve-se mal e corrige-se pior. Num modelo, a lista escreve-se com o `for...of`, partido em duas marcas `<% %>`. Uma abre o ciclo, com a chaveta de abertura, e a outra fecha-o, com a chaveta de fecho. O HTML que fica entre as duas repete-se a cada volta:
 
 ```ejs
 <ul>
@@ -232,9 +180,16 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 </ul>
 ```
 
-Leitura guiada: o ciclo percorre a lista pela ordem dos elementos. Segue uma volta, identifica o valor atual e vê o que essa volta escreve.
+Com os quatro equipamentos do catálogo na variável `equipamentos`, o ciclo dá quatro voltas:
 
-Com os quatro equipamentos do catálogo, o browser recebe:
+| Volta | `equipamento` | O que se junta à página |
+| --- | --- | --- |
+| 1 | `{ id: 1, nome: "Portátil", sala: "B12" }` | `<li>Portátil, na sala B12</li>` |
+| 2 | `{ id: 2, nome: "Projetor", sala: "A03" }` | `<li>Projetor, na sala A03</li>` |
+| 3 | `{ id: 3, nome: "Impressora", sala: "Secretaria" }` | `<li>Impressora, na sala Secretaria</li>` |
+| 4 | `{ id: 4, nome: "Monitor", sala: "B12" }` | `<li>Monitor, na sala B12</li>` |
+
+Cada linha que só tinha uma marca `<% %>` fica em branco. Sem essas linhas, o browser recebe:
 
 ```html
 <ul>
@@ -245,11 +200,9 @@ Com os quatro equipamentos do catálogo, o browser recebe:
 </ul>
 ```
 
-Lê o modelo como se fosse JavaScript com bocados de HTML pelo meio. O `for` abre a chaveta na primeira marca. O `<li>` é o corpo do ciclo. A chaveta fecha na segunda marca. O EJS transforma o modelo inteiro num programa que vai juntando o HTML à página. O corpo do ciclo é executado quatro vezes, uma por equipamento, com a variável `equipamento` a mudar a cada volta. A chaveta de fecho, `<% } %>`, é obrigatória e é a que mais se esquece. Sem ela, o EJS nem chega a construir a página. E o erro é estranho: fala de um `Unexpected token 'catch'`, como mostra a secção dos erros frequentes.
+Lê o modelo como se fosse JavaScript com bocados de HTML pelo meio. O `for` abre a chaveta na primeira marca, o `<li>` é o corpo do ciclo, e a chaveta fecha na segunda marca. A chaveta de fecho, `<% } %>`, é a que mais se esquece. Sem ela, o EJS nem chega a construir a página, e a mensagem de erro é estranha: é a do erro [SyntaxError: Unexpected token 'catch'](#syntaxerror-unexpected-token-catch--while-compiling-ejs).
 
-As condições escrevem-se da mesma maneira, com o `if` e o `else` partidos em marcas:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+As condições escrevem-se da mesma maneira, com o `if` e o `else` partidos em marcas. No lugar dos `...` fica o ciclo de cima:
 
 ```ejs
 <% if (equipamentos.length === 0) { %>
@@ -261,17 +214,21 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <% } %>
 ```
 
-Leitura guiada: avalia a condição com os dados do exemplo. Só o ramo escolhido produz o resultado; o outro ramo não é executado.
+Só um dos dois blocos de HTML chega ao browser: o parágrafo, se a lista estiver vazia, ou a lista, se tiver equipamentos. O outro nem aparece no código-fonte. Uma pesquisa por uma sala sem equipamentos não é um erro, como viste no tema 03: é uma lista vazia, com o código 200. Mas um `<ul>` sem nada dentro, numa página, é um espaço em branco. A condição troca esse espaço por uma frase que diz o que se passou.
 
-Só um dos dois blocos de HTML chega ao browser: o parágrafo, se a lista estiver vazia, ou a lista, se tiver equipamentos. O outro nem aparece no código-fonte da página. Lembra-te do tema anterior: uma pesquisa por uma sala sem equipamentos não é um erro, é uma lista vazia, com o código 200. Mas uma lista vazia, numa página, é um `<ul>` sem nada dentro, que o utilizador vê como um espaço em branco. A condição transforma esse espaço numa frase que diz o que se passou.
+## A rota escolhe os dados, e o modelo mostra-os
 
-Há uma divisão de trabalho a respeitar entre a rota e o modelo. A rota decide **que dados** a página mostra: é na rota que se lê a sala do pedido e se filtram os equipamentos. O modelo decide **como** os mostra: em lista, com que texto, com que mensagem quando não há nada. Um modelo que filtra, procura ou verifica dados está a fazer o trabalho da rota, fica difícil de ler e mistura duas coisas que mudam por razões diferentes. O `if` do exemplo não decide nada sobre os dados: só escolhe entre duas formas de mostrar o que já lá está.
+Com o `for` e o `if` no modelo, também se podia fazer lá o filtro da sala. O ciclo percorria os quatro equipamentos, e um `if` só escrevia os da sala pedida. Funciona, mas mistura duas tarefas diferentes no mesmo ficheiro.
+
+A divisão é esta. A rota decide que dados a página mostra: é na rota que se lê a sala do pedido, se filtram os equipamentos e se escolhe o código de estado. O modelo decide como os mostra: em lista, com que texto, com que frase quando não há nada. Assim, se a pesquisa mudar, mexes na rota, e se o aspeto da página mudar, mexes no modelo.
+
+O `if` da secção anterior não decide nada sobre os dados. Só escolhe entre duas formas de mostrar o que já lá está. Um modelo que filtra, procura ou verifica dados está a fazer o trabalho da rota, e fica difícil de ler.
 
 ## Partes partilhadas: o cabeçalho e o rodapé
 
-O catálogo terá uma página inicial, uma lista, uma página para cada equipamento e uma página de erro. As quatro começam com o mesmo `<!doctype html>`, o `<head>`, o título e o menu de navegação. Acabam da mesma maneira, com o rodapé e o fecho das etiquetas. Repetir esse HTML em quatro ficheiros é o problema das crases outra vez: mudar o menu obrigava a mudá-lo em quatro sítios. Basta esquecer um para as páginas deixarem de ser iguais.
+O catálogo vai ter uma página inicial, uma lista, uma página para cada equipamento e uma página de erro. As quatro começam com o mesmo `<!doctype html>`, o mesmo `<head>`, o menu de navegação e o título, e acabam com o mesmo rodapé e o fecho das etiquetas. Se repetires esse HTML em quatro ficheiros, para mudar o menu tens de o mudar em quatro sítios, e basta esquecer um para as páginas deixarem de ser iguais.
 
-A solução é pôr esse HTML num ficheiro à parte e incluí-lo em todas as páginas. Um bocado de modelo que vive num ficheiro próprio, para ser incluído por outros modelos, chama-se **partial**, uma parte. No catálogo há dois, numa pasta `views/partials`, para não se misturarem com as páginas:
+A solução é pôr esse HTML num ficheiro à parte e incluí-lo em todas as páginas. Um bocado de modelo que vive num ficheiro próprio, para ser incluído por outros modelos, chama-se **partial** (em inglês, parte). No catálogo há dois, numa pasta `views/partials`, para não se misturarem com as páginas:
 
 ```text
 views/
@@ -285,8 +242,6 @@ views/
 ```
 
 O cabeçalho tem tudo o que vem antes do conteúdo da página: o início do documento, o `<head>`, o menu e o título visível. Abre o `<html>` e o `<body>`, e deixa-os abertos:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# O início de todas as páginas do catálogo. Usa o titulo da página
@@ -305,11 +260,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
     <h1><%= titulo %></h1>
 ```
 
-Leitura guiada: o EJS calcula a expressão entre as marcas. Com `<%=`, o valor entra como texto e os carateres de HTML são escapados.
-
 O rodapé tem o que vem depois, e fecha as etiquetas que o cabeçalho deixou abertas:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# O fim de todas as páginas do catálogo. %>
@@ -320,11 +271,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 </html>
 ```
 
-Leitura guiada: este fragmento escreve o rodapé e fecha o `body` e o `html` abertos pelo cabeçalho. Não recebe dados nem faz uma resposta HTTP sozinho.
-
 Cada página inclui os dois, com a função `include` do EJS, e entre eles fica só o que é dela:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%- include("partials/cabecalho") %>
@@ -332,25 +279,78 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: o primeiro `include` escreve o cabeçalho; segue-se o parágrafo desta página. O último `include` escreve o rodapé e fecha a página.
+O `include` usa uma marca nova, `<%-`, com um hífen, que escreve o valor tal como está. É disso que o `include` precisa: o HTML do partial tem de chegar ao browser como HTML. Com `<%=`, o EJS escrevia esse HTML como texto, e o browser mostrava o código do cabeçalho, de `<!doctype html>` ao `<h1>`, escrito no topo da página.
 
-O caminho do `include` é relativo ao ficheiro que inclui. As páginas estão em `views`, por isso o cabeçalho é `"partials/cabecalho"`, sem a extensão. E o partial vê os mesmos dados da página que o inclui: é por isso que o cabeçalho pode escrever `<%= titulo %>`. Cada rota passa um `titulo` diferente no `res.render`, e o mesmo cabeçalho escreve, em cada página, o título dessa página.
+O caminho do `include` é relativo ao ficheiro que inclui. As páginas estão em `views`, por isso o cabeçalho é `"partials/cabecalho"`, sem a extensão. E o partial vê os mesmos dados da página que o inclui:
 
-Repara na marca do `include`: é `<%-`, com hífen, e não `<%=`. O `include` devolve o HTML do partial, e esse HTML tem de chegar ao browser como HTML. Com `<%=`, o EJS faria escaping a esse HTML, e o browser mostraria as etiquetas como texto, com `<title>` e `<nav>` escritos no meio da página. É o único uso do `<%-` neste tema, e é seguro porque o HTML dos partials foi escrito por ti, e não veio de fora.
+```mermaid
+flowchart LR
+    R["res.render, com o titulo<br/>e os dados da página"] -->|"os dados chegam<br/>aos três bocados"| P
+    subgraph P ["a página, como views/equipamentos.ejs"]
+        direction TB
+        C["include do cabeçalho:<br/>o head, o menu e o h1 com o titulo"] --> M["o conteúdo desta página"]
+        M --> F["include do rodapé:<br/>o footer e o fecho das etiquetas"]
+    end
+    P --> H["uma só página HTML,<br/>enviada ao browser"]
+```
 
-O cabeçalho abre etiquetas que só o rodapé fecha. Isto obriga a uma disciplina: todas as páginas incluem os dois, sempre pela mesma ordem, e nenhuma fecha o `<body>` ou o `<html>` por conta própria. Em troca, uma mudança no menu, no `<head>` ou no rodapé faz-se uma vez, e aparece em todas as páginas ao mesmo tempo.
+O diagrama mostra uma página feita de três bocados, de três ficheiros. Os dados do `res.render` chegam à página e aos dois partials que ela inclui, e o browser recebe uma só página. É assim que o cabeçalho pode escrever `<%= titulo %>`: cada rota passa um `titulo` diferente no `res.render`, e o mesmo cabeçalho escreve, em cada página, o título dessa página. Por isso, todas as rotas que mostram uma página com o cabeçalho têm de passar o `titulo`.
+
+O cabeçalho abre etiquetas que só o rodapé fecha. Por isso, todas as páginas incluem os dois, sempre pela mesma ordem, e nenhuma fecha o `<body>` ou o `<html>` por conta própria. Em troca, uma mudança no menu, no `<head>` ou no rodapé faz-se uma vez e aparece em todas as páginas.
+
+## Um erro também se responde com uma página
+
+No tema 03, a rota de detalhe responde aos erros com JSON, e o middleware final com um texto solto. Num catálogo feito de páginas, quem abre `/equipamentos/abc` no browser recebe chavetas e aspas. Um erro também deve ser uma página, com o mesmo cabeçalho, uma mensagem e uma ligação para voltar.
+
+Uma só página serve para todos os erros, `views/erro.ejs`, porque de um erro para outro só mudam o título e a mensagem. A rota passa-os no `res.render` e escolhe o código com `res.status`, como no tema 03:
+
+```js fragment
+res.status(404).render("erro", {
+  titulo: "Equipamento não encontrado",
+  mensagem: `Não existe o equipamento ${id}.`,
+});
+```
+
+O código de estado não aparece no modelo. Quem o escolhe é quem chama o `res.render`, a rota ou o middleware final, e o modelo só escreve a página. A mesma página serve três respostas:
+
+```mermaid
+flowchart LR
+    D["GET /equipamentos/:id"] -->|"o id não é válido"| A["res.status(400).render(...)"]
+    D -->|"o equipamento não existe"| B["res.status(404).render(...)"]
+    D -->|"o equipamento existe"| C["res.render(...)"]
+    F["middleware final"] --> G["res.status(404).render(...)"]
+    A --> V["views/erro.ejs"]
+    B --> V
+    G --> V
+    C --> W["views/equipamento.ejs"]
+```
+
+O diagrama mostra a rota de detalhe e o middleware final. As três respostas de erro usam o mesmo `erro.ejs`, cada uma com o seu código e a sua mensagem. Depois de cada resposta de erro, a rota acaba com o `return`, como sempre.
+
+<details>
+<summary>Para ires mais longe: a página de erro do próprio Express</summary>
+
+As páginas de erro do catálogo dizem o que correu mal numa frase, para quem usa o catálogo. Quando o teu código falha, o Express responde 500 com uma página dele, como a do `No default engine`. Essa página mostra o erro e os caminhos dos ficheiros, com os números das linhas. Ajuda-te enquanto programas, mas não foi feita para quem usa o catálogo.
+
+</details>
 
 ## Escaping: o que vem de fora nunca vira HTML
 
-A página da lista mostra a sala pesquisada: "Pesquisa pela sala B12". A sala vem do pedido, do `?sala=`, e quem escreve o endereço pode escrever lá o que quiser. Imagina este pedido:
+A página da lista pode mostrar a sala pesquisada, com esta linha do modelo:
+
+```ejs
+<p>Pesquisa pela sala <strong><%= sala %></strong>.</p>
+```
+
+A sala vem do pedido, do `?sala=`, e quem escreve o endereço pode lá escrever o que quiser. Imagina este pedido:
 
 ```text
 /equipamentos?sala=<i>B12</i>
 ```
 
-(O browser mostra os `<` e `>` na barra de endereço com códigos, `%3C` e `%3E`. Isto acontece porque não podem ir num endereço tal como estão. O Express desfaz esses códigos. E o `req.query.sala` fica com o texto `<i>B12</i>`.)
+O browser troca os `<` e `>` do endereço por códigos, `%3C` e `%3E`, porque não podem ir num endereço tal como estão. O Express desfaz esses códigos, e o `req.query.sala` fica com o texto `<i>B12</i>`.
 
-Com `<%= sala %>`, a página mostra exatamente o que o utilizador escreveu, com as etiquetas à vista: "Pesquisa pela sala `<i>B12</i>`". O EJS trocou os carateres que têm significado em HTML por códigos que o browser mostra como texto, e não interpreta. É isto o **escaping**:
+Com `<%= sala %>`, a página mostra exatamente o que o utilizador escreveu, com as etiquetas à vista e sem itálico nenhum: "Pesquisa pela sala `<i>B12</i>`." O `<%=` trocou os carateres que têm significado em HTML por sequências como `&lt;`, que o browser mostra como texto e não interpreta. A esta troca chama-se **escaping**:
 
 | Carácter | Escrito como |
 | --- | --- |
@@ -360,23 +360,28 @@ Com `<%= sala %>`, a página mostra exatamente o que o utilizador escreveu, com 
 | `"` | `&#34;` |
 | `'` | `&#39;` |
 
-O browser recebe `&lt;i&gt;B12&lt;/i&gt;`, desenha `<i>B12</i>` no ecrã, e não há itálico nenhum: para ele, aquilo é texto. O texto aparece a negrito, mas isso vem do `<strong>` que o modelo põe à volta de qualquer sala pesquisada, e não do que o utilizador escreveu.
+Com `<%- sala %>`, o EJS escrevia o valor tal como está:
 
-Com `<%- sala %>`, o EJS escreve o valor tal como está. O browser recebe `<i>B12</i>`, interpreta as etiquetas e mostra B12 em itálico, sem as etiquetas. Parece inofensivo. Mas o problema não é o itálico. Quem consegue meter um `<i>` na tua página consegue meter um `<script>`. E o browser executa-o como se fosse parte da página. Basta enviar a alguém um endereço com um script na sala. Quem o abrir corre esse script no teu site: pode ver o que está na página, mudar o que lá está, ou enviar dados para outro lado. A este ataque chama-se injeção de código na página, ou XSS (de cross-site scripting).
+| No modelo | O browser recebe | O que se vê |
+| --- | --- | --- |
+| `<%= sala %>` | `&lt;i&gt;B12&lt;/i&gt;` | O texto `<i>B12</i>`, sem itálico |
+| `<%- sala %>` | `<i>B12</i>` | B12 em itálico, porque o browser leu uma etiqueta |
 
-A regra que sai daqui é simples. Todos os valores entram na página com `<%=`. Os valores que vêm do pedido precisam de escaping porque qualquer pessoa os pode escrever. Os restantes valores seguem a mesma regra. Amanhã podem vir de um formulário ou de uma base de dados onde alguém escreveu um `<`. O `<%-` fica só para o `include` dos partials, cujo HTML foi escrito por ti. Se um dia precisares de inserir HTML que vem de outro sítio, pergunta primeiro porque esse HTML não está num modelo. Não escolhas `<%-` só para o fazer aparecer.
+Com o `<%-`, o problema não é o itálico. Quem consegue meter um `<i>` na tua página consegue meter um `<script>`, e o browser executa-o como se fizesse parte da página. Basta enviar a alguém um endereço com um script na sala. Quem o abrir corre esse script no teu site, e o script pode ler o que está na página, mudá-lo ou enviar dados para outro sítio. A este ataque chama-se **injeção de código na página**, ou XSS (do inglês cross-site scripting).
 
-O escaping do `<%=` protege os dois sítios onde os valores deste tema aparecem: o conteúdo de uma etiqueta, como `<p><%= mensagem %></p>`. O valor de um atributo entre aspas, como `href="/equipamentos/<%= equipamento.id %>"`. Os atributos escrevem-se sempre entre aspas, para o valor não poder sair delas. E há um sítio onde o `<%=` não chega para proteger: dentro de uma etiqueta `<script>`. Neste tema não precisas de pôr valores dentro de scripts. E não deves. O tema Erros e segurança web volta a este assunto.
+A regra que sai daqui: todos os valores entram na página com `<%=`. Os que vêm do pedido, porque qualquer pessoa os pode escrever. Os outros também, porque amanhã podem vir de um formulário ou de uma base de dados onde alguém escreveu um `<`. O `<%-` fica só para o `include` dos partials, cujo HTML foi escrito por ti.
+
+O escaping do `<%=` protege os dois sítios onde os valores deste tema aparecem. Um é o conteúdo de uma etiqueta, como `<p><%= mensagem %></p>`. O outro é o valor de um atributo entre aspas, como `href="/equipamentos/<%= equipamento.id %>"`. Os atributos escrevem-se sempre entre aspas: como o `<%=` troca as aspas do valor por `&#34;`, o valor não consegue fechar o atributo e sair dele. Há um sítio onde o `<%=` não chega para proteger: dentro de uma etiqueta `<script>`. Neste tema não precisas de pôr valores dentro de scripts, e não deves.
 
 ## Exemplo guiado: o catálogo passa a ter páginas
 
-O exemplo transforma o catálogo com middleware do tema anterior num catálogo com páginas. Primeiro, fazes uma página só e a pesquisa. Depois, acrescentas o detalhe de cada equipamento, o cabeçalho e o rodapé partilhados. Por fim, acrescentas as páginas de erro. Em cada passo, o servidor continua a funcionar. E podes abrir as páginas no browser. O resultado final está pronto a correr na pasta [catalogo-com-ejs](../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md) dos exemplos.
+O exemplo transforma o catálogo com middleware do tema 03 num catálogo com páginas. Primeiro fazes uma página só, a lista, com a pesquisa. Depois acrescentas a página de cada equipamento, o cabeçalho e o rodapé partilhados e, por fim, as páginas de erro. Em cada passo, o servidor continua a funcionar e podes abrir as páginas no browser.
+
+O ponto de partida é o `server.js` do fim do tema 03, o do exemplo [catalogo-com-middleware](../exemplos/aplicacoes-em-browser/catalogo-com-middleware/README.md). O resultado final está pronto a correr no exemplo [catalogo-com-ejs](../exemplos/aplicacoes-em-browser/catalogo-com-ejs/README.md). Depois de cada mudança no `server.js`, para o servidor com Ctrl+C e volta a ligá-lo com `node server.js`.
 
 ### Passo 1: instalar e preparar
 
-Na pasta do catálogo, `npm install ejs@7.0.1`. No `server.js`, logo a seguir ao `const PORTA = 3000;`, a linha do motor de modelos:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Na pasta do catálogo, instala o EJS com `npm install ejs@7.0.1`. No `server.js`, logo a seguir ao `const PORTA = 3000;`, acrescenta a linha do motor de modelos:
 
 ```js fragment
 // O motor de modelos: o res.render vai procurar os ficheiros .ejs
@@ -384,15 +389,11 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 app.set("view engine", "ejs");
 ```
 
-Leitura guiada: `app.set` recebe o nome da definição, `"view engine"`, e o valor, `"ejs"`. Configura a aplicação; não escolhe uma página nem envia uma resposta.
-
-E, ao lado do `server.js`, a pasta `views`, por agora vazia. Nada muda nas respostas: o EJS só trabalha quando uma rota chamar o `res.render`.
+Ao lado do `server.js`, cria a pasta `views`, por agora vazia. Nada muda nas respostas: o EJS só trabalha quando uma rota chamar o `res.render`.
 
 ### Passo 2: a primeira página, a lista
 
-A rota da lista respondia com `res.json`, e tinha duas respostas, uma com o filtro e outra sem ele. Uma página não muda com o filtro: muda só a lista que ela mostra. Por isso a rota passa a escolher primeiro a lista, numa variável, e a responder uma só vez, no fim:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A rota da lista respondia com `res.json`, e tinha duas respostas, uma com o filtro e outra sem ele. Uma página não muda com o filtro: muda só a lista que ela mostra. Por isso, a rota passa a escolher primeiro a lista, numa variável, e a responder uma só vez, no fim. Troca a rota de `/equipamentos` por esta:
 
 ```js fragment
 // Lista de equipamentos. Com ?sala=B12, só os dessa sala.
@@ -406,13 +407,9 @@ app.get("/equipamentos", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /equipamentos` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
-
-A `lista` começa com todos os equipamentos, e só muda se o pedido trouxer uma sala. É declarada com `let`, e não com `const`, porque o `if` lhe pode dar outro valor. No fim, o `res.render` pede o modelo `equipamentos` com dois dados: o título da página e a lista a mostrar. Dentro do modelo, a lista vai chamar-se `equipamentos`, porque é esse o nome da propriedade.
+A `lista` começa com todos os equipamentos, e só muda se o pedido trouxer uma sala. É declarada com `let`, e não com `const`, porque o `if` lhe pode dar outro valor. No fim, o `res.render` pede o modelo `equipamentos` com dois dados: o título da página e a lista a mostrar, que dentro do modelo se chama `equipamentos`.
 
 O modelo, em `views/equipamentos.ejs`, é por agora uma página completa:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# A lista de equipamentos. Recebe o titulo e os equipamentos a mostrar. %>
@@ -433,29 +430,21 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 </html>
 ```
 
-Leitura guiada: o ciclo percorre a lista pela ordem dos elementos. Segue uma volta, identifica o valor atual e vê o que essa volta escreve.
+`/equipamentos` mostra agora uma página com o título "Equipamentos" e os quatro equipamentos numa lista, e `/equipamentos?sala=B12` a mesma página só com o portátil e o monitor. A pesquisa da página inicial continua a funcionar, e leva agora a uma página, e não a JSON.
 
-`/equipamentos` mostra agora uma página com o título "Equipamentos" e uma lista com os quatro equipamentos, e `/equipamentos?sala=B12` a mesma página só com o portátil e o monitor. A pesquisa da página inicial continua a funcionar, e agora leva a uma página, e não a JSON.
-
-Experimenta `/equipamentos?sala=Z99`. A página aparece com o título e sem mais nada: a lista está vazia, e um `<ul>` vazio não se vê. O passo seguinte resolve isso.
+Com `/equipamentos?sala=Z99`, a página mostra só o título: a lista está vazia, e um `<ul>` vazio não se vê. O passo seguinte resolve isso.
 
 ### Passo 3: a pesquisa e a lista vazia
 
-A página passa a dizer que sala foi pesquisada, quando houve pesquisa, e a explicar a lista vazia, quando não há equipamentos. Para isso, o modelo precisa de saber a sala. Na rota, o `res.render` passa-a também:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A página passa a dizer que sala foi pesquisada, quando houve pesquisa, e a explicar a lista vazia. Para isso, o modelo precisa de saber a sala. Na rota, o `res.render` passa-a também:
 
 ```js fragment
 res.render("equipamentos", { titulo: "Equipamentos", equipamentos: lista, sala: sala });
 ```
 
-Leitura guiada: o primeiro argumento escolhe o ficheiro da vista. As propriedades do segundo argumento tornam-se as variáveis que o modelo pode usar.
-
-Quando não há pesquisa, `req.query.sala` é `undefined`, e é isso que o modelo recebe na variável `sala`. Não faz mal: o importante é que a propriedade `sala` exista no objeto, mesmo vazia. Se a rota não a passasse de todo, o modelo, ao usar `sala`, daria o erro `sala is not defined`.
+Quando não há pesquisa, `req.query.sala` é `undefined`, e é isso que o modelo recebe na variável `sala`. Não faz mal: o que importa é que a propriedade `sala` exista no objeto, mesmo sem valor. Se a rota não a passasse, o modelo daria erro ao usar `sala`.
 
 No modelo, o `<ul>` dá lugar a duas condições:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <% if (sala) { %>
@@ -472,25 +461,17 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <% } %>
 ```
 
-Leitura guiada: o ciclo percorre a lista pela ordem dos elementos. Segue uma volta, identifica o valor atual e vê o que essa volta escreve.
-
-A primeira condição mostra a sala pesquisada, só quando há uma. A segunda escolhe entre a mensagem e a lista. `/equipamentos?sala=Z99` mostra agora "Pesquisa pela sala Z99." e "Não há equipamentos nesta sala.", com o código 200. A sala pesquisada vem do pedido e entra com `<%=`: a secção do escaping explica porquê.
+A primeira condição mostra a sala pesquisada, só quando há uma. A segunda escolhe entre a frase e a lista. `/equipamentos?sala=Z99` mostra agora "Pesquisa pela sala Z99." e "Não há equipamentos nesta sala.", com o código 200. A sala vem do pedido, e por isso entra com `<%=`.
 
 ### Passo 4: a página de um equipamento
 
-A rota de detalhe mantém as duas verificações do tema anterior. Só muda a última linha, a resposta de sucesso, que passa a ser uma página:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A rota de detalhe mantém as duas verificações do tema 03. Só muda a última linha, a resposta de sucesso, que passa a ser uma página:
 
 ```js fragment
 res.render("equipamento", { titulo: equipamento.nome, equipamento: equipamento });
 ```
 
-Leitura guiada: o primeiro argumento escolhe o ficheiro da vista. As propriedades do segundo argumento tornam-se as variáveis que o modelo pode usar.
-
 O título da página é o nome do equipamento. O modelo, em `views/equipamento.ejs`, também é por agora uma página completa:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# A página de um equipamento. Recebe o titulo e o equipamento. %>
@@ -509,29 +490,53 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 </html>
 ```
 
-Leitura guiada: o EJS calcula a expressão entre as marcas. Com `<%=`, o valor entra como texto e os carateres de HTML são escapados.
-
-A sala é uma ligação para a pesquisa dessa sala: o valor entra duas vezes, no `href` e no texto da ligação, e as duas com `<%=`. Para se chegar a esta página sem escrever o endereço, a lista passa a ter ligações. No modelo da lista, o `<li>` fica assim:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A sala é uma ligação para a pesquisa dessa sala. O valor entra duas vezes, no `href` e no texto da ligação, e as duas com `<%=`. Para se chegar a esta página sem escrever o endereço, a lista passa a ter ligações. No modelo da lista, o `<li>` fica assim:
 
 ```ejs
 <li><a href="/equipamentos/<%= equipamento.id %>"><%= equipamento.nome %></a>, na sala <%= equipamento.sala %></li>
 ```
 
-Leitura guiada: o EJS calcula a expressão entre as marcas. Com `<%=`, o valor entra como texto e os carateres de HTML são escapados.
-
-`/equipamentos/3` mostra a impressora, com a ligação para a sala Secretaria. Os erros desta rota (`/equipamentos/abc` e `/equipamentos/9`) continuam, por agora, a responder com JSON. O passo 6 trata disso.
+`/equipamentos/3` mostra a impressora, com a ligação para a sala Secretaria. Os erros desta rota, `/equipamentos/abc` e `/equipamentos/9`, continuam por agora a responder com JSON.
 
 ### Passo 5: o cabeçalho e o rodapé em partials
 
-As duas páginas que já existem repetem o mesmo início e o mesmo fim, e a página inicial ainda está num texto com crases. É altura de criar os dois partials da secção "Partes partilhadas", em `views/partials/cabecalho.ejs` e `views/partials/rodape.ejs`, e de os usar.
+As duas páginas repetem o mesmo início e o mesmo fim, e a página inicial ainda está num texto com crases. Cria os dois partials da secção [Partes partilhadas: o cabeçalho e o rodapé](#partes-partilhadas-o-cabeçalho-e-o-rodapé), em `views/partials/cabecalho.ejs` e `views/partials/rodape.ejs`.
 
-Em `equipamentos.ejs`, tudo o que vinha antes das condições passa a ser o `include` do cabeçalho, e tudo o que vinha depois passa a ser o `include` do rodapé. O `<h1>` sai da página, porque o cabeçalho já o escreve com o título. O mesmo em `equipamento.ejs`. As páginas ficam só com o que é delas, e ganham, sem mais trabalho, o menu de navegação do cabeçalho e o rodapé.
+Em `equipamentos.ejs`, tudo o que vinha antes das condições passa a ser o `include` do cabeçalho, e tudo o que vinha depois passa a ser o `include` do rodapé. O `<h1>` sai da página, porque o cabeçalho já o escreve. A lista fica assim:
+
+```ejs
+<%# A lista de equipamentos. Recebe o titulo, os equipamentos a mostrar
+    e a sala pesquisada, que fica vazia quando não houve pesquisa. %>
+<%- include("partials/cabecalho") %>
+    <% if (sala) { %>
+      <p>Pesquisa pela sala <strong><%= sala %></strong>.</p>
+    <% } %>
+    <% if (equipamentos.length === 0) { %>
+      <p>Não há equipamentos nesta sala.</p>
+    <% } else { %>
+      <ul>
+        <% for (const equipamento of equipamentos) { %>
+          <li><a href="/equipamentos/<%= equipamento.id %>"><%= equipamento.nome %></a>, na sala <%= equipamento.sala %></li>
+        <% } %>
+      </ul>
+    <% } %>
+<%- include("partials/rodape") %>
+```
+
+A página de um equipamento muda da mesma maneira:
+
+```ejs
+<%# A página de um equipamento. Recebe o titulo e o equipamento. %>
+<%- include("partials/cabecalho") %>
+    <p>Número: <%= equipamento.id %></p>
+    <p>Sala: <a href="/equipamentos?sala=<%= equipamento.sala %>"><%= equipamento.sala %></a></p>
+    <p><a href="/equipamentos">Voltar à lista</a></p>
+<%- include("partials/rodape") %>
+```
+
+As duas páginas ficam só com o que é delas, e ganham, sem mais trabalho, o menu do cabeçalho e o rodapé.
 
 A página inicial passa a ser um modelo, `views/inicio.ejs`:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# A página inicial, com a pesquisa por sala. O formulário envia por GET,
@@ -545,11 +550,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
 E a rota `/` deixa de ter HTML:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```js fragment
 // Página inicial, com a pesquisa por sala.
@@ -558,15 +559,11 @@ app.get("/", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
-
-Como o cabeçalho usa o `titulo`, todas as rotas que renderizam uma página têm de o passar. Esquecê-lo dá `titulo is not defined`, numa página de erro com o código 500.
+Se uma rota não passar o `titulo`, a página dá `titulo is not defined`, com o código 500.
 
 ### Passo 6: as páginas de erro
 
-A rota de detalhe responde 400 e 404 com JSON, e o middleware final responde com um texto solto. Num catálogo feito de páginas, um erro também deve ser uma página, com o mesmo cabeçalho, uma mensagem e uma ligação para voltar. Uma só página serve para todos os erros, `views/erro.ejs`, porque o que muda de erro para erro é só o título e a mensagem:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A rota de detalhe ainda responde 400 e 404 com JSON, e o middleware final com um texto solto. Cria a página de erro, `views/erro.ejs`:
 
 ```ejs
 <%# A página de erro, para o 400 e para o 404. Recebe o titulo e a
@@ -577,11 +574,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
-O código de estado não aparece no modelo, e é de propósito: quem escolhe o código é a rota, com `res.status`, como no tema anterior. O modelo só escreve a página. Na rota de detalhe, as duas respostas de erro ficam assim:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Na rota de detalhe, as duas respostas de erro passam a usar esta página. A do 400 fica assim:
 
 ```js fragment
 res.status(400).render("erro", {
@@ -590,9 +583,7 @@ res.status(400).render("erro", {
 });
 ```
 
-Leitura guiada: compara esta alteração com a instrução que substitui. Segue o valor de entrada até à resposta descrita no parágrafo seguinte.
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+E a do 404 assim:
 
 ```js fragment
 res.status(404).render("erro", {
@@ -601,11 +592,9 @@ res.status(404).render("erro", {
 });
 ```
 
-Leitura guiada: compara esta alteração com a instrução que substitui. Segue o valor de entrada até à resposta descrita no parágrafo seguinte.
+Cada uma das duas respostas continua seguida do seu `return`.
 
-O objeto dos dados ficou comprido, e por isso está escrito em várias linhas, uma por propriedade: é o mesmo objeto, só arrumado para se ler melhor. Cada uma das respostas continua seguida do seu `return`. O middleware final usa a mesma página:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O middleware final passa a usar a mesma página. Rever: [O middleware final](03-http-rotas-e-middleware.md#o-middleware-final).
 
 ```js fragment
 // Middleware final: só chega aqui um pedido a que nenhuma rota respondeu.
@@ -617,15 +606,9 @@ app.use((req, res) => {
 });
 ```
 
-Leitura guiada: este middleware corre antes do elemento seguinte da fila. Identifica o que prepara e se chama `next()` ou termina com uma resposta.
-
-A mensagem do middleware final não repete o endereço pedido. Podia, mas o endereço vem de fora, e não traz nada que o utilizador não saiba já.
-
 ### Passo 7: o servidor completo
 
-O `server.js` no fim do exemplo:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O `server.js` completo fica assim. Confere o teu, linha a linha: tirando os comentários, nada deve ser diferente.
 
 ```js
 // server.js: o catálogo de equipamentos da escola, agora com páginas EJS.
@@ -709,49 +692,7 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-Leitura guiada: lê os dados iniciais, depois os middlewares pela ordem do ficheiro. Escolhe um pedido da tabela de resultados e segue só a rota que o recebe.
-
-As rotas já não têm HTML nenhum. Cada uma faz o que fazia no tema anterior (lê o pedido, verifica, procura, escolhe o código) e acaba a pedir uma página com os dados certos. O HTML está todo nos modelos. A lista, no fim:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
-
-```ejs
-<%# A lista de equipamentos. Recebe o titulo, os equipamentos a mostrar
-    e a sala pesquisada, que fica vazia quando não houve pesquisa. %>
-<%- include("partials/cabecalho") %>
-    <% if (sala) { %>
-      <p>Pesquisa pela sala <strong><%= sala %></strong>.</p>
-    <% } %>
-    <% if (equipamentos.length === 0) { %>
-      <p>Não há equipamentos nesta sala.</p>
-    <% } else { %>
-      <ul>
-        <% for (const equipamento of equipamentos) { %>
-          <li><a href="/equipamentos/<%= equipamento.id %>"><%= equipamento.nome %></a>, na sala <%= equipamento.sala %></li>
-        <% } %>
-      </ul>
-    <% } %>
-<%- include("partials/rodape") %>
-```
-
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
-E a página de um equipamento:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
-
-```ejs
-<%# A página de um equipamento. Recebe o titulo e o equipamento. %>
-<%- include("partials/cabecalho") %>
-    <p>Número: <%= equipamento.id %></p>
-    <p>Sala: <a href="/equipamentos?sala=<%= equipamento.sala %>"><%= equipamento.sala %></a></p>
-    <p><a href="/equipamentos">Voltar à lista</a></p>
-<%- include("partials/rodape") %>
-```
-
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
-A página inicial, a de erro e os dois partials são os dos passos 5 e 6.
+O ficheiro lê-se pela mesma ordem do tema 03: os dados, o middleware de registo, as três rotas, o middleware final e o `listen`. As rotas já não têm HTML nenhum. Cada uma faz o que fazia no tema 03 (lê o pedido, verifica, procura e escolhe o código) e acaba a pedir uma página com os dados certos. Os modelos são os dos passos 5 e 6.
 
 ### Passo 8: os resultados
 
@@ -767,99 +708,112 @@ A página inicial, a de erro e os dois partials são os dos passos 5 e 6.
 | `/equipamentos/9` | 404 | "Equipamento não encontrado", com "Não existe o equipamento 9." |
 | `/nao-existe` | 404 | "Página não encontrada" |
 
-Todas as páginas têm o menu no topo e o rodapé no fim, e todas chegam com o tipo `text/html`. Os códigos são os do tema anterior: mudou a forma da resposta, e não a decisão de qual é o código.
+Todas as páginas têm o menu no topo e o rodapé no fim, e todas chegam com o tipo `text/html`. Os códigos são os do tema 03: mudou a forma da resposta, e não a decisão de qual é o código.
 
-## O que o browser recebe
+### Passo 9: o que o browser recebe
 
-Compara o código de um modelo com o HTML que chega de facto ao browser. Há duas formas de ver o que chegou.
+Abre `/equipamentos?sala=B12` e o código-fonte da página. O browser recebeu isto:
 
-A primeira é o código-fonte da página. Com a página aberta, carrega em Ctrl+U (no Mac, Cmd+Option+U). Também podes carregar com o botão direito e escolher a opção de ver o código-fonte da página. O browser mostra o HTML exatamente como o recebeu. Abre o código-fonte de `/equipamentos?sala=B12` e compara-o com `views/equipamentos.ejs`:
+```html
 
-- não há nenhuma marca `<%`: todas foram substituídas pelo que produziram;
+
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8">
+    <title>Equipamentos | Catálogo de equipamentos</title>
+  </head>
+  <body>
+    <nav>
+      <a href="/">Início</a> |
+      <a href="/equipamentos">Todos os equipamentos</a>
+    </nav>
+    <h1>Equipamentos</h1>
+
+
+      <p>Pesquisa pela sala <strong>B12</strong>.</p>
+
+
+      <ul>
+
+          <li><a href="/equipamentos/1">Portátil</a>, na sala B12</li>
+
+          <li><a href="/equipamentos/4">Monitor</a>, na sala B12</li>
+
+      </ul>
+
+
+    <footer>
+      <p>Catálogo de equipamentos da escola. Página gerada no servidor.</p>
+    </footer>
+  </body>
+</html>
+```
+
+Compara-o com o modelo da lista, `views/equipamentos.ejs`:
+
+- não há nenhuma marca `<%`, porque todas foram trocadas pelo que produziram;
 - não há `for` nem `if`: em vez do ciclo, há dois `<li>`, um para o portátil e outro para o monitor, escritos um a um;
-- a mensagem "Não há equipamentos nesta sala." não aparece em lado nenhum, porque o `else` foi o ramo que correu;
-- o comentário do início do modelo não está lá;
-- onde estavam as marcas que não escrevem nada, ficaram linhas em branco ou espaços: o EJS tirou as marcas e deixou o resto da linha;
+- a frase "Não há equipamentos nesta sala." não aparece, porque o ramo que correu foi o `else`;
+- os comentários `<%# %>` do modelo e do cabeçalho não estão lá;
+- onde estavam as marcas que não escrevem nada, ficaram linhas em branco, porque o EJS tira a marca e deixa o resto da linha;
 - o `<head>`, o menu e o rodapé estão lá, embora o modelo da lista não os tenha: vieram dos partials.
 
-A segunda é o separador Rede das ferramentas de programador, que já conheces. Clica no pedido `equipamentos?sala=B12` e confirma o código, 200, e, nos cabeçalhos da resposta, o `Content-Type: text/html; charset=utf-8`. No separador da resposta ("Response", ou "Resposta") está o mesmo HTML do código-fonte. Faz o mesmo com um pedido do tema anterior, que respondia em JSON, e a diferença está nesse cabeçalho: `application/json` lá, `text/html` aqui. É o cabeçalho que diz ao browser se deve mostrar o que recebeu como dados ou desenhá-lo como página.
-
-Quando o professor te perguntar porque é que o browser não executa o modelo, é isto que respondes: o modelo nunca lá chega. Correu no servidor, e o browser recebeu o resultado.
+No separador Rede, que usaste no tema 01, clica no pedido `equipamentos?sala=B12`. Confirma o código, 200, e, nos cabeçalhos da resposta, o `Content-Type: text/html; charset=utf-8`. No tema 03, a lista respondia com `application/json`. É este cabeçalho que diz ao browser se deve desenhar o que recebeu como página ou mostrá-lo como dados.
 
 ## Erros frequentes
 
-### Error: No default engine was specified and no extension was provided.
-
-Uma rota chamou o `res.render`, e o Express não sabe que motor usar: falta a linha `app.set("view engine", "ejs");`. A página de erro aparece com o código 500, e o servidor continua ligado.
-
 ### Error: Cannot find module 'ejs'
 
-O `app.set` está lá, mas o pacote não foi instalado nesta pasta. Corre `npm install ejs@7.0.1` dentro da pasta do projeto e confirma a linha no `package.json`. O servidor arranca sem erro, porque o Express só vai buscar o EJS quando a primeira página for pedida.
+O `app.set` está lá, mas o pacote não foi instalado nesta pasta. Corre `npm install ejs@7.0.1` dentro da pasta do projeto e confirma a linha no `package.json`. O servidor arranca sem erro, porque o Express só vai buscar o EJS quando a primeira página é pedida. O erro aparece nesse pedido, com o código 500.
 
 ### Error: Failed to lookup view "equipamentoo" in views directory
 
-O Express não encontrou o ficheiro do modelo. A mensagem diz o nome que procurou e a pasta onde procurou. Confere três causas possíveis. O nome no `res.render` pode diferir do ficheiro (aqui, tem um `o` a mais). O ficheiro pode estar fora de `views`. Ou o servidor pode ter arrancado fora da pasta do projeto. A pasta `views` que ele procura não é a tua.
+O Express não encontrou o ficheiro do modelo. A mensagem diz o nome que procurou e a pasta onde procurou. Há três causas possíveis. O nome no `res.render` pode ser diferente do nome do ficheiro (aqui, tem um `o` a mais). O ficheiro pode estar fora da pasta `views`. Ou o terminal não estava na pasta do projeto quando arrancaste o servidor, e a pasta `views` que ele procura não é a tua.
 
 ### ReferenceError: ... sala is not defined
 
-O modelo usa uma variável que a rota não lhe passou. A mensagem mostra o caminho do modelo, o número da linha e as linhas à volta, com `>>` na linha do problema. Acrescenta a propriedade ao objeto do `res.render`, com o nome que o modelo usa, mesmo que o valor possa ser `undefined`. Se o modelo é um partial, como o cabeçalho com o `titulo`, todas as páginas que o incluem têm de passar esse dado.
+O modelo usa uma variável que a rota não lhe passou. A mensagem mostra o caminho do modelo, o número da linha e as linhas à volta, com `>>` na linha do problema. Acrescenta a propriedade ao objeto do `res.render`, com o nome que o modelo usa, mesmo que o valor possa ser `undefined`. Se a variável é usada num partial, como o `titulo` no cabeçalho, todas as páginas que o incluem têm de a passar.
 
 ### Onde devia estar um valor, não aparece nada
 
-Duas causas, e nenhuma dá erro. Escreveste `<% valor %>` em vez de `<%= valor %>`: o código correu e não escreveu nada. Ou escreveste mal o nome de uma propriedade, como `equipamento.nomee`: o JavaScript dá `undefined` para uma propriedade que não existe, e o EJS escreve `undefined` como vazio. Compara o nome no modelo com o nome no array, letra a letra.
+Não há erro, mas falta um valor na página. Uma causa é uma marca sem o `=`, como `<% titulo %>`, que corre o código e não escreve nada. Rever: [As marcas do EJS](#as-marcas-do-ejs). A outra é o nome de uma propriedade mal escrito, como `equipamento.nomee`. O JavaScript dá `undefined` para uma propriedade que não existe, e o EJS escreve `undefined` como vazio. Compara o nome no modelo com o nome no array, letra a letra.
 
 ### SyntaxError: Unexpected token 'catch' ... while compiling ejs
 
-O EJS não conseguiu transformar o modelo num programa, porque o JavaScript das marcas está incompleto. Quase sempre é uma chaveta: um `<% for (...) { %>` ou um `<% if (...) { %>` sem o `<% } %>` correspondente, ou ao contrário. A palavra `catch` não está no teu modelo: é do código que o EJS junta à volta dele, e a falta da chaveta só se nota lá. Conta as chavetas que abrem e as que fecham.
+O EJS não conseguiu transformar o modelo num programa, porque o JavaScript das marcas está incompleto. Quase sempre é uma chaveta: um `<% for (...) { %>` ou um `<% if (...) { %>` sem o `<% } %>` que o fecha. A palavra `catch` não está no teu modelo. É do código que o EJS junta à volta dele, e é só lá que a chaveta em falta se nota. Conta as chavetas que abrem e as que fecham. As linhas seguintes da mensagem, sobre o EJS-Lint e o `async: true`, não se aplicam a este caso.
 
 ### A página de erro certa, com o código errado, e o servidor em baixo
 
-Pedes `/equipamentos/abc`, a página diz "Pedido inválido", e o separador Rede mostra o código 404, em vez de 400. No terminal aparece `Cannot set headers after they are sent to the client`, e a seguir o servidor pára: o pedido seguinte, seja a que página for, já não tem resposta. Com o `node --watch`, o terminal acaba em `Failed running 'server.js'. Waiting for file changes before restarting...`, e o servidor só volta quando guardares um ficheiro.
+Pedes `/equipamentos/abc`, a página diz "Pedido inválido", e o separador Rede mostra o código 404, em vez de 400. No terminal aparece `Cannot set headers after they are sent to the client`, e o servidor vai abaixo: o terminal volta à linha de comandos, e o browser já não consegue ligar ao endereço. Se usas o `node --watch`, a última linha do terminal é `Failed running 'server.js'. Waiting for file changes before restarting...`, e o servidor só volta quando guardares um ficheiro.
 
-Falta o `return` depois do `res.status(400).render(...)`. Com o `res.json`, do tema anterior, o browser recebia a primeira resposta e o código certo. E o servidor continuava ligado. Com o `res.render`, a página só sai um instante depois, quando o EJS acaba de ler o modelo. Nesse instante o código da rota continua: não encontra o equipamento, chega ao `res.status(404)` e troca o código antes de a primeira página sair. Quando a segunda página fica pronta, a resposta já foi enviada. O erro que isso provoca acontece fora da rota, onde ninguém o apanha: por isso o servidor vai abaixo. Depois de cada resposta de erro, o `return`, como sempre.
+A causa é a falta do `return` depois do `res.status(400).render(...)`. Com o `res.json` do tema 03, o browser recebia o 400 e o servidor continuava ligado. Com o `res.render`, a página não sai logo, e acontece isto, por ordem:
 
-### As etiquetas do cabeçalho aparecem como texto na página
+1. O `res.status(400).render(...)` marca o código 400 e pede a página de erro, que o Express só envia um instante depois, quando a função da rota já acabou.
+2. Sem o `return`, a função continua: não encontra o equipamento e chega ao `res.status(404).render(...)`, que troca o código para 404.
+3. A função acaba, e sai a primeira página, a do "Pedido inválido", já com o código 404.
+4. A segunda página fica pronta, mas a resposta já foi enviada. O erro acontece fora da rota, onde o Express já não o apanha, e o servidor vai abaixo.
 
-O `include` foi escrito com `<%=` em vez de `<%-`. O EJS fez escaping ao HTML do partial, e o browser mostra `<title>`, `<nav>` e o resto como texto. O `include` usa sempre `<%-`.
-
-### Mudei o modelo e não sei se tenho de reiniciar o servidor
-
-Não tens. O Express volta a ler o modelo a cada pedido, enquanto estás a desenvolver, e basta recarregar a página. O `node --watch` também não reinicia por causa de um `.ejs`, só por causa dos ficheiros JavaScript. Mudanças no `server.js` continuam a precisar de reinício, como antes.
-
-## Segurança: o que este tema já pede
-
-- **Todos os valores com `<%=`.** O escaping é a defesa contra o HTML e o JavaScript metidos na página por quem escreve o pedido. O `<%-` fica só para o `include` dos partials, cujo HTML é teu.
-- **Atributos sempre entre aspas.** O escaping do `<%=` conta com as aspas: `href="/equipamentos/<%= equipamento.id %>"`, e nunca sem elas.
-- **Nenhum valor dentro de `<script>`.** O escaping de HTML não protege o JavaScript de uma página. Neste tema não precisas, e no tema Erros e segurança web vês porquê.
-- **A página não substitui a verificação.** Um formulário ou uma ligação na página não impedem ninguém de escrever o endereço à mão. As verificações do 400 e do 404 continuam na rota, como no tema anterior.
-- **Um erro mostra pouco.** As páginas de erro do catálogo dizem o que correu mal com uma frase. E não mais. A página de erro do Express mostra caminhos dos ficheiros e linhas de código, como viste nos erros 500 acima. Isso ajuda enquanto programas. Mas um servidor a sério não a pode mostrar a quem o usa. É outro assunto do tema Erros e segurança web.
-
+Depois de cada resposta de erro, o `return`, como sempre.
 
 ## Palavras novas deste guia
 
-- Modelo EJS: ficheiro HTML com marcas onde o servidor coloca os dados.
-- Renderizar: juntar um modelo aos dados para construir o HTML da resposta.
-- Vista: outro nome para um modelo de página, guardado em `views`.
-- Marca EJS: delimitação como `<%= nome %>`, que o EJS lê no servidor.
-- Partial: parte de um modelo, como o cabeçalho, incluída por outras páginas.
-- Escaping: troca dos carateres especiais de HTML por códigos para que um valor apareça como texto.
-- Código-fonte da página: HTML recebido pelo browser, depois de o servidor preencher o modelo.
-
-## Verificar o que aprendeste
-
-1. O utilizador abre `/equipamentos?sala=A03`. Diz, por ordem, o que acontece no browser e o que acontece no servidor, até a página aparecer.
-2. Porque é que o browser não executa o modelo `equipamentos.ejs`?
-3. Qual é a diferença entre `<% equipamento.nome %>` e `<%= equipamento.nome %>`? Qual delas dá erro?
-4. Uma rota faz `res.render("erro", { mensagem: "Sem stock" })`, e o modelo inclui o cabeçalho, que usa o `titulo`. O que acontece?
-5. Porque é que o `include` se escreve com `<%-`, e a sala pesquisada com `<%=`? O que acontecia se trocasses os dois?
-6. A página da lista mostra a mensagem "Não há equipamentos nesta sala." quando a lista está vazia. Porque é que o código continua a ser 200, e não 404?
-7. Onde se filtram os equipamentos pela sala: na rota ou no modelo? Porquê?
-8. Abres o código-fonte de uma página do catálogo. Diz três coisas do modelo que não encontras lá, e uma que encontras e não está no modelo da página.
+- Modelo: um ficheiro de HTML com marcas nos sítios onde entram os dados, que o servidor preenche a cada pedido.
+- Renderizar: construir a página a partir de um modelo e dos dados; em Express, com `res.render`.
+- Código-fonte da página: o HTML tal como o browser o recebeu, que se abre com Ctrl+U.
+- Marca: o sítio de um modelo onde entra JavaScript, entre `<%` e `%>`, como `<%= titulo %>`.
+- Partial: um bocado de modelo num ficheiro próprio, como o cabeçalho, que outras páginas incluem com o `include`.
+- Escaping: a troca dos carateres especiais do HTML por sequências como `&lt;`, para um valor aparecer como texto e não ser lido como HTML.
+- Injeção de código na página (XSS): o ataque em que alguém mete HTML ou JavaScript numa página, através de um valor que lá entra sem escaping.
 
 ## O que vem a seguir
 
-Faz a [ficha de exercícios](exercicios/04-ejs-e-reutilizacao-no-servidor-exercicios.md). O laboratório deste tema vai ser o passo 3 do jogo Fechado na escola, e ainda não está publicado.
+No tema 05, Formulários e validação, o catálogo ganha um formulário de reserva, que o servidor verifica antes de aceitar.
 
-O próximo tema é Formulários e validação. A página inicial já tem um formulário. Mas envia por `GET` e só pesquisa. No próximo tema, os formulários enviam por `POST`, para criar coisas, como uma reserva. O servidor lê o corpo do pedido e verifica cada campo. Se houver um erro, volta a mostrar o formulário. Mantém os dados escritos e acrescenta uma mensagem que explica o erro. Esse formulário é um modelo EJS, com tudo o que este tema mostrou: valores com `<%=`, condições para as mensagens de erro. E o cabeçalho e o rodapé partilhados.
+## Para saber mais
+
+- [Usar motores de modelos com o Express](https://expressjs.com/en/guide/using-template-engines.html), em inglês: o `app.set("view engine", ...)`, a pasta `views` e o `res.render`.
+- [EJS](https://ejs.co/), em inglês: a documentação das marcas e do `include`, com exemplos.
+- [Cross-site scripting (XSS)](https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/XSS), na MDN, em inglês: o ataque que o escaping evita, com outros exemplos.
 
 ![Rodapé](../imagens/rodape.png)

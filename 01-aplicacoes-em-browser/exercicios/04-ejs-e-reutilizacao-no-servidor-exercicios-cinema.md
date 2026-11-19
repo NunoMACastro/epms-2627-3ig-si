@@ -2,31 +2,9 @@
 
 # Ficha de exercícios: EJS e reutilização no servidor, no cinema da escola
 
-Trabalho de casa comum a Sistemas de Informação e a Linguagens de Programação. Constróis, a partir de uma pasta vazia, a aplicação do clube de cinema da escola. Um seed põe os filmes no MongoDB Atlas, uma API em Express lê-os com o Mongoose, e o EJS gera no servidor a página do cartaz.
+Constróis, a partir de uma pasta vazia, a aplicação do clube de cinema da escola, com o MongoDB Atlas, o Mongoose, o Express e o EJS. Os exercícios 1 a 7 são obrigatórios, por esta ordem. Os exercícios 1, 2, 4 e 5 dão-te o código todo, explicado, e nos exercícios 3, 6 e 7 trabalhas sozinho. Para rever: o [guia do tema](../04-ejs-e-reutilizacao-no-servidor.md).
 
-Os exercícios 1, 2, 4 e 5 dão-te o código todo, com a explicação de cada parte. Nos exercícios 3, 6 e 7 trabalhas sozinho. É um trabalho individual. Conta para as atitudes e valores, a autonomia e o empenho, nas duas disciplinas, e não para a nota da avaliação prática.
-
-## O que precisas de saber
-
-Não precisas de nenhum projeto anterior: começas numa pasta vazia. Precisas destas três coisas:
-
-- o Node.js 22 ou mais recente, com o npm, e um editor, como o VS Code;
-- a tua conta no MongoDB Atlas, com um cluster, um utilizador da base de dados com a sua palavra-passe e o endereço IP do teu computador autorizado;
-- internet, porque a base de dados está no Atlas.
-
-Se ainda não tens a conta, o cluster ou o utilizador, a fase 1 do [laboratório do Atlas de LP](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas-laboratorio.md) mostra como os criar. Se quiseres rever a teoria, tens os guias dos temas [03](../03-http-rotas-e-middleware.md) e [04](../04-ejs-e-reutilizacao-no-servidor.md) de Sistemas de Informação.
-
-## Como trabalhar
-
-Faz os exercícios por ordem, porque cada um usa o que o anterior construiu. O desafio opcional fica para o fim.
-
-Nos exercícios com código, escreve cada ficheiro como está na ficha e lê a explicação que vem a seguir antes de o pores a correr. Antes de cada experiência, prevê de cabeça o que vais ver, e depois compara com o que aparece.
-
-Os nomes da ficha são obrigatórios: a pasta `cinema-da-escola`, a base `cinema`, a coleção `filmes`, os campos dos documentos, os ficheiros e os caminhos das rotas.
-
-No browser, confirma o código de cada resposta no separador Rede das ferramentas de programador. Na maior parte dos browsers, as ferramentas abrem-se com F12, ou com Cmd+Option+I no Mac.
-
-As perguntas marcadas com "No `respostas-cinema.md`" respondem-se por escrito, num ficheiro de texto com esse nome, na raiz da pasta `cinema-da-escola`. Escreve-o no editor, com o número do exercício antes de cada resposta. Entrega-se com o projeto.
+É um trabalho individual, comum a Sistemas de Informação e a Linguagens de Programação. Conta para as atitudes e valores, a autonomia e o empenho, e não para a avaliação prática. As respostas escritas vão para o `respostas-cinema.md`, um ficheiro de texto na raiz do projeto, com o número do exercício antes de cada uma. A entrega é o primeiro commit do projeto, mostrado ao professor na sala com a aplicação a correr. Rever: [Um commit guarda uma fotografia do projeto](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/03-arquitetura-e-setup-node.md#um-commit-guarda-uma-fotografia-do-projeto).
 
 ## O cenário
 
@@ -43,7 +21,17 @@ O clube de cinema da escola projeta um filme por semana, às quartas-feiras à t
 | 7 | O Rei Leão | Animação | 88 | 6 | 16 de dezembro, 15:30 |
 | 8 | Interstellar | Ficção científica | 169 | 12 | 6 de janeiro, 14:30 |
 
-No fim, a pasta do projeto fica assim:
+A aplicação tem dois programas, que se correm à parte. O seed corre uma vez e acaba: apaga os filmes que estiverem na base e insere os oito. O servidor fica a correr. A cada pedido do browser, vai buscar os filmes à base e responde com eles: em JSON, nas rotas da API, ou numa página, no cartaz.
+
+```mermaid
+flowchart LR
+    seed["src/seed.js<br>npm run seed"] -->|"apaga e insere os oito filmes"| base[("Atlas<br>base cinema<br>coleção filmes")]
+    browser["Browser"] -->|"pedido"| servidor["src/server.js<br>npm run dev"]
+    servidor -->|"Filme.find"| base
+    servidor -->|"JSON da API<br>ou HTML do cartaz"| browser
+```
+
+No fim, a pasta do projeto fica assim, com o `respostas-cinema.md` também na raiz:
 
 ```text
 cinema-da-escola/
@@ -64,19 +52,19 @@ cinema-da-escola/
     └── cartaz.ejs
 ```
 
-O `respostas-cinema.md`, com as tuas respostas escritas, fica também na raiz do projeto.
+Os nomes da ficha são obrigatórios: a pasta `cinema-da-escola`, a base `cinema`, a coleção `filmes`, os campos dos documentos, os ficheiros e os caminhos das rotas.
 
 ## Exercício 1: o projeto, de raiz
 
-1. Cria uma pasta chamada `cinema-da-escola`, fora de qualquer outro projeto, e abre-a no VS Code. Abre um terminal dentro dela, no menu Terminal, com "New Terminal".
-2. Cria o projeto e instala os três pacotes de que a aplicação precisa:
+Precisas do Node.js 22 ou mais recente, com o npm, de um editor, como o VS Code, e de internet, porque a base de dados está no Atlas.
+
+1. Cria uma pasta chamada `cinema-da-escola`, fora de qualquer outro projeto, porque vai ter o seu próprio repositório Git, e abre-a no VS Code. Abre um terminal dentro dela, no menu Terminal, com "New Terminal" (novo terminal).
+2. Cria o projeto e instala os três pacotes de que a aplicação precisa. O Express é o servidor, o Mongoose fala com o MongoDB, e o EJS gera as páginas. O `npm init -y` cria o `package.json`, com as respostas por omissão. O `npm install` descarrega os pacotes para a pasta `node_modules`, regista-os no `package.json` e guarda as versões exatas no `package-lock.json`.
 
    ```bash
    npm init -y
    npm install express mongoose ejs
    ```
-
-   O `npm init -y` cria o `package.json`, a ficha de identidade do projeto, com as respostas por omissão. O `npm install` descarrega os pacotes para a pasta `node_modules` e regista-os no `package.json`. As versões exatas que descarregou ficam no `package-lock.json`. O Express é o servidor, o Mongoose fala com o MongoDB, e o EJS gera as páginas.
 
 3. Abre o `package.json` e deixa-o assim. Mudas duas coisas: o `"type"` passa de `"commonjs"` a `"module"`, e o script `"test"` dá lugar aos três scripts da aplicação. O resto já lá está, e as versões dos pacotes podem ser mais recentes do que estas.
 
@@ -103,7 +91,7 @@ O `respostas-cinema.md`, com as tuas respostas escritas, fica também na raiz do
    }
    ```
 
-   Leitura guiada: o `"type": "module"` deixa usar o `import` e o `export` nos ficheiros do projeto. Os três scripts correm-se com `npm run` e o nome. O `npm run dev` arranca o servidor e volta a arrancá-lo sempre que gravas um ficheiro, por causa do `--watch`. O `npm run seed` corre o seed uma vez. Os dois leem o ficheiro `.env`, com o `--env-file`.
+   O `"type": "module"` deixa usar o `import` e o `export` nos ficheiros do projeto. Os scripts correm-se com `npm run` e o nome. O `npm run dev` arranca o servidor e volta a arrancá-lo sempre que gravas o código do servidor, por causa do `--watch`. O `npm run seed` corre o seed uma vez. Os dois leem o ficheiro `.env`, com o `--env-file`. O `start` não o lê, porque serve para arrancar a aplicação noutro computador, onde a configuração se define de outra maneira. Nesta ficha, usas sempre o `npm run dev`.
 
 4. Cria o ficheiro `.gitignore`, na raiz do projeto, com o que o Git nunca deve guardar:
 
@@ -115,7 +103,7 @@ O `respostas-cinema.md`, com as tuas respostas escritas, fica também na raiz do
    .env
    ```
 
-   A pasta `node_modules` não se guarda, porque o `npm install` volta a criá-la a partir do `package.json`. O `.env` não se guarda, porque vai ter a palavra-passe da tua base de dados.
+   O segredo que o `.env` vai guardar é a palavra-passe da tua base de dados.
 
 5. Cria o ficheiro `.env.example`, também na raiz. Diz que configuração a aplicação precisa, sem nenhum segredo:
 
@@ -137,9 +125,18 @@ O `respostas-cinema.md`, com as tuas respostas escritas, fica também na raiz do
    cp .env.example .env
    ```
 
-7. Põe no `.env` a cadeia de ligação ao teu cluster. No Atlas, carrega em "Connect" (ligar) no teu cluster e escolhe a ligação por "Drivers". Copia a cadeia que começa por `mongodb+srv://` para a linha `MONGODB_URI=` do `.env`. Troca o marcador da palavra-passe, a parte entre `<` e `>`, pela palavra-passe do utilizador da base de dados.
+7. Põe no `.env` a cadeia de ligação ao teu cluster. Precisas do cluster, de um utilizador da base de dados com a sua palavra-passe e do endereço IP do teu computador autorizado no Atlas. Se ainda não os tens, a fase 1 do [laboratório do Atlas de LP](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/laboratorios/02-modelo-documental-e-consultas-no-atlas-laboratorio.md#fase-1-no-atlas-cada-aluno-tem-o-seu-cluster) mostra como os criar. No Atlas, carrega em "Connect" (ligar) no teu cluster e escolhe a ligação por "Drivers". Copia a cadeia que começa por `mongodb+srv://` para a linha `MONGODB_URI=` do `.env`. Troca o marcador da palavra-passe, a parte entre `<` e `>`, pela palavra-passe do utilizador da base de dados.
 
 O que deves ver: na pasta, a `node_modules`, o `package.json`, o `package-lock.json`, o `.gitignore`, o `.env.example` e o `.env`. A partir deste momento, o `.env` tem um segredo. Não o copies para mais lado nenhum, e não o entregues.
+
+Rever: [O "type": "module" deixa o Node aceitar o import](../02-primeiro-servidor.md#o-type-module-deixa-o-node-aceitar-o-import), [O ficheiro .env guarda a configuração deste computador](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/03-arquitetura-e-setup-node.md#o-ficheiro-env-guarda-a-configuração-deste-computador) e [O .gitignore deixa os segredos fora do Git](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/03-arquitetura-e-setup-node.md#o-gitignore-deixa-os-segredos-fora-do-git).
+
+<details>
+<summary>Pista</summary>
+
+Se o `npm` não for reconhecido no terminal, o Node.js não está instalado, ou o terminal foi aberto antes da instalação. Fecha-o e abre outro. Se a PowerShell do Windows disser que o `npm.ps1` não pode ser carregado, vê [O npm não corre na PowerShell do Windows](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/laboratorios/03-arquitetura-e-setup-node-laboratorio.md#o-npm-não-corre-na-powershell-do-windows), no laboratório do jogo, em LP.
+
+</details>
 
 ## Exercício 2: a ligação, o modelo e o seed
 
@@ -177,9 +174,7 @@ export async function ligarBaseDeDados() {
 }
 ```
 
-Leitura guiada: a cadeia de ligação vem do `.env`, através de `process.env.MONGODB_URI`, e nunca fica escrita no código. Se faltar, a função lança um erro, com o `throw`, e quem a chamou decide o que fazer. A cadeia do Atlas não diz que base usar, por isso o nome da base vai à parte, no `dbName`.
-
-A função é `async`, porque ligar a uma base que está noutro computador demora. O `await` espera pela resposta do Atlas, e só depois o programa passa à linha seguinte.
+O `process.env.MONGODB_URI` é a linha `MONGODB_URI` do `.env`, que o `--env-file` dos scripts carrega. Se faltar, o `throw` lança um erro, e quem chamou a função decide o que fazer. A função é `async`, porque ligar a uma base que está noutro computador demora. O `await` espera pela resposta do Atlas, e só depois o programa passa à linha seguinte.
 
 ### Passo 2: o modelo dos filmes
 
@@ -208,7 +203,7 @@ const filmeSchema = new mongoose.Schema({
 export const Filme = mongoose.model("Filme", filmeSchema, "filmes");
 ```
 
-Leitura guiada: o schema tem um campo por cada dado do filme, com o seu tipo. A sessão é um objeto dentro do filme, com o dia e a hora, e o schema descreve-a da mesma forma. O modelo `Filme` é o que o resto da aplicação usa para ler e escrever na coleção `filmes`. O terceiro argumento do `mongoose.model` é o nome da coleção, escrito à mão para não haver surpresas.
+O modelo `Filme`, na última linha, é o que o seed e o servidor usam para ler e escrever na coleção `filmes`. Com o nome escrito à mão, a coleção chama-se sempre `filmes`, sem depender da regra com que o Mongoose inventa os nomes das coleções. Os filmes ainda não estão na base: é o seed, no passo 3, que os põe lá, com esta forma.
 
 ### Passo 3: o seed
 
@@ -253,41 +248,59 @@ try {
 await mongoose.disconnect();
 ```
 
-Leitura guiada: o seed liga-se à base com a mesma função do passo 1. Depois apaga todos os filmes da coleção, com o `deleteMany`, e insere os oito, com o `insertMany`. O filtro vazio, `{}`, escolhe todos os documentos, como na barra de consultas do Atlas.
-
-Como apaga primeiro, o seed pode correr-se as vezes que quiseres, e a coleção fica sempre com os mesmos oito filmes. Isto serve para dados de exemplo. Numa base com dados verdadeiros, um `deleteMany({})` apagava-os todos.
-
-A última linha fecha a ligação. Uma ligação aberta mantém o programa à espera de mais trabalho, e o terminal não voltava a aceitar comandos.
+Se a ligação ou a inserção falharem, o `catch` escreve a mensagem, e o `disconnect` corre na mesma, porque está fora do `try`. Apagar tudo antes de inserir serve para dados de exemplo. Numa base com dados verdadeiros, um `deleteMany({})` apagava-os todos.
 
 ### Passo 4: correr o seed
 
-1. Prevê o que o terminal vai escrever, e depois corre o seed:
+1. Corre o seed:
 
    ```bash
    npm run seed
    ```
 
-   O que deves ver: três linhas, `Ligada à base de dados cinema`, `Apagados 0 filmes` e `Inseridos 8 filmes`, e o terminal pronto para outro comando.
+   O que deves ver: depois das duas linhas em que o npm mostra o comando, três linhas, `Ligada à base de dados cinema`, `Apagados 0 filmes` e `Inseridos 8 filmes`, e o terminal pronto para outro comando.
 
 2. Prevê quantos filmes ficam na coleção se correres o seed outra vez, e depois corre-o.
 
    O que deves ver: `Apagados 8 filmes` e `Inseridos 8 filmes`. A coleção continua com oito.
 
-3. No Atlas, abre o explorador de dados, a base `cinema` e a coleção `filmes`.
+3. No Atlas, abre o "Data Explorer" (explorador de dados), a base `cinema` e a coleção `filmes`.
 
    O que deves ver: os oito filmes. Cada um tem o `_id` que o MongoDB lhe deu e um campo `__v` com o valor 0, que nenhum ficheiro teu escreveu. O `__v` é do Mongoose, que o usa para controlar versões dos documentos que insere. Podes ignorá-lo.
 
+Rever: [A cadeia de ligação fica só no servidor](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/05-ligacao-segura-crud-e-regras-de-dominio.md#a-cadeia-de-ligação-fica-só-no-servidor) e [A informação relacionada embute-se ou referencia-se](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas.md#a-informação-relacionada-embute-se-ou-referencia-se).
+
+<details>
+<summary>Pista</summary>
+
+- `Cannot use import statement outside a module` quer dizer que o `"type"` do `package.json` ainda é `"commonjs"`.
+- Se o seed escrever `O seed falhou: falta a MONGODB_URI no ficheiro .env`, a linha da cadeia de ligação está vazia. Se o terminal disser `node: .env: not found`, falta o próprio ficheiro `.env`.
+- Se o seed ficar parado uns 30 segundos e depois falhar, com uma mensagem que começa por `Could not connect to any servers in your MongoDB Atlas cluster`, o Atlas não aceitou a ligação. Confirma que o endereço IP do computador onde estás está autorizado no Atlas, e que tens internet.
+- A mensagem `bad auth : authentication failed` quer dizer que o utilizador ou a palavra-passe da cadeia estão errados. Confirma que tiraste o `<` e o `>` do marcador. Usa o utilizador da base de dados, e não o da tua conta no Atlas.
+- Para outros erros da ligação, vê [Se alguma coisa falhar](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/laboratorios/03-arquitetura-e-setup-node-laboratorio.md#se-alguma-coisa-falhar), no laboratório do jogo, em LP.
+
+</details>
+
 ## Exercício 3: os filmes na barra do Atlas
 
-Antes de a API ir buscar filmes, descobre no Atlas o que ela vai ter de devolver. Neste exercício trabalhas sozinho.
+Antes de a API ir buscar filmes, descobre no Atlas o que ela vai ter de devolver.
 
-Na barra de consultas da coleção `filmes`, escreve um filtro para cada pergunta. No `respostas-cinema.md`, regista o filtro e os títulos dos filmes que aparecem.
+Na barra de consulta da coleção `filmes`, escreve um filtro para cada pergunta. No `respostas-cinema.md`, regista o filtro e os títulos dos filmes que aparecem.
 
 1. Que filmes são de animação?
 2. Que filmes pode ver um aluno de 12 anos?
 3. Que filmes de ficção científica pode ver um aluno de 12 anos?
 
 Na pergunta 2, tens de decidir se um aluno de 12 anos pode ver um filme com a idade mínima de 12. A tua resposta escolhe o operador: `$lt`, menor do que, ou `$lte`, menor ou igual.
+
+Rever: [Um filtro escolhe os documentos](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas.md#um-filtro-escolhe-os-documentos), [Um operador compara um campo com um valor](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas.md#um-operador-compara-um-campo-com-um-valor) e [Todas as condições de um filtro têm de se cumprir](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas.md#todas-as-condições-de-um-filtro-têm-de-se-cumprir).
+
+<details>
+<summary>Pista</summary>
+
+Os filtros com duas condições têm os dois campos dentro das mesmas chavetas. Se uma consulta vier vazia, sem erro, confere o texto do género letra a letra, com a maiúscula e os acentos.
+
+</details>
 
 ## Exercício 4: a API dos filmes
 
@@ -351,13 +364,7 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-Leitura guiada:
-
-- O middleware de registo corre em todos os pedidos, antes das rotas. Escreve no terminal o método e o endereço, e passa o pedido à frente com o `next()`.
-- A rota de estado responde sempre o mesmo, e serve para confirmar que a API está a responder.
-- A rota da lista é `async`, porque pergunta à base, e o `await` espera pelos filmes. O `Filme.find()` sem filtro devolve todos, e o `res.json` envia-os em JSON.
-- O middleware final só recebe os pedidos a que nenhuma rota respondeu, e responde 404 em JSON.
-- No fim, a aplicação liga-se primeiro à base e só depois começa a aceitar pedidos. Uma API que não chega aos dados não deve responder como se estivesse tudo bem.
+A rota da lista é `async`, porque pergunta à base, e o `await` espera pelos filmes. O `Filme.find()` sem filtro devolve todos, e o `res.json` envia-os em JSON. Se a ligação falhar, o `process.exit(1)` termina o programa, e o `app.listen` nunca chega a correr.
 
 Arranca o servidor, que fica a correr neste terminal. Para o parar, carregas em Ctrl+C.
 
@@ -365,11 +372,11 @@ Arranca o servidor, que fica a correr neste terminal. Para o parar, carregas em 
 npm run dev
 ```
 
-O que deves ver: duas linhas, `Ligada à base de dados cinema` e `Cinema da escola em http://localhost:3000`.
+O que deves ver: depois das duas linhas do npm, `Ligada à base de dados cinema` e `Cinema da escola em http://localhost:3000`.
 
-Prevê o código e a resposta de cada pedido, e depois abre-os no browser: `/api/estado`, `/api/filmes`, `/nao-existe` e `/api/filmes/3`.
+Prevê o código de estado e a resposta de cada pedido, e depois abre-os no browser: `http://localhost:3000/api/estado`, `/api/filmes`, `/nao-existe` e `/api/filmes/3`. Vês o código de estado no separador Rede das ferramentas de programador, que, na maior parte dos browsers, se abrem com F12, ou com Cmd+Option+I no Mac.
 
-O que deves ver: 200 com o estado; 200 com os oito filmes, cada um com o `_id` e o `__v`; 404 com `{"erro":"Rota não encontrada"}`. O último também dá esse 404, porque ainda não há uma rota para um filme. No terminal, aparece uma linha por pedido.
+O que deves ver: 200 com o estado; 200 com os oito filmes, cada um com o `_id` e o `__v`; 404 com `{"erro":"Rota não encontrada"}`. O último também dá esse 404, porque ainda não há uma rota para um filme. No terminal, aparece uma linha por pedido, e às vezes também `GET /favicon.ico`, que é o browser a pedir o ícone do separador.
 
 ### Passo 2: os filtros
 
@@ -405,13 +412,11 @@ app.get("/api/filmes", async (req, res) => {
 });
 ```
 
-Leitura guiada: o filtro é um objeto que começa vazio, e um filtro vazio deixa passar todos os filmes. Cada parâmetro que vier no endereço acrescenta-lhe uma condição. Com os dois, o filme tem de cumprir as duas, como num filtro do Atlas com dois campos.
+Com os dois parâmetros, o filtro fica como um filtro do Atlas com dois campos. O `if` recusa com 400 uma idade que não seja um número inteiro maior do que 0, e por isso só uma idade válida chega à base.
 
-A idade chega como texto, `"12"`, como tudo o que vem no endereço. O `Number` passa-a a número, e o `if` recusa-a com 400 se não for um número inteiro maior do que 0. Só uma idade válida chega à base.
+Grava. O `--watch` volta a arrancar o servidor sozinho. Na barra de endereço, podes escrever os acentos e os espaços, como em `?genero=Ficção científica`. O browser codifica-os antes de enviar o pedido, e por isso a linha do registo, no terminal, mostra-os assim: `Fic%C3%A7%C3%A3o%20cient%C3%ADfica`. O Express descodifica-os, e o `req.query` dá-os ao teu código como os escreveste.
 
-Grava. O `--watch` volta a arrancar o servidor sozinho. Na barra de endereço, podes escrever os acentos e os espaços, como em `?genero=Ficção científica`. O browser codifica-os antes de enviar o pedido, e o Express devolve-os ao teu código como os escreveste.
-
-Prevê o resultado de cada pedido, e depois experimenta:
+Experimenta estes pedidos, e confere o código e a resposta de cada um:
 
 | Pedido | Código | Resposta |
 | --- | --- | --- |
@@ -424,7 +429,7 @@ Prevê o resultado de cada pedido, e depois experimenta:
 
 Agora, um erro de propósito. Apaga as quatro linhas do `if` que verifica a idade, do `if (!Number.isInteger` até à chaveta que o fecha, e grava. Prevê o que acontece com `/api/filmes?idade=doze`, e depois experimenta.
 
-O que deves ver: o código 500 e uma página de erro do Express que fala de `CastError` e de `Cast to Number failed for value "NaN"`. O `Number("doze")` não é um número, e o Mongoose recusou-o ao preparar a consulta. O servidor continua ligado, mas o utilizador recebe uma página com pormenores internos, em vez de uma mensagem clara. Repõe as quatro linhas e grava.
+O que deves ver: o código 500 e uma página de erro do Express que fala de `CastError` e de `Cast to Number failed for value "NaN"`. O `Number("doze")` não é um número, e o Mongoose recusou-o ao preparar a consulta. O servidor continua ligado, e o terminal mostra o mesmo erro, com as linhas por onde passou. Mas o utilizador recebe uma página com pormenores internos, em vez de uma mensagem clara. Repõe as quatro linhas e grava.
 
 No `respostas-cinema.md`: compara o filtro que escreveste no Atlas para a pergunta 3 do exercício 3 com o que o servidor passa ao Mongoose no pedido `/api/filmes?genero=Ficção científica&idade=12`. O que é igual, e de onde vem cada valor no servidor?
 
@@ -452,11 +457,21 @@ app.get("/api/filmes/:numero", async (req, res) => {
 });
 ```
 
-Leitura guiada: o `:numero` é um parâmetro de rota, e o número também chega como texto. A rota verifica-o como verificou a idade, e responde 400 se não servir. O `find` devolve sempre uma lista, mesmo quando só um documento cumpre o filtro. Se a lista vier vazia, o filme não existe, e a resposta é 404. Se não, a rota envia o primeiro e único filme da lista.
+A rota verifica o número como a lista verifica a idade, e responde 400 se não servir. Responde 404 se a lista vier vazia e, se não, envia o primeiro e único filme da lista, o `encontrados[0]`.
 
 Prevê o código e a resposta de cada pedido, e depois experimenta: `/api/filmes/3`, `/api/filmes/9` e `/api/filmes/abc`.
 
 O que deves ver: 200 com Os Goonies; 404 com `{"erro":"Não existe o filme 9"}`; 400 com `{"erro":"O número do filme tem de ser um número inteiro positivo"}`.
+
+Rever: [Tudo chega como texto](../03-http-rotas-e-middleware.md#tudo-chega-como-texto), [Os três códigos deste tema](../03-http-rotas-e-middleware.md#os-três-códigos-deste-tema), [O middleware final](../03-http-rotas-e-middleware.md#o-middleware-final) e [A ligação abre-se uma vez, no arranque](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/05-ligacao-segura-crud-e-regras-de-dominio.md#a-ligação-abre-se-uma-vez-no-arranque).
+
+<details>
+<summary>Pista</summary>
+
+- Se a lista vier `[]`, sem erro, vê o nome da base na linha `Ligada à base de dados` do terminal: tem de ser `cinema`. Se for outro, como `test`, vê o `DB_NAME` do `.env` e o `dbName` da ligação, no `src/db/mongoose.js`.
+- Se o servidor escrever `Não foi possível ligar à base de dados`, a causa é uma das pistas do exercício 2. O `--watch` escreve `Failed running 'src/server.js'` e fica à espera: corrige o que falta, para-o com Ctrl+C e arranca-o outra vez.
+
+</details>
 
 ## Exercício 5: o cartaz
 
@@ -472,11 +487,11 @@ No `server.js`, acrescenta estas linhas logo a seguir à linha da `PORTA`:
 app.set("view engine", "ejs");
 ```
 
-Leitura guiada: o `app.set` diz ao Express que os modelos das páginas são ficheiros `.ejs`. O Express procura-os na pasta `views` da pasta onde o terminal está quando arrancas o servidor. Com o `npm run dev`, essa pasta é a raiz do projeto, e por isso a pasta `views` fica ao lado do `package.json`, e não dentro de `src`.
+O `npm run dev` arranca sempre o servidor a partir da raiz do projeto, mesmo que o terminal esteja noutra pasta do projeto. Por isso, a pasta `views` fica ao lado do `package.json`, e não dentro de `src`, onde está o `server.js`. No catálogo do guia, a `views` ficava ao lado do `server.js` porque ele estava na raiz.
 
 ### Passo 2: o modelo do cartaz
 
-Cria a pasta `views`, na raiz do projeto, e nela o ficheiro `cartaz.ejs`:
+Cria a pasta `views`, na raiz do projeto, e nela o ficheiro `cartaz.ejs`. É um modelo de página, como os do guia, e não tem nada a ver com o modelo `Filme` do Mongoose:
 
 ```ejs
 <%# O cartaz do cinema da escola. Recebe o titulo e os filmes a mostrar. %>
@@ -497,7 +512,7 @@ Cria a pasta `views`, na raiz do projeto, e nela o ficheiro `cartaz.ejs`:
 </html>
 ```
 
-Leitura guiada: o modelo é HTML com marcas, e todas as marcas começam por `<%` e acabam em `%>`. A marca `<%# %>` é um comentário, que fica no servidor. A marca `<%= %>` escreve um valor na página, e os carateres especiais do HTML vão como texto. A marca `<% %>`, sem nada a seguir ao `%`, corre JavaScript sem escrever nada. Aqui abre e fecha o `for`, que repete a linha `<li>` uma vez por filme.
+O modelo é HTML com marcas, e todas as marcas começam por `<%` e acabam em `%>`. A marca `<%# %>` é um comentário, que fica no servidor. A marca `<%= %>` escreve um valor na página, e os carateres especiais do HTML, como o `<` e o `>`, aparecem como texto, e não como etiquetas. A marca `<% %>`, sem nada a seguir ao `%`, corre JavaScript sem escrever nada. Aqui abre e fecha o `for`, que repete a linha `<li>` uma vez por filme.
 
 ### Passo 3: a rota do cartaz
 
@@ -519,7 +534,7 @@ app.get("/cartaz", async (req, res) => {
 });
 ```
 
-Leitura guiada: a rota vai buscar os filmes como a lista da API, com um filtro e o `await`. Em vez do `res.json`, responde com o `res.render`, que junta o modelo `cartaz` com os dados e envia o HTML. Dentro do modelo, os dados chamam-se `titulo` e `filmes`, os nomes das propriedades do objeto. O título decide-se aqui, na rota, com um `if`.
+A rota vai buscar os filmes como a lista da API, com um filtro e o `await`. Em vez do `res.json`, responde com o `res.render`, que junta o `cartaz.ejs` com os dados e envia o HTML. Dentro do `cartaz.ejs`, os dados chamam-se `titulo` e `filmes`, os nomes das propriedades do objeto. O título decide-se aqui, na rota, com um `if`.
 
 Neste ponto, o teu `server.js` está assim:
 
@@ -657,6 +672,16 @@ app.listen(PORTA, (erro) => {
 3. Experimenta `/cartaz` e `/cartaz?genero=Musical`. Com `Musical`, a página mostra só o título, "Cartaz: Musical", porque a lista vazia não tem linhas.
 4. No `respostas-cinema.md`: no teu código, que linha decide que filmes aparecem no cartaz, e que linha decide como cada filme aparece? Diz, para cada uma, se está na rota ou no modelo.
 
+Rever: [O Express procura os modelos na pasta views](../04-ejs-e-reutilizacao-no-servidor.md#o-express-procura-os-modelos-na-pasta-views), [O res.render responde com uma página](../04-ejs-e-reutilizacao-no-servidor.md#o-resrender-responde-com-uma-página), [As marcas do EJS](../04-ejs-e-reutilizacao-no-servidor.md#as-marcas-do-ejs) e [Ciclos e condições dentro do modelo](../04-ejs-e-reutilizacao-no-servidor.md#ciclos-e-condições-dentro-do-modelo).
+
+<details>
+<summary>Pista</summary>
+
+- `No default engine was specified` quer dizer que falta o `app.set`. `Failed to lookup view "cartaz"` quer dizer que o Express não encontrou o modelo: a mensagem diz em que pasta o procurou.
+- Se uma linha do cartaz aparecer sem o título do filme, e sem erro, essa marca não tem o `=`.
+
+</details>
+
 ## Exercício 6: a duração máxima, sozinho
 
 Daqui em diante, a ficha não te dá o código. Decides tu onde e como o escrever.
@@ -673,6 +698,15 @@ O clube quer saber que filmes cabem numa tarde curta. Acrescenta à lista da API
 
 No `respostas-cinema.md`, escreve que filmes esperas em cada pedido de 200.
 
+Rever: [Tudo chega como texto](../03-http-rotas-e-middleware.md#tudo-chega-como-texto) e [Um operador compara um campo com um valor](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas.md#um-operador-compara-um-campo-com-um-valor).
+
+<details>
+<summary>Pista</summary>
+
+Confere primeiro o pedido com 114: Os Goonies duram exatamente 114 minutos. Se um pedido com mais de um parâmetro trouxer filmes que não cumprem todas as condições, vê o que a rota passa ao `Filme.find`.
+
+</details>
+
 ## Exercício 7: o cartaz para uma idade, sozinho
 
 O cartaz passa a aceitar também o parâmetro `?idade=`, com a mesma regra da API. O título diz o que se escolheu: o género, a idade, ou os dois, separados por uma vírgula. Com uma idade inválida, a página responde 400, com o título "Idade inválida" e a lista vazia, sem perguntar nada à base.
@@ -687,48 +721,29 @@ O cartaz passa a aceitar também o parâmetro `?idade=`, com a mesma regra da AP
 
 O modelo `cartaz.ejs` não precisa de mudar. Confirma o código 400 no separador Rede, porque a página parece normal.
 
-## Apoio
+Rever: [O res.render responde com uma página](../04-ejs-e-reutilizacao-no-servidor.md#o-resrender-responde-com-uma-página), [A rota escolhe os dados, e o modelo mostra-os](../04-ejs-e-reutilizacao-no-servidor.md#a-rota-escolhe-os-dados-e-o-modelo-mostra-os) e [Um erro também se responde com uma página](../04-ejs-e-reutilizacao-no-servidor.md#um-erro-também-se-responde-com-uma-página).
 
-- Exercício 1: Se o `npm` não for reconhecido no terminal, o Node.js não está instalado, ou o terminal foi aberto antes da instalação. Fecha-o e abre outro.
-- Exercício 2: `Cannot use import statement outside a module` quer dizer que o `"type"` do `package.json` ainda é `"commonjs"`.
-- Exercício 2: Se o seed escrever `O seed falhou: falta a MONGODB_URI no ficheiro .env`, a linha da cadeia de ligação está vazia. Se o terminal disser `node: .env: not found`, falta o próprio ficheiro `.env`.
-- Exercício 2: Se o seed ficar parado uns 30 segundos e depois falhar, o Atlas não aceitou a ligação. Confirma que o endereço IP do computador onde estás está autorizado no Atlas, e que tens internet.
-- Exercício 2: A mensagem `bad auth : authentication failed` quer dizer que o utilizador ou a palavra-passe da cadeia estão errados. Confirma que tiraste o `<` e o `>` do marcador. Usa o utilizador da base de dados, e não o da tua conta no Atlas.
-- Exercício 3: Os filtros com duas condições têm os dois campos dentro das mesmas chavetas.
-- Exercício 4: Se a lista vier `[]` e o terminal disser `Ligada à base de dados test`, falta o `DB_NAME=cinema` no `.env`, ou o `dbName` na ligação.
-- Exercício 5: `No default engine was specified` quer dizer que falta o `app.set`. `Failed to lookup view "cartaz"` quer dizer que o Express não encontrou o modelo: a mensagem diz em que pasta o procurou.
-- Exercício 5: Se uma linha do cartaz aparecer sem o título do filme, e sem erro, essa marca não tem o `=`.
-- Exercício 6: A nova condição constrói-se como a da idade, e entra no mesmo filtro.
-- Exercício 7: Pensa primeiro no título, com os quatro casos da tabela, e só depois no filtro. O `res.status` e o `res.render` podem juntar-se na mesma resposta.
+<details>
+<summary>Pista</summary>
 
-## Desafio opcional
+Pensa primeiro no título, com os quatro títulos dos pedidos com 200, e só depois no filtro. O `res.status` e o `res.render` podem juntar-se na mesma resposta. Se, depois do pedido com a idade inválida, o terminal mostrar um erro, com a página certa no browser, vê o que a rota faz depois de responder.
 
-Este desafio é opcional. Faz primeiro os exercícios 1 a 7.
+</details>
 
-**Os três filmes mais longos.** Acrescenta à API o pedido `/api/filmes/mais-longos`, que responde com os três filmes de maior duração, do mais longo para o mais curto. No Atlas, isto faz-se com a ordenação e o limite, nos campos "Sort" e "Limit" da barra de consultas. Procura na [documentação do Mongoose](https://mongoosejs.com/docs/queries.html) como se escrevem no servidor.
+## Desafios
+
+### Os três filmes mais longos
+
+Acrescenta à API o pedido `/api/filmes/mais-longos`, que responde com os três filmes de maior duração, do mais longo para o mais curto. No Atlas, isto faz-se com a ordenação e o limite, nos campos "Sort" e "Limit" da barra de consulta. Procura na [documentação do Mongoose](https://mongoosejs.com/docs/queries.html) como se escrevem no servidor. Rever: [Ordenar e depois limitar](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/02-modelo-documental-e-consultas-no-atlas.md#ordenar-e-depois-limitar).
 
 Quando o pedido funcionar, confirma que `/api/filmes/3` continua a responder com Os Goonies. Se `/api/filmes/mais-longos` responder 400, lê a mensagem e descobre que rota respondeu ao pedido.
 
 ## Critérios de conclusão
 
 - O seed põe os oito filmes na base `cinema`, e pode correr-se mais de uma vez sem repetir filmes.
-- O `respostas-cinema.md` tem os três filtros do exercício 3, com os títulos de cada resposta, e as respostas às perguntas dos exercícios 4 e 5.
 - A API responde a todos os pedidos das tabelas dos exercícios 4 e 6, com os códigos e os textos certos.
 - O cartaz responde a todos os pedidos da tabela do exercício 7, com o título e os filmes certos.
-- A cadeia de ligação está só no `.env`, e o `.env` não sai do teu computador.
-
-## Entrega
-
-Entregas, pelo meio e no prazo que o professor indicar, a pasta `cinema-da-escola`, com as respostas escritas no `respostas-cinema.md`. A pasta leva o `src`, com o seed, a pasta `views`, o `respostas-cinema.md`, o `package.json`, o `package-lock.json`, o `.env.example` e o `.gitignore`.
-
-Não entregues a pasta `node_modules` nem o ficheiro `.env`. O `.env` tem a palavra-passe da tua base de dados, e quem a tiver entra nos teus dados.
-
-## Autoavaliação
-
-No fim, responde no `respostas-cinema.md`:
-
-1. Nos exercícios 6 e 7, o que te deu mais trabalho, e o que descobriste para o resolver?
-2. Consegues explicar, sem o código à frente, o caminho do pedido `/cartaz?genero=Aventura`, do browser à rota, da rota ao Atlas, e de volta ao browser?
-3. O que ainda não percebeste bem? Escreve uma dúvida concreta, para levares à aula.
+- O `respostas-cinema.md` tem os três filtros do exercício 3, com os títulos de cada resposta, e as respostas às perguntas dos exercícios 4, 5 e 6.
+- A cadeia de ligação está só no `.env`, e o commit da entrega não leva o `.env` nem a `node_modules`.
 
 ![Rodapé](../../imagens/rodape.png)
