@@ -99,7 +99,7 @@ O `server.js` não tem nenhum `import` do EJS: é o Express que o vai buscar qua
 app.set("view engine", "ejs");
 ```
 
-O `app.set` muda uma definição da aplicação. A definição `"view engine"` (em português, motor de modelos) diz que pacote preenche os modelos, e com ela o Express passa a procurar ficheiros `.ejs`. Procura-os numa pasta chamada `views`, o nome que o Express dá à pasta dos modelos, ao lado do `server.js`:
+O `app.set` muda uma definição da aplicação. A definição `"view engine"` (em português, motor de modelos) diz que pacote preenche os modelos, e com ela o Express passa a procurar ficheiros `.ejs`. Procura-os numa pasta chamada `views`, o nome que o Express dá à pasta dos modelos. No catálogo, fica ao lado do `server.js`:
 
 ```text
 catalogo/
@@ -755,7 +755,7 @@ Compara-o com o modelo da lista, `views/equipamentos.ejs`:
 - não há nenhuma marca `<%`, porque todas foram trocadas pelo que produziram;
 - não há `for` nem `if`: em vez do ciclo, há dois `<li>`, um para o portátil e outro para o monitor, escritos um a um;
 - a frase "Não há equipamentos nesta sala." não aparece, porque o ramo que correu foi o `else`;
-- os comentários `<%# %>` do modelo e do cabeçalho não estão lá;
+- os comentários `<%# %>` do modelo e dos dois partials não estão lá;
 - onde estavam as marcas que não escrevem nada, ficaram linhas em branco, porque o EJS tira a marca e deixa o resto da linha;
 - o `<head>`, o menu e o rodapé estão lá, embora o modelo da lista não os tenha: vieram dos partials.
 

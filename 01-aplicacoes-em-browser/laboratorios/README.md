@@ -11,5 +11,8 @@ Um laboratório não é uma ficha de exercícios. No laboratório, aprendes a fa
 | 01 Do pedido à resposta | [laboratório](01-do-pedido-a-resposta-laboratorio.md) |
 | 02 Primeiro servidor | [laboratório](02-primeiro-servidor-laboratorio.md) |
 | 03 HTTP, rotas e middleware | [laboratório](03-http-rotas-e-middleware-laboratorio-papelaria.md) |
+| 04 EJS e reutilização no servidor | [laboratório](04-ejs-e-reutilizacao-no-servidor-laboratorio.md) |
+
+O laboratório do tema 04 é o passo 3 do jogo de aventura Fechado na escola, e começa onde acabou o passo 2, feito em Linguagens de Programação. Se faltaste, o projeto como fica no fim do passo 3 está nos exemplos, em [fechado-na-escola-passo-03](../../exemplos/aplicacoes-em-browser/fechado-na-escola-passo-03/README.md). O README da pasta diz como continuar a partir dela.
 
 ![Rodapé](../../imagens/rodape.png)

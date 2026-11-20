@@ -1,0 +1,16 @@
+<%# A página de uma cena. Recebe o titulo e a cena, com o texto e as escolhas. %>
+<%- include("partials/cabecalho") %>
+    <p><%= cena.texto %></p>
+    <% if (cena.final) { %>
+      <p>A partida acabou.</p>
+      <p><a href="/cenas/inicio">Recomeçar</a></p>
+    <% } else { %>
+      <%# O i é a posição da escolha na lista, a contar do 0. O jogador
+          conta as escolhas a partir do 1, e por isso a ligação leva i + 1. %>
+      <ol>
+        <% for (let i = 0; i < cena.escolhas.length; i++) { %>
+          <li><a href="/cenas/<%= cena.codigo %>/escolhas/<%= i + 1 %>"><%= cena.escolhas[i].texto %></a></li>
+        <% } %>
+      </ol>
+    <% } %>
+<%- include("partials/rodape") %>
