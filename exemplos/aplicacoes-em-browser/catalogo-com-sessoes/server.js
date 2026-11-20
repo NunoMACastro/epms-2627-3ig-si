@@ -68,7 +68,7 @@ function diaValido(texto) {
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object|undefined} corpo o req.body do pedido, que pode não existir
+ * @param {object|undefined} corpo o req.body do pedido HTTP, que pode não existir
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
@@ -148,13 +148,13 @@ app.use((req, res, next) => {
 // req.body. Tem de estar antes das rotas que usam o req.body.
 app.use(express.urlencoded({ extended: false }));
 
-// Middleware das sessões: lê o cookie de cada pedido, encontra a sessão
+// Middleware das sessões: lê o cookie de cada pedido HTTP, encontra a sessão
 // desse browser e põe-na em req.session. Cada opção está justificada.
 app.use(session({
   secret: SEGREDO, // assina o cookie: o servidor só aceita identificadores que ele próprio deu
   name: NOME_DO_COOKIE, // o nome do cookie no browser
   resave: false, // não volta a guardar uma sessão que não mudou
-  saveUninitialized: false, // não cria sessão, nem cookie, a quem ainda não guardou nada
+  saveUninitialized: false, // não guarda a sessão, nem manda cookie, a quem ainda não guardou nada
   cookie: {
     httpOnly: true, // o JavaScript das páginas não consegue ler o cookie
     sameSite: "lax", // o cookie não vai nos pedidos POST que outros sites façam ao catálogo
@@ -331,7 +331,7 @@ app.get("/reservas", (req, res) => {
   res.render("reservas", { titulo: "Reservas", linhas: linhas });
 });
 
-// Uma reserva: a página para onde o browser vai depois de reservar.
+// Uma reserva: a página de cada reserva, aberta a partir da lista.
 app.get("/reservas/:id", (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id) || id < 1) {

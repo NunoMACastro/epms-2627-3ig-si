@@ -3,7 +3,7 @@
     um por campo. O nome só se pede no fim, ao confirmar o pedido. %>
 <%- include("partials/cabecalho") %>
     <% if (Object.keys(erros).length > 0) { %>
-      <p><strong>O equipamento não foi juntado ao pedido. Corrige os campos assinalados e volta a enviar.</strong></p>
+      <p><strong>O equipamento não entrou no pedido. Corrige os campos assinalados e volta a enviar.</strong></p>
     <% } %>
     <form method="post" action="/pedido/itens">
       <p>

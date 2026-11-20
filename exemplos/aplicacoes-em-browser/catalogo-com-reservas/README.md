@@ -2,57 +2,45 @@
 
 # Catálogo com reservas
 
-Esta pasta serve para uma comparação opcional no tema Formulários e validação. O percurso principal usa o [catalogo-com-formularios](../catalogo-com-formularios/README.md), com páginas EJS, validação de cada campo e mensagens de erro no formulário. Depois de uma reserva certa, essa versão responde 303 e redireciona para a página dela. A versão desta pasta responde em JSON, verifica os campos numa só condição, com uma mensagem só para todos, e responde 201 em vez de redirecionar.
+Uma variante do catálogo em que a reserva responde em JSON. Com tudo certo, a resposta é o código 201, com a reserva criada. Com um equipamento que não existe, um campo em falta ou um tempo que não é um número inteiro positivo, é o 400. A mensagem é uma só, para todos os campos. Esta variante não confirma se o dia existe nem o limite do tempo: serve para comparar a forma da resposta.
 
-Para estudar HTTP, rotas e middleware, usa o [catalogo-com-middleware](../catalogo-com-middleware/README.md), sem formulário de reserva nem `POST`.
-
-O servidor tem catálogo, detalhe e filtro por sala. Inclui o middleware de registo, o que lê formulários e um middleware final para endereços inexistentes. O formulário de reserva envia por `POST`. A rota de detalhe, o filtro, o middleware de registo e o middleware final estão explicados no [guia do tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md). O formulário, o `POST` e o middleware que lê o corpo estão explicados no [guia do tema Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md).
-
-A versão com só as duas primeiras rotas está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md).
+É usado no tema [05 Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md), para comparar com o exemplo do guia, o [catalogo-com-formularios](../catalogo-com-formularios/README.md). Esse responde com páginas EJS, com uma mensagem em cada campo errado e com o redirecionamento 303. A comparação está no fim de [Quando corre bem: redirecionar](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md#quando-corre-bem-redirecionar), num bloco "Para ires mais longe". Tem também as rotas e os middlewares do tema 03.
 
 ## O que está nesta pasta
 
-| Ficheiro | Para que serve |
-| --- | --- |
-| `server.js` | O servidor |
-| `package.json` | O projeto: o `"type": "module"` e a dependência do Express |
-| `package-lock.json` | As versões exatas dos pacotes |
-
-A pasta `node_modules` recria-se com `npm ci`.
+- `server.js`: o servidor, com a página da pesquisa e o formulário de reserva escritos no próprio ficheiro, e as respostas em JSON.
+- `package.json`: o projeto, com o `"type": "module"` e a dependência do Express.
+- `package-lock.json`: as versões exatas dos pacotes.
 
 ## Como correr
 
-Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `node --version`.
+Precisas do Node.js 24 ou mais recente (`node --version` mostra a tua versão) e de internet para o `npm install`. Copia esta pasta para a tua pasta de trabalho de Sistemas de Informação, fora do repositório dos materiais da disciplina, e abre um terminal dentro da cópia:
 
-1. Copia esta pasta para fora do repositório e abre um terminal dentro dela.
-2. `npm ci`
-3. `node server.js`. O terminal mostra `Servidor a correr em http://localhost:3000` e fica ocupado.
-4. No browser, abre `http://localhost:3000/`: tens a pesquisa por sala e a ligação para o formulário de reserva. Cada endereço deve dar:
+```bash
+npm install
+node server.js
+```
 
-   | Pedido | Código | Resposta |
-   | --- | --- | --- |
-   | `GET /equipamentos/2` | 200 | `{"id":2,"nome":"Projetor","sala":"A03"}` |
-   | `GET /equipamentos/abc` | 400 | `{"erro":"O identificador tem de ser um número inteiro positivo"}` |
-   | `GET /equipamentos/9` | 404 | `{"erro":"Não existe o equipamento 9"}` |
-   | `GET /equipamentos?sala=B12` | 200 | o portátil e o monitor |
-   | `GET /equipamentos?sala=Z99` | 200 | `[]` |
-   | `POST /reservas`, equipamento 2, dia 2026-10-20, tempo 3 | 201 | `{"id":1,"equipamentoId":2,"data":"2026-10-20","tempo":3}` |
-   | `POST /reservas`, equipamento 9 | 400 | `{"erro":"Reserva inválida: confirma o equipamento, o dia e o tempo"}` |
-   | `POST /reservas`, sem corpo | 400 | a mesma mensagem de reserva inválida, em JSON |
-   | `GET /reservas` | 200 | a lista com a reserva 1 |
-   | `GET /nao-existe` | 404 | `Página não encontrada.` |
+Se o `npm install` ficar parado, ou acabar com linhas `npm error`, falta a internet: avisa o professor.
 
-   Os dois pedidos `POST` fazem-se a partir do formulário de reserva, em `http://localhost:3000/reservas/nova`.
+O que deves ver: o terminal mostra `Servidor a correr em http://localhost:3000`, e cada pedido deixa lá uma linha, escrita pelo middleware de registo. No browser, `http://localhost:3000/` tem a pesquisa por sala e a ligação para o formulário de reserva, em `/reservas/nova`. Cada pedido deve dar:
 
-5. Repara no terminal: cada pedido deixa lá uma linha, escrita pelo middleware de registo.
-6. Para parar, Ctrl+C. As reservas feitas perdem-se, porque estão em memória.
+| Pedido | Código | Resposta |
+| --- | --- | --- |
+| `GET /equipamentos/2` | 200 | `{"id":2,"nome":"Projetor","sala":"A03"}` |
+| `GET /equipamentos/abc` | 400 | `{"erro":"O identificador tem de ser um número inteiro positivo"}` |
+| `GET /equipamentos/9` | 404 | `{"erro":"Não existe o equipamento 9"}` |
+| `GET /equipamentos?sala=B12` | 200 | o portátil e o monitor |
+| `GET /equipamentos?sala=Z99` | 200 | `[]` |
+| No formulário: equipamento 2, dia 2026-10-20, tempo 3 | 201 | `{"id":1,"equipamentoId":2,"data":"2026-10-20","tempo":3}` |
+| No formulário: equipamento 9, com o dia e o tempo | 400 | `{"erro":"Reserva inválida: confirma o equipamento, o dia e o tempo"}` |
+| `GET /reservas` | 200 | a lista, com a reserva 1 |
+| `GET /nao-existe` | 404 | `Página não encontrada.` |
 
-## Comparação opcional
-
-Depois de acompanhares o exemplo guiado com EJS, usa esta cópia para comparar as respostas de uma reserva válida e de uma reserva com equipamento inexistente. Observa o código de estado, o tipo da resposta e o endereço que fica no browser. Explica como o JSON com 201 difere do redirecionamento 303 e como uma mensagem única difere dos erros por campo no formulário. Esta variante mantém uma validação mínima; não substitui a validação completa do percurso principal.
+Compara as respostas às duas linhas do formulário, a reserva certa e a do equipamento 9, com as do `catalogo-com-formularios`. Vê o código e o tipo da resposta, no separador Rede, e o endereço que fica no browser. Corre um exemplo de cada vez, porque os dois usam a porta 3000: para um com Ctrl+C antes de arrancares o outro. As reservas ficam em memória e perdem-se quando o servidor para.
 
 ## Versões e compatibilidade
 
-As versões de referência são Node.js 24.22.0 e npm 11.20.0. Usa as versões exatas das dependências do `package-lock.json`. A execução em Windows e as operações no browser continuam por confirmar nestas versões.
+As versões usadas são o Node.js 24 e o Node.js 26, com o npm 11. O `package-lock.json` fixa as versões de todos os pacotes, como o Express 5.3.0. O `npm install` instala essas, e não outras mais recentes.
 
 ![Rodapé](../../../imagens/rodape.png)

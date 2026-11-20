@@ -2,115 +2,33 @@
 
 # Catálogo com detalhe e filtro
 
-Este exemplo prolonga o primeiro servidor com uma rota de detalhe e um filtro por sala. É uma etapa entre o [Primeiro servidor](../../../01-aplicacoes-em-browser/02-primeiro-servidor.md) e o [HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md).
+O catálogo do tema 02 com mais uma rota, a de detalhe, `/equipamentos/:id`, e com o filtro por sala, `?sala=`. É usado no tema [03 HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md). É o `server.js` do fim do [passo 1 do exemplo guiado](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md#passo-1-a-rota-de-detalhe-e-o-filtro). Nesta versão, a rota de detalhe ainda responde 404 a um identificador que nem é um número, como `abc`, e o passo 2 corrige-o com o 400.
+
+A versão anterior, só com as duas primeiras rotas, está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md). A do fim do exemplo guiado, com o 400 e os middlewares, está em [catalogo-com-middleware](../catalogo-com-middleware/README.md).
 
 ## O que está nesta pasta
 
-- `server.js`: o servidor, com três rotas e os equipamentos em memória.
-- `package.json` e `package-lock.json`: o projeto e as versões exatas dos pacotes desta cópia.
-- A pasta `node_modules` não fica guardada. Cria-se com `npm install`, como se explica abaixo.
-
-## Da lista ao detalhe e ao filtro
-
-1. **Ponto de partida:** duas rotas GET, `/` e `/equipamentos`, com os equipamentos em memória, e o `app.listen` com a verificação de erro.
-2. **Detalhe e filtro:** a rota `/equipamentos/:id` responde com um equipamento ou com 404 quando não o encontra. O filtro `?sala=` limita a lista aos equipamentos dessa sala. O portátil e o monitor estão na B12, para o filtro devolver mais do que um.
-
-O exemplo usa apenas rotas GET. O middleware e o POST são mecanismos diferentes: o middleware entra no tema HTTP, rotas e middleware; o POST com formulário entra no tema Formulários e validação.
-
-## Configurar de raiz
-
-Usa o Node 24 adotado na disciplina. Confirma a versão instalada:
-
-```bash
-node --version
-```
-
-1. Criar a pasta do projeto e entrar nela:
-
-   ```bash
-   mkdir catalogo-de-equipamentos
-   cd catalogo-de-equipamentos
-   ```
-
-2. Criar o `package.json`:
-
-   ```bash
-   npm init -y
-   ```
-
-3. Correr `npm pkg set type=module` para definir os módulos ES. O comando acrescenta o campo se faltar e altera-o se existir. Confere depois o `package.json`: deve ter `"type": "module"`.
-
-4. Instalar o Express. Precisa de internet. Cria a pasta `node_modules` e o `package-lock.json`, e acrescenta o Express às dependências do `package.json`.
-
-   ```bash
-   npm install express
-   ```
-
-5. Criar o `server.js` com o código desta pasta.
-
-6. Ligar o servidor. Deve aparecer `Servidor a correr em http://localhost:3000`, e o terminal fica ocupado pelo servidor.
-
-   ```bash
-   node server.js
-   ```
-
-7. Experimentar no browser os endereços da tabela abaixo.
-
-8. Desligar o servidor com Ctrl+C no terminal. Depois de mudar o código, é preciso desligá-lo e voltar a ligá-lo; com `node --watch server.js`, o Node reinicia sozinho sempre que o ficheiro é gravado.
+- `server.js`: o servidor, com as três rotas e os equipamentos em memória.
+- `package.json`: o projeto, com o `"type": "module"` e a dependência do Express.
+- `package-lock.json`: as versões exatas dos pacotes.
 
 ## Como correr
 
-Para usar esta cópia em vez de a construir de raiz, basta instalar as dependências, que o `package-lock.json` fixa nas versões desta cópia, e ligar o servidor:
+Precisas do Node.js 24 ou mais recente (`node --version` mostra a tua versão) e de internet para o `npm install`. Copia esta pasta para a tua pasta de trabalho de Sistemas de Informação, fora do repositório dos materiais da disciplina, e abre um terminal dentro da cópia:
 
 ```bash
 npm install
 node server.js
 ```
 
-## O que experimentar
+Se o `npm install` ficar parado, ou acabar com linhas `npm error`, falta a internet: avisa o professor.
 
-Compara as respostas com estes resultados esperados:
+O que deves ver: o terminal mostra `Servidor a correr em http://localhost:3000`. No browser, `http://localhost:3000/equipamentos/2` mostra o projetor, e `http://localhost:3000/equipamentos?sala=B12` mostra o portátil e o monitor. `http://localhost:3000/equipamentos/abc` responde 404, com `{"erro":"Não existe o equipamento abc"}`. Os outros pedidos e os seus códigos estão no [passo 1 do exemplo guiado](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md#passo-1-a-rota-de-detalhe-e-o-filtro). Esta versão não tem middleware final: um caminho que não existe, como `/alunos`, mostra a página de erro do próprio Express, `Cannot GET /alunos`. Para parar, Ctrl+C no terminal.
 
-| Endereço | Resposta | Código |
-|---|---|---|
-| `http://localhost:3000/` | `Olá! O servidor está a funcionar.` | 200 |
-| `/equipamentos` | os quatro equipamentos, em JSON | 200 |
-| `/equipamentos?sala=B12` | o portátil e o monitor | 200 |
-| `/equipamentos?sala=b12` | `[]`, uma lista vazia | 200 |
-| `/equipamentos/2` | o projetor | 200 |
-| `/equipamentos/9` | `{"erro":"Não existe o equipamento 9"}` | 404 |
-| `/equipamentos/abc` | `{"erro":"Não existe o equipamento abc"}` | 404 |
-| `/alunos` | `Cannot GET /alunos`, a página de erro do próprio Express | 404 |
-
-## Erros que costumam aparecer
-
-| Mensagem | Causa | O que fazer |
-|---|---|---|
-| `SyntaxError: Cannot use import statement outside a module` | O `package.json` ainda tem `"type": "commonjs"` | Trocar para `"module"` |
-| `Não foi possível ligar o servidor: listen EADDRINUSE: address already in use :::3000` | Já há outro servidor a usar a porta 3000, quase sempre noutro terminal | Ctrl+C nesse terminal, ou mudar a `PORTA` |
-| O `npm install` fica parado ou falha | Não há internet na sala | Pede ao professor um ambiente com as dependências preparadas para o teu computador |
-
-## Porque é que o `app.listen` verifica o erro
-
-No Express 5, a função passada ao `app.listen` também é chamada quando o servidor não consegue ligar-se. Sem o `if (erro)`, com a porta ocupada, o programa escreve "Servidor a correr" e termina em silêncio: a mensagem é falsa e não vês o erro. Com a verificação, recebes a mensagem que permite identificar a porta ocupada.
-
-## Perguntas para a turma
-
-1. **Porque é que `?sala=b12` não encontra nada?** Porque as maiúsculas contam: `"b12" === "B12"` é falso.
-2. **`/equipamentos/abc` deve dar 404 ou 400?** Agora dá 404, porque `Number("abc")` dá `NaN` e o `find` não encontra nada. Mas `abc` nem é um número, e o código certo seria o 400, de pedido inválido. Como exercício, podes decidir como distinguir o parâmetro inválido do recurso que não existe e acrescentar essa verificação.
-3. **O que muda entre `res.send` e `res.json`?** O primeiro respondeu com o tipo `text/html` e o segundo com `application/json`. Vê-se nos cabeçalhos da resposta, no separador Rede do browser.
-
-## Imagens de apoio
-
-As imagens de apoio estão em `imagens/` do repositório. Cada uma tem uma versão PNG e outra SVG:
-
-- [Arquitetura do Node.js](../../../imagens/arquitetura-do-nodejs.png): a versão completa, com as camadas, o event loop explicado em cinco passos e o caminho de um pedido a este servidor.
-- [Diagrama da arquitetura do Node.js](../../../imagens/arquitetura-do-nodejs-diagrama.png): só o diagrama, com menos texto.
-
-As duas servem também o tema de arquitetura do Node em Linguagens de Programação; podes usar as mesmas imagens sem as duplicar.
+Se o servidor não arrancar, os erros de arranque estão nos [Erros frequentes do tema 02](../../../01-aplicacoes-em-browser/02-primeiro-servidor.md#erros-frequentes).
 
 ## Versões e compatibilidade
 
-As versões de referência são Node.js 24.22.0, npm 11.20.0 e Express 5.2.1. Usa as versões das dependências guardadas no `package-lock.json`. A execução em Windows continua por confirmar.
+As versões usadas são o Node.js 24 e o Node.js 26, com o npm 11. O `package-lock.json` fixa as versões de todos os pacotes, como o Express 5.2.1. O `npm install` instala essas, e não outras mais recentes.
 
 ![Rodapé](../../../imagens/rodape.png)

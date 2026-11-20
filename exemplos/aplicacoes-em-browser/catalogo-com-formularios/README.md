@@ -2,38 +2,38 @@
 
 # Catálogo com formulários
 
-O servidor do exemplo guiado do [tema Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md): o catálogo com páginas do tema anterior, agora com reservas feitas num formulário. O formulário envia por `POST`. O servidor lê o corpo com `express.urlencoded` e verifica cada campo. Com erros, responde 400 e mostra o formulário com os valores escritos e uma mensagem em cada campo errado. Se estiver tudo bem, guarda a reserva e responde com um redirecionamento 303 para a página dela. O guia explica o código passo a passo; aqui está pronto a correr.
+O catálogo com páginas do tema 04, agora com reservas feitas num formulário. O formulário envia por `POST`, e o servidor lê o corpo com o `express.urlencoded` e verifica cada campo. Com erros, responde 400 e mostra outra vez o formulário, com os valores escritos e uma mensagem em cada campo errado. Com tudo certo, guarda a reserva e responde com um redirecionamento 303 para a página dela. É usado no tema [05 Formulários e validação](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md). É o resultado do [exemplo guiado do guia](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md#exemplo-guiado-as-reservas-do-catálogo), pronto a correr.
 
-A versão anterior, sem reservas, está em [catalogo-com-ejs](../catalogo-com-ejs/README.md).
+A versão anterior, sem reservas, está em [catalogo-com-ejs](../catalogo-com-ejs/README.md). O [catalogo-com-reservas](../catalogo-com-reservas/README.md) faz as mesmas reservas com respostas em JSON, para comparar. No tema 06, é o ponto de partida do [exemplo guiado](../../../01-aplicacoes-em-browser/06-cookies-e-sessoes.md#exemplo-guiado-o-pedido-em-curso), e as reservas fazem-se a partir de um pedido em curso, guardado na sessão, em [catalogo-com-sessoes](../catalogo-com-sessoes/README.md).
 
 ## O que está nesta pasta
 
-| Ficheiro | Para que serve |
-| --- | --- |
-| `server.js` | O servidor, com as funções de validação e as rotas das reservas |
-| `views/reserva-nova.ejs` | O formulário de reserva, com os valores e as mensagens de erro |
-| `views/reserva.ejs` | A página de uma reserva, para onde o browser vai depois de reservar |
-| `views/reservas.ejs` | A lista das reservas |
-| `views/inicio.ejs`, `views/equipamentos.ejs`, `views/equipamento.ejs` e `views/erro.ejs` | As páginas do tema anterior |
-| `views/partials/cabecalho.ejs` e `views/partials/rodape.ejs` | O início e o fim de todas as páginas; o menu tem as ligações para as reservas |
-| `package.json` | O projeto: o `"type": "module"` e as dependências do Express e do EJS |
-| `package-lock.json` | As versões exatas dos pacotes |
-
-A pasta `node_modules` recria-se com `npm ci`.
+- `server.js`: o servidor, com as funções de validação e as rotas das reservas.
+- `views/reserva-nova.ejs`: o formulário de reserva, com os valores e as mensagens de erro.
+- `views/reserva.ejs`: a página de uma reserva, para onde o browser vai depois de reservar.
+- `views/reservas.ejs`: a lista das reservas.
+- `views/inicio.ejs`, `views/equipamentos.ejs`, `views/equipamento.ejs` e `views/erro.ejs`: as páginas do tema 04. A inicial tem agora a ligação para reservar.
+- `views/partials/cabecalho.ejs` e `views/partials/rodape.ejs`: o início e o fim de todas as páginas. O menu tem as ligações para as reservas.
+- `package.json`: o projeto, com o `"type": "module"` e as dependências do Express e do EJS.
+- `package-lock.json`: as versões exatas dos pacotes.
 
 ## Como correr
 
-Usa Node 24 LTS e internet na primeira instalação. Confirma a versão com `node --version`.
+Precisas do Node.js 24 ou mais recente (`node --version` mostra a tua versão) e de internet para o `npm install`. Copia esta pasta para a tua pasta de trabalho de Sistemas de Informação, fora do repositório dos materiais da disciplina, e abre um terminal dentro da cópia:
 
-1. Copia esta pasta para fora do repositório e abre um terminal dentro dela.
-2. `npm ci`
-3. `node server.js`, dentro desta pasta. O terminal mostra `Servidor a correr em http://localhost:3000` e fica ocupado.
-4. No browser, abre `http://localhost:3000/reservas/nova` e faz uma reserva com um nome fictício. O browser termina em `/reservas/1`. As respostas que cada pedido deve dar estão no passo 6 do exemplo guiado do guia.
-5. Para veres a validação do servidor, acrescenta `novalidate` ao `<form>` do `views/reserva-nova.ejs` e envia o formulário vazio. Tira-o no fim.
-6. Para parar, Ctrl+C. As reservas ficam em memória e desaparecem quando o servidor para.
+```bash
+npm install
+node server.js
+```
+
+Se o `npm install` ficar parado, ou acabar com linhas `npm error`, falta a internet: avisa o professor.
+
+O que deves ver: o terminal mostra `Servidor a correr em http://localhost:3000`. No browser, abre `http://localhost:3000/reservas/nova` e faz uma reserva com um nome fictício: o browser vai para `/reservas/1`, a página da reserva. O que cada pedido deve dar está no [passo 6 do exemplo guiado](../../../01-aplicacoes-em-browser/05-formularios-e-validacao.md#passo-6-os-resultados). Para parar, Ctrl+C no terminal. As reservas ficam em memória e desaparecem quando o servidor para.
+
+A validação do browser não te deixa enviar o formulário vazio. Para veres a do servidor, acrescenta `novalidate` ao `<form>` do `views/reserva-nova.ejs`, recarrega a página e envia o formulário vazio. O formulário volta com uma mensagem em cada um dos quatro campos, e o separador Rede mostra o código 400. No fim, tira o `novalidate`.
 
 ## Versões e compatibilidade
 
-As versões de referência são Node.js 24.22.0 e npm 11.20.0. Usa as versões exatas das dependências do `package-lock.json`. A execução em Windows e as operações no browser continuam por confirmar nestas versões.
+As versões usadas são o Node.js 24 e o Node.js 26, com o npm 11. O `package-lock.json` fixa as versões de todos os pacotes, como o Express 5.3.0 e o EJS 7.0.1. O `npm install` instala essas, e não outras mais recentes.
 
 ![Rodapé](../../../imagens/rodape.png)

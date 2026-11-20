@@ -1,6 +1,7 @@
 // server.js: o catálogo de equipamentos da escola, agora com middleware.
 // Mostra os dados que um pedido traz no caminho e na pesquisa, os códigos
-// que o código escolhe (200, 400 e 404) e o middleware, que corre antes das rotas.
+// que as rotas escolhem (200, 400 e 404) e os dois middlewares, um antes
+// das rotas e outro depois.
 import express from "express";
 
 const app = express();

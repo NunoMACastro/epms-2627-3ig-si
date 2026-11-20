@@ -2,33 +2,33 @@
 
 # Catálogo com middleware
 
-Este é o exemplo do [tema HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md), pronto a correr. O catálogo mostra detalhe, filtro e uma página de pesquisa. Distingue identificador inválido (400) de equipamento inexistente (404). O middleware de registo escreve cada pedido no terminal; o final responde ao que nenhuma rota reconheceu. O guia explica como as peças se juntam.
+O catálogo com a rota de detalhe, o filtro por sala e uma página inicial com uma pesquisa. Tem dois middlewares: o de registo, que escreve cada pedido no terminal, e o final, que responde ao que nenhuma rota reconheceu. Distingue o identificador inválido (400) do equipamento que não existe (404). É usado no tema [03 HTTP, rotas e middleware](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md). É o `server.js` do fim do [exemplo guiado do guia](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md#exemplo-guiado-o-catálogo-cresce), pronto a correr.
 
-A versão anterior, só com as duas primeiras rotas, está em [catalogo-de-equipamentos](../catalogo-de-equipamentos/README.md). A pasta [catalogo-com-reservas](../catalogo-com-reservas/README.md) é uma comparação opcional do tema dos formulários. Acrescenta a este servidor um formulário de reserva enviado por `POST`, com resposta em JSON.
+A versão anterior, ainda sem o 400 nem os middlewares, está em [catalogo-com-detalhe-e-filtro](../catalogo-com-detalhe-e-filtro/README.md). No tema 04, é o ponto de partida do [exemplo guiado](../../../01-aplicacoes-em-browser/04-ejs-e-reutilizacao-no-servidor.md#exemplo-guiado-o-catálogo-passa-a-ter-páginas), e o catálogo passa a ter páginas, em [catalogo-com-ejs](../catalogo-com-ejs/README.md).
 
 ## O que está nesta pasta
 
-| Ficheiro | Para que serve |
-| --- | --- |
-| `server.js` | O servidor |
-| `package.json` | O projeto: o `"type": "module"` e a dependência do Express |
-| `package-lock.json` | As versões exatas dos pacotes |
-
-A pasta `node_modules` recria-se com `npm install`.
+- `server.js`: o servidor, com os dois middlewares, as três rotas e os equipamentos em memória.
+- `package.json`: o projeto, com o `"type": "module"` e a dependência do Express.
+- `package-lock.json`: as versões exatas dos pacotes.
 
 ## Como correr
 
-Usa o Node.js 24 adotado na disciplina e confirma-o com `node --version`. A instalação dos pacotes precisa de internet.
+Precisas do Node.js 24 ou mais recente (`node --version` mostra a tua versão) e de internet para o `npm install`. Copia esta pasta para a tua pasta de trabalho de Sistemas de Informação, fora do repositório dos materiais da disciplina, e abre um terminal dentro da cópia:
 
-1. Copia esta pasta para fora do repositório e abre um terminal dentro dela.
-2. `npm install`
-3. `node server.js`. O terminal mostra `Servidor a correr em http://localhost:3000` e fica ocupado.
-4. No browser, abre `http://localhost:3000/`: tens a pesquisa por sala. Escreve `B12` e carrega em "Pesquisar". As respostas que cada endereço deve dar estão no passo 7 do exemplo guiado do guia.
-5. Repara no terminal: cada pedido deixa lá uma linha, escrita pelo middleware de registo. As linhas `GET /favicon.ico` são o browser a pedir o ícone do separador, que o catálogo não tem; o passo 3 do exemplo guiado explica-as.
-6. Para parar, Ctrl+C.
+```bash
+npm install
+node server.js
+```
+
+Se o `npm install` ficar parado, ou acabar com linhas `npm error`, falta a internet: avisa o professor.
+
+O que deves ver: o terminal mostra `Servidor a correr em http://localhost:3000`. No browser, `http://localhost:3000/` tem a pesquisa por sala. Escreve `B12` e carrega em "Pesquisar": o browser vai para `/equipamentos?sala=B12`, com o portátil e o monitor, em JSON. O que cada pedido deve dar está no [passo 7 do exemplo guiado](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md#passo-7-os-pedidos-um-a-um). Para parar, Ctrl+C no terminal.
+
+Repara no terminal: cada pedido deixa lá uma linha, escrita pelo middleware de registo, como `GET /equipamentos?sala=B12`. As linhas `GET /favicon.ico` são o browser a pedir o ícone do separador, que o catálogo não tem, como explica o [passo 3 do exemplo guiado](../../../01-aplicacoes-em-browser/03-http-rotas-e-middleware.md#passo-3-o-middleware-de-registo).
 
 ## Versões e compatibilidade
 
-As versões de referência são Node.js 24.22.0, npm 11.20.0 e Express 5.3.0. As versões exatas das dependências estão no `package-lock.json`. A execução em Windows e as ferramentas de programador do browser continuam por confirmar nestas versões.
+As versões usadas são o Node.js 24 e o Node.js 26, com o npm 11. O `package-lock.json` fixa as versões de todos os pacotes, como o Express 5.3.0. O `npm install` instala essas, e não outras mais recentes.
 
 ![Rodapé](../../../imagens/rodape.png)

@@ -506,7 +506,7 @@ Em `equipamentos.ejs`, tudo o que vinha antes das condições passa a ser o `inc
 
 ```ejs
 <%# A lista de equipamentos. Recebe o titulo, os equipamentos a mostrar
-    e a sala pesquisada, que fica vazia quando não houve pesquisa. %>
+    e a sala pesquisada, que é undefined quando não houve pesquisa. %>
 <%- include("partials/cabecalho") %>
     <% if (sala) { %>
       <p>Pesquisa pela sala <strong><%= sala %></strong>.</p>
@@ -567,7 +567,7 @@ A rota de detalhe ainda responde 400 e 404 com JSON, e o middleware final com um
 
 ```ejs
 <%# A página de erro, para o 400 e para o 404. Recebe o titulo e a
-    mensagem; o código de estado é a rota que o escolhe. %>
+    mensagem; o código de estado escolhe-o quem chama o res.render. %>
 <%- include("partials/cabecalho") %>
     <p><%= mensagem %></p>
     <p><a href="/">Voltar ao início</a></p>

@@ -2,98 +2,98 @@
 
 # Erros e segurança web
 
-Módulo Aplicações baseadas em browsers. Este guia explica como tratar falhas e proteger os formulários e os dados. Para praticar, tens a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md). O laboratório deste tema vai ser o passo 9 do jogo Fechado na escola, e ainda não está publicado.
+Neste guia, o catálogo do tema 06 fica preparado para quando as coisas correm mal. Uma falha passa a dar uma página do catálogo, com o código certo, e o terminal fica com o que é preciso para a corrigir. Vês também como se guardam os segredos, onde o escaping do `<%=` não chega e como um token trava os formulários enviados por outros sites.
 
-Avanças ao teu ritmo. O que não acabares na aula, acabas em casa ou na aula seguinte.
+Usa as páginas de erro e o escaping do tema 04 e as sessões do tema 06. Rever: [Um erro também se responde com uma página](04-ejs-e-reutilizacao-no-servidor.md#um-erro-também-se-responde-com-uma-página), [Escaping: o que vem de fora nunca vira HTML](04-ejs-e-reutilizacao-no-servidor.md#escaping-o-que-vem-de-fora-nunca-vira-html), [O segredo, fora do código](06-cookies-e-sessoes.md#o-segredo-fora-do-código) e [Os atributos do cookie](06-cookies-e-sessoes.md#os-atributos-do-cookie). Para praticar: [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md).
 
 ## Neste guia
 
-1. O que vais aprender
-2. O que já sabes e vais usar
-3. Quem errou: o pedido ou o servidor
-4. O erro que ninguém previu
-5. O middleware de erro
-6. O que se escreve no terminal
-7. Os segredos
-8. O escaping depende do sítio
-9. O CSRF: o pedido que outro site faz em teu nome
-10. Exemplo guiado: o catálogo preparado para falhar
-11. A matriz de falhas
-12. Erros frequentes
-13. Segurança: o que este tema junta
-14. Verificar o que aprendeste
-15. O que vem a seguir
+1. [Quem errou: o pedido HTTP ou o servidor](#quem-errou-o-pedido-http-ou-o-servidor)
+2. [O erro que ninguém previu](#o-erro-que-ninguém-previu)
+3. [O middleware de erro](#o-middleware-de-erro)
+4. [O que se escreve no terminal](#o-que-se-escreve-no-terminal)
+5. [Os segredos](#os-segredos)
+6. [O escaping depende do sítio](#o-escaping-depende-do-sítio)
+7. [O CSRF: o pedido HTTP que outro site faz em teu nome](#o-csrf-o-pedido-http-que-outro-site-faz-em-teu-nome)
+8. [O token contra o CSRF](#o-token-contra-o-csrf)
+9. [Exemplo guiado: o catálogo preparado para falhar](#exemplo-guiado-o-catálogo-preparado-para-falhar)
 
-## O que vais aprender
+## Quem errou: o pedido HTTP ou o servidor
 
-Um servidor a sério vai falhar. Vai receber pedidos mal feitos, por engano ou de propósito. Vai ter erros que ninguém previu, num modelo ou numa rota. E vai estar à vista de quem o quer usar contra os outros. O que distingue um servidor bem feito não é nunca falhar: é falhar bem. Dizer a quem fez o pedido o que pode fazer a seguir. E mais nada. Dizer a quem o vai corrigir tudo o que precisa. E só a ele. E não dar a quem o ataca nenhuma informação nem nenhuma porta.
+Abre `/equipamentos/abc` no catálogo e recebes a página "Pedido inválido", com o código 400. O servidor está bem: quem escreveu o endereço é que se enganou, e pode corrigi-lo. Agora imagina que o modelo da página de um equipamento tem um erro e falha sempre que alguém a abre. O endereço está certo, e quem o abriu não pode fazer nada. Perante uma falha, a primeira pergunta é esta: quem errou, o pedido HTTP ou o servidor?
 
-No fim deste guia deves conseguir:
-
-- distinguir uma falha do pedido (400, 403, 404) de uma falha do servidor (500), e escolher a resposta de cada uma;
-- explicar porque é que a página de erro do Express não pode chegar a quem usa a aplicação, e substituí-la por um middleware de erro teu;
-- escrever no terminal o que é preciso para corrigir uma falha, sem escrever segredos nem dados pessoais;
-- guardar os segredos fora do código, e verificar ao arrancar que existem e servem;
-- explicar porque é que o escaping protege o texto HTML e os atributos de texto com aspas, e porque não resolve os outros contextos;
-- explicar o que é o CSRF e protegê-lo com um token, nos formulários que mudam a sessão;
-- descrever as falhas do teu servidor numa matriz: como se provoca cada uma, o código, o que o utilizador vê e o que fica no terminal.
-
-## O que já sabes e vais usar
-
-- Pedido em sessão, segredo no `.env`, `res.locals` e destruição da sessão: [tema 06](06-cookies-e-sessoes.md).
-- Códigos 200/400/404, middleware, ordem e `return` depois de uma resposta: [tema 03](03-http-rotas-e-middleware.md).
-- Páginas de erro e escaping com `<%=`: [tema 04](04-ejs-e-reutilizacao-no-servidor.md).
-- Redirecionamento 303 e validação dos campos no servidor: [tema 05](05-formularios-e-validacao.md).
-- `Cannot set headers after they are sent to the client` sem o `return`: [tema 04](04-ejs-e-reutilizacao-no-servidor.md). Aqui explicamos porque nem o middleware de erro evita essa falha.
-
-O exemplo parte do catálogo com sessões. Se não o tiveres a funcionar, copia [catalogo-com-sessoes](../exemplos/aplicacoes-em-browser/catalogo-com-sessoes/README.md).
-
-## Quem errou: o pedido ou o servidor
-
-Os códigos de estado de erro dividem-se em duas famílias, e a primeira pergunta perante uma falha é a qual delas pertence.
-
-Os códigos começados por **4** dizem que o problema está no pedido. O servidor está bem; quem pediu é que pediu uma coisa que não existe, que está mal escrita ou que não pode fazer. Quem fez o pedido pode corrigi-lo, e a página de erro deve dizer-lhe como. Já conheces três, e este tema junta-lhes outros dois:
+Os códigos de estado respondem pelo primeiro algarismo. Os começados por 4, a que se chama 4xx, dizem que o problema está no pedido HTTP: o que se pediu não existe, está mal escrito ou não é permitido. Já conheces o 400, o 404 e, do limite do `express.urlencoded`, o 413. Rever: [o limite do corpo, no tema 05](05-formularios-e-validacao.md#o-corpo-do-pedido-e-o-middleware-que-o-lê). Este tema junta-lhes o 403:
 
 | Código | Quando | No catálogo |
 | --- | --- | --- |
-| 400 | O pedido está mal feito | `/equipamentos/abc`; um formulário com um campo errado |
-| 403 | O pedido foi percebido, e é recusado | Um formulário que não traz o token contra o CSRF (secção 9) |
+| 400 | O pedido HTTP está mal feito | `/equipamentos/abc`; um formulário com um campo errado |
+| 403 | O servidor percebeu o pedido HTTP, e recusa-o | Um formulário enviado por uma página de outro site |
 | 404 | O que se pediu não existe | `/equipamentos/9`; um endereço que nenhuma rota trata |
-| 413 | O pedido é grande demais | Um formulário com mais de 100 kilobytes (o limite do `express.urlencoded`, do tema 5) |
+| 413 | O pedido HTTP é grande demais | Um corpo com mais de 100 quilobytes, o limite do `express.urlencoded` |
 
-Os códigos começados por **5** dizem que o problema está no servidor. O pedido podia estar certo. E o servidor falhou: um erro no código de uma rota, um modelo que tenta ler uma propriedade que não existe, uma base de dados que não responde. O mais comum é o **500**, Internal Server Error, erro interno do servidor. Quem fez o pedido não pode fazer nada para o corrigir, a não ser tentar mais tarde. Quem tem de agir é quem mantém o servidor. E para isso precisa de saber o que aconteceu.
+Os começados por 5, os 5xx, dizem que o problema está no servidor. O mais comum é o 500, Internal Server Error (erro interno do servidor). Pode ser um erro no código de uma rota, um modelo que lê uma propriedade de um valor que não existe ou uma base de dados que não responde. Quem usa o catálogo só pode tentar mais tarde. Quem tem de agir é quem mantém o servidor, e para isso precisa de saber o que aconteceu.
 
-Daqui sai a regra deste tema. Uma falha tem dois destinatários. E cada um recebe coisas diferentes. **Quem fez o pedido** recebe uma página com o código certo, uma frase que diz o que se passou e o que pode fazer. Nada sobre o funcionamento do servidor. **Quem mantém o servidor** recebe, no terminal, tudo o que precisa para encontrar e corrigir a causa. Nunca o contrário.
+Daqui sai a regra deste tema: uma falha tem dois destinatários, e cada um recebe coisas diferentes. Quem usa o catálogo recebe, no browser, uma página do catálogo com o código certo e uma frase que diz o que se passou e o que pode fazer. Não recebe nada sobre o funcionamento do servidor. Quem mantém o servidor recebe, no terminal, tudo o que precisa para encontrar e corrigir a causa.
 
 ## O erro que ninguém previu
 
-Os erros 400 e 404 do catálogo são previstos: há um `if` que os deteta e uma resposta escrita para eles. Neste exemplo, vamos provocar um 500 com uma linha que falha quando não devia. É uma falha inesperada do servidor. Imagina que um modelo tenta escrever o nome do fabricante de um equipamento, `equipamento.fabricante.nome`, e os equipamentos não têm fabricante. O `equipamento.fabricante` é `undefined`, e ler uma propriedade de `undefined` dá um erro.
+Os 400 e os 404 do catálogo são previstos: há um `if` que os deteta e uma resposta escrita para cada um. Um 500 vem de uma linha que falha quando não devia. Imagina que o modelo da página de um equipamento passa a mostrar o fabricante, com `equipamento.fabricante.nome`, e que os equipamentos não têm fabricante. O `equipamento.fabricante` é `undefined`, e ler uma propriedade de `undefined` dá um `TypeError`.
 
-O que o Express faz a um erro destes depende de haver ou não quem o trate. Sem nada que o trate, o Express responde ele próprio, com uma página de erro sua. Durante o desenvolvimento, essa página mostra a mensagem do erro e o **stack trace**. Esta lista mostra as funções que estavam a correr quando o erro aconteceu. Cada uma aparece com o caminho do ficheiro e o número da linha:
+Sem nada no servidor que trate o erro, o Express responde ele próprio, com o código 500 e uma página sua. Essa página mostra a mensagem do erro e o **stack trace** (à letra, o rasto da pilha de chamadas). O stack trace é a lista das funções que estavam a correr quando o erro aconteceu, cada uma com o ficheiro e o número da linha. São as linhas começadas por `at` que já viste no terminal. Rever: [Uma mensagem de erro lê-se pelo tipo e pela linha](02-primeiro-servidor.md#uma-mensagem-de-erro-lê-se-pelo-tipo-e-pela-linha).
+
+Num computador em que o catálogo está na pasta `/Users/ana/projetos/catalogo`, a página do Express começa assim (aqui, sem algumas linhas):
 
 ```text
 TypeError: /Users/ana/projetos/catalogo/views/equipamento.ejs:4
-...
+    2| <%- include("partials/cabecalho") %>
+    3|     <p>Número: <%= equipamento.id %></p>
+ >> 4|     <p>Fabricante: <%= equipamento.fabricante.nome %></p>
+    5|     <p>Sala: <a href="/equipamentos?sala=<%= equipamento.sala %>"><%= equipamento.sala %></a></p>
+
 Cannot read properties of undefined (reading 'nome')
-    at eval ("/Users/ana/projetos/catalogo/views/equipamento.ejs":13:41)
-    at /Users/ana/projetos/catalogo/node_modules/ejs/lib/cjs/ejs.js:617:23
+    at eval ("/Users/ana/projetos/catalogo/views/equipamento.ejs":18:49)
+    at equipamento (/Users/ana/projetos/catalogo/node_modules/ejs/lib/cjs/ejs.js:617:23)
 ```
 
-Para ti, a programar, isto é ouro: diz o ficheiro, a linha e o erro. Para qualquer outra pessoa, é informação que não lhe diz respeito. E parte dela é perigosa. Mostra a organização das pastas e o nome de quem as tem. Revela também as bibliotecas usadas. A pasta `node_modules` aparece nos caminhos, com o nome de cada ficheiro e a linha. E às vezes um bocado do código. Quem procura uma forma de atacar um servidor começa exatamente por aqui: provocar erros e ler o que eles revelam. A resposta ao utilizador deve esconder o stack trace.
+Para ti, a programar, isto é útil: diz o ficheiro, a linha e o erro. Para quem usa o catálogo, não serve de nada, e uma parte é perigosa. Mostra o nome de quem usa o computador e a organização das pastas. Mostra as bibliotecas do servidor, porque a pasta `node_modules` aparece nos caminhos. E mostra linhas do próprio modelo. Quem procura uma forma de atacar um servidor começa por aqui: provoca erros e lê o que eles revelam.
 
-O Express sabe disto. Quando o servidor corre em modo de produção, com a variável de ambiente `NODE_ENV=production`, a página de erro do Express mostra só "Internal Server Error", sem pormenores. Mas não convém depender de alguém se lembrar de pôr essa variável. Mesmo essa página não serve: está em inglês, não tem o cabeçalho nem o menu do catálogo. E não diz ao utilizador o que pode fazer. A solução é tratar tu os erros, com um middleware próprio.
+Além disso, a página está em inglês, não tem o cabeçalho nem o menu do catálogo e não diz a quem a vê o que pode fazer. O servidor tem de tratar ele próprio os seus erros.
+
+<details>
+<summary>Para ires mais longe: a página do Express em modo de produção</summary>
+
+A variável de ambiente `NODE_ENV` igual a `production` é a forma habitual de dizer a um servidor que está publicado. Com ela, a página de erro do Express mostra só `Internal Server Error`, sem o stack trace. O terminal continua a mostrar o erro completo. Ajuda, mas depende de alguém se lembrar de pôr a variável, e a página continua em inglês, sem o menu do catálogo e sem dizer o que fazer.
+
+</details>
 
 ## O middleware de erro
 
-O Express tem um tipo especial de middleware, só para erros. Distingue-se dos outros por uma única coisa: tem **quatro parâmetros**, e o primeiro é o erro.
+O Express tem um tipo especial de middleware, só para erros: o **middleware de erro**. Distingue-se dos outros por uma só coisa. Tem quatro parâmetros, `(erro, req, res, next)`, e o primeiro é o erro.
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Quando uma rota, um middleware ou um modelo falham, o Express deixa de correr as rotas e os middlewares normais. Salta para o primeiro middleware de erro que estiver abaixo, pela ordem do ficheiro, e passa-lhe o erro no primeiro parâmetro. Não tens de escrever nada para isto acontecer: basta o erro acontecer numa rota ou num modelo EJS. Rever: [Uma fila, pela ordem do ficheiro](03-http-rotas-e-middleware.md#uma-fila-pela-ordem-do-ficheiro).
+
+```mermaid
+flowchart TD
+    A["middleware de registo"] --> B["express.urlencoded"]
+    B --> C["middleware das sessões"]
+    C --> D["res.locals, com o itensNoPedido"]
+    D --> E["as rotas"]
+    E --> F["middleware final: 404"]
+    B -->|"corpo grande demais: 413"| X["middleware de erro,<br/>no fim do ficheiro"]
+    E -->|"endereço mal codificado: 400<br/>modelo que falha: 500"| X
+    X --> T["no terminal: a data,<br/>o pedido HTTP e o stack trace"]
+    X --> P["no browser: a página<br/>de erro do catálogo"]
+```
+
+O diagrama mostra a fila do catálogo. Cada falha salta do sítio onde nasce para o middleware de erro, no fim, e tudo o que está pelo meio fica por correr. A falha de um modelo nasce nas rotas, e o middleware final do 404 nem chega a correr.
+
+O middleware de erro do catálogo é este:
 
 ```js fragment
 // Middleware de erro: tem quatro parâmetros, e o Express só o chama quando
 // uma rota, um middleware ou um modelo falham. Regista o erro completo no
 // terminal, para quem o vai corrigir, e mostra ao utilizador uma página que
-// não revela nada do servidor. Fica depois de tudo, como o middleware final.
+// não revela detalhes internos do servidor. Fica depois de tudo, até do middleware final.
 app.use((erro, req, res, next) => {
   console.error(`${new Date().toISOString()} ERRO ${req.method} ${req.url}`);
   console.error(erro.stack);
@@ -103,7 +103,7 @@ app.use((erro, req, res, next) => {
   res.locals.itensNoPedido = res.locals.itensNoPedido || 0;
 
   // Alguns erros já trazem um código 4xx: o express.urlencoded dá o 413 a um
-  // corpo grande demais. Esses são falhas do pedido; tudo o resto é um 500.
+  // corpo grande demais. Esses são falhas do pedido HTTP; tudo o resto é um 500.
   if (erro.status >= 400 && erro.status < 500) {
     res.status(erro.status).render("erro", {
       titulo: "Pedido recusado",
@@ -118,43 +118,55 @@ app.use((erro, req, res, next) => {
 });
 ```
 
-Leitura guiada: os quatro parâmetros identificam um middleware de erro. Primeiro regista a falha; depois garante o dado do cabeçalho e responde com 500 e a página geral.
+Lê-o em três partes. As duas primeiras linhas são para quem mantém o servidor. Escrevem no terminal a data, o método e o endereço do pedido HTTP, e depois o `erro.stack`, que junta a mensagem e o stack trace. As últimas linhas respondem com o 500 e com a página de erro do catálogo, com uma frase geral: é a parte para quem usa o catálogo. No meio estão duas partes, explicadas na subsecção seguinte.
 
-Quando uma rota, um middleware ou um modelo falham, o Express deixa de correr as rotas e os middlewares normais. Salta para o primeiro middleware de erro seguinte. Passa-lhe o erro no primeiro parâmetro. No Express 5, isto acontece com um erro numa rota normal ou num modelo EJS. Não é preciso fazer nada para o apanhar.
+A página não usa o `erro.message`. A mensagem de um erro inesperado é escrita para programadores, e pode ter caminhos, nomes de variáveis ou pedaços de dados. Não ajuda em nada quem usa o catálogo.
 
-O middleware faz as duas coisas da regra. Escreve no terminal a data, o pedido e o `erro.stack`, que tem a mensagem e o stack trace: é para quem mantém o servidor. E responde com o código 500 e a página de erro do catálogo, com uma frase geral: é para quem fez o pedido. Repara que a página não usa o `erro.message`. A mensagem de um erro inesperado é escrita para programadores, pode ter caminhos, nomes de variáveis ou pedaços de dados. Não ajuda em nada quem está a usar o catálogo.
+O middleware não usa o `next`, e o parâmetro parece sobrar.
 
-O middleware tem mais duas partes. A primeira garante o `itensNoPedido`. A página de erro inclui o cabeçalho. E o cabeçalho usa o `itensNoPedido`, que um middleware põe no `res.locals`. Mas um erro pode acontecer antes desse middleware, por exemplo no `express.urlencoded`, quando o corpo de um pedido é grande demais. Nesse caso, o `itensNoPedido` ainda não existe, a página de erro falha a construir-se. E o Express responde com a sua própria página, com o stack trace. Uma página de erro tem de funcionar mesmo quando tudo o resto falhou. Por isso o middleware garante o valor de que ela precisa: `res.locals.itensNoPedido || 0` fica com o valor que lá estiver, ou com 0 se não houver nenhum.
+Prevê: tiras o `next` e ficas com `(erro, req, res)`. O que aparece quando o modelo falha?
 
-A segunda respeita o código de alguns erros. Nem todos os erros que chegam ao middleware são falhas do servidor. O `express.urlencoded` recusa um corpo com mais de 100 kilobytes com um erro que traz a propriedade `status` com o valor 413. O Express recusa um endereço com um código mal escrito, como `%E0%A4%A`, com um erro que traz o 400. Estes erros são falhas do pedido. E responder-lhes com o 500 seria dizer que o servidor falhou quando não falhou. Por isso, se o erro trouxer um código 4xx, a resposta usa esse código e uma página "Pedido recusado". Tudo o resto é um 500.
+A página do Express, com o stack trace, outra vez. O Express conta os parâmetros da função para saber se é um middleware de erro. Com três, é um middleware normal, que nunca recebe os erros. São sempre quatro, mesmo que não uses o `next`.
 
-Três regras, e a primeira apanha toda a gente:
+O sítio também conta. O middleware de erro fica no fim do ficheiro, depois de todas as rotas e do middleware final, logo antes do `app.listen`. Um middleware de erro acima das rotas nunca recebe os erros delas, porque um erro só salta para baixo.
 
-- **São quatro parâmetros, mesmo que não uses o `next`.** O Express conta os parâmetros da função para saber se é um middleware de erro. Com três, `(erro, req, res)`, é um middleware normal, que nunca recebe os erros, e a página do Express, com o stack trace, volta a aparecer.
-- **Fica no fim do ficheiro**, depois de todas as rotas e do middleware final do 404, logo antes do `app.listen`. Um erro salta para o primeiro middleware de erro que estiver **abaixo** do sítio onde aconteceu; um middleware de erro acima das rotas nunca recebe os erros delas.
-- **Não substitui o `return`.** O caso do tema 4, a página de erro sem `return` depois, continua a deitar o servidor abaixo, mesmo com o middleware de erro. O erro `Cannot set headers` acontece depois de a resposta ter saído, fora do caminho normal do Express, e não chega a nenhum middleware. O `return` continua obrigatório.
+E o middleware de erro não substitui o `return`. Sem o `return` depois de uma página de erro, a segunda página fica pronta quando a primeira já saiu. O erro acontece depois de a função da rota acabar, onde nenhum middleware o apanha, e o servidor vai abaixo, como no tema 04. Rever: [A página de erro certa, com o código errado, e o servidor em baixo](04-ejs-e-reutilizacao-no-servidor.md#a-página-de-erro-certa-com-o-código-errado-e-o-servidor-em-baixo).
+
+### O código que o erro traz e o número do menu
+
+Nem todos os erros são falhas do servidor. O `express.urlencoded` recusa um corpo com mais de 100 quilobytes com um erro que traz a propriedade `status`, com o valor 413. O Express recusa um endereço com um código `%` que não corresponde a nenhum carácter, como `/equipamentos/%E0%A4%A`, com um erro que traz o 400. São falhas do pedido HTTP, e responder-lhes com o 500 seria dizer que o servidor falhou quando não falhou. Por isso, o `if` do meio responde com o código que o erro traz, quando é um 4xx, e com a página "Pedido recusado". Tudo o resto é um 500. Nos títulos das páginas de erro, como "Pedido recusado" e "Pedido inválido", o pedido é o pedido HTTP, e não o teu pedido em curso.
+
+O 413 tem mais um problema, que se vê no diagrama da secção. Nasce no `express.urlencoded`, antes do middleware que põe o `itensNoPedido` no `res.locals`. A página de erro inclui o cabeçalho, e o cabeçalho usa o `itensNoPedido`. Rever: [Passo 3: o pedido no menu](06-cookies-e-sessoes.md#passo-3-o-pedido-no-menu). Sem esse valor, a própria página de erro falha, e o Express responde com a página dele, com o stack trace.
+
+Por isso o middleware garante o valor: `res.locals.itensNoPedido || 0` fica com o valor que lá estiver, ou com 0 se não houver nenhum. O 400 e o 500 nascem nas rotas, quando o valor já existe. Mas uma página de erro tem de funcionar mesmo quando tudo o resto falhou.
 
 ## O que se escreve no terminal
 
-O que o servidor escreve no terminal é o seu **registo**. E é a única forma de saber, depois, o que aconteceu. O catálogo já tem dois registos: o middleware de registo, do tema 3, escreve uma linha por pedido, com o método e o endereço. E o middleware de erro escreve, para cada falha, a data, o pedido e o stack trace.
+Depois de uma falha, o que o servidor escreveu no terminal é a única forma de saber o que aconteceu. A esse texto chama-se **registo do servidor**, ou só registo, e não é o registo de uma tabela, do tema 01. O catálogo já tem dois. O middleware de registo do tema 03 escreve uma linha por pedido HTTP, com o método e o endereço. O middleware de erro escreve, para cada falha, a data, o pedido HTTP e o stack trace.
 
-Um bom registo é mínimo: tem o que é preciso para perceber e corrigir uma falha, e mais nada. Para cada falha, isso quer dizer **quando** aconteceu, **que pedido** a provocou e **o que** falhou, com o stack trace. Com estas três coisas, quem lê o registo consegue reproduzir a falha e encontrar a linha.
+Um bom registo é mínimo: tem o que é preciso para perceber e corrigir uma falha, e mais nada. Para cada falha, quer dizer quando aconteceu, que pedido HTTP a provocou e o que falhou. Com estas três coisas, quem lê o registo consegue repetir a falha e encontrar a linha. É o que o middleware de erro escreve:
 
-E há coisas que nunca se escrevem no registo. Isto acontece porque o registo é lido por quem mantém o servidor, guardado em ficheiros, copiado para outros sítios. E não é um lugar seguro:
+```text
+2026-12-01T10:15:03.481Z ERRO GET /equipamentos/2
+TypeError: /Users/ana/projetos/catalogo/views/equipamento.ejs:4
+...
+```
 
-- **Segredos**: o `SESSION_SECRET`, palavras-passe, chaves de acesso. Nem mesmo numa mensagem de erro sobre eles: a mensagem do catálogo sobre um segredo curto diz quantos carateres tem, e não o segredo.
-- **Identificadores de sessão e cookies**: quem tem o identificador tem a sessão, como viste no tema anterior. Escrever o cabeçalho `Cookie` no registo é deixar lá as chaves de todos os pedidos em curso.
-- **O corpo dos pedidos**: o `req.body` tem o que as pessoas escrevem nos formulários, e isso inclui nomes, números de aluno e, numa aplicação com contas, palavras-passe. Um `console.log(req.body)` deixado de quando estavas a depurar é um registo de dados pessoais.
+A primeira linha tem a data, a hora, o método e o endereço, e por baixo vem o stack trace. A hora vem em UTC, a hora de referência mundial, marcada pelo `Z` do fim. Em Portugal continental, é a do relógio no inverno, e uma hora a menos no verão.
 
-O endereço do pedido, que o middleware de registo escreve, também pode ter dados nos parâmetros de pesquisa. No catálogo, a sala pesquisada não é um dado pessoal, e pode ficar. Numa aplicação em que a pesquisa fosse por nome de aluno, já não podia.
+O registo não é um sítio seguro: é lido por quem mantém o servidor, guardado em ficheiros e copiado para outros sítios. Por isso, há três coisas que nunca se escrevem lá:
+
+- Os segredos, como o `SESSION_SECRET`, as palavras-passe e as chaves de acesso, nem numa mensagem de erro sobre eles.
+- Os identificadores de sessão e os cookies. Quem tem o identificador tem a sessão, e escrever o cabeçalho `Cookie` no registo é deixar lá as chaves de todos os pedidos em curso. Rever: [O roubo e a fixação de uma sessão](06-cookies-e-sessoes.md#o-roubo-e-a-fixação-de-uma-sessão).
+- O corpo dos pedidos HTTP. O `req.body` tem o que as pessoas escrevem nos formulários, como nomes, números de aluno e, numa aplicação com contas, palavras-passe. Um `console.log(req.body)` esquecido de quando estavas a depurar é um registo de dados pessoais.
+
+O endereço também pode ter dados, nos parâmetros de pesquisa. No catálogo, a sala pesquisada não é um dado pessoal, e pode ficar. Numa aplicação em que se pesquisasse pelo nome de um aluno, já não podia.
 
 ## Os segredos
 
-Do tema anterior, o segredo da sessão vive no `.env`, que não vai para o Git, e o servidor recusa-se a arrancar sem ele. Este tema acrescenta uma verificação e uma regra.
+No tema 06, o segredo que assina o cookie da sessão ficou no `.env`, que não vai para o Git, e o servidor recusa-se a arrancar sem ele. Este tema acrescenta uma verificação e uma regra.
 
-A verificação é o tamanho. Um segredo curto, como `teste` ou `123456`, é fácil de adivinhar. Quem souber o segredo consegue assinar identificadores de sessão. O servidor recusa um segredo com menos de 32 carateres, com uma mensagem que diz o tamanho, e não o segredo:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A verificação é o tamanho. Um segredo curto, como `teste` ou `123456`, adivinha-se, e quem souber o segredo consegue assinar identificadores que o servidor aceita. Rever: [O identificador vai assinado](06-cookies-e-sessoes.md#o-identificador-vai-assinado). O catálogo recusa um segredo com menos de 32 carateres:
 
 ```js fragment
 // Um segredo curto adivinha-se. A mensagem não mostra o segredo: só o tamanho.
@@ -164,66 +176,107 @@ if (SEGREDO.length < 32) {
 }
 ```
 
-Leitura guiada: avalia a condição com os dados do exemplo. Só o ramo escolhido produz o resultado; o outro ramo não é executado.
+Com um segredo de 10 carateres, o servidor escreve `O SESSION_SECRET tem 10 carateres; tem de ter pelo menos 32.` e não arranca. A mensagem diz o tamanho, que é o que ajuda a corrigir, e não mostra o segredo, porque o terminal é um registo.
 
-Esta verificação só recusa segredos demasiado curtos. Escrever a mesma letra 32 vezes passa no teste, mas continua fácil de adivinhar. Usa o comando de geração aleatória do tema anterior, em vez de inventares um segredo. O comando cria 32 bytes aleatórios. O `toString("hex")` escreve-os como 64 carateres, de `0` a `9` e de `a` a `f`. Guarda o resultado apenas no `.env`.
+A verificação só recusa segredos curtos. A mesma letra escrita 32 vezes passa, e continua fácil de adivinhar. Por isso, não inventes o segredo. Gera-o com o comando do tema 06, que dá 64 carateres aleatórios, e guarda-o só no `.env`.
 
-A regra é o que fazer quando um segredo é revelado: se foi para o Git, se apareceu num registo, se alguém o viu no teu ecrã. A resposta é sempre trocá-lo por um novo. Não chega apagá-lo do sítio onde apareceu. Isto acontece porque não sabes quem o viu.
+A regra é o que fazer quando um segredo é revelado: se foi para o Git, se apareceu num registo, se alguém o viu no teu ecrã. Troca-se por um novo, sempre. Não chega apagá-lo do sítio onde apareceu, porque não sabes quem o viu. O servidor só lê o segredo novo quando volta a arrancar.
 
-Nesta configuração, trocar o segredo faz deixar de aceitar os identificadores assinados com o segredo antigo. A assinatura deixa de bater certo. Quem tivesse roubado um identificador antigo também deixa de o poder usar. Os identificadores antigos deixariam de ser aceites mesmo se os dados das sessões continuassem guardados numa base de dados.
+Prevê: tens um pedido a meio, trocas o segredo no `.env` e o servidor volta a arrancar. O que mostra a página do pedido?
 
-No catálogo, reler o segredo novo exige reiniciar o servidor. Esse reinício também apaga as sessões do `MemoryStore`, porque só estavam na memória do processo. São dois efeitos diferentes: o reinício perde os dados e o segredo novo invalida as assinaturas antigas. Ver o pedido vazio depois da troca não permite atribuir o resultado só à mudança do segredo.
+O pedido vazio, por duas razões ao mesmo tempo. O reinício apagou as sessões, que só estavam na memória do servidor. Rever: [Onde ficam as sessões](06-cookies-e-sessoes.md#onde-ficam-as-sessões). E o segredo novo já não aceita o identificador antigo, que o browser continua a enviar, porque a assinatura deixa de bater certo. Se experimentares, não consegues saber qual das duas apagou o pedido.
+
+A segunda é a que interessa quando um segredo foi revelado. Com o segredo novo, os identificadores antigos deixam de valer, mesmo que as sessões estivessem guardadas numa base de dados, e quem tivesse roubado um já não o pode usar.
 
 ## O escaping depende do sítio
 
-No tema 4, o escaping do `<%=` protegia dois sítios: o conteúdo de uma etiqueta, como `<p><%= mensagem %></p>`. E o valor de um atributo de texto **entre aspas**, como `value="<%= nome %>"`. O guia avisava que havia sítios onde não chegava. Este tema mostra quais. Isto acontece porque cada sítio de uma página tem os seus carateres perigosos. O escaping do `<%=` só trata os do HTML: o `<`, o `>`, o `&`, as aspas e o apóstrofo.
+No tema 04, o `<%=` protegia os dois sítios onde os valores apareciam: o texto de uma etiqueta, como `<p><%= mensagem %></p>`, e o valor de um atributo entre aspas. Rever: [Escaping: o que vem de fora nunca vira HTML](04-ejs-e-reutilizacao-no-servidor.md#escaping-o-que-vem-de-fora-nunca-vira-html). O `<%=` só troca os carateres que são perigosos em HTML: o `<`, o `>`, o `&`, as aspas e o apóstrofo. Noutros sítios de uma página, os carateres perigosos são outros, e o `<%=` deixa-os passar. A proteção escolhe-se pelo sítio onde o valor entra, e a isso chama-se **escaping contextual**.
 
-Com o valor `x autofocus onfocus=alert(1)`, que não tem nenhum destes carateres:
+Prevê: um valor vindo de fora, `x autofocus onfocus=alert(1)`, entra num atributo sem aspas, com `<%=`. O escaping protege a página?
+
+Não, porque o valor não tem nenhum dos carateres que o `<%=` troca:
 
 | Onde está o valor | O modelo | O que o browser recebe | Resultado |
 | --- | --- | --- | --- |
-| Conteúdo ou atributo com aspas | `<input value="<%= v %>">` | `<input value="x autofocus onfocus=alert(1)">` | Seguro: é tudo o valor do atributo |
+| Atributo com aspas | `<input value="<%= v %>">` | `<input value="x autofocus onfocus=alert(1)">` | Seguro: é tudo o valor do atributo |
 | Atributo sem aspas | `<input value=<%= v %>>` | `<input value=x autofocus onfocus=alert(1)>` | Perigoso: o espaço acaba o valor, e o resto são atributos novos; o `onfocus` corre um script quando o campo ganha o foco |
 
-O escaping não mudou nada, porque não havia nada para mudar. Sem as aspas, o fim do valor é marcado por um espaço, e o espaço não é escapado. Por isso, **os atributos levam sempre aspas**.
+Sem as aspas, o fim do valor é marcado por um espaço, e o espaço não é escapado. Por isso, os atributos levam sempre aspas. Quem ataca não precisa de escrever no teu browser: põe o valor num endereço e leva outra pessoa a abri-lo, como no tema 04.
 
-Dentro de um `<script>`, o problema é o mesmo, noutra língua. Com o valor `1;alert(1)`:
+Dentro de um `<script>`, o problema é o mesmo, noutra língua. Com o valor `1;alert(1)`, o modelo `<script>const tempo = <%= v %>;</script>` dá ao browser `<script>const tempo = 1;alert(1);</script>`. O `;` e os parênteses não são carateres de HTML, e o valor virou código JavaScript, que corre. A regra é não pôr valores dentro de scripts. O catálogo não tem scripts, que é a forma mais simples de a cumprir.
 
-| O modelo | O que o browser recebe | Resultado |
-| --- | --- | --- |
-| `<script>const tempo = <%= v %>;</script>` | `<script>const tempo = 1;alert(1);</script>` | O valor virou código JavaScript, que corre |
-| `<script>const nome = "<%= v %>";</script>`, com `Ana" + alert(1) + "` | `<script>const nome = "Ana&#34; + alert(1) + &#34;";</script>` | Não corre, mas o nome fica com `&#34;` escrito, porque dentro de um script o browser não desfaz os códigos do HTML |
+Nos endereços, o perigo é outro. Um `href` com um endereço escrito por alguém, como `<a href="<%= site %>">`, recebe tal e qual o valor `javascript:alert(1)`, que não tem nenhum carácter de HTML. Quando alguém carregar na ligação, o browser corre o script, em vez de abrir uma página. O escaping não ajuda. O que ajuda é a validação no servidor, do tema 05: um endereço que vem de fora só se aceita se começar por `https://` ou `http://`. Rever: [Validar no servidor](05-formularios-e-validacao.md#validar-no-servidor). O catálogo não guarda endereços, mas uma aplicação com o "site do fornecedor" teria de o fazer.
 
-O escaping do HTML protege mal e estraga os dados. A regra é **não pôr valores dentro de scripts**. O catálogo não tem scripts, e é a forma mais simples de cumprir a regra.
+No tema 04, a injeção de código na página precisava de alguém que abrisse um endereço com o script. O nome que se escreve ao confirmar um pedido é mais grave, porque aparece na lista das reservas, que toda a gente vê. Se esse nome entrasse sem escaping, um script escrito por uma pessoa correria no browser de todas as que abrissem a lista. A este caso chama-se **injeção guardada**: o código fica guardado como um dado e corre mais tarde, no browser de outras pessoas, sem ser preciso enganar ninguém. No catálogo, o nome entra com `<%=`, e um `<script>` escrito no nome aparece na lista como texto.
 
-Nos endereços, o perigo é outro. Um `href` com um endereço escrito por alguém, como `<a href="<%= site %>">`, recebe tal e qual o valor `javascript:alert(1)`, que não tem nenhum carácter de HTML. Quando alguém carregar na ligação, o browser corre o script, em vez de abrir uma página. O escaping não ajuda; o que ajuda é a validação, do tema 5: um endereço que vem de fora só se aceita se começar por `https://` ou `http://`. O catálogo não guarda endereços de ninguém, mas uma aplicação com o "site do fornecedor" teria de o fazer.
+<details>
+<summary>Para ires mais longe: um valor entre aspas, dentro de um script</summary>
 
-O que fica é uma regra curta para este catálogo. Os valores recebidos entram no texto de elementos HTML, como um parágrafo, ou em atributos de texto entre aspas, como `value` e `title`. Usam sempre `<%=`. Não entram em scripts nem em atributos como `onfocus`, que contêm código. Nos endereços, aplica-se a validação já explicada: pôr aspas não basta. O objetivo é apresentar como texto um valor com HTML inserido por alguém.
+Pôr o valor entre aspas, dentro do script, também não resolve. Com `<script>const nome = "<%= v %>";</script>` e o valor `Ana" + alert(1) + "`, o browser recebe `<script>const nome = "Ana&#34; + alert(1) + &#34;";</script>`. O `alert` não corre, mas o nome fica com `&#34;` escrito, porque dentro de um script o browser não desfaz os códigos do HTML. O escaping do HTML protege mal, e estraga os dados.
 
-Há ainda um caso que convém ver com estes olhos. O nome que alguém escreve ao confirmar um pedido aparece na lista das reservas, que **toda a gente** vê. Se esse nome entrasse sem escaping, um script escrito por uma pessoa correria no browser de todas as outras que abrissem a lista, e não só no seu. A esta variante chama-se injeção guardada, e é a mais grave, porque não precisa de enganar ninguém para clicar numa ligação: basta abrir a lista. No catálogo, o nome entra com `<%=`, e um `<script>` escrito no nome aparece na lista como texto.
+</details>
 
-## O CSRF: o pedido que outro site faz em teu nome
+## O CSRF: o pedido HTTP que outro site faz em teu nome
 
-O tema 6 deixou dito que o `SameSite=Lax` é uma primeira defesa contra o CSRF. É altura de perceber o ataque e acrescentar a verificação do token aos formulários.
+O CSRF ficou definido no tema 06. Nesse ataque, uma página de outro site faz o browser de quem a visita enviar um pedido HTTP ao teu servidor, com o cookie dessa pessoa. Rever: [Os atributos do cookie](06-cookies-e-sessoes.md#os-atributos-do-cookie). O ataque aproveita uma regra dos cookies: o browser junta o cookie de um site aos pedidos HTTP para esse site, sem perguntar a ninguém.
 
-**CSRF** quer dizer cross-site request forgery, falsificação de um pedido entre sites. O ataque aproveita uma regra do tema anterior: o browser envia o cookie de um site em todos os pedidos a esse site, sem perguntar a ninguém. Imagina que a professora tem um pedido em curso no catálogo e, noutro separador, abre uma página de outro site, feita por alguém mal-intencionado. Essa página tem um formulário escondido, que envia sozinho um `POST` para `http://localhost:3000/pedido/cancelamento`. O pedido sai do browser da professora, e se o browser lhe juntar o cookie da sessão do catálogo, o servidor vê um pedido de cancelamento vindo da sessão dela. Para o servidor, foi a professora que cancelou. Ela nem soube.
+Imagina que a professora tem um pedido em curso no catálogo e, noutro separador, abre uma página de outro site, feita por alguém mal-intencionado. Essa página tem um formulário escondido, que se envia sozinho, com um `POST` para `http://localhost:3000/pedido/cancelamento`:
 
-O `SameSite=Lax` do tema 6 trava este ataque nos browsers atuais: um `POST` que vem de outro site não leva o cookie. O servidor vê um browser sem sessão. Mas não chega, por três razões. Há browsers antigos que não respeitam o `SameSite`. O `Lax` deixa passar o cookie numa navegação normal por `GET`, como carregar numa ligação, e por isso uma rota que mudasse alguma coisa com um `GET` ficava desprotegida. E uma mudança na configuração do cookie, feita por quem não conhece a razão, tira a proteção sem ninguém dar por isso. O `SameSite` não substitui a análise das outras formas de ataque.
+```mermaid
+sequenceDiagram
+    participant P as browser da professora
+    participant A as site do atacante
+    participant C as catálogo
+    P->>C: POST /pedido/itens, junta o projetor
+    C-->>P: 303, com o cookie da sessão
+    P->>A: abre a página do atacante, noutro separador
+    A-->>P: uma página com um formulário escondido
+    P->>C: POST /pedido/cancelamento, com o cookie, se o browser o juntar
+    C-->>P: 303: o pedido foi cancelado
+```
 
-A proteção contra o CSRF usada neste catálogo acrescenta um **token contra o CSRF**. É um código aleatório, um por sessão. Fica guardado na sessão e entra em cada formulário que muda alguma coisa, num campo escondido. Quando o formulário é enviado, o token vai no corpo, e o servidor compara-o com o da sessão. Se não bater certo, ou não vier, o pedido é recusado com o 403.
+O `POST` do cancelamento sai do browser da professora, enviado pelo formulário escondido. Se o browser lhe juntar o cookie da sessão do catálogo, o servidor vê um cancelamento vindo da sessão dela, e cancela-lhe o pedido sem ela saber. O atacante nunca viu o cookie: usou o browser dela para o enviar.
 
-O ataque falha porque a página do atacante não consegue saber o token. O token está escrito nas páginas do catálogo. E o browser não deixa uma página de outro site ler o conteúdo das páginas do catálogo: é a regra da mesma origem, que os browsers aplicam a tudo. O atacante consegue fazer o browser *enviar* um pedido. Mas não consegue *ler* as respostas. E por isso não sabe o que pôr no campo escondido.
+Com o `SameSite=Lax` do tema 06, um `POST` que vem de outro site chega sem o cookie, e neste caso o ataque falha. Mas o `SameSite` não chega como defesa, por quatro razões:
 
-No catálogo, a defesa tem três peças. Uma função cria o token, quando a sessão ainda não o tem, e põe-no no `res.locals`:
+- uma página noutra porta do mesmo computador, ou noutro nome do mesmo domínio, como `moodle.escola.pt` para `catalogo.escola.pt`, conta como o mesmo site, e o cookie vai;
+- o `Lax` deixa ir o cookie num `GET` vindo de outro site, como o de uma ligação, e uma rota que mudasse dados com um `GET` ficava desprotegida;
+- os browsers antigos não conhecem o atributo;
+- basta alguém mudar a configuração do cookie, sem saber porquê, para a proteção desaparecer.
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+Da segunda razão sai uma regra para as rotas: nada que mude dados se faz com `GET`. O catálogo cumpre-a desde o tema 05, e juntar, tirar, confirmar e cancelar são todos `POST`. Rever: [GET serve para ver e POST para mudar](01-do-pedido-a-resposta.md#get-serve-para-ver-e-post-para-mudar). Das outras sai a necessidade de uma defesa própria, que não dependa do cookie.
+
+## O token contra o CSRF
+
+O **token contra o CSRF** é um código aleatório, um por sessão. O servidor guarda-o na sessão e escreve-o em cada formulário que muda alguma coisa, num campo escondido. Quando o formulário é enviado, o token vai no corpo, e o servidor compara-o com o da sessão. Se não vier, ou não for igual, o pedido HTTP é recusado com o 403.
+
+O ataque falha porque a página do atacante não consegue saber o token. O token só está escrito nas páginas do catálogo, e o browser não deixa uma página de outro site ler o que as páginas do catálogo contêm. É a regra da **mesma origem**: uma página só lê as respostas que vêm da sua origem, isto é, com o mesmo protocolo, o mesmo computador e a mesma porta. O `http://localhost:3000` e o `http://localhost:4000` já são origens diferentes. O atacante consegue fazer o browser enviar um pedido HTTP, mas não consegue ler as respostas, e por isso não sabe o que pôr no campo escondido. Para esta regra, outra porta já é outra origem, e a página noutra porta, que o `SameSite` deixa passar, também não lê o token.
+
+```mermaid
+sequenceDiagram
+    participant B as browser da professora
+    participant C as catálogo
+    B->>C: GET /pedido/item
+    Note over C: cria o token e guarda-o na sessão
+    C-->>B: 200, o formulário com o token, e o cookie da sessão
+    B->>C: POST /pedido/itens, com o cookie e o token
+    Note over C: o token é igual ao da sessão
+    C-->>B: 303 para /pedido
+    Note over B: o formulário escondido de uma página noutra porta
+    B->>C: POST /pedido/cancelamento, com o cookie e sem o token
+    C-->>B: 403, Pedido recusado
+```
+
+O diagrama mostra os dois caminhos. O formulário do catálogo traz o token que o servidor lá escreveu, e passa. O formulário escondido de uma página noutra porta leva o cookie, porque o `SameSite` a deixa passar, mas não leva o token, e é recusado.
+
+No catálogo, a defesa tem três peças. A primeira é uma função que cria o token, quando a sessão ainda não o tem, e o põe no `res.locals`:
 
 ```js fragment
 /**
  * Garante que a sessão tem um token contra o CSRF, e põe-no à disposição dos
  * modelos. O token é um código aleatório, um por sessão, que os formulários
  * enviam num campo escondido; uma página de outro site não o conhece.
- * @param {object} req o pedido
+ * @param {object} req o pedido HTTP
  * @param {object} res a resposta
  */
 function prepararTokenCsrf(req, res) {
@@ -234,11 +287,9 @@ function prepararTokenCsrf(req, res) {
 }
 ```
 
-Leitura guiada: o `if` cria o token apenas quando a sessão ainda não o tem. Depois, a função copia o token para `res.locals.csrf`, para o modelo o usar. Não devolve um valor: altera esses dois objetos.
+O `randomBytes` vem do módulo `node:crypto`, que faz parte do Node, e importa-se no início do ficheiro com `import { randomBytes } from "node:crypto";`. O `randomBytes(32)` dá 32 bytes aleatórios, e o `toString("hex")` escreve-os como 64 carateres de `0` a `9` e de `a` a `f`. É a mesma receita do comando que gera o `SESSION_SECRET`. O `if` só cria o token da primeira vez, e por isso há um por sessão: os formulários seguintes levam o mesmo.
 
-O `randomBytes(32)` do `node:crypto` dá 32 bytes aleatórios, e o `toString("hex")` escreve-os como 64 carateres de `0` a `9` e de `a` a `f`. É a mesma receita do comando que gera o `SESSION_SECRET`. A rota do formulário que junta um equipamento ao pedido, que é o primeiro formulário que muda a sessão, chama a função antes de mostrar a página:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A rota do formulário que junta um equipamento ao pedido chama a função antes de mostrar a página, porque é o primeiro formulário que muda a sessão:
 
 ```js fragment
 // O formulário para juntar um equipamento ao pedido. É aqui que a sessão
@@ -254,13 +305,11 @@ app.get("/pedido/item", (req, res) => {
 });
 ```
 
-Leitura guiada: `GET /pedido/item` escolhe esta função. Lê os dados antes da resposta e identifica o ponto onde o pedido termina.
+Prevê: abres `/pedido/item` com o pedido vazio. O browser recebe um cookie?
 
-Daqui vem uma mudança em relação ao tema anterior: o cookie da sessão passa a aparecer quando se abre este formulário. Não só quando se junta o primeiro equipamento. A sessão tem de existir para guardar o token que o formulário vai levar. Quem só vê o catálogo continua sem cookie.
+Recebe, ao contrário do tema 06, em que o cookie só aparecia ao juntar o primeiro equipamento. A sessão tem de existir para guardar o token que o formulário vai levar, e a função guardou-o lá. Quem só vê o catálogo continua sem cookie. Guardar o token não muda o pedido nem as reservas: é a sessão a preparar o formulário, e o `GET` continua a não mudar dados.
 
-A segunda peça põe o token, quando existe, à disposição de todas as páginas, no mesmo middleware que já punha o número de equipamentos do pedido:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A segunda peça põe o token à disposição de todas as páginas, no middleware que já punha o número de equipamentos do pedido:
 
 ```js fragment
 // Para todas as páginas: quantos equipamentos tem o pedido desta sessão, e o
@@ -274,21 +323,15 @@ app.use((req, res, next) => {
 });
 ```
 
-Leitura guiada: este middleware corre antes do elemento seguinte da fila. Identifica o que prepara e se chama `next()` ou termina com uma resposta.
-
-E cada formulário `POST` leva o campo escondido, com o token:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+O `req.session.csrf || ""` dá o token da sessão, ou o texto vazio se a sessão ainda não o tiver. Cada formulário `POST` leva o token num campo escondido, com o nome `_csrf`:
 
 ```ejs
 <input type="hidden" name="_csrf" value="<%= csrf %>">
 ```
 
-Leitura guiada: o EJS calcula a expressão entre as marcas. Com `<%=`, o valor entra como texto e os carateres de HTML são escapados.
+O campo escondido não aparece na página, mas vai no corpo do `POST`, como os outros campos, com o token que o `<%=` lá escreveu. O token entra no `res.locals` em dois sítios por causa da primeira visita ao formulário. O middleware corre antes da rota, quando a sessão ainda não tem token, e dá o texto vazio. É a função, já na rota, que põe lá o token acabado de criar.
 
-A terceira peça é a verificação, num middleware que corre antes de todas as rotas e só faz alguma coisa nos pedidos `POST`:
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+A terceira peça é a verificação, num middleware que corre antes de todas as rotas e só faz alguma coisa nos `POST`:
 
 ```js fragment
 // Proteção contra o CSRF: todos os pedidos POST têm de trazer, no campo
@@ -311,35 +354,75 @@ app.use((req, res, next) => {
 });
 ```
 
-Leitura guiada: este middleware corre antes do elemento seguinte da fila. Identifica o que prepara e se chama `next()` ou termina com uma resposta.
+O `||` avalia as condições da esquerda para a direita e para na primeira verdadeira. Sem token na sessão, o pedido HTTP é logo recusado. Com token, vê-se se há corpo: sem corpo lido pelo `express.urlencoded`, não há campo `_csrf`, e o 403 sai sem se tentar ler uma propriedade de `undefined`. Só com corpo se compara o campo com o token da sessão.
 
-O `||` avalia as condições da esquerda para a direita e pára quando encontra uma verdadeira. Sem token na sessão, o pedido é logo recusado. Se houver token, verifica-se depois o `!req.body`: sem corpo lido pelo `express.urlencoded`, também não há campo `_csrf`. Nesse caso, o pedido recebe 403 sem tentar ler uma propriedade de `undefined`. Só quando existe corpo se compara o campo com o token da sessão. Isto também recusa um corpo enviado com um tipo que o `express.urlencoded` não lê.
-
-Por estar num middleware geral, e não em cada rota, nenhum formulário novo fica desprotegido por esquecimento: um `POST` sem o token é recusado, venha para onde vier. Fica depois do `express.urlencoded`, porque lê o `req.body`, e depois da sessão, porque lê o `req.session`. Quando a sessão termina, o token vai com ela, e um formulário antigo, de uma página que ficou aberta, é recusado; a mensagem diz o que fazer.
-
-Repara numa consequência para as rotas: **nada que mude dados se faz com `GET`**. Um `GET` não leva token, e uma ligação de outro site leva o cookie. O catálogo cumpre-o desde o tema 5: juntar, tirar, confirmar e cancelar são todos `POST`.
+A verificação está num middleware para todos os `POST`, e não em cada rota. Assim, nenhum formulário novo fica desprotegido por esquecimento: um `POST` sem o token é recusado, venha para onde vier. Fica depois do `express.urlencoded`, porque lê o `req.body`, e depois da sessão, porque lê o `req.session`. Quando a sessão termina, o token vai com ela, e um formulário que ficou aberto numa página antiga é recusado. Rever: [Terminar a sessão](06-cookies-e-sessoes.md#terminar-a-sessão).
 
 ## Exemplo guiado: o catálogo preparado para falhar
 
-O exemplo parte do catálogo com sessões do tema anterior. As páginas e as rotas não mudam; o que muda é o que acontece quando alguma coisa corre mal. O resultado final está pronto a correr na pasta [catalogo-com-seguranca](../exemplos/aplicacoes-em-browser/catalogo-com-seguranca/README.md) dos exemplos.
+O exemplo parte do catálogo do fim do tema 06, o do exemplo [catalogo-com-sessoes](../exemplos/aplicacoes-em-browser/catalogo-com-sessoes/README.md). As páginas e as rotas não mudam: muda o que acontece quando alguma coisa corre mal. O resultado final está pronto a correr no exemplo [catalogo-com-seguranca](../exemplos/aplicacoes-em-browser/catalogo-com-seguranca/README.md).
+
+O servidor arranca com `node --watch --env-file=.env server.js`, como no tema 06, e volta a ligar-se depois de cada mudança no `server.js`, sem as sessões que tinha. A partir do passo 4, depois de guardares o `server.js`, recarrega a página do formulário antes de o enviar, porque o token antigo foi com a sessão. Sempre que confirmares um pedido, usa um nome fictício, como "Ana Reserva".
 
 ### Passo 1: provocar um 500 e ler a página do Express
 
-Para ver a página de erro do Express, é preciso uma falha ainda sem tratamento próprio. Podes provocar uma no modelo da página de um equipamento, com o `equipamento.fabricante.nome` da secção "O erro que ninguém previu". Abre `/equipamentos/2`: o browser mostra a página do Express, com o código 500, o `TypeError` e o stack trace, com os caminhos do teu computador. Repara também no terminal: o Express escreve lá o mesmo erro.
+Para ver a página de erro do Express, é preciso uma falha que o servidor ainda não trata. No `views/equipamento.ejs`, a seguir à linha do número, acrescenta esta linha, que tem um erro de propósito:
+
+```ejs
+    <p>Fabricante: <%= equipamento.fabricante.nome %></p>
+```
+
+Abre `/equipamentos/2`. O browser mostra a página do Express, com o código 500, o `TypeError` e o stack trace, com os caminhos do teu computador. É a página da secção [O erro que ninguém previu](#o-erro-que-ninguém-previu). O terminal mostra o mesmo erro, e o servidor continua ligado. Deixa a linha ficar, para o passo 2.
 
 ### Passo 2: o middleware de erro
 
-Coloca o middleware de erro no fim do `server.js`, depois do middleware final e antes de `app.listen`. Inclui as três partes explicadas: o registo, a garantia de `itensNoPedido` e o tratamento dos códigos 4xx. Com o mesmo erro no modelo, `/equipamentos/2` passa a mostrar a página "Erro no servidor", com o menu do catálogo, a frase geral e o código 500. No terminal, a linha com a data e o pedido. E o stack trace. No código-fonte da página, nenhum caminho. Desfaz o erro no modelo. E a página do equipamento volta.
+No fim do `server.js`, depois do middleware final e antes do `app.listen`, acrescenta o middleware de erro da secção [O middleware de erro](#o-middleware-de-erro). Com a linha do fabricante ainda no modelo, confirma o que mudou:
+
+1. Abre `/equipamentos/2`. A página é "Erro no servidor", com o menu do catálogo, a frase geral e o código 500. No terminal aparecem a linha com a data e `ERRO GET /equipamentos/2` e o stack trace.
+2. Abre o código-fonte da página e procura o nome de uma pasta do teu computador ou a palavra `node_modules`. Não há nenhum.
+3. Tira a linha do fabricante do modelo e recarrega a página: o equipamento volta a aparecer.
+
+As duas partes do meio do middleware veem-se com dois pedidos HTTP que falham antes de chegar à função de uma rota. No browser, abre `/equipamentos/%E0%A4%A`: o código é 400 e a página é "Pedido recusado", com `URIError: Failed to decode param '%E0%A4%A'` no terminal.
+
+Para o 413, o formulário não serve, porque o browser não deixa escrever mais de 40 carateres no nome. Com o servidor ligado, noutro terminal, este comando envia à confirmação um nome com 200 000 carateres e escreve o código da resposta:
+
+```bash
+node -e "fetch('http://localhost:3000/pedido/confirmacao', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'nome=' + 'a'.repeat(200000) }).then((resposta) => console.log(resposta.status))"
+```
+
+O comando escreve `413`, e o terminal do servidor mostra a linha do erro e `PayloadTooLargeError: request entity too large`.
+
+A página de erro serve agora os 4xx e o 500, e o código de estado já não o escolhem só as rotas. No `views/erro.ejs`, o comentário do topo passa a dizê-lo:
+
+```ejs
+<%# A página de erro, para os 4xx e para o 500. Recebe o titulo e a
+    mensagem; o código de estado escolhe-o quem chama o res.render. %>
+```
 
 ### Passo 3: o tamanho do segredo
 
-A verificação do tamanho, a seguir à verificação de que o segredo existe. Se o teu segredo foi gerado com o comando do tema anterior, tem 64 carateres, e nada muda.
+No `server.js`, a seguir ao `if` que confirma que o segredo existe, acrescenta a verificação do tamanho da secção [Os segredos](#os-segredos). Se o teu segredo foi gerado com o comando do tema 06, tem 64 carateres, e o servidor arranca como antes.
+
+Para ver a recusa, muda por um momento o segredo do `.env` para `abcdefghij`, que tem 10 carateres, e guarda. O terminal mostra `O SESSION_SECRET tem 10 carateres; tem de ter pelo menos 32.` e, com o `--watch`, `Failed running 'server.js'. Waiting for file changes before restarting...`. Se a mensagem não aparecer, o `--watch` não deu pela mudança do `.env`: para o servidor com Ctrl+C e arranca-o outra vez. No fim, repõe o segredo bom, guarda e confirma que o servidor voltou a ligar.
 
 ### Passo 4: o token contra o CSRF
 
-O `import { randomBytes } from "node:crypto";` no início do ficheiro, a função `prepararTokenCsrf` ao lado das outras funções, a linha do `csrf` no middleware do `res.locals`, o middleware de verificação logo a seguir. A chamada à função na rota `GET /pedido/item`. Nos modelos, o campo escondido entra nos quatro formulários `POST`: o de juntar um equipamento, em `item-novo.ejs`. Os três da página do pedido, em `pedido.ejs` (o de cada botão de remoção, o da confirmação e o do cancelamento). Os dois modelos, completos:
+No `server.js`, faz estas mudanças, com os blocos da secção [O token contra o CSRF](#o-token-contra-o-csrf):
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
+- o `import { randomBytes } from "node:crypto";`, a seguir ao `import` da sessão;
+- a função `prepararTokenCsrf`, entre a `erroDoNome` e a `linhasDoPedido`;
+- a linha do `csrf` e o comentário novo, no middleware do `res.locals`;
+- o middleware de verificação, logo a seguir ao do `res.locals`;
+- a chamada à função, com o comentário novo, na rota `GET /pedido/item`.
+
+Se experimentares agora, antes de mexer nos modelos, todos os formulários dão 403 e "Pedido recusado". O servidor já exige o token, e os formulários ainda não o enviam.
+
+Com a verificação, um `POST` sem corpo recebe o 403 antes de chegar a uma rota. As duas guardas do corpo ausente, do tema 06, deixam de ser precisas, e o exemplo tira-as:
+
+- na `validarItem`, sai o `if (!corpo)`, com o comentário por cima, e o `@param` volta a ser `@param {object} corpo o req.body do pedido HTTP`;
+- na confirmação, saem o comentário e as quatro linhas do `let corpo`, e a linha do nome passa a `const nome = textoDoCampo(req.body.nome);`.
+
+Nos modelos, o campo escondido entra nos quatro formulários `POST`. Um é o de juntar um equipamento, em `item-novo.ejs`. Os outros três são os da página do pedido, em `pedido.ejs`: o de cada botão de remoção, o da confirmação e o do cancelamento. O formulário de pesquisa da página inicial não leva token, porque envia por `GET` e não muda nada. Os dois modelos ficam assim:
 
 ```ejs
 <%# O formulário para juntar um equipamento ao pedido. Recebe o titulo,
@@ -348,7 +431,7 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
     escondido _csrf leva o token da sessão. %>
 <%- include("partials/cabecalho") %>
     <% if (Object.keys(erros).length > 0) { %>
-      <p><strong>O equipamento não foi juntado ao pedido. Corrige os campos assinalados e volta a enviar.</strong></p>
+      <p><strong>O equipamento não entrou no pedido. Corrige os campos assinalados e volta a enviar.</strong></p>
     <% } %>
     <form method="post" action="/pedido/itens">
       <input type="hidden" name="_csrf" value="<%= csrf %>">
@@ -380,10 +463,6 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
     <p><a href="/pedido">Voltar ao pedido</a></p>
 <%- include("partials/rodape") %>
 ```
-
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
 
 ```ejs
 <%# O pedido em curso, guardado na sessão. Recebe o titulo, as linhas (cada
@@ -428,21 +507,17 @@ Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da res
 <%- include("partials/rodape") %>
 ```
 
-Leitura guiada: os `include` juntam os fragmentos escritos por ti. Entre eles, os valores entram com `<%=`, para o browser os receber como texto.
-
-O formulário de pesquisa da página inicial não leva token: envia por `GET`, e não muda nada.
+Em cada formulário `POST`, o campo escondido é a primeira linha dentro do `<form>`, e o comentário do topo de cada modelo passa a dizer que ele lá está. O resto é igual ao do tema 06. Junta dois equipamentos, tira um e confirma o pedido: tudo funciona como antes.
 
 ### Passo 5: o servidor completo
 
 O `server.js` no fim do exemplo:
 
-Antes de experimentares, prevê o que esta parte faz no pedido ou no HTML da resposta. Confere a previsão com o resultado explicado a seguir.
-
 ```js
 // server.js: o catálogo de equipamentos da escola, com o pedido em curso na
 // sessão, agora preparado para quando as coisas correm mal: um middleware de
 // erro que regista a falha no terminal e mostra ao utilizador uma página que
-// não revela nada do servidor, e um token contra o CSRF em todos os
+// não revela detalhes internos do servidor, e um token contra o CSRF em todos os
 // formulários que mudam a sessão.
 import express from "express";
 import session from "express-session";
@@ -515,7 +590,7 @@ function diaValido(texto) {
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object} corpo o req.body do pedido HTTP
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
@@ -570,7 +645,7 @@ function erroDoNome(nome) {
  * Garante que a sessão tem um token contra o CSRF, e põe-no à disposição dos
  * modelos. O token é um código aleatório, um por sessão, que os formulários
  * enviam num campo escondido; uma página de outro site não o conhece.
- * @param {object} req o pedido
+ * @param {object} req o pedido HTTP
  * @param {object} res a resposta
  */
 function prepararTokenCsrf(req, res) {
@@ -605,13 +680,13 @@ app.use((req, res, next) => {
 // req.body. Tem de estar antes das rotas que usam o req.body.
 app.use(express.urlencoded({ extended: false }));
 
-// Middleware das sessões: lê o cookie de cada pedido, encontra a sessão
+// Middleware das sessões: lê o cookie de cada pedido HTTP, encontra a sessão
 // desse browser e põe-na em req.session. Cada opção está justificada.
 app.use(session({
   secret: SEGREDO, // assina o cookie: o servidor só aceita identificadores que ele próprio deu
   name: NOME_DO_COOKIE, // o nome do cookie no browser
   resave: false, // não volta a guardar uma sessão que não mudou
-  saveUninitialized: false, // não cria sessão, nem cookie, a quem ainda não guardou nada
+  saveUninitialized: false, // não guarda a sessão, nem manda cookie, a quem ainda não guardou nada
   cookie: {
     httpOnly: true, // o JavaScript das páginas não consegue ler o cookie
     sameSite: "lax", // o cookie não vai nos pedidos POST que outros sites façam ao catálogo
@@ -806,7 +881,7 @@ app.get("/reservas", (req, res) => {
   res.render("reservas", { titulo: "Reservas", linhas: linhas });
 });
 
-// Uma reserva: a página para onde o browser vai depois de reservar.
+// Uma reserva: a página de cada reserva, aberta a partir da lista.
 app.get("/reservas/:id", (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id) || id < 1) {
@@ -839,7 +914,7 @@ app.use((req, res) => {
 // Middleware de erro: tem quatro parâmetros, e o Express só o chama quando
 // uma rota, um middleware ou um modelo falham. Regista o erro completo no
 // terminal, para quem o vai corrigir, e mostra ao utilizador uma página que
-// não revela nada do servidor. Fica depois de tudo, como o middleware final.
+// não revela detalhes internos do servidor. Fica depois de tudo, até do middleware final.
 app.use((erro, req, res, next) => {
   console.error(`${new Date().toISOString()} ERRO ${req.method} ${req.url}`);
   console.error(erro.stack);
@@ -849,7 +924,7 @@ app.use((erro, req, res, next) => {
   res.locals.itensNoPedido = res.locals.itensNoPedido || 0;
 
   // Alguns erros já trazem um código 4xx: o express.urlencoded dá o 413 a um
-  // corpo grande demais. Esses são falhas do pedido; tudo o resto é um 500.
+  // corpo grande demais. Esses são falhas do pedido HTTP; tudo o resto é um 500.
   if (erro.status >= 400 && erro.status < 500) {
     res.status(erro.status).render("erro", {
       titulo: "Pedido recusado",
@@ -872,104 +947,90 @@ app.listen(PORTA, (erro) => {
 });
 ```
 
-Leitura guiada: lê os dados iniciais, depois os middlewares pela ordem do ficheiro. Escolhe um pedido da tabela de resultados e segue só a rota que o recebe.
+Compara-o com o teu. O código deve ser o mesmo, e só o comentário do topo, que vinha do tema 06, pode ser diferente.
+
+O ficheiro lê-se pela ordem da fila. Primeiro vêm as duas verificações do segredo, os dados e as seis funções. Seguem-se o registo, o `express.urlencoded`, a sessão, o `res.locals` e a verificação do token, e depois as rotas, o middleware final, o middleware de erro e o `listen`. O 403 do token é uma resposta da própria verificação, e não passa pelo middleware de erro.
 
 ### Passo 6: os resultados
 
 | O que se faz | O que acontece |
 | --- | --- |
-| Arrancar com um segredo de 10 carateres | O servidor não arranca: "tem 10 carateres; tem de ter pelo menos 32" |
-| Abrir `/pedido/item` | O formulário, com o campo escondido `_csrf`; a sessão e o cookie são criados aqui |
-| Juntar um equipamento | 303 para `/pedido`, como antes |
-| Juntar um equipamento com o campo `_csrf` apagado ou mudado | 403, "Pedido recusado" |
-| Confirmar um pedido com o nome `<script>alert(1)</script>` | A lista das reservas mostra o nome como texto |
-| Um erro num modelo | 500, "Erro no servidor", sem caminhos na página; o stack trace no terminal |
-| Um corpo de 200 000 carateres | 413, "Pedido recusado" |
-| Trocar o `SESSION_SECRET` e reiniciar, com um pedido a meio | O pedido desaparece: o identificador antigo já não bate certo |
+| Abrir a página inicial pela primeira vez | Nenhum cookie |
+| Abrir `/pedido/item` | O formulário, com o campo escondido `_csrf` e um valor de 64 carateres no código-fonte; o browser recebe o cookie da sessão |
+| Juntar o projetor e o portátil, tirar um e confirmar com "Ana Reserva" | Como no tema 06: a reserva aparece na lista, e o cookie é apagado |
+| Juntar um equipamento depois de apagar ou mudar o valor do `_csrf` nas ferramentas de programador | 403, "Pedido recusado" |
+| Juntar um equipamento, abrir `/pedido` em dois separadores, confirmar num e cancelar no outro | No segundo, 403 e "Pedido recusado", porque a sessão já não existe |
+| Confirmar um pedido com o nome `<script>alert(1)</script>` | A lista das reservas mostra o nome como texto; no código-fonte, `&lt;script&gt;alert(1)&lt;/script&gt;` |
+| Trocar o `SESSION_SECRET`, com um pedido a meio, e o servidor volta a arrancar | O pedido aparece vazio, e o browser continua a enviar o cookie antigo |
 
-## A matriz de falhas
+Para mudar o valor do `_csrf`, abre as ferramentas de programador no separador Elements ("Elementos"; no Firefox, "Inspetor"). Encontra o campo escondido dentro do formulário e faz duplo clique sobre o valor do `value`.
 
-Neste tema, vais construir uma **matriz de falhas**, uma tabela das falhas que o servidor conhece. Cada linha indica como provocar a falha e que código resulta. Indica também o que o utilizador vê e o que fica no terminal. Serve para três coisas: obriga a pensar em cada falha antes de ela acontecer. É a lista do que se verifica antes de entregar o trabalho. E é o que se dá a quem vai manter o servidor. A do catálogo:
+A experiência do atributo sem aspas faz-se no teu catálogo, e desfaz-se no fim:
+
+1. No `views/pedido.ejs`, no campo do nome, tira as aspas do `value`, para ficar `value=<%= valorNome %>`, e tira também o `maxlength="40"`.
+2. Junta um equipamento e, na confirmação, escreve no nome `x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`, que tem 44 carateres. Os `a` do fim só servem para passar dos 40 carateres, para o nome ser recusado e voltar ao campo. A página do pedido volta com a mensagem do nome comprido, e o browser mostra uma janela com "1". No código-fonte, o campo ficou `value=x autofocus onfocus=alert(1) aaaaaaaaaaaaaaa`.
+3. Repõe só as aspas. Volta a abrir `/pedido`, escreve outra vez o mesmo nome e envia: o nome aparece no campo como texto, sem janela nenhuma.
+4. Repõe o `maxlength="40"`.
+
+### Passo 7: a matriz de falhas
+
+Uma **matriz de falhas** é uma tabela das falhas que um servidor conhece. Para cada uma, diz como se provoca, que código dá, o que vê quem usa a aplicação e o que fica no terminal. Obriga a pensar em cada falha antes de ela acontecer. É também a lista do que se verifica antes de entregar, e o que se dá a quem vai manter o servidor. A do catálogo:
 
 | Falha | Como se provoca | Código | O que o utilizador vê | O que fica no terminal |
 | --- | --- | --- | --- | --- |
-| Identificador inválido | `/equipamentos/abc` | 400 | "Pedido inválido", com a regra do identificador | A linha do pedido |
-| Equipamento que não existe | `/equipamentos/9` | 404 | "Equipamento não encontrado" | A linha do pedido |
-| Endereço que não existe | `/nao-existe` | 404 | "Página não encontrada" | A linha do pedido |
-| Campo inválido num formulário | O tempo 12, com o `novalidate` | 400 | O formulário, com a mensagem no campo | A linha do pedido |
-| Formulário sem o token, ou com outro | Apagar o `_csrf` nas ferramentas de programador | 403 | "Pedido recusado", com o que fazer | A linha do pedido |
-| Endereço mal codificado | `/equipamentos/%E0%A4%A` | 400 | "Pedido recusado" | A data, o pedido e o erro |
-| Corpo grande demais | Um nome com 200 000 carateres, enviado sem o formulário | 413 | "Pedido recusado" | A data, o pedido e o erro |
-| Erro no código ou num modelo | O `equipamento.fabricante.nome` | 500 | "Erro no servidor", sem pormenores | A data, o pedido e o stack trace |
-| Segredo em falta ou curto | Arrancar sem `.env`, ou com um segredo de 10 carateres | (não arranca) | Nada: o servidor não está ligado | A mensagem, sem o segredo |
+| Identificador inválido | `/equipamentos/abc` | 400 | "Pedido inválido", com a regra do identificador | A linha do pedido HTTP |
+| Equipamento que não existe | `/equipamentos/9` | 404 | "Equipamento não encontrado" | A linha do pedido HTTP |
+| Endereço que não existe | `/nao-existe` | 404 | "Página não encontrada" | A linha do pedido HTTP |
+| Campo inválido num formulário | O tempo 12, com `novalidate` no `<form>` do `item-novo.ejs` | 400 | O formulário, com a mensagem no campo | A linha do pedido HTTP |
+| Formulário sem o token, ou com outro | Apagar ou mudar o valor do `_csrf` nas ferramentas de programador | 403 | "Pedido recusado", com o que fazer | A linha do pedido HTTP |
+| Endereço mal codificado | `/equipamentos/%E0%A4%A` | 400 | "Pedido recusado" | A data, o pedido HTTP e o erro |
+| Corpo grande demais | O comando do passo 2 | 413 | "Pedido recusado" | A data, o pedido HTTP e o erro |
+| Erro no código ou num modelo | A linha do fabricante, do passo 1 | 500 | "Erro no servidor", sem pormenores | A data, o pedido HTTP e o stack trace |
+| Segredo em falta ou curto | Arrancar com o `SESSION_SECRET` vazio, ou com 10 carateres | Nenhum: não arranca | Nada, porque o servidor não está ligado | A mensagem, sem o segredo |
 
-As linhas do 400 por um endereço mal codificado e do 413 mostram falhas que nascem antes das rotas. Uma acontece no Express e outra no `express.urlencoded`. A página de erro precisa do `itensNoPedido`, mesmo quando o middleware habitual ainda não o preparou. Com o middleware completo, o corpo grande recebe 413 e a página "Pedido recusado". Sem a garantia desse dado, a própria página de erro falha. Se também faltasse o tratamento dos códigos 4xx, o corpo grande receberia 500. A matriz permite distinguir estas causas: preenche-a provocando cada falha no teu servidor, e não só imaginando o resultado.
+O `novalidate` é o do tema 05, que desliga a validação do browser. Rever: [Validar no servidor](05-formularios-e-validacao.md#validar-no-servidor). Uma matriz preenche-se a provocar cada falha no servidor, e não a imaginar o resultado: em cada linha fica o que se viu.
 
 ## Erros frequentes
 
 ### Continua a aparecer a página do Express, com o stack trace
 
-O middleware de erro tem três parâmetros, e não quatro, ou está acima das rotas. Confirma os dois: `(erro, req, res, next)`, e depois do middleware final, logo antes do `app.listen`.
+O middleware de erro tem três parâmetros, e não quatro, ou está acima das rotas. Confirma as duas coisas: `(erro, req, res, next)`, e o sítio, no fim do ficheiro, depois do middleware final e logo antes do `app.listen`.
 
 ### O middleware de erro está certo, e o servidor vai abaixo na mesma
 
-Falta um `return` depois de uma resposta, como no tema 4. O middleware de erro não apanha esta falha. Procura, na rota do pedido que estava a ser feito, uma resposta de erro sem o `return` a seguir.
+O terminal mostra `Cannot set headers after they are sent to the client`, e o servidor deixa de responder. Falta um `return` depois de uma resposta, e o middleware de erro não apanha esta falha. Procura, na rota do pedido HTTP que estavas a fazer, uma resposta de erro sem o `return` a seguir.
 
 ### Todos os formulários dão "Pedido recusado"
 
-O campo escondido não está no formulário, tem outro nome (o middleware lê `_csrf`), ou o `csrf` não chega ao modelo. Abre o código-fonte da página e procura o `name="_csrf"`: tem de estar dentro do `<form>`, com um valor de 64 carateres. Se o valor estiver vazio, a sessão ainda não tem token. A rota do formulário deve chamar `prepararTokenCsrf`, ou a sessão já deve ter um token.
+O campo escondido não está no formulário, tem outro nome (o middleware lê o `_csrf`), ou o token não chega ao modelo. Abre o código-fonte da página e procura `name="_csrf"`: tem de estar dentro do `<form>`, com um valor de 64 carateres. Se o valor estiver vazio, a sessão ainda não tem token, e a rota que mostra o formulário tem de chamar a `prepararTokenCsrf`.
 
-### Depois de confirmar o pedido, um formulário de outro separador dá "Pedido recusado"
+### Um formulário que ficou aberto dá "Pedido recusado"
 
-Não é um erro. A sessão terminou, e o token foi com ela. Recarrega a página do formulário.
+Não é um erro. A sessão terminou: confirmaste ou cancelaste o pedido noutro separador, ou guardaste o `server.js` e o `--watch` voltou a ligar o servidor sem as sessões. O token do formulário era o da sessão antiga. Recarrega a página do formulário e envia outra vez.
 
 ### O servidor não arranca, e o segredo está no .env
 
-O segredo tem menos de 32 carateres. A mensagem diz quantos tem. Gera um novo com o comando do tema anterior.
-
-### Depois de trocar o segredo, os pedidos em curso desapareceram
-
-Não é um erro: é o efeito de trocar o segredo, e é o que se quer quando o segredo antigo foi revelado.
-
-## Segurança: o que este tema junta
-
-- **Falhar bem.** Para quem pede, o código certo e uma frase que diz o que fazer; para quem mantém, o registo completo no terminal. Nunca um stack trace nem uma mensagem de erro interna numa página.
-- **Um middleware de erro com quatro parâmetros, no fim.** E o `return` depois de cada resposta, que o middleware de erro não substitui.
-- **Registos mínimos.** Quando, que pedido e o que falhou. Nem segredos, nem cookies, nem o corpo dos pedidos.
-- **Segredos fora do código, verificados ao arrancar, e trocados quando revelados.**
-- **Valores no texto HTML e em atributos de texto com aspas, com `<%=`.** Nada em scripts nem em atributos de código; endereços vindos de fora validados.
-- **Token contra o CSRF em todos os `POST` que mudam a sessão, e nada que mude dados com `GET`.** O `SameSite=Lax` fica, como uma segunda defesa.
-
+O segredo tem menos de 32 carateres, e a mensagem diz quantos tem. Gera um novo com o comando do tema 06. Rever: [O segredo, fora do código](06-cookies-e-sessoes.md#o-segredo-fora-do-código).
 
 ## Palavras novas deste guia
 
-- Middleware de erro: função com quatro parâmetros que o Express chama quando uma operação falha.
-- Stack trace: lista das chamadas e linhas do código relacionadas com uma falha.
-- Registo do servidor: informação escrita para quem mantém e corrige a aplicação.
-- Escaping contextual: proteção que depende do sítio onde o valor entra na página.
-- Injeção guardada: código perigoso guardado como dado e mostrado depois a outras pessoas.
-- CSRF: pedido provocado por outro site que tenta aproveitar a sessão do browser.
-- Token contra CSRF: código aleatório da sessão que o servidor exige nos formulários que mudam dados.
-- Mesma origem: regra que impede uma página de outro site de ler as páginas do catálogo.
-- Matriz de falhas: tabela que diz como provocar cada falha e conferir a resposta.
-
-## Verificar o que aprendeste
-
-1. Diz se cada uma é uma falha do pedido ou do servidor. E o código: o tempo 12 num formulário. O equipamento 9. Um modelo que lê uma propriedade de `undefined`. Um formulário sem o token.
-2. Porque é que a página de erro do Express não pode chegar a quem usa o catálogo? Dá dois exemplos do que ela revela.
-3. O que distingue um middleware de erro de um middleware normal? E onde fica?
-4. Um colega diz: "com o middleware de erro, já não preciso do `return` depois das respostas de erro". Está certo? Porquê?
-5. O que escreve o middleware de erro no terminal, e o que mostra ao utilizador? Porque é que a página não usa o `erro.message`?
-6. Diz três coisas que nunca se escrevem no registo, e porquê.
-7. Porque é que um atributo sem aspas é perigoso, mesmo com `<%=`?
-8. Porque é que o escaping não protege um `href` com o valor `javascript:alert(1)`? O que protege?
-9. Explica o ataque CSRF com o cancelamento do pedido. Porque é que o `SameSite=Lax` não chega sozinho?
-10. Porque é que a página de outro site não consegue descobrir o token do catálogo?
+- Stack trace: a lista das funções que estavam a correr quando um erro aconteceu, cada uma com o ficheiro e o número da linha.
+- Middleware de erro: middleware com quatro parâmetros, o primeiro dos quais é o erro, que o Express chama quando uma rota, um middleware ou um modelo falham.
+- Registo do servidor: o que o servidor escreve no terminal, para quem o mantém perceber e corrigir uma falha.
+- Escaping contextual: escolher a proteção de um valor pelo sítio da página onde ele entra.
+- Injeção guardada: código guardado como um dado, que corre mais tarde no browser de outras pessoas.
+- Token contra o CSRF: código aleatório, um por sessão, que o servidor escreve nos formulários e exige em cada `POST`.
+- Mesma origem: a regra dos browsers que só deixa uma página ler as respostas com o mesmo protocolo, o mesmo computador e a mesma porta.
+- Matriz de falhas: tabela das falhas de um servidor, com a forma de provocar cada uma, o código, o que o utilizador vê e o que fica no terminal.
 
 ## O que vem a seguir
 
-Faz a [ficha de exercícios](exercicios/07-erros-e-seguranca-web-exercicios.md). O laboratório deste tema vai ser o passo 9 do jogo Fechado na escola, e ainda não está publicado.
+No tema 08, Integração e ensaio do módulo, o catálogo junta tudo o que ganhou num só percurso, e a matriz de falhas é a lista do que verificar.
 
-O próximo tema integra o módulo num percurso completo do catálogo. Junta as rotas, as páginas, os formulários, as sessões e a segurança trabalhados desde o primeiro servidor. É ensaiado como um todo, com a matriz de falhas como lista do que verificar. Depois vem a evidência individual do módulo, em que cada um mostra e explica uma alteração ao seu próprio servidor. A matriz de falhas que fazes neste tema é a primeira coisa que vais usar nos dois.
+## Para saber mais
+
+- [Error Handling](https://expressjs.com/en/guide/error-handling/), na documentação do Express, em inglês: como o Express trata os erros e como se escreve um middleware de erro.
+- [Cross-site request forgery (CSRF)](https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF), na MDN, em inglês: o ataque e as defesas, incluindo o token e o `SameSite`.
+- [Same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Same-origin_policy), na MDN, em inglês: o que conta como a mesma origem, e o que uma página não pode ler de outra origem.
 
 ![Rodapé](../imagens/rodape.png)

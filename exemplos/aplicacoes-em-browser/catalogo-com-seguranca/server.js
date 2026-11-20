@@ -74,7 +74,7 @@ function diaValido(texto) {
  * Só lê os três campos previstos; qualquer outro campo é ignorado.
  * Devolve os valores, para voltar a mostrar no formulário, e os erros,
  * com uma mensagem por campo. Sem erros, o objeto dos erros fica vazio.
- * @param {object} corpo o req.body do pedido
+ * @param {object} corpo o req.body do pedido HTTP
  * @returns {object} um objeto com os valores e os erros
  */
 function validarItem(corpo) {
@@ -129,7 +129,7 @@ function erroDoNome(nome) {
  * Garante que a sessão tem um token contra o CSRF, e põe-no à disposição dos
  * modelos. O token é um código aleatório, um por sessão, que os formulários
  * enviam num campo escondido; uma página de outro site não o conhece.
- * @param {object} req o pedido
+ * @param {object} req o pedido HTTP
  * @param {object} res a resposta
  */
 function prepararTokenCsrf(req, res) {
@@ -164,13 +164,13 @@ app.use((req, res, next) => {
 // req.body. Tem de estar antes das rotas que usam o req.body.
 app.use(express.urlencoded({ extended: false }));
 
-// Middleware das sessões: lê o cookie de cada pedido, encontra a sessão
+// Middleware das sessões: lê o cookie de cada pedido HTTP, encontra a sessão
 // desse browser e põe-na em req.session. Cada opção está justificada.
 app.use(session({
   secret: SEGREDO, // assina o cookie: o servidor só aceita identificadores que ele próprio deu
   name: NOME_DO_COOKIE, // o nome do cookie no browser
   resave: false, // não volta a guardar uma sessão que não mudou
-  saveUninitialized: false, // não cria sessão, nem cookie, a quem ainda não guardou nada
+  saveUninitialized: false, // não guarda a sessão, nem manda cookie, a quem ainda não guardou nada
   cookie: {
     httpOnly: true, // o JavaScript das páginas não consegue ler o cookie
     sameSite: "lax", // o cookie não vai nos pedidos POST que outros sites façam ao catálogo
@@ -365,7 +365,7 @@ app.get("/reservas", (req, res) => {
   res.render("reservas", { titulo: "Reservas", linhas: linhas });
 });
 
-// Uma reserva: a página para onde o browser vai depois de reservar.
+// Uma reserva: a página de cada reserva, aberta a partir da lista.
 app.get("/reservas/:id", (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id) || id < 1) {
@@ -398,7 +398,7 @@ app.use((req, res) => {
 // Middleware de erro: tem quatro parâmetros, e o Express só o chama quando
 // uma rota, um middleware ou um modelo falham. Regista o erro completo no
 // terminal, para quem o vai corrigir, e mostra ao utilizador uma página que
-// não revela detalhes internos do servidor. Fica depois de tudo, como o middleware final.
+// não revela detalhes internos do servidor. Fica depois de tudo, até do middleware final.
 app.use((erro, req, res, next) => {
   console.error(`${new Date().toISOString()} ERRO ${req.method} ${req.url}`);
   console.error(erro.stack);
@@ -408,7 +408,7 @@ app.use((erro, req, res, next) => {
   res.locals.itensNoPedido = res.locals.itensNoPedido || 0;
 
   // Alguns erros já trazem um código 4xx: o express.urlencoded dá o 413 a um
-  // corpo grande demais. Esses são falhas do pedido; tudo o resto é um 500.
+  // corpo grande demais. Esses são falhas do pedido HTTP; tudo o resto é um 500.
   if (erro.status >= 400 && erro.status < 500) {
     res.status(erro.status).render("erro", {
       titulo: "Pedido recusado",

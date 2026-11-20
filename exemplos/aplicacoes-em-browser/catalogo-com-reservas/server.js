@@ -1,6 +1,6 @@
-// server.js: o catálogo de equipamentos da escola, agora com reservas.
-// Mostra as três formas de um pedido trazer dados (no caminho, na pesquisa
-// e no corpo) e o middleware, que corre antes das rotas.
+// server.js: uma variante do catálogo em que a reserva responde em JSON,
+// com o 201 e a reserva criada, ou com o 400 e uma só mensagem. Serve para
+// comparar com o catalogo-com-formularios, que responde com páginas EJS.
 import express from "express";
 
 const app = express();
@@ -53,7 +53,7 @@ app.get("/equipamentos", (req, res) => {
   res.json(equipamentos);
 });
 
-// Um equipamento: GET /equipamentos/2. O :id é um parâmetro de caminho.
+// Um equipamento: GET /equipamentos/2. O :id é um parâmetro de rota.
 app.get("/equipamentos/:id", (req, res) => {
   const id = Number(req.params.id); // chega como texto, "2", e passa a número
   if (!Number.isInteger(id) || id < 1) {

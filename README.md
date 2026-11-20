@@ -2,17 +2,17 @@
 
 # Sistemas de Informação · 12.º IG
 
-Materiais de Sistemas de Informação do 12.º ano do Curso Profissional de Técnico/a de Informática de Gestão. Podes estudar os materiais ao teu ritmo e lê-los antes de serem dados na aula.
+Materiais de Sistemas de Informação do 12.º ano do curso de Técnico/a de Informática de Gestão. Podes lê-los antes de serem dados na aula.
 
 ## Por onde começar
 
-Começa pelo [guia Do pedido à resposta](01-aplicacoes-em-browser/01-do-pedido-a-resposta.md). Cada tema tem três tipos de documento:
+Começa pelo [guia Do pedido à resposta](01-aplicacoes-em-browser/01-do-pedido-a-resposta.md). Cada tema tem estes documentos:
 
-- o guia, para ler e estudar;
-- o laboratório, para seguir passo a passo no computador, sem precisares de abrir o guia;
-- a ficha de exercícios, para praticares sozinho.
+- o guia, com a matéria por escrito, para estudares;
+- o laboratório, para fazeres no computador, passo a passo;
+- a ficha de exercícios, para treinares sozinho.
 
-Em cada área, os guias estão na pasta da área. Os laboratórios estão na pasta `laboratorios` e as fichas na pasta `exercicios`. Cada uma destas pastas tem um índice que explica o que é esse tipo de documento. Se tinhas guardado a ligação para um laboratório ou uma ficha, procura o documento nessas pastas.
+Em cada área, os guias estão na pasta da área, os laboratórios na pasta `laboratorios` e as fichas na pasta `exercicios`. Cada uma destas pastas tem um índice que explica o que é esse tipo de documento.
 
 ## As áreas
 
@@ -20,13 +20,9 @@ Em cada área, os guias estão na pasta da área. Os laboratórios estão na pas
 | --- | --- |
 | [Aplicações em browser](01-aplicacoes-em-browser/README.md) | M06, Aplicações baseadas em browsers |
 
-## Como estudar
-
-Lê o guia antes de escrever código: primeiro a explicação, depois o exemplo guiado. Antes de correres um exemplo, tenta prever o resultado. A ficha pede decisões tuas; as resoluções dos exercícios trabalham-se na aula.
-
 ## Outras pastas
 
 - [Exemplos](exemplos/aplicacoes-em-browser/): código para ler e correr.
-- [Avaliações](avaliacoes/diagnostico-inicial.md): diagnóstico já divulgado.
+- [Avaliações](avaliacoes/): os enunciados já divulgados, como o diagnóstico inicial.
 
 ![Rodapé](imagens/rodape.png)
