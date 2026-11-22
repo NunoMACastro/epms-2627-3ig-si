@@ -4,7 +4,7 @@
 
 Este é o jogo Fechado na escola como fica no fim do passo 3, o [laboratório do tema 04 EJS e reutilização no servidor](../../../01-aplicacoes-em-browser/laboratorios/04-ejs-e-reutilizacao-no-servidor-laboratorio.md). Ao lado da API do passo 2, tem as páginas do jogo, construídas no servidor com EJS. São a página inicial, a página de cada cena, com uma ligação por escolha, e a página de erro, todas com o mesmo cabeçalho e o mesmo rodapé. É usado no tema [04 EJS e reutilização no servidor](../../../01-aplicacoes-em-browser/04-ejs-e-reutilizacao-no-servidor.md).
 
-Parte do [passo 2](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/exemplos/acesso-a-dados/fechado-na-escola-passo-02/README.md), feito em Linguagens de Programação, e é o ponto de partida do passo 4, no tema 05 de Linguagens de Programação. Se faltaste ao passo 3, ou se o teu projeto não arranca, copia esta pasta e continua daqui.
+Parte do [passo 2](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/exemplos/acesso-a-dados/fechado-na-escola-passo-02/README.md), feito em Linguagens de Programação, e é o ponto de partida do [passo 4](https://github.com/NunoMACastro/epms-2627-3ig-lp/blob/main/01-acesso-a-dados/laboratorios/05-ligacao-segura-crud-e-regras-de-dominio-laboratorio.md), no tema 05 de Linguagens de Programação. Se faltaste ao passo 3, ou se o teu projeto não arranca, copia esta pasta e continua daqui.
 
 ## O que está nesta pasta
 
