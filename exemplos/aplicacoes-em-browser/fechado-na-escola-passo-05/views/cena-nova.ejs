@@ -1,0 +1,55 @@
+<%# A página do formulário de uma cena nova. Recebe o titulo, as cenas, que dão
+    as opções do destino da escolha, os valores, com o texto de cada campo, e
+    os erros, com uma mensagem por campo errado. %>
+<%- include("partials/cabecalho") %>
+    <% if (Object.keys(erros).length > 0) { %>
+      <p><strong>A cena não foi criada. Corrige os campos assinalados.</strong></p>
+    <% } %>
+    <%# Os maxlength são os limites do contrato, em "O corpo de uma cena".
+        Cada campo traz o valor que a rota lhe passou e, se houver, a mensagem
+        do erro dentro da etiqueta, para o leitor de ecrã a ler com o campo. %>
+    <form method="post" action="/cenas">
+      <p>
+        <label for="codigo">Código da cena, como sala-13
+          <% if (erros.codigo) { %><strong><%= erros.codigo %></strong><% } %>
+        </label>
+        <input id="codigo" name="codigo" maxlength="30" value="<%= valores.codigo %>" required>
+      </p>
+      <p>
+        <label for="titulo">Título
+          <% if (erros.titulo) { %><strong><%= erros.titulo %></strong><% } %>
+        </label>
+        <input id="titulo" name="titulo" maxlength="60" value="<%= valores.titulo %>" required>
+      </p>
+      <p>
+        <label for="texto">Texto da cena
+          <% if (erros.texto) { %><strong><%= erros.texto %></strong><% } %>
+        </label>
+        <%# O textarea não tem value: o texto escreve-se entre <textarea> e </textarea>. %>
+        <textarea id="texto" name="texto" rows="5" maxlength="600" required><%= valores.texto %></textarea>
+      </p>
+      <fieldset>
+        <legend>A primeira escolha</legend>
+        <p>
+          <label for="escolha_texto">Texto da escolha
+            <% if (erros.escolha_texto) { %><strong><%= erros.escolha_texto %></strong><% } %>
+          </label>
+          <input id="escolha_texto" name="escolha_texto" maxlength="80" value="<%= valores.escolha_texto %>" required>
+        </p>
+        <p>
+          <label for="escolha_destino">Leva à cena
+            <% if (erros.escolha_destino) { %><strong><%= erros.escolha_destino %></strong><% } %>
+          </label>
+          <%# O selected marca a opção que estava escolhida. O código da cena e o
+              valor que veio do pedido são os dois texto, e comparam-se com ===. %>
+          <select id="escolha_destino" name="escolha_destino" required>
+            <option value="">Escolhe uma cena</option>
+            <% for (const cena of cenas) { %>
+              <option value="<%= cena.codigo %>" <% if (cena.codigo === valores.escolha_destino) { %>selected<% } %>><%= cena.titulo %> (<%= cena.codigo %>)</option>
+            <% } %>
+          </select>
+        </p>
+      </fieldset>
+      <button type="submit">Criar a cena</button>
+    </form>
+<%- include("partials/rodape") %>

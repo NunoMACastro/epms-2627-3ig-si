@@ -1,0 +1,5 @@
+# Dependências: recriam-se com npm install.
+node_modules/
+
+# Configuração local e segredos: nunca vão para o Git.
+.env

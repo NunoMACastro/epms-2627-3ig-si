@@ -4,7 +4,7 @@
 
 Neste guia, o catálogo de equipamentos do tema 04 ganha um formulário de reserva. Escolhes um equipamento, um dia e um tempo letivo, escreves o teu nome e carregas em "Reservar". Vês porque é que este formulário envia por `POST`, como o servidor lê e verifica cada campo, e o que responde quando há erros e quando corre bem.
 
-Usa a fila do Express do tema 03, o escaping do tema 04 e os formulários de HTML do 11.º ano. Rever: [Uma fila, pela ordem do ficheiro](03-http-rotas-e-middleware.md#uma-fila-pela-ordem-do-ficheiro), [Escaping: o que vem de fora nunca vira HTML](04-ejs-e-reutilizacao-no-servidor.md#escaping-o-que-vem-de-fora-nunca-vira-html) e [Anatomia de um formulário moderno](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/HTML%20e%20CSS/05-formularios-html.md#1-anatomia-de-um-formulário-moderno). Para praticar: [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
+Usa a fila do Express do tema 03, o escaping do tema 04 e os formulários de HTML do 11.º ano. Rever: [Uma fila, pela ordem do ficheiro](03-http-rotas-e-middleware.md#uma-fila-pela-ordem-do-ficheiro), [Escaping: o que vem de fora nunca vira HTML](04-ejs-e-reutilizacao-no-servidor.md#escaping-o-que-vem-de-fora-nunca-vira-html) e [Anatomia de um formulário moderno](https://github.com/NunoMACastro/edu-docs-2ig-js-guias-2526/blob/8cf6ade3cf3d4508ea0fb4fbc5b2bedb29869a8f/HTML%20e%20CSS/05-formularios-html.md#1-anatomia-de-um-formulário-moderno). Para praticar: [laboratório](laboratorios/05-formularios-e-validacao-laboratorio.md) e [ficha de exercícios](exercicios/05-formularios-e-validacao-exercicios.md).
 
 ## Neste guia
 

@@ -2,7 +2,7 @@
 
 # Ficha de exercícios: formulários e validação
 
-Praticas, no servidor da biblioteca, um formulário que muda dados. O servidor lê o corpo do pedido, verifica cada campo e responde com o formulário outra vez, quando há erros, ou com um redirecionamento, quando corre bem. Os exercícios 1 a 6 são todos obrigatórios, por esta ordem. Os exercícios 1, 2 e 6 respondem-se sem correr código, no `respostas-05.md`. É um ficheiro de texto na tua pasta de Sistemas de Informação, fora do projeto `biblioteca`. Antes de cada resposta, põe o exercício e a alínea, como 1.4 ou 6.3. No exercício 2, numera os pedidos pela ordem da tabela, de 2.1 a 2.5. Entrega o `respostas-05.md`, o `server.js` e a pasta `views` da biblioteca. Para rever: o [guia do tema](../05-formularios-e-validacao.md).
+Praticas, no servidor da biblioteca, um formulário que muda dados. O servidor lê o corpo do pedido, verifica cada campo e responde com o formulário outra vez, quando há erros, ou com um redirecionamento, quando corre bem. Os exercícios 1 a 6 são todos obrigatórios, por esta ordem. Os exercícios 1, 2 e 6 respondem-se sem correr código, no `respostas-05.md`. É um ficheiro de texto na tua pasta de Sistemas de Informação, fora do projeto `biblioteca`. Antes de cada resposta, põe o exercício e a alínea, como 1.4 ou 6.3. No exercício 2, numera os pedidos pela ordem da tabela, de 2.1 a 2.5. Entrega o `respostas-05.md`, o `server.js` e a pasta `views` da biblioteca. Para rever: o [guia do tema](../05-formularios-e-validacao.md) e o [laboratório](../laboratorios/05-formularios-e-validacao-laboratorio.md).
 
 ## O cenário
 
